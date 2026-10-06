@@ -558,11 +558,11 @@
             padding: 4px 10px;
         }
 
-        /* yearly reading goal, under the title */
+        /* yearly reading goal, under the Export / Import / Settings row */
         .reading-goal {
             display: none;
             width: min(340px, 90%);
-            margin: -10px auto 18px;
+            margin: -14px auto 22px;
             text-align: center;
             font-size: 13px;
             color: var(--y2k-dark);
@@ -1357,9 +1357,9 @@
         .field-label input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.12); }
         .field-label input[type="range"]:hover::-moz-range-thumb { transform: scale(1.12); }
 
-        /* squish while dragging */
-        .field-label input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.25, 0.82); transition-duration: 0.08s; }
-        .field-label input[type="range"]:active::-moz-range-thumb { transform: scale(1.25, 0.82); transition-duration: 0.08s; }
+        /* squeezes evenly smaller while held, springs back on release */
+        .field-label input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.8); transition-duration: 0.08s; }
+        .field-label input[type="range"]:active::-moz-range-thumb { transform: scale(0.8); transition-duration: 0.08s; }
 
         .field-label input[type="color"] {
             align-self: center;
@@ -1429,6 +1429,36 @@
             outline: none;
             border-color: var(--y2k-hot-pink);
             box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
+        }
+
+        /* Text boxes and dropdowns in the edit / settings windows get the
+           home page's focused look: flowing theme-coloured border (through a
+           transparent border, border-box layer), soft glow, pastel tint.
+           The colour picker, Cover Width slider and checkboxes keep their own. */
+        .field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]):focus {
+            border-color: transparent;
+            background:
+                linear-gradient(var(--pastel-lavender), var(--pastel-lavender)) padding-box,
+                linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
+            background-size: 100% 100%, 300% 100%;
+            animation: search-border-flow 1.6s linear infinite;
+            box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45);
+        }
+
+        .field-label select:focus {
+            border-color: transparent;
+            background:
+                var(--caret-url) right 11px center / 15px no-repeat padding-box,
+                linear-gradient(var(--pastel-lavender), var(--pastel-lavender)) padding-box,
+                linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
+            background-size: 15px, 100% 100%, 300% 100%;
+            animation: select-border-flow 1.6s linear infinite;
+            box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .field-label input:focus,
+            .field-label select:focus { animation: none; }
         }
 
         .field-row {
@@ -2950,7 +2980,6 @@
 <body>
 
     <h1>&#10022; <span id="shelf-name">My Bookshelf</span> &#10022;</h1>
-    <div class="reading-goal" id="reading-goal"></div>
 
     <div class="controls">
         <div class="window-titlebar"></div>
@@ -3062,6 +3091,7 @@
         <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importLibrary(event)">
         <button class="secondary" onclick="openSettings()">&#9881; Settings</button>
     </div>
+    <div class="reading-goal" id="reading-goal"></div>
 
     <div class="library-room" id="library-room"></div>
 
