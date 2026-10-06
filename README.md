@@ -61,7 +61,8 @@ What this means in practice:
   - **Color scheme:** **Candy** (pinks and purples) or **Sea Glass** (blues and greens).
   - **Bookshelf name:** rename the title at the top of the page.
   - **Yearly reading goal:** shows a progress bar under the title, counting books marked Read with a finish date this year.
-  - **Handwriting:** the font new notes (and the sticky notes) are written in, and the font for library cards (or match each book's notes).
+  - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.
   - **Start new books as:** Want to Read, Reading, or Read.
   - **Shelf extras:** turn the shelf cat, dust, leaning books, and sticky notes on or off.
   - **Calm mode:** turns off all the animations.
+  - **Start over:** delete the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings too. The 3 starter books don't come back afterwards.

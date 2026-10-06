@@ -154,8 +154,77 @@
             flex-basis: 100%;
         }
 
+        .search-row .search-wrap {
+            position: relative;
+            flex: 1;
+            display: flex;
+        }
+
         .search-row input {
             flex: 1;
+            padding-right: 44px; /* room for the clear button */
+        }
+
+        /* round x that empties the search box; only shown when there's text */
+        .search-clear {
+            display: none;
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            translate: 0 -50%;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .search-clear::before {
+            display: none;
+        }
+
+        .search-clear.visible {
+            display: flex;
+        }
+
+        .search-clear:hover,
+        .search-clear:active {
+            background: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* the visible circle - same fixed-hit-box trick as .modal-close-x */
+        .search-clear .x-face {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            border: 2px solid var(--y2k-dark);
+            border-radius: 50%;
+            background-color: var(--pastel-lavender);
+            color: var(--y2k-dark);
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            pointer-events: none;
+            transition: transform 0.25s cubic-bezier(.3, 1.8, .5, 1), background-color 0.15s, color 0.15s;
+        }
+
+        .search-clear:hover .x-face {
+            background-color: var(--y2k-hot-pink);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .search-clear:active .x-face {
+            transform: rotate(90deg) scale(0.8);
+            transition-duration: 0.08s;
         }
 
         /* While the search box is clicked in, its border becomes a flowing band of
@@ -164,7 +233,7 @@
            showing through the transparent border (border-box). */
         #search-input {
             border: 3px solid transparent;
-            padding: 9px 14px; /* keeps the same size with the thicker border */
+            padding: 9px 44px 9px 14px; /* same size with the thicker border; right side leaves room for the clear x */
             outline: none;     /* the browser's focus ring would sit right on top of the border */
             background:
                 linear-gradient(var(--search-fill), var(--search-fill)) padding-box,
@@ -360,6 +429,46 @@
 
         .settings-choices {
             justify-content: center;
+        }
+
+        .danger-section {
+            border-color: var(--y2k-coral);
+        }
+
+        .danger-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .danger-buttons button,
+        .delete-confirm button {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        .delete-confirm {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .delete-confirm.visible {
+            display: flex;
+        }
+
+        .delete-reset-settings {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--y2k-dark);
+        }
+
+        .delete-confirm button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
         }
 
         .settings-choices .toggle-btn {
@@ -829,35 +938,71 @@
             font-weight: normal;
         }
 
-        /* round glossy close button (keeps the shared button shine) */
+        /* Round glossy close button. The button itself never moves or
+           changes size (so a click always lands); only the circle inside it,
+           .x-face, spins on hover and squishes when pressed. */
         .modal-close-x {
             flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .modal-close-x::before {
+            display: none;
+        }
+
+        .modal-close-x:hover,
+        .modal-close-x:active {
+            background: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal-close-x .x-face {
+            position: relative;
             width: 28px;
             height: 28px;
-            padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 2px solid white;
             border-radius: 50%;
+            box-sizing: border-box;
             background-color: rgba(255, 255, 255, 0.22);
             color: white;
             font-size: 24px;
             font-weight: 700;
             line-height: 1;
             box-shadow: 0 2px 0 rgba(var(--ink-rgb), 0.35);
+            pointer-events: none;
             /* springy overshoot on release */
             transition: background-color 0.15s, color 0.15s, transform 0.35s cubic-bezier(.3, 1.8, .5, 1);
         }
 
-        .modal-close-x:hover {
+        /* the shared glossy shine, on the circle */
+        .modal-close-x .x-face::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.25) 40%, rgba(255,255,255,0) 70%);
+        }
+
+        .modal-close-x:hover .x-face {
             background-color: white;
             color: var(--y2k-hot-pink);
             transform: rotate(90deg);
         }
 
         /* squishes flat like a gummy when pressed */
-        .modal-close-x:active {
+        .modal-close-x:active .x-face {
             transform: scale(1.3, 0.55) rotate(90deg); /* squash in screen space, after the spin */
             box-shadow: 0 0 0 rgba(var(--ink-rgb), 0.35);
             transition: transform 0.08s;
@@ -1900,8 +2045,8 @@
             left: 16px;
             bottom: 16px;
             z-index: 900;
-            /* follows Settings > Handwriting > New notes start in; sizes are
-               scaled per font (--sticky-scale) so every font fits the same */
+            /* always Nanum Pen Script (set from script with its size scale,
+               --sticky-scale, so it fits the note) */
             font-family: var(--sticky-font, 'Caveat'), cursive;
         }
 
@@ -1990,16 +2135,17 @@
             border-bottom-color: var(--y2k-hot-pink);
         }
 
+        /* everything on the note is in the sticky-note handwriting */
         .sticky-note select,
         .sticky-submit {
-            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+            font-family: inherit;
         }
 
         .sticky-note select {
             width: 100%;
             margin: 4px 0 12px;
-            padding: 5px 8px;
-            font-size: 13px;
+            padding: 3px 8px;
+            font-size: calc(18px * var(--sticky-scale, 1));
             border: 1.5px solid rgba(var(--ink-rgb), 0.3);
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.6);
@@ -2009,8 +2155,9 @@
 
         .sticky-submit {
             width: 100%;
-            font-size: 13px;
-            padding: 7px 10px;
+            font-size: calc(20px * var(--sticky-scale, 1));
+            font-weight: normal;
+            padding: 4px 10px;
         }
 
         .sticky-close {
@@ -2469,7 +2616,10 @@
         <div class="controls-body">
             <div class="control-group search-row">
                 <label for="search-input">Search: </label>
-                <input type="text" id="search-input" placeholder="Title or author..." oninput="handleSearchInput()" autocomplete="off">
+                <div class="search-wrap">
+                    <input type="text" id="search-input" placeholder="Title or author..." oninput="handleSearchInput()" autocomplete="off">
+                    <button type="button" class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Clear search" title="Clear search"><span class="x-face">&times;</span></button>
+                </div>
             </div>
 
             <div class="control-group">
@@ -2583,7 +2733,7 @@
         <div class="sticky-stack" onclick="openStickyNote()" title="Quick-add a book to Want to Read">
             <div class="sticky-sheet s3"></div>
             <div class="sticky-sheet s2"></div>
-            <div class="sticky-sheet s1">+ want<br>to read</div>
+            <div class="sticky-sheet s1"></div>
         </div>
         <form class="sticky-note" id="sticky-note" onsubmit="event.preventDefault(); submitStickyNote();" onkeydown="if (event.key === 'Escape') closeStickyNote();">
             <button type="button" class="sticky-close" onclick="closeStickyNote()" aria-label="Discard note">&times;</button>
@@ -2609,7 +2759,7 @@
             </div>
             <div class="modal-header">
                 <h3 id="modal-title">&#9670; Add a New Book</h3>
-                <button type="button" class="modal-close-x" onclick="closeModal()" aria-label="Close">&times;</button>
+                <button type="button" class="modal-close-x" onclick="closeModal()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
 
             <div class="modal-body">
@@ -2818,7 +2968,7 @@
         <div class="modal-content settings-content">
             <div class="modal-header">
                 <h3>&#9670; Settings</h3>
-                <button type="button" class="modal-close-x" onclick="closeSettings()" aria-label="Close">&times;</button>
+                <button type="button" class="modal-close-x" onclick="closeSettings()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
             <div class="settings-body">
                 <div class="field-section">
@@ -2877,6 +3027,24 @@
                     </div>
                     <div class="field-hint">Turns off the bouncing, wiggling, sparkles and other animations.</div>
                 </div>
+
+                <div class="field-section danger-section">
+                    <div class="field-section-title">Start over</div>
+                    <div class="field-hint">Deletes every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
+                    <div class="danger-buttons">
+                        <button type="button" class="secondary" onclick="exportLibrary()">Export Library (Backup)</button>
+                        <button type="button" class="danger" onclick="showDeleteLibraryConfirm()">Delete Library&hellip;</button>
+                    </div>
+                    <div class="delete-confirm" id="delete-confirm">
+                        <label class="field-label">Type DELETE to confirm
+                            <input type="text" id="delete-confirm-input" autocomplete="off" spellcheck="false" oninput="updateDeleteConfirm()">
+                        </label>
+                        <label class="delete-reset-settings">
+                            <input type="checkbox" id="delete-reset-settings"> Also reset all settings
+                        </label>
+                        <button type="button" class="danger" id="delete-confirm-btn" onclick="deleteLibrary()" disabled>Delete everything</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2885,7 +3053,7 @@
         <div class="modal-content" style="max-width: 460px;">
             <div class="modal-header">
                 <h3>&#9670; Crop Image</h3>
-                <button type="button" class="modal-close-x" onclick="cancelCrop()" aria-label="Close">&times;</button>
+                <button type="button" class="modal-close-x" onclick="cancelCrop()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
             <div class="modal-body" style="flex-direction: column; align-items: center;">
                 <div id="crop-stage">
@@ -3374,7 +3542,9 @@
         populateGenreSelects();
         db = await openDB();
         library = await dbGetAll();
-        if (library.length === 0) {
+        let startedFresh = false;
+        try { startedFresh = localStorage.getItem(STARTED_FRESH_KEY) === '1'; } catch (e) {}
+        if (library.length === 0 && !startedFresh) {
             await dbBulkPut(SEED_LIBRARY);
             library = await dbGetAll();
         }
@@ -3701,7 +3871,9 @@
         }
 
         if (workingLibrary.length === 0) {
-            room.innerHTML = `<p class="empty-note">No books match this view yet.</p>`;
+            room.innerHTML = library.length === 0
+                ? `<p class="empty-note">Your shelf is empty - add a book to get started!</p>`
+                : `<p class="empty-note">No books match this view yet.</p>`;
             placeCat();
             return;
         }
@@ -3860,7 +4032,9 @@
         });
 
         if (!renderedAny) {
-            room.innerHTML = `<p class="empty-note">No books match this view yet.</p>`;
+            room.innerHTML = library.length === 0
+                ? `<p class="empty-note">Your shelf is empty - add a book to get started!</p>`
+                : `<p class="empty-note">No books match this view yet.</p>`;
             placeCat();
             return;
         }
@@ -4883,8 +5057,19 @@
     let searchRenderTimer = null;
 
     function handleSearchInput() {
+        const input = document.getElementById('search-input');
+        document.getElementById('search-clear').classList.toggle('visible', input.value !== '');
         clearTimeout(searchRenderTimer);
         searchRenderTimer = setTimeout(renderBookshelf, SEARCH_DEBOUNCE_MS);
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        input.value = '';
+        document.getElementById('search-clear').classList.remove('visible');
+        clearTimeout(searchRenderTimer);
+        renderBookshelf();
+        input.focus();
     }
 
     // ---------- Color theme (Candy / Sea Glass) ----------
@@ -4902,7 +5087,62 @@
         });
     }
 
+    // ---------- Delete library (Settings > Start over) ----------
+    const STARTED_FRESH_KEY = 'bookShelfStartedFresh'; // don't re-add the 3 starter books
+
+    function showDeleteLibraryConfirm() {
+        const box = document.getElementById('delete-confirm');
+        box.classList.add('visible');
+        document.getElementById('delete-confirm-input').value = '';
+        document.getElementById('delete-reset-settings').checked = false;
+        updateDeleteConfirm();
+        document.getElementById('delete-confirm-input').focus();
+    }
+
+    function hideDeleteLibraryConfirm() {
+        document.getElementById('delete-confirm').classList.remove('visible');
+    }
+
+    function updateDeleteConfirm() {
+        const typed = document.getElementById('delete-confirm-input').value.trim();
+        document.getElementById('delete-confirm-btn').disabled = typed !== 'DELETE';
+    }
+
+    async function deleteLibrary() {
+        if (document.getElementById('delete-confirm-input').value.trim() !== 'DELETE') return;
+        const resetSettings = document.getElementById('delete-reset-settings').checked;
+
+        await dbClear();
+        library = [];
+        customGenres = [];
+        saveCustomGenres();
+        expandedShelves = new Set();
+        saveExpandedShelves();
+        try { localStorage.setItem(STARTED_FRESH_KEY, '1'); } catch (e) {}
+
+        if (resetSettings) {
+            // everything else this app keeps in localStorage, except the
+            // marker above that stops the starter books coming back
+            try {
+                Object.keys(localStorage)
+                    .filter(k => k.startsWith('bookShelf') && k !== STARTED_FRESH_KEY)
+                    .forEach(k => localStorage.removeItem(k));
+            } catch (e) {}
+            location.reload();
+            return;
+        }
+
+        hideDeleteLibraryConfirm();
+        closeSettings();
+        populateGenreSelects();
+        populateAuthorOptions();
+        populateSeriesOptions();
+        populateFilterTagSelect();
+        renderBookshelf();
+    }
+
     function openSettings() {
+        hideDeleteLibraryConfirm();
         document.getElementById('setting-name').value = appSettings.name === DEFAULT_SETTINGS.name ? '' : appSettings.name;
         document.getElementById('setting-goal').value = appSettings.goal || '';
         renderSettingsFontButtons();
@@ -4991,10 +5231,10 @@
         if (rerender) renderBookshelf();
     }
 
-    // Sticky notes write in the same handwriting new notes start in, scaled
-    // so each font comes out about as big as Caveat did.
+    // Sticky notes are always written in Nanum Pen Script, scaled so it
+    // comes out about as big as the note's layout was sized for (Caveat).
     function applyStickyFont() {
-        const font = getNoteFont(getLastNoteFont());
+        const font = getNoteFont('Nanum Pen Script');
         const pile = document.getElementById('sticky-pile');
         pile.style.setProperty('--sticky-font', `'${font.name}'`);
         pile.style.setProperty('--sticky-scale', (font.size / getNoteFont('Caveat').size).toFixed(3));
@@ -5250,7 +5490,6 @@
             ], { duration: 260, easing: 'cubic-bezier(.2, .8, .3, 1.2)' });
         }
         try { localStorage.setItem(LAST_NOTE_FONT_KEY, font); } catch (e) {}
-        applyStickyFont(); // "last used" may have just changed
 
         // For a book already on the shelf, save the notes right away -
         // otherwise closing the edit window with Cancel/X would silently
