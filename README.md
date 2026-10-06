@@ -18,7 +18,8 @@ There is no backend and no account — the app makes no network calls of its own
 What this means in practice:
 
 - Your library is tied to **that specific browser on that specific device**. A copy of the app opened on your tablet has its own separate library from the one on your desktop — nothing syncs automatically between them.
-- Clearing site data/cache, switching browsers, or opening the file in a private/incognito window gives you an empty library (or the default 3-book seed set), not your existing books.
+- Clearing site data/cache, switching browsers, or opening the file in a private/incognito window gives you a fresh library, not your existing books.
+- **First visit:** on the hosted site, a new visitor starts with an example shelf (`starter-library.json`, a real shelf with notes, dates and ratings left out) so they can see how everything works; they can delete those books or use Settings > Start over. Opened straight from a file, the browser can't load that, so it starts with 3 placeholder books instead.
 - **Export Library (Backup)** / **Import Library** (buttons above the shelves) are the only way to move your library between devices, or to back it up. Since there's no cloud sync, it's worth exporting a backup periodically if this data matters to you long-term.
 - Import **replaces** your current library entirely with whatever's in the file you pick — there's a confirmation prompt since this can't be undone.
 
@@ -36,12 +37,14 @@ What this means in practice:
   - **Leaning books:** when a shelf has room left over, its last book leans over onto its neighbour. Adding or removing books makes it straighten up or tip over.
   - **Dust:** books that have sat in **Want to Read** for 3+ months gather a little dust, and more after 6 months. Hover over a dusty book (or tap it on a phone) to blow the dust off. That counts as dusting, so it stays clean and slowly builds up again.
   - **Shelf cat:** a little black pixel cat naps on top of a shelf. Hover over it (or tap it) and it wakes up, stretches, and hops over to another shelf.
+- **Reading stats:** the little ledger book in the bottom-left corner shows your total number of books. Click it for counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
 - **Sticky-note quick add:** the pile of sticky notes in the bottom-left corner. Click it, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list.
 - Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread-but-owned books versus ones marked Read.
 
 ### Book details
 - **Ratings:** 1–5 stars per book (click the current star again to clear it).
 - **Reading dates:** Started and Finished dates under Status. A full date, a month and year, or just a year all work, and each has a **today** button. The app catches impossible dates and a finish date before the start date. Dates are saved as `2024`, `2024-03`, or `2024-03-15`, ready for future per-month/per-year charts.
+- **Genre vs. tags:** a book's genre is what it's about (Fantasy, Mystery, History…). Audience and format are tags instead, the way libraries label them: Children's, Middle Grade, Young Adult, New Adult, Graphic Novel, Short Stories, Poetry, Audiobook and Series are always suggested in the tag dropdown.
 - **Tags:** pick from a dropdown of tags you've already used, or type a new one and press Enter. Tags show as removable badges that slowly drift through pastel colors.
 - **Notes:** write about a book on a torn-paper notepad, in your choice of six handwriting fonts (Caveat, Indie Flower, Homemade Apple, Nanum Pen Script, Shadows Into Light, Gloria Hallelujah). Notes and font are saved per book; notes on an existing book save as soon as you close the notepad.
 - Image cropping on upload for covers and spine photos.
@@ -62,6 +65,7 @@ What this means in practice:
   - **Bookshelf name:** rename the title at the top of the page.
   - **Yearly reading goal:** shows a progress bar under the title, counting books marked Read with a finish date this year.
   - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.
+  - **Custom genres:** see the genres you've added and remove any with its ×. If books still use it, you pick a genre to move them to first.
   - **Start new books as:** Want to Read, Reading, or Read.
   - **Shelf extras:** turn the shelf cat, dust, leaning books, and sticky notes on or off.
   - **Calm mode:** turns off all the animations.

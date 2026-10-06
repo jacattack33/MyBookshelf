@@ -50,6 +50,8 @@
             --status-hover: #f6edff;
             --secondary-hover: #d4c2ff;
             --shelf-color-hover: #b48cf5;
+            --chart-bar: #8a4fe0;        /* chart columns (3:1+ on white) */
+            --chart-bar-hover: #a374ec;
             --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff2e93' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");  /* dropdown arrow */
         }
 
@@ -84,6 +86,8 @@
         /* dropdown arrows are little inline SVGs, which can't read colour
            variables themselves - so the theme swaps in a teal copy */
         :root[data-theme="seaglass"] {
+            --chart-bar: #5a8fd6;
+            --chart-bar-hover: #7aa6e0;
             --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%232a8c96' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
         }
 
@@ -429,6 +433,78 @@
 
         .settings-choices {
             justify-content: center;
+        }
+
+        .custom-genre-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .custom-genre-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 3px 4px 3px 10px;
+            border-radius: 14px;
+            background: var(--pastel-lavender);
+            border: 2px solid var(--y2k-purple);
+            color: var(--y2k-dark);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .custom-genre-chip .x-btn {
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border: none;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+            color: var(--y2k-dark);
+            font-size: 15px;
+            line-height: 1;
+        }
+
+        .custom-genre-chip .x-btn::before {
+            display: none;
+        }
+
+        .custom-genre-chip .x-btn:hover {
+            background-color: var(--y2k-hot-pink);
+            color: white;
+        }
+
+        .custom-genre-chip .x-btn:active {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .genre-move {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: var(--pastel-pink);
+            font-size: 13px;
+            color: var(--y2k-dark);
+        }
+
+        .genre-move.visible {
+            display: flex;
+        }
+
+        .genre-move-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .genre-move-buttons button {
+            font-size: 12px;
+            padding: 6px 12px;
         }
 
         .danger-section {
@@ -2040,6 +2116,271 @@
         }
 
         /* ---------- Sticky-note pile (bottom-left quick add) ---------- */
+        /* ---------- Stats ledger (bottom-left, beside the sticky notes) ----------
+           a little hardcover account book; its cover shows your book total */
+        .stats-ledger {
+            position: fixed;
+            left: 110px;
+            bottom: 14px;
+            z-index: 900;
+            width: 60px;
+            height: 78px;
+            padding: 6px 4px 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            border: 2px solid var(--y2k-dark);
+            border-radius: 3px 7px 7px 3px;
+            background:
+                linear-gradient(90deg, rgba(0,0,0,0.25) 0 6px, rgba(255,255,255,0.18) 6px 8px, transparent 8px),
+                var(--y2k-purple);
+            box-shadow: 3px 3px 0 var(--y2k-dark);
+            color: white;
+            cursor: pointer;
+            transform: rotate(4deg);
+            transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+        }
+
+        .stats-ledger::before {
+            display: none;
+        }
+
+        .stats-ledger:hover {
+            background:
+                linear-gradient(90deg, rgba(0,0,0,0.25) 0 6px, rgba(255,255,255,0.18) 6px 8px, transparent 8px),
+                var(--y2k-purple);
+            transform: rotate(-3deg) translateY(-6px);
+        }
+
+        .stats-ledger:active {
+            transform: rotate(-3deg) translateY(-2px) scale(0.96);
+            box-shadow: 2px 2px 0 var(--y2k-dark);
+        }
+
+        /* gold label plate on the cover */
+        .stats-ledger-label {
+            font-family: var(--pixel-font);
+            font-size: 7px;
+            color: var(--y2k-dark);
+            background: var(--spine-gold-bright);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .stats-ledger-count {
+            margin-top: 4px;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stats-ledger-sub {
+            font-size: 10px;
+            line-height: 1;
+        }
+
+        @media (max-width: 600px) {
+            .stats-ledger {
+                left: 86px;
+                width: 50px;
+                height: 64px;
+            }
+
+            .stats-ledger-count { font-size: 15px; }
+        }
+
+        /* ---------- Stats window ---------- */
+        .modal-content.stats-content {
+            max-width: 620px;
+        }
+
+        .stats-body {
+            padding: 20px 22px 24px;
+            overflow-y: auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .stats-hero {
+            text-align: center;
+        }
+
+        .stats-hero-value {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--y2k-dark);
+        }
+
+        .stats-hero-label {
+            font-size: 13px;
+            color: var(--y2k-dark);
+            opacity: 0.75;
+        }
+
+        .stats-tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+        }
+
+        .stats-tile {
+            padding: 8px 10px;
+            border: 2px solid var(--y2k-lavender);
+            border-radius: 10px;
+            background: var(--section-bg);
+        }
+
+        .stats-tile-label {
+            font-size: 11px;
+            color: var(--y2k-dark);
+            opacity: 0.75;
+        }
+
+        .stats-tile-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--y2k-dark);
+        }
+
+        .stats-chart-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .stats-chart-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--y2k-dark);
+        }
+
+        .stats-chart-sub,
+        .stats-chart-note {
+            font-size: 12px;
+            color: var(--y2k-dark);
+            opacity: 0.75;
+        }
+
+        #stats-year {
+            padding: 5px 30px 5px 10px;
+            font-size: 13px;
+        }
+
+        .stats-chart {
+            position: relative;
+        }
+
+        .stats-chart svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .stats-axis-text {
+            font-size: 11px;
+            fill: rgba(var(--ink-rgb), 0.7);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats-value-text {
+            font-size: 11px;
+            font-weight: 700;
+            fill: var(--y2k-dark);
+        }
+
+        .stats-grid {
+            stroke: rgba(var(--ink-rgb), 0.12);
+            stroke-width: 1;
+        }
+
+        .stats-bar {
+            fill: var(--chart-bar);
+        }
+
+        .stats-hit {
+            fill: transparent;
+            cursor: default;
+        }
+
+        .stats-hit:hover + .stats-bar,
+        .stats-hit:focus + .stats-bar {
+            fill: var(--chart-bar-hover);
+        }
+
+        .stats-hit:focus {
+            outline: none;
+        }
+
+        .stats-tooltip {
+            position: absolute;
+            display: none;
+            min-width: 120px;
+            max-width: 220px;
+            padding: 8px 10px;
+            border: 2px solid var(--y2k-dark);
+            border-radius: 8px;
+            background: white;
+            box-shadow: 3px 3px 0 var(--y2k-dark);
+            font-size: 12px;
+            color: var(--y2k-dark);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .stats-tooltip.visible {
+            display: block;
+        }
+
+        .stats-tooltip-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .stats-tooltip-books {
+            margin-top: 4px;
+            padding-left: 14px;
+            opacity: 0.8;
+        }
+
+        .stats-table-toggle {
+            align-self: flex-start;
+            padding: 4px 10px;
+            font-size: 12px;
+            background-color: var(--pastel-lavender);
+            color: var(--y2k-dark);
+        }
+
+        .stats-table {
+            display: none;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            color: var(--y2k-dark);
+        }
+
+        .stats-table.visible {
+            display: table;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 4px 8px;
+            border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
+            text-align: left;
+        }
+
+        .stats-table td:last-child,
+        .stats-table th:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
         .sticky-pile {
             position: fixed;
             left: 16px;
@@ -2729,6 +3070,12 @@
 
     <div class="secret-heart" id="secret-heart" onclick="handleSecretHeartClick()" aria-hidden="true"></div>
 
+    <button type="button" class="stats-ledger" id="stats-ledger" onclick="openStats()" title="Reading stats">
+        <span class="stats-ledger-label">STATS</span>
+        <span class="stats-ledger-count" id="stats-ledger-count">0</span>
+        <span class="stats-ledger-sub">books</span>
+    </button>
+
     <div class="sticky-pile" id="sticky-pile">
         <div class="sticky-stack" onclick="openStickyNote()" title="Quick-add a book to Want to Read">
             <div class="sticky-sheet s3"></div>
@@ -2964,6 +3311,36 @@
         </div>
     </div>
 
+    <div class="modal" id="stats-modal" onclick="if (event.target === this) closeStats()">
+        <div class="modal-content stats-content">
+            <div class="modal-header">
+                <h3>&#9670; Reading Stats</h3>
+                <button type="button" class="modal-close-x" onclick="closeStats()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="stats-body">
+                <div class="stats-hero">
+                    <div class="stats-hero-value" id="stats-total">0</div>
+                    <div class="stats-hero-label">books on your shelf</div>
+                </div>
+                <div class="stats-tiles" id="stats-tiles"></div>
+
+                <div class="field-section stats-chart-card">
+                    <div class="stats-chart-head">
+                        <div>
+                            <div class="stats-chart-title">Books finished by month</div>
+                            <div class="stats-chart-sub" id="stats-chart-sub"></div>
+                        </div>
+                        <select id="stats-year" onchange="renderStatsChart()" aria-label="Year"></select>
+                    </div>
+                    <div class="stats-chart" id="stats-chart"></div>
+                    <div class="stats-chart-note" id="stats-chart-note"></div>
+                    <button type="button" class="stats-table-toggle" id="stats-table-toggle" onclick="toggleStatsTable()">Show as table</button>
+                    <table class="stats-table" id="stats-table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="settings-modal" onclick="if (event.target === this) closeSettings()">
         <div class="modal-content settings-content">
             <div class="modal-header">
@@ -2997,6 +3374,12 @@
                     <div class="toggle-group settings-choices font-choices" id="setting-note-fonts"></div>
                     <span class="field-label">Library card writing</span>
                     <div class="toggle-group settings-choices font-choices" id="setting-card-fonts"></div>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Custom genres</div>
+                    <div class="custom-genre-list" id="custom-genre-list"></div>
+                    <div class="genre-move" id="genre-move"></div>
                 </div>
 
                 <div class="field-section">
@@ -3083,20 +3466,40 @@
     let recentColors = [];
     const SPINE_GAMMA_FIX_KEY = 'bookShelfSpineGammaFixApplied';
     const ADD_GENRE_VALUE = '__add_new_genre__';
+    // Genres are what a book is about. Audience (Children's, Middle Grade,
+    // Young Adult) and format (graphic novels, short stories, poetry) are
+    // separate things libraries label on top of genre, so here they're
+    // suggested tags instead - see SUGGESTED_TAGS.
     const FICTION_GENRES = [
-        "Adventure", "Children's", "Classic Literature", "Contemporary Fiction", "Crime",
-        "Drama", "Dystopian", "Fantasy", "Fiction", "Graphic Novel & Comics",
-        "Historical Fiction", "Horror", "Literary Fiction", "Magical Realism", "Middle Grade",
-        "Mystery", "Poetry", "Romance", "Satire", "Sci-Fi", "Short Stories", "Thriller",
-        "War Fiction", "Western", "Young Adult"
+        "Action", "Adventure", "Classic Literature", "Contemporary Fiction", "Crime", "Drama",
+        "Dystopian", "Fairy Tales & Retellings", "Fantasy", "Fiction", "Gothic",
+        "Historical Fiction", "Horror", "Humor", "Literary Fiction", "Magical Realism", "Mystery",
+        "Mythology & Folklore", "Paranormal", "Romance", "Satire", "Sci-Fi",
+        "Speculative Fiction", "Thriller", "War Fiction", "Western", "Women's Fiction"
     ];
     const NONFICTION_GENRES = [
-        "Art", "Biography", "Business", "Cooking", "Critical Thinking", "Economics",
-        "Education", "Essays", "Health & Wellness", "History", "Journalism & Current Affairs",
-        "Memoir", "Music", "Nature & Environment", "Parenting", "Philosophy", "Politics",
-        "Psychology", "Religion & Spirituality", "Science", "Self-Help", "Sociology", "Sports",
-        "Technology", "Travel", "True Crime"
+        "Art", "Biography", "Business", "Cooking", "Crafts & Hobbies", "Critical Thinking",
+        "Economics", "Education", "Essays", "Fashion & Beauty", "Film & TV", "Health & Wellness",
+        "History", "Home & Garden", "Humor (Non-Fiction)", "Journalism & Current Affairs",
+        "Language & Writing", "Law", "Mathematics", "Medicine", "Memoir", "Music",
+        "Nature & Environment", "Parenting", "Personal Finance", "Pets & Animals", "Philosophy",
+        "Politics", "Psychology", "Reference", "Religion & Spirituality", "Science", "Self-Help",
+        "Sociology", "Sports", "Technology", "Travel", "True Crime"
     ];
+
+    // Old genres that became tags: genre name -> the tag it turns into.
+    const GENRES_NOW_TAGS = {
+        "Children's": "Children's",
+        "Middle Grade": "Middle Grade",
+        "Young Adult": "Young Adult",
+        "Graphic Novel & Comics": "Graphic Novel",
+        "Short Stories": "Short Stories",
+        "Poetry": "Poetry"
+    };
+
+    // Always offered in the tag dropdown, even before any book uses them.
+    const SUGGESTED_TAGS = ["Children's", "Middle Grade", "Young Adult", "New Adult",
+        "Graphic Novel", "Short Stories", "Poetry", "Audiobook", "Series"];
     const GENRES = [...FICTION_GENRES, ...NONFICTION_GENRES];
     const STATUSES = ["Want to Read", "Reading", "Read", "DNF"];
     const STATUS_TAG_CLASS = {
@@ -3146,6 +3549,9 @@
         } catch (e) {
             customGenres = [];
         }
+        // a custom genre that's now built in (e.g. "Humor") shouldn't show twice
+        const builtIn = GENRES.map(g => g.toLowerCase());
+        customGenres = customGenres.filter(g => !builtIn.includes(g.toLowerCase()));
     }
 
     // ---------- Recent colors (quick-select) ----------
@@ -3271,6 +3677,13 @@
         return [...new Set(visibleBooks().flatMap(b => b.tags || []))].sort((a, b) => a.localeCompare(b));
     }
 
+    // tags offered while tagging a book: the ones you use plus SUGGESTED_TAGS
+    function getTagSuggestions() {
+        const mine = getAllTags();
+        const extra = SUGGESTED_TAGS.filter(t => !mine.some(m => m.toLowerCase() === t.toLowerCase()));
+        return [...mine, ...extra].sort((a, b) => a.localeCompare(b));
+    }
+
     function capitalizeTag(tag) {
         return tag.charAt(0).toUpperCase() + tag.slice(1);
     }
@@ -3294,7 +3707,7 @@
         // a pasted "a, b, c" still works - each piece becomes its own chip
         raw.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
             // reuse an existing tag's spelling so "romance" joins "Romance"
-            const existing = getAllTags().find(x => x.toLowerCase() === t.toLowerCase());
+            const existing = getTagSuggestions().find(x => x.toLowerCase() === t.toLowerCase());
             const tag = capitalizeTag(existing || t);
             if (!editingTags.some(x => x.toLowerCase() === tag.toLowerCase())) {
                 editingTags.push(tag);
@@ -3379,7 +3792,7 @@
 
         // Nothing typed yet -> act as a full dropdown of every existing tag;
         // typing narrows it down from there.
-        const matches = getAllTags().filter(t => {
+        const matches = getTagSuggestions().filter(t => {
             const lower = t.toLowerCase();
             if (chosen.includes(lower)) return false;
             return !current || lower.includes(current);
@@ -3519,6 +3932,26 @@
         { id: "3", title: "The Republic", authors: ["Plato"], genre: "Philosophy", status: "Want to Read", color: "#1a334d", image: "", width: 125 }
     ];
 
+    // First visit: start with the example shelf in starter-library.json (a
+    // real shelf, minus notes, dates and ratings) so people can see how it
+    // all works, then delete what they don't want. Opened straight from a
+    // file (no web server) the browser won't let us fetch it, so fall back
+    // to the 3 built-in books.
+    async function loadStarterBooks() {
+        try {
+            const res = await fetch('starter-library.json', { cache: 'no-store' });
+            if (!res.ok) throw new Error(res.status);
+            const data = await res.json();
+            if (!Array.isArray(data.books) || data.books.length === 0) throw new Error('empty');
+            if (Array.isArray(data.customGenres)) {
+                data.customGenres.forEach(g => addCustomGenre(g));
+            }
+            return data.books;
+        } catch (e) {
+            return SEED_LIBRARY;
+        }
+    }
+
     async function runMigrations() {
         await backfillMissingWidth();
         await backfillRatings();
@@ -3530,6 +3963,7 @@
         await migrateSpineColorsForGammaFix();
         await backfillSpineColors();
         await backfillTagCapitalization();
+        await migrateGenresToTags();
     }
 
     async function init() {
@@ -3545,7 +3979,7 @@
         let startedFresh = false;
         try { startedFresh = localStorage.getItem(STARTED_FRESH_KEY) === '1'; } catch (e) {}
         if (library.length === 0 && !startedFresh) {
-            await dbBulkPut(SEED_LIBRARY);
+            await dbBulkPut(await loadStarterBooks());
             library = await dbGetAll();
         }
         await runMigrations();
@@ -3833,6 +4267,7 @@
     function renderBookshelf() {
         renderShelves();
         updateReadingGoal();
+        updateStatsLedger();
     }
 
     function renderShelves() {
@@ -5087,6 +5522,84 @@
         });
     }
 
+    // ---------- Custom genres (Settings) ----------
+    // Only books you can see are counted and moved - books hidden by the
+    // heart keep their genre (it comes back as a custom genre if they're
+    // shown again), so nothing here hints that hidden books exist.
+
+    function renderCustomGenreSettings() {
+        const list = document.getElementById('custom-genre-list');
+        hideGenreMove();
+        list.innerHTML = '';
+        const sorted = [...customGenres].sort((a, b) => a.localeCompare(b));
+        if (sorted.length === 0) {
+            list.innerHTML = `<span class="field-hint">You haven't added any custom genres. Pick "Add new genre" in a book's Genre list to make one.</span>`;
+            return;
+        }
+        sorted.forEach(genre => {
+            const chip = document.createElement('span');
+            chip.className = 'custom-genre-chip';
+            chip.textContent = genre;
+            const x = document.createElement('button');
+            x.type = 'button';
+            x.className = 'x-btn';
+            x.setAttribute('aria-label', `Remove ${genre}`);
+            x.innerHTML = '&times;';
+            x.addEventListener('click', () => startRemoveCustomGenre(genre));
+            chip.appendChild(x);
+            list.appendChild(chip);
+        });
+    }
+
+    function hideGenreMove() {
+        const box = document.getElementById('genre-move');
+        box.classList.remove('visible');
+        box.innerHTML = '';
+    }
+
+    function startRemoveCustomGenre(genre) {
+        const using = visibleBooks().filter(b => (b.genre || '').toLowerCase() === genre.toLowerCase());
+        if (using.length === 0) {
+            removeCustomGenre(genre, null);
+            return;
+        }
+        // books still use it: ask where to move them first
+        const box = document.getElementById('genre-move');
+        box.innerHTML = '';
+        const msg = document.createElement('div');
+        msg.textContent = `${using.length} book${using.length === 1 ? ' uses' : 's use'} "${genre}". Move ${using.length === 1 ? 'it' : 'them'} to:`;
+        const select = document.createElement('select');
+        getAllGenres().filter(g => g.toLowerCase() !== genre.toLowerCase()).forEach(g => select.add(new Option(g, g)));
+        const buttons = document.createElement('div');
+        buttons.className = 'genre-move-buttons';
+        const cancel = document.createElement('button');
+        cancel.type = 'button';
+        cancel.className = 'secondary';
+        cancel.textContent = 'Cancel';
+        cancel.addEventListener('click', hideGenreMove);
+        const go = document.createElement('button');
+        go.type = 'button';
+        go.className = 'danger';
+        go.textContent = 'Move & remove';
+        go.addEventListener('click', () => removeCustomGenre(genre, select.value));
+        buttons.append(cancel, go);
+        box.append(msg, select, buttons);
+        box.classList.add('visible');
+    }
+
+    async function removeCustomGenre(genre, moveTo) {
+        if (moveTo) {
+            const moved = visibleBooks().filter(b => (b.genre || '').toLowerCase() === genre.toLowerCase());
+            moved.forEach(b => { b.genre = moveTo; });
+            await dbBulkPut(moved);
+        }
+        customGenres = customGenres.filter(g => g.toLowerCase() !== genre.toLowerCase());
+        saveCustomGenres();
+        populateGenreSelects();
+        renderBookshelf();
+        renderCustomGenreSettings();
+    }
+
     // ---------- Delete library (Settings > Start over) ----------
     const STARTED_FRESH_KEY = 'bookShelfStartedFresh'; // don't re-add the 3 starter books
 
@@ -5143,6 +5656,7 @@
 
     function openSettings() {
         hideDeleteLibraryConfirm();
+        renderCustomGenreSettings();
         document.getElementById('setting-name').value = appSettings.name === DEFAULT_SETTINGS.name ? '' : appSettings.name;
         document.getElementById('setting-goal').value = appSettings.goal || '';
         renderSettingsFontButtons();
@@ -5238,6 +5752,231 @@
         const pile = document.getElementById('sticky-pile');
         pile.style.setProperty('--sticky-font', `'${font.name}'`);
         pile.style.setProperty('--sticky-scale', (font.size / getNoteFont('Caveat').size).toFixed(3));
+    }
+
+    // ---------- Reading stats ----------
+    // Counts only books you can see (hidden ones stay out of it). "Finished"
+    // means marked Read with a finish date, same as the reading goal.
+
+    function finishedBooks() {
+        return visibleBooks().filter(b => b.status === 'Read' && /^\d{4}/.test(b.finishedDate || ''));
+    }
+
+    function updateStatsLedger() {
+        document.getElementById('stats-ledger-count').textContent = visibleBooks().length;
+    }
+
+    function openStats() {
+        const books = visibleBooks();
+        document.getElementById('stats-total').textContent = books.length.toLocaleString();
+
+        const count = status => books.filter(b => b.status === status).length;
+        const rated = books.map(b => normalizeRating(b.rating)).filter(r => r > 0);
+        const avg = rated.length ? (rated.reduce((a, b) => a + b, 0) / rated.length).toFixed(1) : '\u2014';
+        const tiles = [
+            ['Read', count('Read')],
+            ['Reading', count('Reading')],
+            ['Want to Read', count('Want to Read')],
+            ['DNF', count('DNF')],
+            ['Owned', books.filter(b => b.owned).length],
+            ['With notes', books.filter(b => (b.notes || '').trim()).length],
+            ['Average rating', rated.length ? `${avg} \u2605` : avg]
+        ];
+        const tileBox = document.getElementById('stats-tiles');
+        tileBox.innerHTML = '';
+        tiles.forEach(([label, value]) => {
+            const tile = document.createElement('div');
+            tile.className = 'stats-tile';
+            const l = document.createElement('div');
+            l.className = 'stats-tile-label';
+            l.textContent = label;
+            const v = document.createElement('div');
+            v.className = 'stats-tile-value';
+            v.textContent = value;
+            tile.append(l, v);
+            tileBox.appendChild(tile);
+        });
+
+        // years with finished books, plus this year; newest first
+        const thisYear = new Date().getFullYear();
+        const years = [...new Set([thisYear, ...finishedBooks().map(b => Number(b.finishedDate.slice(0, 4)))])].sort((a, b) => b - a);
+        const select = document.getElementById('stats-year');
+        const keep = Number(select.value);
+        select.innerHTML = '';
+        years.forEach(y => select.add(new Option(String(y), String(y))));
+        select.value = years.includes(keep) ? String(keep) : String(thisYear);
+
+        document.getElementById('stats-table').classList.remove('visible');
+        document.getElementById('stats-table-toggle').textContent = 'Show as table';
+        document.getElementById('stats-modal').style.display = 'flex';
+        renderStatsChart();
+    }
+
+    function closeStats() {
+        document.getElementById('stats-modal').style.display = 'none';
+    }
+
+    function toggleStatsTable() {
+        const table = document.getElementById('stats-table');
+        const showing = table.classList.toggle('visible');
+        document.getElementById('stats-table-toggle').textContent = showing ? 'Hide table' : 'Show as table';
+    }
+
+    // Column chart of books finished per month (single series: no legend -
+    // the title names it). Bars <= 24px with a 4px rounded top, recessive
+    // hairline grid, the busiest month labelled, every column hoverable /
+    // focusable for its count and titles, and a table view with the same data.
+    function renderStatsChart() {
+        const year = document.getElementById('stats-year').value;
+        const inYear = finishedBooks().filter(b => b.finishedDate.startsWith(year));
+        const byMonth = Array.from({ length: 12 }, () => []);
+        let noMonth = 0;
+        inYear.forEach(b => {
+            const m = parseInt(b.finishedDate.slice(5, 7), 10);
+            if (m >= 1 && m <= 12) byMonth[m - 1].push(b); else noMonth++;
+        });
+        const counts = byMonth.map(list => list.length);
+        const MONTH_SHORT = MONTH_NAMES.map(m => m.slice(0, 3));
+
+        document.getElementById('stats-chart-sub').textContent =
+            `${inYear.length} book${inYear.length === 1 ? '' : 's'} finished in ${year}`;
+        document.getElementById('stats-chart-note').textContent = noMonth
+            ? `Plus ${noMonth} finished in ${year} with no month set (not shown in the chart).`
+            : '';
+
+        // geometry (viewBox units)
+        const W = 600, H = 240, left = 34, right = 8, top = 18, bottom = 26;
+        const plotW = W - left - right, plotH = H - top - bottom;
+        const maxCount = Math.max(...counts, 0);
+        const step = maxCount <= 5 ? 1 : maxCount <= 10 ? 2 : maxCount <= 25 ? 5 : 10;
+        const yMax = Math.max(step, Math.ceil(maxCount / step) * step);
+        const y = v => top + plotH - (v / yMax) * plotH;
+        const band = plotW / 12;
+        const barW = Math.min(24, band * 0.6);
+
+        const NS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', `Books finished by month in ${year}`);
+        const el = (tag, attrs, text) => {
+            const n = document.createElementNS(NS, tag);
+            Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v));
+            if (text !== undefined) n.textContent = text;
+            svg.appendChild(n);
+            return n;
+        };
+
+        for (let v = 0; v <= yMax; v += step) {
+            el('line', { class: 'stats-grid', x1: left, x2: W - right, y1: y(v), y2: y(v) });
+            el('text', { class: 'stats-axis-text', x: left - 8, y: y(v) + 4, 'text-anchor': 'end' }, String(v));
+        }
+
+        const chart = document.getElementById('stats-chart');
+        chart.innerHTML = '';
+        const tip = document.createElement('div');
+        tip.className = 'stats-tooltip';
+
+        const busiest = maxCount > 0 ? counts.indexOf(maxCount) : -1;
+        counts.forEach((c, i) => {
+            const cx = left + band * i + band / 2;
+            const x = cx - barW / 2;
+            // whole-column hit area, bigger than the mark
+            const hit = el('rect', { class: 'stats-hit', x: left + band * i, y: top, width: band, height: plotH, tabindex: 0 });
+            hit.setAttribute('aria-label', `${MONTH_NAMES[i]} ${year}: ${c} book${c === 1 ? '' : 's'}`);
+            if (c > 0) {
+                const h = y(0) - y(c);
+                const r = Math.min(4, h, barW / 2);
+                // rounded data end, square at the baseline
+                el('path', {
+                    class: 'stats-bar',
+                    d: `M${x},${y(0)} V${y(c) + r} Q${x},${y(c)} ${x + r},${y(c)} H${x + barW - r} Q${x + barW},${y(c)} ${x + barW},${y(c) + r} V${y(0)} Z`
+                });
+            } else {
+                el('path', { class: 'stats-bar', d: '' });
+            }
+            if (i === busiest) {
+                el('text', { class: 'stats-value-text', x: cx, y: y(c) - 6, 'text-anchor': 'middle' }, String(c));
+            }
+            el('text', { class: 'stats-axis-text', x: cx, y: H - 8, 'text-anchor': 'middle' }, MONTH_SHORT[i]);
+
+            const show = () => {
+                tip.innerHTML = '';
+                const value = document.createElement('div');
+                value.className = 'stats-tooltip-value';
+                value.textContent = `${c} book${c === 1 ? '' : 's'}`;
+                const label = document.createElement('div');
+                label.textContent = `${MONTH_NAMES[i]} ${year}`;
+                tip.append(value, label);
+                if (c > 0) {
+                    const list = document.createElement('ul');
+                    list.className = 'stats-tooltip-books';
+                    byMonth[i].slice(0, 6).forEach(b => {
+                        const li = document.createElement('li');
+                        li.textContent = b.title;
+                        list.appendChild(li);
+                    });
+                    if (c > 6) {
+                        const li = document.createElement('li');
+                        li.textContent = `and ${c - 6} more`;
+                        list.appendChild(li);
+                    }
+                    tip.appendChild(list);
+                }
+                const box = chart.getBoundingClientRect();
+                const rect = hit.getBoundingClientRect();
+                tip.classList.add('visible');
+                const tipW = tip.offsetWidth, tipH = tip.offsetHeight;
+                // the column's top, viewBox units -> pixels
+                const svgRect = svg.getBoundingClientRect();
+                const barTop = (svgRect.top - box.top) + y(c) * (svgRect.height / H);
+                const colLeft = rect.left - box.left, colRight = colLeft + rect.width;
+                let lx, ly;
+                if (barTop - tipH - 10 >= 0) {
+                    // room above: centred over the column
+                    lx = colLeft + rect.width / 2 - tipW / 2;
+                    ly = barTop - tipH - 10;
+                } else {
+                    // tall column: beside it instead, so the bar stays visible
+                    lx = colRight + tipW + 6 <= box.width ? colRight + 6 : colLeft - tipW - 6;
+                    ly = Math.max(0, barTop);
+                }
+                tip.style.left = Math.max(0, Math.min(lx, box.width - tipW)) + 'px';
+                tip.style.top = ly + 'px';
+            };
+            const hide = () => tip.classList.remove('visible');
+            hit.addEventListener('pointerenter', show);
+            hit.addEventListener('focus', show);
+            hit.addEventListener('pointerleave', hide);
+            hit.addEventListener('blur', hide);
+        });
+        // each bar right after its hit rect, so the :hover + .stats-bar lift works
+        [...svg.querySelectorAll('.stats-hit')].forEach((hit, i) => {
+            const bar = svg.querySelectorAll('.stats-bar')[i];
+            hit.after(bar);
+        });
+
+        chart.append(svg, tip);
+
+        // table view: same numbers, no hovering needed
+        const table = document.getElementById('stats-table');
+        table.innerHTML = '';
+        const head = table.insertRow();
+        ['Month', 'Books'].forEach(t => {
+            const th = document.createElement('th');
+            th.textContent = t;
+            head.appendChild(th);
+        });
+        counts.forEach((c, i) => {
+            const row = table.insertRow();
+            row.insertCell().textContent = `${MONTH_NAMES[i]} ${year}`;
+            row.insertCell().textContent = c;
+        });
+        if (noMonth) {
+            const row = table.insertRow();
+            row.insertCell().textContent = 'No month set';
+            row.insertCell().textContent = noMonth;
+        }
     }
 
     function updateReadingGoal() {
@@ -5925,6 +6664,21 @@
     function normalizeRating(rating) {
         const n = Math.round(Number(rating));
         return Number.isFinite(n) && n >= 1 && n <= 5 ? n : 0;
+    }
+
+    async function migrateGenresToTags() {
+        // Children's / Middle Grade / Young Adult / Graphic Novel & Comics /
+        // Short Stories / Poetry used to be genres; they're tags now. Keep
+        // the label as a tag and file the book under Fiction.
+        const moved = library.filter(b => GENRES_NOW_TAGS[b.genre]);
+        if (moved.length === 0) return;
+        moved.forEach(b => {
+            const tag = GENRES_NOW_TAGS[b.genre];
+            b.tags = b.tags || [];
+            if (!b.tags.some(t => t.toLowerCase() === tag.toLowerCase())) b.tags.push(tag);
+            b.genre = 'Fiction';
+        });
+        await dbBulkPut(moved);
     }
 
     async function backfillStatusSince() {
