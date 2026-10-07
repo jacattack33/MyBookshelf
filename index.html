@@ -37,6 +37,10 @@
             --pastel-blue: #cfeaff;
             --pastel-pink: #ffdcee;
             --pastel-lavender: #e8dcff;
+            --pastel-lilac: #efe3ff;   /* Filter Owned buttons */
+            --y2k-lilac: #c9a6ff;
+            --pastel-peach: #ffe6d6;   /* Sticky Notes buttons */
+            --y2k-peach: #ffb48c;
             --pixel-font: 'Press Start 2P', monospace;
             --spine-font: 'Cinzel', 'Quicksand', serif;
             --spine-gold: #cda73a;
@@ -194,6 +198,28 @@
             background: rgba(255, 224, 102, 0.22);
         }
 
+        :root[data-mode="dark"] .toggle-lilac .toggle-btn:not(.active) {
+            background: rgba(201, 166, 255, 0.12);
+            color: #e2d1ff;
+            border-color: rgba(201, 166, 255, 0.55);
+            box-shadow: 3px 3px 0 rgba(201, 166, 255, 0.3);
+        }
+
+        :root[data-mode="dark"] .toggle-peach .toggle-btn:not(.active) {
+            background: rgba(255, 180, 140, 0.12);
+            color: #ffd2b8;
+            border-color: rgba(255, 180, 140, 0.55);
+            box-shadow: 3px 3px 0 rgba(255, 180, 140, 0.3);
+        }
+
+        :root[data-mode="dark"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background: rgba(201, 166, 255, 0.22);
+        }
+
+        :root[data-mode="dark"] .toggle-peach .toggle-btn:not(.active):hover {
+            background: rgba(255, 180, 140, 0.22);
+        }
+
         :root[data-mode="dark"] .toggle-blue .toggle-btn:not(.active):hover {
             background: rgba(159, 220, 255, 0.22);
         }
@@ -240,7 +266,7 @@
             color: var(--y2k-hot-pink);
             text-shadow: 3px 3px 0 var(--y2k-purple);
             letter-spacing: 1px;
-            padding: 10px 0 20px;
+            padding: 28px 0 20px; /* extra room on top for the float */
             animation: title-float 3.2s ease-in-out infinite;
         }
 
@@ -1919,6 +1945,8 @@
         .toggle-btn:not(.active) { background: var(--pastel-mint); }
         .toggle-yellow .toggle-btn:not(.active) { background: var(--pastel-yellow); }
         .toggle-blue .toggle-btn:not(.active) { background: var(--pastel-blue); }
+        .toggle-lilac .toggle-btn:not(.active) { background: var(--pastel-lilac); }
+        .toggle-peach .toggle-btn:not(.active) { background: var(--pastel-peach); }
         .status-btn:not(.active) { background: var(--pastel-pink); }
 
         .toggle-btn.active {
@@ -1940,6 +1968,14 @@
 
         .toggle-blue .toggle-btn.active {
             background: var(--y2k-blue);
+        }
+
+        .toggle-lilac .toggle-btn.active {
+            background: var(--y2k-lilac);
+        }
+
+        .toggle-peach .toggle-btn.active {
+            background: var(--y2k-peach);
         }
 
         .star-rating {
@@ -3232,6 +3268,244 @@
                 font-size: calc(15px * var(--sticky-scale, 1));
             }
         }
+
+        /* ---------- Phones (<= 600px) ---------- */
+        /* desktop: these wrappers are invisible to layout */
+        .filters-panel,
+        .preview-actions {
+            display: contents;
+        }
+
+        .mobile-only {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 18px;
+                padding: 22px 0 14px;
+            }
+
+            /* --- controls: Search on top, the rest in a collapsible panel --- */
+            .controls-body {
+                padding: 12px;
+                gap: 10px;
+            }
+
+            .search-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .mobile-only {
+                display: flex;
+            }
+
+            .mobile-controls-bar {
+                flex-basis: 100%;
+                gap: 8px;
+            }
+
+            .filters-toggle {
+                flex: 1;
+                padding: 8px 10px;
+                font-size: 13px;
+                background-color: var(--pastel-lavender);
+                color: var(--y2k-dark);
+            }
+
+            /* its own hover (phones keep the hover look after a tap, and
+               the general button hover is pink), and a pressed-in look
+               while the panel is open */
+            .filters-toggle:hover {
+                background-color: var(--secondary-hover);
+            }
+
+            .filters-toggle[aria-expanded="true"] {
+                background-color: var(--secondary-hover);
+                transform: translate(2px, 2px);
+                box-shadow:
+                    1px 1px 0 var(--outline),
+                    inset 2px 2px 5px rgba(0,0,0,0.3);
+            }
+
+            .filters-count {
+                color: var(--y2k-hot-pink);
+            }
+
+            .mobile-controls-bar .add-book-btn {
+                margin-left: 0;
+                padding: 8px 12px;
+                font-size: 13px;
+                white-space: nowrap;
+            }
+
+            .filters-panel {
+                display: none;
+            }
+
+            .filters-panel.open {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                flex-basis: 100%;
+                padding-top: 4px;
+            }
+
+            .filters-panel .control-group,
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .filters-panel label {
+                font-size: 13px;
+            }
+
+            /* button groups: each button its own natural width, wrapping
+               onto new lines inside the panel (never off the edge) */
+            .filters-panel .toggle-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 7px;
+                padding-right: 3px; /* room for the chunky shadows */
+            }
+
+            .filters-panel .toggle-btn {
+                padding: 6px 11px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+
+            .filters-panel select {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .filters-panel .control-group,
+            .controls-row {
+                min-width: 0;
+            }
+
+            .controls-row .add-book-btn {
+                display: none; /* the bar above has its own */
+            }
+
+            .backup-bar {
+                margin-bottom: 18px;
+                gap: 6px;
+            }
+
+            .backup-bar button {
+                font-size: 11px;
+                padding: 6px 9px;
+            }
+
+            /* --- edit window: compact preview row that scrolls with the form --- */
+            .modal-body {
+                padding: 16px 14px;
+                gap: 14px;
+            }
+
+            .modal-preview {
+                position: static;
+                flex: 1 1 100%;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 18px;
+            }
+
+            .preview-shelf {
+                zoom: 0.62;
+                width: auto;
+                min-height: 0;
+                padding: 18px 26px 8px 14px; /* room for the page tops / notes peek */
+            }
+
+            .preview-label {
+                display: none;
+            }
+
+            .preview-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                width: 150px;
+            }
+
+            .modal-fields {
+                min-width: 0;
+                flex: 1 1 100%;
+            }
+
+            /* --- shelves: smaller books (shelfScale), tighter spacing --- */
+            .shelf {
+                gap: 14px;
+                padding: 22px 10px 10px;
+                min-height: 160px;
+            }
+
+            .shelf.shelf-row {
+                margin-top: 18px;
+            }
+
+            .shelf-count {
+                font-size: 22px;
+            }
+
+            .shelf-expand-btn {
+                font-size: 9px;
+                padding: 5px 12px;
+            }
+
+            .book.sticky-book {
+                width: 84px !important;
+                height: 84px !important;
+            }
+
+            .sticky-book-face {
+                padding: 7px 6px 4px;
+                gap: 2px;
+            }
+
+            .sticky-book-title {
+                font-size: 15px;
+            }
+
+            .sticky-book-author {
+                font-size: 12px;
+            }
+
+            .curl-right .sticky-book-face,
+            .curl-left .sticky-book-face {
+                padding-bottom: 12px;
+            }
+
+            /* --- bottom-left pile and ledger: smaller, cover less --- */
+            .sticky-stack {
+                width: 50px;
+                height: 50px;
+            }
+
+            .stats-ledger {
+                left: 72px;
+                width: 44px;
+                height: 56px;
+                padding-left: 8px;
+            }
+
+            .sticky-sheet {
+                box-shadow: 1px 2px 3px rgba(74, 35, 120, 0.2);
+            }
+        }
     </style>
 </head>
 <body>
@@ -3249,6 +3523,14 @@
                 </div>
             </div>
 
+            <div class="mobile-controls-bar mobile-only">
+                <button type="button" class="filters-toggle" id="filters-toggle" onclick="toggleFiltersPanel()" aria-expanded="false" aria-controls="filters-panel">&#9776; Filters &amp; sorting <span class="filters-count" id="filters-count"></span> <span class="filters-arrow">&#9662;</span></button>
+                <button type="button" onclick="openModal()" class="add-book-btn">+ Add Book</button>
+            </div>
+
+            <!-- on desktop this wrapper is display: contents (no effect); on
+                 phones it's the collapsible Filters & sorting panel -->
+            <div class="filters-panel" id="filters-panel">
             <div class="control-group">
                 <label>Organize by: </label>
                 <div class="toggle-group">
@@ -3271,7 +3553,7 @@
 
             <div class="control-group">
                 <label>Filter Status: </label>
-                <div class="toggle-group toggle-yellow">
+                <div class="toggle-group toggle-peach">
                     <button type="button" class="toggle-btn active" data-filter-status="All" onclick="selectFilterStatus('All')">All</button>
                     <button type="button" class="toggle-btn" data-filter-status="Want to Read" onclick="selectFilterStatus('Want to Read')">Want to Read</button>
                     <button type="button" class="toggle-btn" data-filter-status="Reading" onclick="selectFilterStatus('Reading')">Reading</button>
@@ -3301,7 +3583,7 @@
 
             <div class="control-group">
                 <label>Filter Owned: </label>
-                <div class="toggle-group toggle-blue">
+                <div class="toggle-group toggle-lilac">
                     <button type="button" class="toggle-btn active" data-filter-owned="All" onclick="selectFilterOwned('All')">All</button>
                     <button type="button" class="toggle-btn" data-filter-owned="Owned" onclick="selectFilterOwned('Owned')">Owned</button>
                     <button type="button" class="toggle-btn" data-filter-owned="Not Owned" onclick="selectFilterOwned('Not Owned')">Not Owned</button>
@@ -3311,6 +3593,15 @@
                     <option value="Owned">Owned</option>
                     <option value="Not Owned">Not Owned</option>
                 </select>
+            </div>
+
+            <div class="control-group">
+                <label>Sticky Notes: </label>
+                <div class="toggle-group toggle-yellow">
+                    <button type="button" class="toggle-btn active" data-filter-sticky="Show" onclick="selectFilterSticky('Show')" title="Show the to-get notes with your books">Show</button>
+                    <button type="button" class="toggle-btn" data-filter-sticky="Hide" onclick="selectFilterSticky('Hide')" title="Only real books">Hide</button>
+                    <button type="button" class="toggle-btn" data-filter-sticky="Only" onclick="selectFilterSticky('Only')" title="Just your to-get list">Only</button>
+                </div>
             </div>
 
             <div class="control-group">
@@ -3338,6 +3629,7 @@
                 </div>
 
                 <button onclick="openModal()" class="add-book-btn">+ Add New Book</button>
+            </div>
             </div>
         </div>
     </div>
@@ -3407,8 +3699,10 @@
                         </div>
                     </div>
                     <div class="preview-label">Preview</div>
-                    <button type="button" id="modal-notes-btn" class="secondary" onclick="openNotepad(this)">&#9998; Add Notes</button>
-                    <button type="button" id="modal-delete-btn" class="danger" onclick="deleteCurrentBook()" style="display:none;">Delete Book</button>
+                    <div class="preview-actions">
+                        <button type="button" id="modal-notes-btn" class="secondary" onclick="openNotepad(this)">&#9998; Add Notes</button>
+                        <button type="button" id="modal-delete-btn" class="danger" onclick="deleteCurrentBook()" style="display:none;">Delete Book</button>
+                    </div>
                     <textarea id="book-notes" hidden></textarea>
                     <input type="hidden" id="book-notes-font">
                 </div>
@@ -3689,7 +3983,7 @@
                         <button type="button" class="toggle-btn" data-setting-switch="cat" onclick="toggleSetting('cat')">Shelf cat</button>
                         <button type="button" class="toggle-btn" data-setting-switch="dust" onclick="toggleSetting('dust')">Dust on old books</button>
                         <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky notes</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky-note pile</button>
                     </div>
                     <div class="field-hint">Pressed in = on.</div>
                 </div>
@@ -4263,6 +4557,7 @@
         loadExpandedShelves();
         initThemeToggle();
         loadSettings();
+        selectFilterSticky(stickyFilter, false);
         initShelfCat();
         populateGenreSelects();
         db = await openDB();
@@ -4310,12 +4605,12 @@
         // A little haphazard, like notes stuck up by hand - but stable per
         // book (from its id), so a note doesn't jump around between visits:
         // its own tilt, a bit higher or lower than its neighbours, and
-        // about one in three has a bottom corner curling up.
+        // about half have a bottom corner curling up.
         let h = 0;
         for (const ch of String(book.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
         el.style.setProperty('--note-tilt', ((h % 11) - 5) + 'deg');
         el.style.setProperty('--note-y', (((h >>> 4) % 29) - 14) + 'px');
-        const curl = (h >>> 9) % 3 === 0 ? ((h >>> 11) % 2 ? 'curl-right' : 'curl-left') : '';
+        const curl = (h >>> 9) % 2 === 0 ? ((h >>> 11) % 2 ? 'curl-right' : 'curl-left') : '';
         if (curl) el.classList.add(curl);
 
         // the paper itself (the outer element casts the shadow, so the shadow
@@ -4334,6 +4629,46 @@
         el.title = `${book.title} - on your list to get`;
     }
 
+    // ---------- Phones ----------
+    // Books on the shelves are drawn at 72% size on narrow screens so a
+    // row holds more than two; the shelves redraw if you cross the line
+    // (e.g. rotating a phone).
+    const phoneQuery = window.matchMedia ? window.matchMedia('(max-width: 600px)') : null;
+
+    function shelfScale() {
+        return phoneQuery && phoneQuery.matches ? 0.72 : 1;
+    }
+
+    if (phoneQuery && phoneQuery.addEventListener) {
+        phoneQuery.addEventListener('change', () => renderBookshelf());
+    }
+
+    // Phones: everything but Search folds into a "Filters & sorting" panel.
+    function toggleFiltersPanel() {
+        const panel = document.getElementById('filters-panel');
+        const open = panel.classList.toggle('open');
+        const btn = document.getElementById('filters-toggle');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.querySelector('.filters-arrow').innerHTML = open ? '&#9652;' : '&#9662;';
+        placeCat(); // the shelves just moved down/up - keep the cat on its shelf
+    }
+
+    // how many filters/sorts differ from the defaults, shown on the closed
+    // panel's button so it's clear something is narrowing the shelf
+    function updateFiltersCount() {
+        const v = id => document.getElementById(id).value;
+        const active = [
+            v('organize-by') !== 'genre',
+            v('filter-status') !== 'All',
+            v('filter-owned') !== 'All',
+            stickyFilter !== 'Show',
+            v('sort-mode') !== 'custom',
+            v('filter-tag') !== 'All',
+            v('filter-genre') !== 'All'
+        ].filter(Boolean).length;
+        document.getElementById('filters-count').textContent = active ? `\u2022 ${active}` : '';
+    }
+
     function buildBookElement(book, draggableEnabled, spineMode) {
         const bookDiv = document.createElement('div');
         bookDiv.className = 'book';
@@ -4346,7 +4681,8 @@
         // hand-edited import) would otherwise turn every size calculation
         // below into NaN - most visibly in spine mode, where an invalid
         // "NaNpx" height/width collapses the whole spine to nothing.
-        const width = Number.isFinite(book.width) ? book.width : 120;
+        // books are drawn smaller on phones (see shelfScale)
+        const width = (Number.isFinite(book.width) ? book.width : 120) * shelfScale();
 
         if (isStickyPlaceholder(book)) {
             buildStickyNoteFace(bookDiv, book);
@@ -4563,7 +4899,7 @@
         el.className = spineMode ? 'book series-missing spine-mode' : 'book series-missing';
         el.draggable = false;
 
-        const width = refWidth || 120;
+        const width = (refWidth || 120) * shelfScale();
         if (spineMode) {
             const coverHeight = Math.round(width / (2 / 3));
             el.style.height = coverHeight + 'px';
@@ -4599,6 +4935,7 @@
         renderShelves();
         updateReadingGoal();
         updateStatsLedger();
+        updateFiltersCount();
     }
 
     function renderShelves() {
@@ -4606,6 +4943,7 @@
         const selectedGenre = document.getElementById('filter-genre').value;
         const selectedStatus = document.getElementById('filter-status').value;
         const selectedOwned = document.getElementById('filter-owned').value;
+        const selectedSticky = stickyFilter; // Show / Hide / Only (the to-get notes)
         const selectedTag = document.getElementById('filter-tag').value;
         const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
         const sortMode = document.getElementById('sort-mode').value;
@@ -4616,6 +4954,7 @@
             (selectedStatus === "All" || b.status === selectedStatus) &&
             (selectedGenre === "All" || b.genre === selectedGenre) &&
             (selectedOwned === "All" || (selectedOwned === "Owned" ? !!b.owned : !b.owned)) &&
+            (selectedSticky === "Show" || (selectedSticky === "Only" ? isStickyPlaceholder(b) : !isStickyPlaceholder(b))) &&
             (selectedTag === "All" || (b.tags && b.tags.includes(selectedTag))) &&
             (searchTerm === "" || b.title.toLowerCase().includes(searchTerm) || (b.authors || []).some(a => a.toLowerCase().includes(searchTerm)))
         );
@@ -6777,6 +7116,24 @@
             btn.classList.toggle('active', btn.dataset.filterStatus === value);
         });
         renderBookshelf();
+    }
+
+    // Sticky-note filter: Show (mixed in), Hide (only real books), or Only
+    // (just the to-get notes - a shopping list). Remembered between visits.
+    const STICKY_FILTER_KEY = 'bookShelfStickyFilter';
+    let stickyFilter = 'Show';
+    try {
+        const saved = localStorage.getItem(STICKY_FILTER_KEY);
+        if (['Show', 'Hide', 'Only'].includes(saved)) stickyFilter = saved;
+    } catch (e) {}
+
+    function selectFilterSticky(value, rerender = true) {
+        stickyFilter = value;
+        try { localStorage.setItem(STICKY_FILTER_KEY, value); } catch (e) {}
+        document.querySelectorAll('[data-filter-sticky]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filterSticky === value);
+        });
+        if (rerender) renderBookshelf();
     }
 
     function selectFilterOwned(value) {

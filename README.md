@@ -27,6 +27,7 @@ What this means in practice:
 
 ### Organizing your shelves
 - Organize by Genre, Reading Status, Author, Series, Tag, or Rating; filter by status, ownership, genre, or tag; search by title/author.
+- **Sticky Notes filter:** Show the to-get notes mixed in with your books, Hide them, or show Only them (a shopping list). Remembered between visits.
 - Sort by Custom (drag & drop), Author last name, or Rating (high to low).
 - Two view modes: **Covers** (front-cover art) and **Spines** (a shelf-accurate spine view — generated leather/gold look by default, or upload a real photo of the spine per book).
 - Drag-and-drop manual reordering (in Genre, Reading Status, and Rating views, when Sort is set to Custom) — persists across reloads. Dragging a book onto another shelf moves it there: a new genre, a new status, or a new star rating. In Rating view every star level gets a shelf, even empty ones, so you can always drag a book to re-rate it.
@@ -40,6 +41,8 @@ What this means in practice:
 - **Reading stats:** click the little ledger book in the bottom-left corner for your total number of books, counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
 - **Sticky-note quick add:** the pile of sticky notes in the bottom-left corner. Click it, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list. It shows up on the shelf as a sticky note, a reminder to go get it, until you mark it owned or give it a cover image; then it turns into a regular book.
 - Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread-but-owned books versus ones marked Read.
+
+- **On phones:** Search stays at the top and everything else folds into a **Filters & sorting** button (it shows a count like "• 2" when filters are on); button groups wrap neatly onto new lines. Books are drawn a bit smaller so more fit per row, and the edit window shows a compact preview row at the top.
 
 ### Book details
 - **Ratings:** 1–5 stars per book (click the current star again to clear it).
@@ -68,6 +71,6 @@ What this means in practice:
   - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.
   - **Custom genres:** see the genres you've added and remove any with its ×. If books still use it, you pick a genre to move them to first.
   - **Start new books as:** Want to Read, Reading, or Read.
-  - **Shelf extras:** turn the shelf cat, dust, leaning books, and sticky notes on or off.
+  - **Shelf extras:** turn the shelf cat, dust, leaning books, and the sticky-note pile on or off.
   - **Calm mode:** turns off all the animations.
   - **Start over:** delete the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings too. The 3 starter books don't come back afterwards.
