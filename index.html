@@ -723,6 +723,14 @@
             display: block;
         }
 
+        .reading-goal-set {
+            padding: 4px 12px;
+            font-size: 12px;
+            background-color: var(--pastel-lavender);
+            color: var(--y2k-dark);
+            box-shadow: 2px 2px 0 var(--outline);
+        }
+
         .reading-goal-bar {
             height: 10px;
             margin-top: 5px;
@@ -2377,6 +2385,18 @@
             margin: 0 10px;
         }
 
+        .book.sticky-book.fallen {
+            align-self: flex-end;
+            translate: 0 4px;
+            transform: rotate(var(--fallen-tilt, 14deg));
+            cursor: pointer;
+        }
+
+        /* hovering a fallen note just jiggles it a bit, it doesn't stand up */
+        .book.sticky-book.fallen:hover {
+            transform: rotate(calc(var(--fallen-tilt, 14deg) * 0.8));
+        }
+
         .book.sticky-book:hover {
             transform: rotate(0deg) scale(1.06);
             box-shadow: none;
@@ -2754,9 +2774,10 @@
             position: absolute;
             left: 0;
             bottom: 0;
-            width: min(240px, 80vw);
+            width: min(250px, 80vw);
+            aspect-ratio: 1 / 1; /* a real sticky note is square */
             box-sizing: border-box;
-            padding: 30px 18px 16px;
+            padding: 26px 18px 14px;
             background: var(--paper-yellow);
             border-radius: 2px;
             box-shadow: 4px 6px 14px rgba(var(--ink-rgb), 0.3);
@@ -2765,17 +2786,27 @@
         }
 
         .sticky-pile.open .sticky-note {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* spread the writing over the square */
         }
 
         .sticky-pile.open .sticky-stack {
             visibility: hidden;
         }
 
+        /* The quick-add note is paper, written in pencil: fixed graphite
+           colours (not theme colours, so it looks the same in every theme
+           and in dark mode), hand-drawn lines, no pink, no glossy buttons. */
         .sticky-heading {
+            display: inline-block;
             font-size: calc(22px * var(--sticky-scale, 1));
-            color: var(--y2k-hot-pink);
-            margin-bottom: 4px;
+            font-weight: normal;
+            color: #4a4a4a;
+            margin-bottom: 6px;
+            /* a slightly wobbly hand-drawn underline */
+            background: linear-gradient(transparent 86%, rgba(61, 61, 61, 0.55) 86%, rgba(61, 61, 61, 0.55) 93%, transparent 93%) 0 0 / 100% 100% no-repeat;
+            rotate: -1.5deg;
         }
 
         .sticky-note input {
@@ -2785,18 +2816,23 @@
             margin: 0 0 8px;
             padding: 2px 0;
             border: none;
-            border-bottom: 1.5px dashed rgba(var(--ink-rgb), 0.3);
+            border-bottom: 1px solid rgba(61, 61, 61, 0.3); /* faint pencil line */
             border-radius: 0;
             background: transparent;
             font-family: inherit;
             font-size: calc(24px * var(--sticky-scale, 1));
+            font-weight: normal;
             color: #3d3d3d;
             box-shadow: none;
         }
 
+        .sticky-note input::placeholder {
+            color: rgba(61, 61, 61, 0.4);
+        }
+
         .sticky-note input:focus {
             outline: none;
-            border-bottom-color: var(--y2k-hot-pink);
+            border-bottom-color: rgba(61, 61, 61, 0.75); /* pressed a bit harder */
         }
 
         /* everything on the note is in the sticky-note handwriting */
@@ -2808,20 +2844,59 @@
         .sticky-note select {
             width: 100%;
             margin: 4px 0 12px;
-            padding: 3px 8px;
-            font-size: calc(18px * var(--sticky-scale, 1));
-            border: 1.5px solid rgba(var(--ink-rgb), 0.3);
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.6);
-            color: var(--y2k-dark);
-            box-shadow: none;
-        }
-
-        .sticky-submit {
-            width: 100%;
+            padding: 2px 26px 2px 0;
             font-size: calc(20px * var(--sticky-scale, 1));
             font-weight: normal;
-            padding: 4px 10px;
+            border: none;
+            border-bottom: 1px solid rgba(61, 61, 61, 0.3);
+            border-radius: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 8 Q10 14 15 7' fill='none' stroke='%233d3d3d' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") right 2px center / 16px no-repeat transparent;
+            color: #3d3d3d;
+            box-shadow: none;
+            cursor: pointer;
+        }
+
+        .sticky-note select:focus {
+            outline: none;
+            border-bottom-color: rgba(61, 61, 61, 0.75);
+        }
+
+        .sticky-note select option {
+            color: #3d3d3d;
+            background: #fff6c2;
+        }
+
+        /* "stick it" circled by hand rather than a shiny button */
+        .sticky-submit {
+            display: block;
+            margin: 2px auto 0;
+            width: auto;
+            font-size: calc(24px * var(--sticky-scale, 1));
+            font-weight: normal;
+            padding: 0 16px 2px;
+            background: transparent !important;
+            color: #3d3d3d;
+            border: 1.5px solid rgba(61, 61, 61, 0.75);
+            border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px; /* wobbly */
+            box-shadow: none;
+            rotate: -2deg;
+            transition: rotate 0.15s, transform 0.15s;
+        }
+
+        .sticky-submit::before {
+            display: none; /* no glossy shine on pencil */
+        }
+
+        .sticky-submit:hover {
+            rotate: 1deg;
+            border-color: #3d3d3d;
+        }
+
+        .sticky-submit:active {
+            transform: scale(0.95);
+            box-shadow: none;
         }
 
         .sticky-close {
@@ -2834,8 +2909,9 @@
             border: none;
             box-shadow: none;
             background: transparent;
-            color: var(--y2k-dark);
-            font-size: 20px;
+            color: #555;
+            font-family: inherit;
+            font-size: 24px;
             line-height: 1;
         }
 
@@ -2845,7 +2921,7 @@
 
         .sticky-close:hover {
             background: transparent;
-            color: var(--y2k-hot-pink);
+            color: #3d3d3d;
         }
 
         .sticky-close:active {
@@ -4575,6 +4651,7 @@
         populateSeriesOptions();
         populateFilterTagSelect();
         renderBookshelf();
+        scheduleNoteFalls();
     }
 
     // ---------- Rendering ----------
@@ -4598,6 +4675,85 @@
     // note - a reminder to go get it - until you own it or give it a cover.
     function isStickyPlaceholder(book) {
         return !!book.stickyNote && !book.owned && !book.image;
+    }
+
+    // ---------- Sticky notes that fall down ----------
+    // Now and then one to-get note comes unstuck, flutters down and lands
+    // crooked at the bottom of its shelf. It stays down (even after a
+    // reload) until you click it to stick it back up. One at a time; never
+    // in Calm mode or with reduced motion.
+    const FALLEN_KEY = 'bookShelfFallenNotes';
+    let fallenNotes = new Set();
+    try { fallenNotes = new Set(JSON.parse(localStorage.getItem(FALLEN_KEY)) || []); } catch (e) {}
+
+    function saveFallenNotes() {
+        try { localStorage.setItem(FALLEN_KEY, JSON.stringify([...fallenNotes])); } catch (e) {}
+    }
+
+    function markFallen(el) {
+        el.classList.add('fallen');
+        // a stable "landed" angle per note, tipped one way or the other
+        let h = 0;
+        for (const ch of String(el.dataset.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+        el.style.setProperty('--fallen-tilt', (h % 2 ? 1 : -1) * (12 + (h % 9)) + 'deg');
+        el.title = 'Oops, it fell! Click to stick it back up.';
+    }
+
+    function dropNote(el) {
+        const first = el.getBoundingClientRect();
+        markFallen(el);
+        fallenNotes.add(el.dataset.id);
+        saveFallenNotes();
+        if (prefersReducedMotion()) return;
+        const last = el.getBoundingClientRect();
+        const dx = first.left - last.left, dy = first.top - last.top;
+        const end = el.style.getPropertyValue('--fallen-tilt');
+        // flutter: swing side to side on the way down, then settle crooked
+        el.animate([
+            { transform: `translate(${dx}px, ${dy}px) rotate(var(--note-tilt, 0deg))` },
+            { transform: `translate(${dx - 4}px, ${dy + 6}px) rotate(-10deg)`, offset: 0.12 },
+            { transform: `translate(${dx * 0.7 - 10}px, ${dy * 0.62}px) rotate(14deg)`, offset: 0.38 },
+            { transform: `translate(${dx * 0.35 + 8}px, ${dy * 0.28}px) rotate(-12deg)`, offset: 0.62 },
+            { transform: `translate(-3px, -4px) rotate(calc(${end} + 6deg))`, offset: 0.86 },
+            { transform: `rotate(${end})` }
+        ], { duration: 1600, easing: 'ease-in-out' });
+    }
+
+    function stickNoteBackUp(el, id) {
+        const first = el.getBoundingClientRect();
+        el.classList.remove('fallen');
+        el.style.removeProperty('--fallen-tilt');
+        el.title = '';
+        fallenNotes.delete(id);
+        saveFallenNotes();
+        if (prefersReducedMotion()) return;
+        const last = el.getBoundingClientRect();
+        const dx = first.left - last.left, dy = first.top - last.top;
+        // a little hop back up, pressed onto the shelf with a squish
+        el.animate([
+            { transform: `translate(${dx}px, ${dy}px) rotate(15deg)` },
+            { transform: `translate(${dx * 0.4}px, -14px) rotate(-4deg) scale(1.08)`, offset: 0.55 },
+            { transform: 'rotate(var(--note-tilt, 0deg)) scale(0.95, 1.04)', offset: 0.82 },
+            { transform: 'rotate(var(--note-tilt, 0deg))' }
+        ], { duration: 650, easing: 'cubic-bezier(.3, .8, .4, 1)' });
+    }
+
+    // maybe let one note fall (only if none is down, and one is on screen)
+    function maybeDropNote(chance) {
+        if (prefersReducedMotion() || fallenNotes.size > 0 || Math.random() > chance) return;
+        const onScreen = [...document.querySelectorAll('#library-room .book.sticky-book:not(.fallen)')].filter(el => {
+            const r = el.getBoundingClientRect();
+            return r.bottom > 0 && r.top < window.innerHeight;
+        });
+        if (onScreen.length === 0) return;
+        dropNote(onScreen[Math.floor(Math.random() * onScreen.length)]);
+    }
+
+    function scheduleNoteFalls() {
+        // a few seconds after the page opens, sometimes...
+        setTimeout(() => maybeDropNote(0.3), 5000 + Math.random() * 7000);
+        // ...and once in a while as you browse
+        setInterval(() => maybeDropNote(0.2), 4 * 60 * 1000);
     }
 
     function buildStickyNoteFace(el, book) {
@@ -4686,6 +4842,7 @@
 
         if (isStickyPlaceholder(book)) {
             buildStickyNoteFace(bookDiv, book);
+            if (fallenNotes.has(book.id)) markFallen(bookDiv);
         } else if (spineMode) {
             // Spine view shows what you'd actually see on a real shelf - the
             // spine's edge color, not the front cover art - at the book's
@@ -4748,6 +4905,10 @@
 
         bookDiv.addEventListener('click', () => {
             if (touchDraggingElement) return;
+            if (bookDiv.classList.contains('fallen')) {
+                stickNoteBackUp(bookDiv, book.id);
+                return;
+            }
             // on touch there's no hover, so the first tap dusts the book off
             if (bookDiv.classList.contains('dusty') && !bookDiv.classList.contains('dust-blowing')) {
                 blowDust(bookDiv, book.id);
@@ -6661,7 +6822,21 @@
         const box = document.getElementById('reading-goal');
         const goal = appSettings.goal;
         if (!goal) {
-            box.classList.remove('visible');
+            // no goal on this copy of the site yet: offer a shortcut to set one
+            box.innerHTML = '';
+            const link = document.createElement('button');
+            link.type = 'button';
+            link.className = 'reading-goal-set';
+            link.textContent = '＋ Set a yearly reading goal';
+            link.addEventListener('click', () => {
+                closeStats();
+                openSettings();
+                const input = document.getElementById('setting-goal');
+                input.scrollIntoView({ block: 'center' });
+                input.focus();
+            });
+            box.appendChild(link);
+            box.classList.add('visible');
             return;
         }
         const year = String(new Date().getFullYear());
