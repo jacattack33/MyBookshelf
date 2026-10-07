@@ -840,6 +840,9 @@
             background: var(--shelf-bg);
             box-shadow: 0 10px 8px -6px rgba(0,0,0,0.4);
             overflow-x: auto;
+            /* sideways scrolling only - a falling sticky note (or a pulled-out
+               book) dipping past the edge mustn't add a vertical scrollbar */
+            overflow-y: hidden;
         }
 
         .shelf.spine-shelf {
@@ -977,12 +980,14 @@
             clip-path: polygon(6px 100%, 0px 0%, 92% 0%, 100% 100%);
         }
 
-        .book:hover {
-            transform: translateY(-25px);
-            box-shadow:
-                8px 12px 18px rgba(0,0,0,0.4),
-                inset 3px 0 6px -2px rgba(255,255,255,0.35),
-                inset -8px 0 12px -6px rgba(0,0,0,0.55);
+        @media (hover: hover) {
+            .book:hover {
+                transform: translateY(-25px);
+                box-shadow:
+                    8px 12px 18px rgba(0,0,0,0.4),
+                    inset 3px 0 6px -2px rgba(255,255,255,0.35),
+                    inset -8px 0 12px -6px rgba(0,0,0,0.55);
+            }
         }
 
         /* Mid-drag, the cursor sweeps over neighbouring books and each one
@@ -2393,14 +2398,18 @@
         }
 
         /* hovering a fallen note just jiggles it a bit, it doesn't stand up */
-        .book.sticky-book.fallen:hover {
-            transform: rotate(calc(var(--fallen-tilt, 14deg) * 0.8));
+        @media (hover: hover) {
+            .book.sticky-book.fallen:hover {
+                transform: rotate(calc(var(--fallen-tilt, 14deg) * 0.8));
+            }
         }
 
-        .book.sticky-book:hover {
-            transform: rotate(0deg) scale(1.06);
-            box-shadow: none;
-            filter: drop-shadow(3px 6px 6px rgba(0,0,0,0.28));
+        @media (hover: hover) {
+            .book.sticky-book:hover {
+                transform: rotate(0deg) scale(1.06);
+                box-shadow: none;
+                filter: drop-shadow(3px 6px 6px rgba(0,0,0,0.28));
+            }
         }
 
         .sticky-book-title {
@@ -3089,10 +3098,11 @@
             font-size: 5px;
             letter-spacing: 1px;
             color: #5a4630;
+            line-height: 1;
             background:
-                linear-gradient(#c94f4f, #c94f4f) 50% 62% / 1px 50% no-repeat,
-                linear-gradient(#c94f4f, #c94f4f) center 10px / 84% 1px no-repeat,
-                repeating-linear-gradient(to bottom, transparent 0 5px, #c9d8e8 5px 6px) center 12px / 84% 100% no-repeat,
+                linear-gradient(#c94f4f, #c94f4f) 50% 75% / 1px 45% no-repeat,
+                linear-gradient(#c94f4f, #c94f4f) center calc(2px + 1.6em) / 84% 1px no-repeat,
+                repeating-linear-gradient(to bottom, transparent 0 5px, #c9d8e8 5px 6px) center calc(4px + 1.6em) / 84% 100% no-repeat,
                 #fffaf0;
             border-radius: 1px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
@@ -3136,7 +3146,7 @@
         .library-pocket-wrap {
             position: relative;
             width: min(440px, 92%);
-            height: 400px;
+            height: 432px;
             overflow: hidden; /* the card hides below the pocket's bottom edge */
         }
 
@@ -3145,7 +3155,7 @@
             left: 6%;
             right: 6%;
             bottom: 22px;
-            height: 292px;
+            height: 324px; /* tall enough that the stamp clears the pocket */
             box-sizing: border-box;
             padding: 14px 16px;
             background: #fffaf0;
@@ -3185,6 +3195,15 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            /* handwriting swashes poke past the letter box - leave them room */
+            padding: 0 5px;
+        }
+
+        /* the dates are short: never cut them, let them overhang the cell */
+        .lc-table td.lc-hand {
+            overflow: visible;
+            text-overflow: clip;
+            padding: 0 4px 0 2px;
         }
 
         /* the title gets up to two lines before it's cut off */
@@ -3225,11 +3244,13 @@
             padding-left: 8px;
         }
 
+        /* the stamp sits in its own space under the table, so it never runs
+           through the writing */
         .lc-stamp {
-            position: absolute;
-            right: 14px;
-            bottom: 98px; /* just above the pocket's edge */
-            padding: 3px 8px;
+            display: block;
+            width: max-content;
+            margin: 6px 4px 0 auto;
+            padding: 2px 7px;
             border: 2px solid currentColor;
             border-radius: 4px;
             font-weight: bold;
@@ -3500,10 +3521,25 @@
             }
 
             .preview-shelf {
-                zoom: 0.62;
                 width: auto;
                 min-height: 0;
-                padding: 18px 26px 8px 14px; /* room for the page tops / notes peek */
+                padding: 12px 18px 6px 10px; /* room for the page tops / notes peek */
+                border-bottom-width: 6px;
+            }
+
+            .preview-notes-peek {
+                top: -10px;
+                right: -12px;
+                width: 40px;
+                height: 52px;
+            }
+
+            .preview-sticker {
+                top: 6px;
+                left: -16px;
+                width: 76px;
+                font-size: 11px;
+                padding: 2px 0;
             }
 
             .preview-label {
@@ -3520,6 +3556,25 @@
             .modal-fields {
                 min-width: 0;
                 flex: 1 1 100%;
+            }
+
+            /* --- thinner 3D page tops + spine, to match the smaller books --- */
+            .spine-top,
+            .preview-under-page::before,
+            .ob-page::before {
+                top: -5px;
+                left: -6px;
+                width: 6px;
+                clip-path: polygon(0% calc(100% - 6px), 0% 0%, 100% 6px, 100% 100%);
+            }
+
+            .book::after,
+            .preview-under-page::after,
+            .ob-page::after {
+                top: -5px;
+                left: -5px;
+                height: 5px;
+                clip-path: polygon(4px 100%, 0px 0%, 92% 0%, 100% 100%);
             }
 
             /* --- shelves: smaller books (shelfScale), tighter spacing --- */
@@ -6002,7 +6057,6 @@
                 <tr><th>Checked out</th><th>Returned</th></tr>
                 <tr><td class="lc-hand" style="${hand}"></td><td class="lc-hand" style="${hand}"></td></tr>
                 <tr><td></td><td></td></tr>
-                <tr><td></td><td></td></tr>
             </table>
             <div class="lc-stamp ${stampClass}"></div>`;
         // textContent (not innerHTML) for anything the user typed
@@ -7371,6 +7425,11 @@
         slider.style.setProperty('--fill', pct + '%');
     }
 
+    // the edit window's preview book is drawn smaller on phones
+    function previewScale() {
+        return phoneQuery && phoneQuery.matches ? 0.62 : 1;
+    }
+
     function updatePreview() {
         const previewBook = document.getElementById('preview-book');
         const titleEl = document.getElementById('preview-book-title');
@@ -7378,7 +7437,7 @@
         const color = document.getElementById('book-color').value;
         const width = document.getElementById('book-width').value;
 
-        previewBook.style.width = width + 'px';
+        previewBook.style.width = Math.round(width * previewScale()) + 'px';
         const ratioPreset = document.getElementById('book-ratio-preset').value;
 
         const applyImage = async (src) => {
