@@ -62,8 +62,9 @@ What this means in practice:
 ### Other
 - **Settings** (button next to Export/Import). Everything here is remembered:
   - **Color scheme:** **Candy** (pinks and purples) or **Sea Glass** (blues and greens).
+  - **Mode:** Light, Dark, or Match device (follows your computer or phone's setting). Works with either color scheme; the notepad, library card and sticky notes stay paper-colored.
   - **Bookshelf name:** rename the title at the top of the page.
-  - **Yearly reading goal:** shows a progress bar below the Settings button, counting books marked Read with a finish date this year.
+  - **Yearly reading goal:** shows a progress bar in the Reading Stats window, counting books marked Read with a finish date this year.
   - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.
   - **Custom genres:** see the genres you've added and remove any with its ×. If books still use it, you pick a genre to move them to first.
   - **Start new books as:** Want to Read, Reading, or Read.

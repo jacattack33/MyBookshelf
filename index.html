@@ -11,6 +11,10 @@
             if (localStorage.getItem('bookShelfTheme') === 'seaglass') {
                 document.documentElement.dataset.theme = 'seaglass';
             }
+            const mode = localStorage.getItem('bookShelfMode') || 'light';
+            if (mode === 'dark' || (mode === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.dataset.mode = 'dark';
+            }
         } catch (e) {}
     </script>
     <style>
@@ -50,6 +54,13 @@
             --status-hover: #f6edff;
             --secondary-hover: #d4c2ff;
             --shelf-color-hover: #b48cf5;
+            --outline: var(--y2k-dark);  /* borders + chunky shadows (softer in dark mode) */
+            --surface: white;            /* panels, inputs, unpressed buttons */
+            --shelf-bg: rgba(255,255,255,0.45);
+            --on-bright: #4a2378;        /* text on bright fills (mint/yellow/gold) */
+            --paper-yellow: #fff6c2;     /* sticky notes stay paper-coloured */
+            --paper-pink: #ffdcee;
+            --paper-mint: #d4f7e0;
             --chart-bar: #8a4fe0;        /* chart columns (3:1+ on white) */
             --chart-bar-hover: #a374ec;
             --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff2e93' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");  /* dropdown arrow */
@@ -83,11 +94,126 @@
             --shelf-color-hover: #7fb3aa;
         }
 
+        /* ---------- Dark mode (Settings > Mode) ----------
+           Pastels turn into deep jewel tones, ink and outlines turn light,
+           bright accents stay bright (with dark text on them). Paper things
+           - notepad, library card, sticky notes - stay paper-coloured. */
+        :root[data-mode="dark"] {
+            /* a soft, dusky dark: lifted backgrounds and slightly dimmed ink
+               so text sits at ~8-10:1 instead of a harsh near-white on black */
+            color-scheme: dark;
+            --y2k-dark: #ded0f2;
+            --y2k-text: #ded0f2;
+            --ink-rgb: 222, 208, 242;
+            --y2k-lavender: #5a4a80;
+            --pastel-mint: #2f5e50;
+            --pastel-yellow: #5c5230;
+            --pastel-blue: #2d4b66;
+            --pastel-pink: #5c3350;
+            --pastel-lavender: #4a3b6b;
+            --bg-a: #2e2540;
+            --bg-b: #322848;
+            --bg-c: #283246;
+            --panel-bg: #352a4a;
+            --section-bg: #3c3054;
+            --disabled-bg: #443760;
+            --status-hover: #4a3c68;
+            --secondary-hover: #57487c;
+            --surface: #3c3054;
+            --shelf-bg: rgba(255,255,255,0.08);
+            --shelf-color: #9575d8;
+            --shelf-color-hover: #a98be0;
+            --on-bright: #2a1d40;
+            --outline: #8c7aae;          /* dusty lavender, softer than the text */
+            --chart-bar: #a070ee;        /* checked against the dark surface */
+            --chart-bar-hover: #b58cf3;
+        }
+
+        :root[data-mode="dark"][data-theme="seaglass"] {
+            --y2k-dark: #cfe3e8;
+            --y2k-text: #cfe3e8;
+            --ink-rgb: 207, 227, 232;
+            --y2k-lavender: #456476;
+            --pastel-pink: #2f5650;
+            --pastel-lavender: #34506a;
+            --bg-a: #203533;
+            --bg-b: #213042;
+            --bg-c: #28382c;
+            --panel-bg: #263c40;
+            --section-bg: #2c454a;
+            --disabled-bg: #335055;
+            --status-hover: #365a5e;
+            --secondary-hover: #3f6670;
+            --surface: #2c454a;
+            --shelf-color: #5c9c92;
+            --shelf-color-hover: #6fada3;
+            --on-bright: #15302f;
+            --outline: #7b9aa2;          /* dusty teal */
+            --chart-bar: #4f97d4;
+            --chart-bar-hover: #6aa8dc;
+        }
+
+        /* bright fills keep dark text so it stays readable */
+        :root[data-mode="dark"] .toggle-btn.active,
+        :root[data-mode="dark"] button.danger,
+        :root[data-mode="dark"] .file-upload-btn,
+        :root[data-mode="dark"] .stats-ledger-label,
+        :root[data-mode="dark"] .preview-sticker,
+        :root[data-mode="dark"] .modal-close-x:hover .x-face {
+            color: var(--on-bright);
+        }
+
+
+        /* Unpressed toggle buttons in dark mode: instead of muddy dark
+           pastels, a clean see-through tint of the group's colour with
+           matching text and edge (mint / yellow / blue groups). */
+        :root[data-mode="dark"] .toggle-btn:not(.active) {
+            background: rgba(95, 232, 196, 0.12);
+            color: #9cf0d6;
+            border-color: rgba(95, 232, 196, 0.55);
+            box-shadow: 3px 3px 0 rgba(95, 232, 196, 0.3);
+        }
+
+        :root[data-mode="dark"] .toggle-yellow .toggle-btn:not(.active) {
+            background: rgba(255, 224, 102, 0.12);
+            color: #ffe794;
+            border-color: rgba(255, 224, 102, 0.55);
+            box-shadow: 3px 3px 0 rgba(255, 224, 102, 0.3);
+        }
+
+        :root[data-mode="dark"] .toggle-blue .toggle-btn:not(.active) {
+            background: rgba(159, 220, 255, 0.12);
+            color: #bde6ff;
+            border-color: rgba(159, 220, 255, 0.55);
+            box-shadow: 3px 3px 0 rgba(159, 220, 255, 0.3);
+        }
+
+        :root[data-mode="dark"] .toggle-btn:not(.active):hover {
+            background: rgba(95, 232, 196, 0.22);
+        }
+
+        :root[data-mode="dark"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background: rgba(255, 224, 102, 0.22);
+        }
+
+        :root[data-mode="dark"] .toggle-blue .toggle-btn:not(.active):hover {
+            background: rgba(159, 220, 255, 0.22);
+        }
+
+        /* the open list inside dropdowns follows dark mode too */
+        :root[data-mode="dark"] option,
+        :root[data-mode="dark"] optgroup {
+            background-color: var(--surface);
+            color: var(--y2k-dark);
+        }
+
         /* dropdown arrows are little inline SVGs, which can't read colour
            variables themselves - so the theme swaps in a teal copy */
         :root[data-theme="seaglass"] {
             --chart-bar: #5a8fd6;
             --chart-bar-hover: #7aa6e0;
+            --on-bright: #1f3b4d;
+            --outline: #1f3b4d;
             --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%232a8c96' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
         }
 
@@ -133,7 +259,7 @@
         .controls {
             max-width: 950px;
             margin: 0 auto 15px auto;
-            background: white;
+            background: var(--surface);
             border-radius: 14px;
             border: 3px solid var(--y2k-hot-pink);
             box-shadow: 5px 5px 0 var(--y2k-purple);
@@ -209,7 +335,7 @@
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 50%;
             background-color: var(--pastel-lavender);
             color: var(--y2k-dark);
@@ -236,12 +362,13 @@
            Two background layers: the fill (padding-box) and the gradient
            showing through the transparent border (border-box). */
         #search-input {
+            --search-fill: var(--surface);
             border: 3px solid transparent;
             padding: 9px 44px 9px 14px; /* same size with the thicker border; right side leaves room for the clear x */
             outline: none;     /* the browser's focus ring would sit right on top of the border */
             background:
                 linear-gradient(var(--search-fill), var(--search-fill)) padding-box,
-                linear-gradient(90deg, var(--y2k-dark), var(--y2k-dark)) border-box;
+                linear-gradient(90deg, var(--outline), var(--outline)) border-box;
             transition: --search-fill 0.4s, box-shadow 0.4s;
         }
 
@@ -296,13 +423,13 @@
             font-size: 15px;
             font-family: inherit;
             border-radius: 8px;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
         }
 
         select {
             appearance: none;
             -webkit-appearance: none;
-            background-color: white;
+            background-color: var(--surface);
             background-image: var(--caret-url);
             background-repeat: no-repeat;
             background-position: right 10px center;
@@ -352,10 +479,10 @@
             overflow: hidden;
             background-color: var(--y2k-hot-pink);
             color: white;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             cursor: pointer;
             font-weight: 700;
-            box-shadow: 3px 3px 0 var(--y2k-dark);
+            box-shadow: 3px 3px 0 var(--outline);
             transition: transform 0.1s, box-shadow 0.1s;
         }
 
@@ -387,7 +514,7 @@
         button:active {
             transform: translate(2px, 2px);
             box-shadow:
-                1px 1px 0 var(--y2k-dark),
+                1px 1px 0 var(--outline),
                 inset 2px 2px 5px rgba(0,0,0,0.4);
         }
 
@@ -558,11 +685,11 @@
             padding: 4px 10px;
         }
 
-        /* yearly reading goal, under the Export / Import / Settings row */
+        /* yearly reading goal, in the Reading Stats window */
         .reading-goal {
             display: none;
             width: min(340px, 90%);
-            margin: -14px auto 22px;
+            margin: 0 auto;
             text-align: center;
             font-size: 13px;
             color: var(--y2k-dark);
@@ -575,9 +702,9 @@
         .reading-goal-bar {
             height: 10px;
             margin-top: 5px;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 8px;
-            background: white;
+            background: var(--surface);
             overflow: hidden;
         }
 
@@ -604,7 +731,7 @@
         .backup-bar button {
             font-size: 13px;
             padding: 6px 12px;
-            box-shadow: 2px 2px 0 var(--y2k-dark);
+            box-shadow: 2px 2px 0 var(--outline);
         }
 
         .library-room {
@@ -627,10 +754,10 @@
             font-weight: normal;
             color: white;
             background: var(--y2k-purple);
-            border: 3px solid var(--y2k-dark);
+            border: 3px solid var(--outline);
             border-radius: 10px;
             padding: 12px 26px;
-            box-shadow: 5px 5px 0 var(--y2k-dark);
+            box-shadow: 5px 5px 0 var(--outline);
             transform: rotate(-3deg);
             z-index: 5;
         }
@@ -678,7 +805,7 @@
             padding: 28px 15px 15px 15px;
             gap: 24px;
             min-height: 250px;
-            background: rgba(255,255,255,0.45);
+            background: var(--shelf-bg);
             box-shadow: 0 10px 8px -6px rgba(0,0,0,0.4);
             overflow-x: auto;
         }
@@ -701,9 +828,9 @@
             font-size: 10px;
             background: var(--pastel-lavender);
             color: var(--y2k-dark);
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 20px;
-            box-shadow: 3px 3px 0 var(--y2k-dark);
+            box-shadow: 3px 3px 0 var(--outline);
         }
 
         .shelf-expand-btn:hover {
@@ -1298,7 +1425,7 @@
             border-radius: 8px;
             font-family: inherit;
             color: var(--y2k-dark);
-            background-color: white;
+            background-color: var(--surface);
         }
 
         /* A native color swatch isn't a text box - the generic rule above
@@ -1313,19 +1440,19 @@
             height: 14px;
             margin: 10px 0;
             padding: 0;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 10px;
             background:
                 linear-gradient(90deg, var(--y2k-pink), var(--y2k-purple)) 0 0 / var(--fill, 20%) 100% no-repeat,
                 var(--pastel-lavender);
-            box-shadow: 2px 2px 0 var(--y2k-dark);
+            box-shadow: 2px 2px 0 var(--outline);
             cursor: pointer;
         }
 
         .field-label input[type="range"]:focus {
             outline: none;
-            border-color: var(--y2k-dark);
-            box-shadow: 2px 2px 0 var(--y2k-dark), 0 0 10px 2px rgba(var(--accent-rgb), 0.4);
+            border-color: var(--outline);
+            box-shadow: 2px 2px 0 var(--outline), 0 0 10px 2px rgba(var(--accent-rgb), 0.4);
         }
 
         .field-label input[type="range"]::-webkit-slider-thumb {
@@ -1336,7 +1463,7 @@
             border-radius: 50%;
             border: 3px solid white;
             background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.75), rgba(255,255,255,0) 45%), var(--y2k-hot-pink);
-            box-shadow: 0 0 0 2px var(--y2k-dark), 2px 3px 0 2px var(--y2k-dark);
+            box-shadow: 0 0 0 2px var(--outline), 2px 3px 0 2px var(--outline);
             transition: transform 0.25s cubic-bezier(.3, 1.8, .5, 1);
         }
 
@@ -1346,7 +1473,7 @@
             border-radius: 50%;
             border: 3px solid white;
             background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.75), rgba(255,255,255,0) 45%), var(--y2k-hot-pink);
-            box-shadow: 0 0 0 2px var(--y2k-dark), 2px 3px 0 2px var(--y2k-dark);
+            box-shadow: 0 0 0 2px var(--outline), 2px 3px 0 2px var(--outline);
             transition: transform 0.25s cubic-bezier(.3, 1.8, .5, 1);
         }
 
@@ -1403,7 +1530,7 @@
             width: 44px;
             height: 44px;
             clip-path: path("M22 39.14l-2.66 -2.42C9.9 28.16 3.67 22.51 3.67 15.58 3.67 9.94 8.1 5.5 13.75 5.5c3.19 0 6.25 1.49 8.25 3.83C23.99 6.99 27.06 5.5 30.25 5.5 35.9 5.5 40.33 9.94 40.33 15.58c0 6.93 -6.23 12.58 -15.68 21.16L22 39.14z");
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             cursor: pointer;
             padding: 0;
             transition: transform 0.1s;
@@ -1494,7 +1621,7 @@
             font-weight: 600;
             padding: 2px 9px;
             border-width: 1px;
-            box-shadow: 1px 1px 0 var(--y2k-dark);
+            box-shadow: 1px 1px 0 var(--outline);
             background-color: var(--pastel-lavender);
             color: var(--y2k-dark);
         }
@@ -1543,7 +1670,7 @@
             left: 0;
             right: 0;
             z-index: 50;
-            background: white;
+            background: var(--surface);
             border: 2px solid var(--y2k-lavender);
             border-radius: 8px;
             margin-top: 4px;
@@ -1704,12 +1831,12 @@
         .file-upload-btn {
             background-color: var(--y2k-green);
             color: var(--y2k-dark);
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 20px;
             padding: 9px 18px;
             font-size: 14px;
             font-weight: 700;
-            box-shadow: 3px 3px 0 var(--y2k-dark);
+            box-shadow: 3px 3px 0 var(--outline);
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s;
         }
@@ -1721,7 +1848,7 @@
         .file-upload-btn:active {
             transform: translate(2px, 2px);
             box-shadow:
-                1px 1px 0 var(--y2k-dark),
+                1px 1px 0 var(--outline),
                 inset 2px 2px 5px rgba(0,0,0,0.4);
         }
 
@@ -1739,7 +1866,7 @@
             font-weight: 700;
             border: 2px solid var(--y2k-lavender);
             border-radius: 8px;
-            background: white;
+            background: var(--surface);
             color: var(--y2k-purple);
             box-shadow: 2px 2px 0 var(--y2k-lavender);
             cursor: pointer;
@@ -1751,11 +1878,11 @@
 
         .status-btn.active {
             background: var(--y2k-hot-pink);
-            border-color: var(--y2k-dark);
+            border-color: var(--outline);
             color: white;
             transform: translate(2px, 2px);
             box-shadow:
-                1px 1px 0 var(--y2k-dark),
+                1px 1px 0 var(--outline),
                 inset 2px 2px 5px rgba(0,0,0,0.4),
                 inset -1px -1px 2px rgba(255,255,255,0.25);
         }
@@ -1771,14 +1898,14 @@
         }
 
         .toggle-btn {
-            background: white;
+            background: var(--surface);
             color: var(--y2k-dark);
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 8px;
             padding: 8px 14px;
             font-size: 13px;
             font-weight: 700;
-            box-shadow: 3px 3px 0 var(--y2k-dark);
+            box-shadow: 3px 3px 0 var(--outline);
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
         }
@@ -1800,7 +1927,7 @@
             background: var(--y2k-mint);
             transform: translate(3px, 3px);
             box-shadow:
-                1px 1px 0 var(--y2k-dark),
+                1px 1px 0 var(--outline),
                 inset 3px 3px 6px rgba(0,0,0,0.5),
                 inset -2px -2px 3px rgba(255,255,255,0.3);
         }
@@ -2009,7 +2136,7 @@
         .notepad-font-btn.active {
             background-color: var(--shelf-color);
             transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 var(--y2k-dark), inset 2px 2px 5px rgba(0,0,0,0.3);
+            box-shadow: 1px 1px 0 var(--outline), inset 2px 2px 5px rgba(0,0,0,0.3);
         }
 
         .notepad-done {
@@ -2160,12 +2287,12 @@
             flex-direction: column;
             align-items: center;
             gap: 1px;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 3px 7px 7px 3px;
             background:
                 linear-gradient(90deg, rgba(0,0,0,0.25) 0 6px, rgba(255,255,255,0.18) 6px 8px, transparent 8px),
                 var(--y2k-purple);
-            box-shadow: 3px 3px 0 var(--y2k-dark);
+            box-shadow: 3px 3px 0 var(--outline);
             color: white;
             cursor: pointer;
             transform: rotate(4deg);
@@ -2185,7 +2312,7 @@
 
         .stats-ledger:active {
             transform: rotate(-3deg) translateY(-2px) scale(0.96);
-            box-shadow: 2px 2px 0 var(--y2k-dark);
+            box-shadow: 2px 2px 0 var(--outline);
         }
 
         /* gold label plate on the cover */
@@ -2353,10 +2480,10 @@
             min-width: 120px;
             max-width: 220px;
             padding: 8px 10px;
-            border: 2px solid var(--y2k-dark);
+            border: 2px solid var(--outline);
             border-radius: 8px;
-            background: white;
-            box-shadow: 3px 3px 0 var(--y2k-dark);
+            background: var(--surface);
+            box-shadow: 3px 3px 0 var(--outline);
             font-size: 12px;
             color: var(--y2k-dark);
             pointer-events: none;
@@ -2435,10 +2562,10 @@
             box-shadow: 2px 3px 5px rgba(var(--ink-rgb), 0.25);
         }
 
-        .sticky-sheet.s3 { background: var(--pastel-mint); transform: rotate(-7deg); }
-        .sticky-sheet.s2 { background: var(--pastel-pink); transform: rotate(5deg); }
+        .sticky-sheet.s3 { background: var(--paper-mint); transform: rotate(-7deg); }
+        .sticky-sheet.s2 { background: var(--paper-pink); transform: rotate(5deg); }
         .sticky-sheet.s1 {
-            background: var(--pastel-yellow);
+            background: var(--paper-yellow);
             transform: rotate(-2deg);
             display: flex;
             align-items: center;
@@ -2464,7 +2591,7 @@
             width: min(240px, 80vw);
             box-sizing: border-box;
             padding: 30px 18px 16px;
-            background: var(--pastel-yellow);
+            background: var(--paper-yellow);
             border-radius: 2px;
             box-shadow: 4px 6px 14px rgba(var(--ink-rgb), 0.3);
             transform: rotate(-1.5deg);
@@ -3091,7 +3218,6 @@
         <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importLibrary(event)">
         <button class="secondary" onclick="openSettings()">&#9881; Settings</button>
     </div>
-    <div class="reading-goal" id="reading-goal"></div>
 
     <div class="library-room" id="library-room"></div>
 
@@ -3352,6 +3478,7 @@
                     <div class="stats-hero-value" id="stats-total">0</div>
                     <div class="stats-hero-label">books on your shelf</div>
                 </div>
+                <div class="reading-goal" id="reading-goal"></div>
                 <div class="stats-tiles" id="stats-tiles"></div>
 
                 <div class="field-section stats-chart-card">
@@ -3385,6 +3512,12 @@
                         <button type="button" class="toggle-btn" data-theme-choice="seaglass" onclick="setTheme('seaglass')">Sea Glass</button>
                     </div>
                     <div class="field-hint">Candy is pinks and purples; Sea Glass is blues and greens.</div>
+                    <span class="field-label">Mode</span>
+                    <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
+                        <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
+                        <button type="button" class="toggle-btn" data-mode-choice="dark" onclick="setMode('dark')">Dark</button>
+                        <button type="button" class="toggle-btn" data-mode-choice="auto" onclick="setMode('auto')">Match device</button>
+                    </div>
                 </div>
 
                 <div class="field-section">
@@ -5348,6 +5481,9 @@
     // Hand-drawn pixel frames: k = black fur, y = yellow eye, p = pink,
     // e = closed-eye line. Drawn at 4px per pixel.
     const CAT_PALETTE = { k: '#1d1626', y: '#ffe066', p: '#ff9eb0', e: '#5b4f6e' };
+    // in dark mode the cat is white, so it shows up on the dark page
+    const CAT_PALETTE_DARK = { k: '#f3eefa', y: '#3a9a6b', p: '#ff8fa8', e: '#9a8fae' };
+    const catPalette = () => document.documentElement.dataset.mode === 'dark' ? CAT_PALETTE_DARK : CAT_PALETTE;
     const CAT_FRAMES = {
         sleep: [
             '..............k.....k.',
@@ -5399,7 +5535,8 @@
         let rects = '';
         rows.forEach((row, y) => {
             [...row].forEach((ch, x) => {
-                if (CAT_PALETTE[ch]) rects += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${CAT_PALETTE[ch]}"/>`;
+                const palette = catPalette();
+                if (palette[ch]) rects += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${palette[ch]}"/>`;
             });
         });
         return `<svg width="${w * CAT_PX}" height="${h * CAT_PX}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${rects}</svg>`;
@@ -5411,6 +5548,7 @@
         if (old) old.remove();
         cat.insertAdjacentHTML('afterbegin', catFrameSvg(name));
         cat.classList.toggle('sleeping', name === 'sleep');
+        catState.frame = name;
     }
 
     // Where the cat sits: on top of a shelf box, in document coordinates.
@@ -5799,6 +5937,7 @@
     function openStats() {
         const books = visibleBooks();
         document.getElementById('stats-total').textContent = books.length.toLocaleString();
+        updateReadingGoal();
 
         const count = status => books.filter(b => b.status === status).length;
         const rated = books.map(b => normalizeRating(b.rating)).filter(r => r > 0);
@@ -6030,7 +6169,40 @@
         document.getElementById('settings-modal').style.display = 'none';
     }
 
+    // ---------- Light / dark mode ----------
+    const MODE_KEY = 'bookShelfMode';
+    const darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    function currentMode() {
+        try { return localStorage.getItem(MODE_KEY) || 'light'; } catch (e) { return 'light'; }
+    }
+
+    function applyMode(mode) {
+        const dark = mode === 'dark' || (mode === 'auto' && darkQuery && darkQuery.matches);
+        if (dark) {
+            document.documentElement.dataset.mode = 'dark';
+        } else {
+            delete document.documentElement.dataset.mode;
+        }
+        document.querySelectorAll('[data-mode-choice]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.modeChoice === mode);
+        });
+        // redraw the cat in the right fur colour (black in light, white in dark)
+        if (typeof catState !== 'undefined' && catState.frame) setCatFrame(catState.frame);
+    }
+
+    function setMode(mode) {
+        try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
+        applyMode(mode);
+    }
+
+    // "Match device" follows the system setting live
+    if (darkQuery && darkQuery.addEventListener) {
+        darkQuery.addEventListener('change', () => { if (currentMode() === 'auto') applyMode('auto'); });
+    }
+
     function initThemeToggle() {
+        applyMode(currentMode());
         setTheme(document.documentElement.dataset.theme === 'seaglass' ? 'seaglass' : 'candy');
     }
 
