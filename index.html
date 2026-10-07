@@ -854,6 +854,20 @@
             gap: 0;
         }
 
+        /* Shelves that scroll sideways: the ledge goes back to being a real
+           bottom border, so the scrollbar sits just above it like it always
+           did. (Elsewhere the ledge is painted inside the shelf so a fallen
+           sticky note can lie in front of it.) */
+        .shelf.scrolls {
+            background: var(--shelf-bg);
+            border-bottom: 20px solid var(--shelf-color);
+            padding-bottom: 15px;
+        }
+
+        .shelf.scrolls .book.sticky-book.fallen {
+            translate: 0 2px; /* rests above the scrollbar here */
+        }
+
         /* Extra rows of an expanded shelf - each is its own .shelf so it
            gets a ledge, stacked with some breathing room for hover lift. */
         .shelf.shelf-row {
@@ -871,10 +885,20 @@
             margin: 10px auto 0 auto;
             padding: 0;
             background: var(--pastel-lavender);
-            color: var(--y2k-dark);
-            border: 2px solid var(--outline);
+            color: var(--y2k-purple);
+            /* soft, shelf-coloured edge instead of the dark outline */
+            border: 2px solid var(--shelf-color);
             border-radius: 50%;
-            box-shadow: 2px 3px 0 var(--outline);
+            box-shadow: 1px 2px 3px rgba(var(--ink-rgb), 0.18);
+        }
+
+        .shelf-expand-btn::before {
+            display: none; /* no glossy shine */
+        }
+
+        .shelf-expand-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 1px 2px rgba(var(--ink-rgb), 0.18);
         }
 
         .shelf-expand-btn svg {
@@ -896,7 +920,8 @@
         }
 
         .shelf-expand-btn:hover {
-            background: var(--shelf-color);
+            background: var(--pastel-lavender);
+            border-color: var(--y2k-purple);
         }
 
         /* Native shelf scrollbar, tinted to match the purple shelf ledge. Chrome/Safari/Edge use the
@@ -907,17 +932,14 @@
             height: 12px;
         }
 
-        /* the scrollbar runs along the purple ledge, so its track is
-           see-through and the thumb is a slightly darker groove in it */
         .shelf::-webkit-scrollbar-track {
-            background: transparent;
+            background: var(--pastel-lavender);
             border-radius: 10px;
         }
 
         .shelf::-webkit-scrollbar-thumb {
-            background: var(--shelf-color-hover);
-            border: 3px solid transparent;
-            background-clip: padding-box;
+            background: var(--shelf-color);
+            border: 2px solid var(--pastel-lavender);
             border-radius: 10px;
         }
 
@@ -927,7 +949,7 @@
 
         @supports not selector(::-webkit-scrollbar) {
             .shelf {
-                scrollbar-color: var(--shelf-color-hover) transparent;
+                scrollbar-color: var(--shelf-color) var(--pastel-lavender);
             }
         }
 
@@ -1366,11 +1388,11 @@
                 rgba(143, 205, 255, 0.82);
             box-shadow: 0 1px 2px rgba(var(--ink-rgb), 0.25);
             color: var(--y2k-dark);
-            font-family: 'Caveat', cursive;
-            font-size: 14px;
-            font-weight: 700;
+            font-family: 'Nanum Pen Script', cursive; /* same pen as the sticky notes */
+            font-size: 17px;
+            font-weight: normal;
             line-height: 1;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             white-space: nowrap;
             text-shadow: 0 0 3px white;
             transform: rotate(-38deg);
@@ -3571,7 +3593,7 @@
                 top: 6px;
                 left: -16px;
                 width: 76px;
-                font-size: 11px;
+                font-size: 14px;
                 padding: 2px 0;
             }
 
@@ -3637,6 +3659,14 @@
 
             .book.sticky-book.fallen {
                 translate: 0 16px;
+            }
+
+            .shelf.scrolls {
+                padding-bottom: 10px;
+            }
+
+            .shelf.scrolls .book.sticky-book.fallen {
+                translate: 0 2px;
             }
 
             .sticky-book-face {
@@ -5460,6 +5490,9 @@
         const btn = section.querySelector('.shelf-expand-btn');
         const overflows = firstShelf.scrollWidth > firstShelf.clientWidth + 1;
         const expanded = expandedShelves.has(section.dataset.expandKey);
+        // a shelf that scrolls sideways gets the classic border ledge, so its
+        // scrollbar sits above the ledge (see .shelf.scrolls)
+        firstShelf.classList.toggle('scrolls', overflows && !expanded);
 
         btn.style.display = overflows ? '' : 'none';
         btn.classList.toggle('expanded', expanded);
