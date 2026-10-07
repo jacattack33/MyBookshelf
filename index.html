@@ -6317,12 +6317,36 @@
     }
 
     // Where the cat sits: on top of a shelf box, in document coordinates.
+    // The cat sits in the clear part of a shelf's top: right of the shelf's
+    // title tag and left of the book count, never on either of them.
+    const CAT_HALF_WIDTH = 46;
+
     function catSpot(index, frac) {
         const sections = document.querySelectorAll('.genre-section');
-        const shelf = sections[index] && sections[index].querySelector('.shelf');
+        const section = sections[index];
+        const shelf = section && section.querySelector('.shelf');
         if (!shelf) return null;
         const rect = shelf.getBoundingClientRect();
-        return { x: rect.left + window.scrollX + rect.width * frac, y: rect.top + window.scrollY };
+        const title = section.querySelector('.genre-title');
+        const count = section.querySelector('.shelf-count');
+        let min = rect.left + CAT_HALF_WIDTH + 6;
+        let max = rect.right - CAT_HALF_WIDTH - 6;
+        if (title) min = Math.max(min, title.getBoundingClientRect().right + CAT_HALF_WIDTH + 8);
+        if (count && count.textContent) max = Math.min(max, count.getBoundingClientRect().left - CAT_HALF_WIDTH - 6);
+        let x = rect.left + rect.width * frac;
+        // squeeze into the clear stretch (if a long title leaves none, sit at
+        // its far end rather than on top of it)
+        x = max >= min ? Math.min(Math.max(x, min), max) : min;
+        return { x: x + window.scrollX, y: rect.top + window.scrollY, roomy: max >= min };
+    }
+
+    // a random shelf (other than `skip`) with room for the cat, if any
+    function pickCatShelf(skip) {
+        const count = document.querySelectorAll('.genre-section').length;
+        const all = [...Array(count).keys()].filter(i => i !== skip);
+        const roomy = all.filter(i => { const sp = catSpot(i, 0.5); return sp && sp.roomy; });
+        const pool = roomy.length ? roomy : all;
+        return pool.length ? pool[Math.floor(Math.random() * pool.length)] : skip;
     }
 
     function placeCat() {
@@ -6334,7 +6358,7 @@
             return;
         }
         if (catState.index === null || catState.index >= count) {
-            catState.index = Math.floor(Math.random() * count);
+            catState.index = pickCatShelf(null);
             catState.frac = 0.3 + Math.random() * 0.5;
         }
         if (!cat.querySelector('svg')) setCatFrame('sleep');
@@ -6364,7 +6388,7 @@
         // another shelf if there is one, otherwise the other end of this one
         let index = catState.index;
         if (count > 1) {
-            do { index = Math.floor(Math.random() * count); } while (index === catState.index);
+            index = pickCatShelf(catState.index);
         }
         let frac = 0.3 + Math.random() * 0.5;
         if (count === 1 && Math.abs(frac - catState.frac) < 0.2) frac = catState.frac < 0.55 ? 0.78 : 0.32;
