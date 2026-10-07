@@ -832,12 +832,17 @@
             display: flex;
             align-items: flex-end;
             justify-content: flex-start;
-            border-bottom: 20px solid var(--shelf-color);
             border-radius: 4px;
-            padding: 28px 15px 15px 15px;
+            /* The purple ledge is painted as the bottom 20px of the
+               background (inside the extra 20px of bottom padding) rather
+               than a border - so things inside the shelf, like a fallen
+               sticky note, can land in front of it. Looks the same. */
+            padding: 28px 15px 35px 15px;
             gap: 24px;
             min-height: 250px;
-            background: var(--shelf-bg);
+            background:
+                linear-gradient(var(--shelf-color), var(--shelf-color)) bottom / 100% 20px no-repeat,
+                var(--shelf-bg);
             box-shadow: 0 10px 8px -6px rgba(0,0,0,0.4);
             overflow-x: auto;
             /* sideways scrolling only - a falling sticky note (or a pulled-out
@@ -855,17 +860,39 @@
             margin-top: 30px;
         }
 
+        /* a little round chevron (no words): points down to show the whole
+           shelf, flips up to collapse it again */
         .shelf-expand-btn {
-            display: block;
-            margin: 12px auto 0 auto;
-            padding: 6px 16px;
-            font-family: var(--pixel-font);
-            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            margin: 10px auto 0 auto;
+            padding: 0;
             background: var(--pastel-lavender);
             color: var(--y2k-dark);
             border: 2px solid var(--outline);
-            border-radius: 20px;
-            box-shadow: 3px 3px 0 var(--outline);
+            border-radius: 50%;
+            box-shadow: 2px 3px 0 var(--outline);
+        }
+
+        .shelf-expand-btn svg {
+            transition: transform 0.3s cubic-bezier(.3, 1.6, .5, 1);
+        }
+
+        .shelf-expand-btn.expanded svg {
+            transform: rotate(180deg);
+        }
+
+        @media (hover: hover) {
+            .shelf-expand-btn:hover svg {
+                transform: translateY(2px);
+            }
+
+            .shelf-expand-btn.expanded:hover svg {
+                transform: rotate(180deg) translateY(2px);
+            }
         }
 
         .shelf-expand-btn:hover {
@@ -880,14 +907,17 @@
             height: 12px;
         }
 
+        /* the scrollbar runs along the purple ledge, so its track is
+           see-through and the thumb is a slightly darker groove in it */
         .shelf::-webkit-scrollbar-track {
-            background: var(--pastel-lavender);
+            background: transparent;
             border-radius: 10px;
         }
 
         .shelf::-webkit-scrollbar-thumb {
-            background: var(--shelf-color);
-            border: 2px solid var(--pastel-lavender);
+            background: var(--shelf-color-hover);
+            border: 3px solid transparent;
+            background-clip: padding-box;
             border-radius: 10px;
         }
 
@@ -897,7 +927,7 @@
 
         @supports not selector(::-webkit-scrollbar) {
             .shelf {
-                scrollbar-color: var(--shelf-color) var(--pastel-lavender);
+                scrollbar-color: var(--shelf-color-hover) transparent;
             }
         }
 
@@ -2392,7 +2422,10 @@
 
         .book.sticky-book.fallen {
             align-self: flex-end;
-            translate: 0 4px;
+            /* down onto the front of the purple ledge - but only so far that
+               even its tilted corner stays inside the shelf (anything past the
+               shelf's edge is cut off) */
+            translate: 0 19px;
             transform: rotate(var(--fallen-tilt, 14deg));
             cursor: pointer;
         }
@@ -3580,7 +3613,7 @@
             /* --- shelves: smaller books (shelfScale), tighter spacing --- */
             .shelf {
                 gap: 14px;
-                padding: 22px 10px 10px;
+                padding: 22px 10px 30px; /* 20px of that bottom is the ledge */
                 min-height: 160px;
             }
 
@@ -3593,13 +3626,17 @@
             }
 
             .shelf-expand-btn {
-                font-size: 9px;
-                padding: 5px 12px;
+                width: 30px;
+                height: 30px;
             }
 
             .book.sticky-book {
                 width: 84px !important;
                 height: 84px !important;
+            }
+
+            .book.sticky-book.fallen {
+                translate: 0 16px;
             }
 
             .sticky-book-face {
@@ -4750,7 +4787,7 @@
         // a stable "landed" angle per note, tipped one way or the other
         let h = 0;
         for (const ch of String(el.dataset.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-        el.style.setProperty('--fallen-tilt', (h % 2 ? 1 : -1) * (12 + (h % 9)) + 'deg');
+        el.style.setProperty('--fallen-tilt', (h % 2 ? 1 : -1) * (10 + (h % 7)) + 'deg'); // 10-16deg
         el.title = 'Oops, it fell! Click to stick it back up.';
     }
 
@@ -5425,7 +5462,12 @@
         const expanded = expandedShelves.has(section.dataset.expandKey);
 
         btn.style.display = overflows ? '' : 'none';
-        btn.innerText = expanded ? '▲ Collapse' : '▼ Show all';
+        btn.classList.toggle('expanded', expanded);
+        btn.title = expanded ? 'Collapse' : 'Show all';
+        btn.setAttribute('aria-label', btn.title);
+        if (!btn.firstElementChild) {
+            btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9.5 Q12 16.5 18 9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+        }
         if (overflows && expanded) packShelfRows(section, firstShelf);
         if (!skipLeans) refreshShelfLeans([section]);
     }
@@ -7427,7 +7469,7 @@
 
     // the edit window's preview book is drawn smaller on phones
     function previewScale() {
-        return phoneQuery && phoneQuery.matches ? 0.62 : 1;
+        return phoneQuery && phoneQuery.matches ? 0.85 : 1;
     }
 
     function updatePreview() {
@@ -7437,7 +7479,8 @@
         const color = document.getElementById('book-color').value;
         const width = document.getElementById('book-width').value;
 
-        previewBook.style.width = Math.round(width * previewScale()) + 'px';
+        // (phones: bigger than before, but never so wide it can't sit beside the buttons)
+        previewBook.style.width = Math.round(previewScale() < 1 ? Math.min(width * previewScale(), 130) : width) + 'px';
         const ratioPreset = document.getElementById('book-ratio-preset').value;
 
         const applyImage = async (src) => {

@@ -31,7 +31,7 @@ What this means in practice:
 - Sort by Custom (drag & drop), Author last name, or Rating (high to low).
 - Two view modes: **Covers** (front-cover art) and **Spines** (a shelf-accurate spine view — generated leather/gold look by default, or upload a real photo of the spine per book).
 - Drag-and-drop manual reordering (in Genre, Reading Status, and Rating views, when Sort is set to Custom) — persists across reloads. Dragging a book onto another shelf moves it there: a new genre, a new status, or a new star rating. In Rating view every star level gets a shelf, even empty ones, so you can always drag a book to re-rate it.
-- Long shelves can be expanded into multiple rows with **Show all** instead of scrolling sideways. Each shelf remembers whether it's expanded.
+- Long shelves can be expanded into multiple rows with the little round chevron button under them (it flips to collapse) instead of scrolling sideways. Each shelf remembers whether it's expanded.
 - Each shelf shows a faint count of its books in the top-right corner.
 - **Shelves act like real shelves:**
   - **Pull out to open:** clicking a book slides it out toward you before the edit window opens, and Cancel slides it back. Dragging still reorders like before, because a drag never counts as a click.
