@@ -59,8 +59,6 @@
             --shelf-bg: rgba(255,255,255,0.45);
             --on-bright: #4a2378;        /* text on bright fills (mint/yellow/gold) */
             --paper-yellow: #fff6c2;     /* sticky notes stay paper-coloured */
-            --paper-pink: #ffdcee;
-            --paper-mint: #d4f7e0;
             --chart-bar: #8a4fe0;        /* chart columns (3:1+ on white) */
             --chart-bar-hover: #a374ec;
             --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff2e93' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");  /* dropdown arrow */
@@ -2231,6 +2229,149 @@
             rotate: 0deg;
         }
 
+        /* ---------- Sticky-note placeholders on the shelf ----------
+           a square of yellow paper stuck to the back of the shelf,
+           handwritten, slightly tilted; no 3D book bits */
+        .book.sticky-book {
+            width: 112px !important;
+            height: 112px !important;
+            aspect-ratio: auto !important;
+            align-self: center;
+            padding: 0;
+            background: transparent !important;
+            color: #3d3d3d;
+            text-shadow: none;
+            font-family: 'Nanum Pen Script', cursive;
+            font-weight: normal;
+            box-shadow: none;
+            /* shadow of the (possibly curled) paper inside */
+            filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.22));
+            transform: rotate(var(--note-tilt, -2deg));
+            translate: 0 var(--note-y, 0px);
+        }
+
+        .book.sticky-book.dusty {
+            filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.22)) saturate(0.7) brightness(0.96);
+        }
+
+        .sticky-book-face {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 10px 9px 6px;
+            background: var(--paper-yellow);
+            overflow: hidden;
+        }
+
+        /* Curled corner (not a fold): the bottom corner sweeps up in a
+           curve (an uneven corner radius), shading across it shows the
+           paper bending, and a soft shadow underneath makes it look lifted
+           off the shelf. */
+        .curl-right .sticky-book-face,
+        .curl-left .sticky-book-face {
+            padding-bottom: 16px; /* keep the writing clear of the curl */
+        }
+
+        .curl-right .sticky-book-face {
+            border-bottom-right-radius: 46px 14px;
+        }
+
+        .curl-left .sticky-book-face {
+            border-bottom-left-radius: 46px 14px;
+        }
+
+        .curl-right .sticky-book-face::after,
+        .curl-left .sticky-book-face::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            width: 58%;
+            height: 34%;
+            pointer-events: none;
+        }
+
+        .curl-right .sticky-book-face::after {
+            right: 0;
+            border-bottom-right-radius: 46px 14px;
+            background:
+                radial-gradient(ellipse 90% 70% at 100% 100%, rgba(255,255,255,0.55), rgba(255,255,255,0) 45%),
+                linear-gradient(to top left, rgba(160, 130, 40, 0.28), rgba(160, 130, 40, 0) 60%);
+        }
+
+        .curl-left .sticky-book-face::after {
+            left: 0;
+            border-bottom-left-radius: 46px 14px;
+            background:
+                radial-gradient(ellipse 90% 70% at 0% 100%, rgba(255,255,255,0.55), rgba(255,255,255,0) 45%),
+                linear-gradient(to top right, rgba(160, 130, 40, 0.28), rgba(160, 130, 40, 0) 60%);
+        }
+
+        /* the lifted corner's shadow, under the paper */
+        .book.sticky-book.curl-right::before,
+        .book.sticky-book.curl-left::before {
+            content: "";
+            position: absolute;
+            bottom: 8px;
+            width: 46%;
+            height: 12px;
+            z-index: -1;
+            box-shadow: 0 10px 8px rgba(0,0,0,0.28);
+            pointer-events: none;
+        }
+
+        .book.sticky-book.curl-right::before {
+            right: 6px;
+            transform: rotate(5deg);
+        }
+
+        .book.sticky-book.curl-left::before {
+            left: 6px;
+            transform: rotate(-5deg);
+        }
+
+        .book.sticky-book::after {
+            display: none; /* no page tops on a note */
+        }
+
+        /* spines sit flush, but notes need a little room either side */
+        .spine-shelf .book.sticky-book {
+            margin: 0 10px;
+        }
+
+        .book.sticky-book:hover {
+            transform: rotate(0deg) scale(1.06);
+            box-shadow: none;
+            filter: drop-shadow(3px 6px 6px rgba(0,0,0,0.28));
+        }
+
+        .sticky-book-title {
+            font-size: 19px;
+            line-height: 0.9;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sticky-book-author {
+            font-size: 14px;
+            line-height: 0.95;
+            opacity: 0.7;
+            text-align: center;
+            /* long names wrap onto a second line instead of being cut */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-word;
+        }
+
         /* ---------- Dust on long-waiting Want to Read books ---------- */
         .dust-layer {
             position: absolute;
@@ -2315,26 +2456,16 @@
             box-shadow: 2px 2px 0 var(--outline);
         }
 
-        /* gold label plate on the cover */
+        /* blank cream paper label on the cover, with two faint ruled lines */
         .stats-ledger-label {
-            font-family: var(--pixel-font);
-            font-size: 7px;
-            color: var(--y2k-dark);
-            background: var(--spine-gold-bright);
-            padding: 2px 4px;
+            width: 30px;
+            height: 12px;
+            margin-top: 6px;
+            background:
+                linear-gradient(transparent 4px, rgba(201, 216, 232, 0.9) 4px 5px, transparent 5px 8px, rgba(201, 216, 232, 0.9) 8px 9px, transparent 9px) center / 22px 100% no-repeat,
+                #fffaf0;
             border-radius: 2px;
-        }
-
-        .stats-ledger-count {
-            margin-top: 4px;
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .stats-ledger-sub {
-            font-size: 10px;
-            line-height: 1;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18);
         }
 
         @media (max-width: 600px) {
@@ -2344,7 +2475,6 @@
                 height: 64px;
             }
 
-            .stats-ledger-count { font-size: 15px; }
         }
 
         /* ---------- Stats window ---------- */
@@ -2562,8 +2692,8 @@
             box-shadow: 2px 3px 5px rgba(var(--ink-rgb), 0.25);
         }
 
-        .sticky-sheet.s3 { background: var(--paper-mint); transform: rotate(-7deg); }
-        .sticky-sheet.s2 { background: var(--paper-pink); transform: rotate(5deg); }
+        .sticky-sheet.s3 { background: #f6e9a6; transform: rotate(-7deg); }
+        .sticky-sheet.s2 { background: #fbefb3; transform: rotate(5deg); }
         .sticky-sheet.s1 {
             background: var(--paper-yellow);
             transform: rotate(-2deg);
@@ -3226,10 +3356,8 @@
 
     <div class="secret-heart" id="secret-heart" onclick="handleSecretHeartClick()" aria-hidden="true"></div>
 
-    <button type="button" class="stats-ledger" id="stats-ledger" onclick="openStats()" title="Reading stats">
-        <span class="stats-ledger-label">STATS</span>
-        <span class="stats-ledger-count" id="stats-ledger-count">0</span>
-        <span class="stats-ledger-sub">books</span>
+    <button type="button" class="stats-ledger" id="stats-ledger" onclick="openStats()" title="Reading stats" aria-label="Reading stats">
+        <span class="stats-ledger-label"></span>
     </button>
 
     <div class="sticky-pile" id="sticky-pile">
@@ -4170,6 +4298,42 @@
         return null; // author mode: dragging to regroup by author isn't supported
     }
 
+    // ---------- Sticky-note placeholders ----------
+    // Books added from the sticky-note pile sit on the shelf as a sticky
+    // note - a reminder to go get it - until you own it or give it a cover.
+    function isStickyPlaceholder(book) {
+        return !!book.stickyNote && !book.owned && !book.image;
+    }
+
+    function buildStickyNoteFace(el, book) {
+        el.classList.add('sticky-book');
+        // A little haphazard, like notes stuck up by hand - but stable per
+        // book (from its id), so a note doesn't jump around between visits:
+        // its own tilt, a bit higher or lower than its neighbours, and
+        // about one in three has a bottom corner curling up.
+        let h = 0;
+        for (const ch of String(book.id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+        el.style.setProperty('--note-tilt', ((h % 11) - 5) + 'deg');
+        el.style.setProperty('--note-y', (((h >>> 4) % 29) - 14) + 'px');
+        const curl = (h >>> 9) % 3 === 0 ? ((h >>> 11) % 2 ? 'curl-right' : 'curl-left') : '';
+        if (curl) el.classList.add(curl);
+
+        // the paper itself (the outer element casts the shadow, so the shadow
+        // follows the curled shape)
+        const face = document.createElement('div');
+        face.className = 'sticky-book-face';
+        const title = document.createElement('div');
+        title.className = 'sticky-book-title';
+        title.textContent = book.title;
+        const author = document.createElement('div');
+        author.className = 'sticky-book-author';
+        const authors = (book.authors || []).filter(a => a && a !== 'Unknown');
+        author.textContent = authors.length ? `by ${authors.join(', ')}` : '';
+        face.append(title, author);
+        el.append(face);
+        el.title = `${book.title} - on your list to get`;
+    }
+
     function buildBookElement(book, draggableEnabled, spineMode) {
         const bookDiv = document.createElement('div');
         bookDiv.className = 'book';
@@ -4184,7 +4348,9 @@
         // "NaNpx" height/width collapses the whole spine to nothing.
         const width = Number.isFinite(book.width) ? book.width : 120;
 
-        if (spineMode) {
+        if (isStickyPlaceholder(book)) {
+            buildStickyNoteFace(bookDiv, book);
+        } else if (spineMode) {
             // Spine view shows what you'd actually see on a real shelf - the
             // spine's edge color, not the front cover art - at the book's
             // real height but a narrow width, with the title read sideways.
@@ -4225,9 +4391,11 @@
             bookDiv.style.width = width + 'px';
         }
 
-        const spineTop = document.createElement('div');
-        spineTop.className = 'spine-top';
-        bookDiv.appendChild(spineTop);
+        if (!isStickyPlaceholder(book)) {
+            const spineTop = document.createElement('div');
+            spineTop.className = 'spine-top';
+            bookDiv.appendChild(spineTop);
+        }
 
 
         const dustLevel = getDustLevel(book);
@@ -4769,7 +4937,7 @@
         if (children.length < 2) return null;
         const last = children[children.length - 1];
         const prev = children[children.length - 2];
-        const isRealBook = el => el.classList.contains('book') && !el.classList.contains('series-missing');
+        const isRealBook = el => el.classList.contains('book') && !el.classList.contains('series-missing') && !el.classList.contains('sticky-book');
         if (!isRealBook(last) || !prev.classList.contains('book')) return null;
 
         const style = getComputedStyle(row);
@@ -5242,6 +5410,7 @@
             tags: [], owned: false, notes: "", notesFont: getLastNoteFont(),
             startedDate: "", finishedDate: "",
             statusSince: now, dustedAt: null,
+            stickyNote: true, // shows as a sticky note until owned or given a cover
             // after every existing book, even if deletions left gaps
             sortOrder: library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,
             image: "", imageRatio: null, ratioPreset: null,
@@ -5931,7 +6100,8 @@
     }
 
     function updateStatsLedger() {
-        document.getElementById('stats-ledger-count').textContent = visibleBooks().length;
+        // the ledger's cover is blank; keep the total in its tooltip
+        document.getElementById('stats-ledger').title = `Reading stats (${visibleBooks().length} books)`;
     }
 
     function openStats() {
@@ -7239,11 +7409,12 @@
         const statusSince = (!existing || existing.status !== status || !existing.statusSince)
             ? Date.now() : existing.statusSince;
         const dustedAt = existing ? (existing.dustedAt || null) : null;
+        const stickyNote = existing ? !!existing.stickyNote : false;
 
         const book = {
             id: editingId || Date.now().toString(),
             title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, startedDate, finishedDate,
-            statusSince, dustedAt,
+            statusSince, dustedAt, stickyNote,
             sortOrder: existing && Number.isFinite(existing.sortOrder) ? existing.sortOrder : library.length,
             image: finalImage,
             imageRatio: finalImage ? finalRatio : null,

@@ -37,8 +37,8 @@ What this means in practice:
   - **Leaning books:** when a shelf has room left over, its last book leans over onto its neighbour. Adding or removing books makes it straighten up or tip over.
   - **Dust:** books that have sat in **Want to Read** for 3+ months gather a little dust, and more after 6 months. Hover over a dusty book (or tap it on a phone) to blow the dust off. That counts as dusting, so it stays clean and slowly builds up again.
   - **Shelf cat:** a little black pixel cat naps on top of a shelf. Hover over it (or tap it) and it wakes up, stretches, and hops over to another shelf.
-- **Reading stats:** the little ledger book in the bottom-left corner shows your total number of books. Click it for counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
-- **Sticky-note quick add:** the pile of sticky notes in the bottom-left corner. Click it, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list.
+- **Reading stats:** click the little ledger book in the bottom-left corner for your total number of books, counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
+- **Sticky-note quick add:** the pile of sticky notes in the bottom-left corner. Click it, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list. It shows up on the shelf as a sticky note, a reminder to go get it, until you mark it owned or give it a cover image; then it turns into a regular book.
 - Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread-but-owned books versus ones marked Read.
 
 ### Book details
