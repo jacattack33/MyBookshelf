@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
@@ -3452,6 +3452,15 @@
                 flex-direction: column;
                 align-items: stretch;
                 gap: 4px;
+            }
+
+            /* iPhones zoom the page in when you tap a text box smaller than
+               16px - keep the everyday boxes at 16px so that doesn't happen */
+            #search-input,
+            .filters-panel select,
+            .field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]),
+            .field-label select {
+                font-size: 16px;
             }
 
             .mobile-only {
@@ -8106,7 +8115,9 @@
             id: editingId || Date.now().toString(),
             title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, startedDate, finishedDate,
             statusSince, dustedAt, stickyNote,
-            sortOrder: existing && Number.isFinite(existing.sortOrder) ? existing.sortOrder : library.length,
+            sortOrder: existing && Number.isFinite(existing.sortOrder)
+                ? existing.sortOrder
+                : library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,
             image: finalImage,
             imageRatio: finalImage ? finalRatio : null,
             ratioPreset: finalImage ? ratioPreset : null,
@@ -8152,8 +8163,26 @@
 
     // ---------- Backup: export / import ----------
 
+    // Preferences that travel with a backup (not one-time migration flags or
+    // things like a currently-fallen sticky note).
+    const SETTINGS_BACKUP_KEYS = [
+        'bookShelfSettings', 'bookShelfTheme', 'bookShelfMode', 'bookShelfStickyFilter',
+        'bookShelfQuickAddGenre', 'bookShelfLastNoteFont', 'bookShelfExpandedShelves', 'bookShelfRecentColors'
+    ];
+
+    function collectSettingsForBackup() {
+        const out = {};
+        try {
+            SETTINGS_BACKUP_KEYS.forEach(k => {
+                const v = localStorage.getItem(k);
+                if (v !== null) out[k] = v;
+            });
+        } catch (e) {}
+        return out;
+    }
+
     function exportLibrary() {
-        const payload = { books: library, customGenres: customGenres };
+        const payload = { books: library, customGenres: customGenres, settings: collectSettingsForBackup() };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -8186,12 +8215,17 @@
             // older backups that were just a bare array of books.
             const importedBooks = Array.isArray(parsed) ? parsed : parsed.books;
             const importedGenres = Array.isArray(parsed) ? [] : (parsed.customGenres || []);
+            // newer backups also carry your Settings (older ones just books)
+            const importedSettings = !Array.isArray(parsed) && parsed.settings && typeof parsed.settings === 'object'
+                ? parsed.settings : null;
 
             if (!Array.isArray(importedBooks)) {
                 alert('That file is not valid library JSON.');
                 return;
             }
-            if (!confirm(`Replace your current library with the ${importedBooks.length} book(s) in this file? This cannot be undone.`)) {
+            const alsoSettings = importedSettings && Object.keys(importedSettings).length
+                ? ' and your settings (color scheme, mode, name, reading goal, fonts...)' : '';
+            if (!confirm(`Replace your current library with the ${importedBooks.length} book(s) in this file${alsoSettings}? This cannot be undone.`)) {
                 return;
             }
             await dbClear();
@@ -8202,6 +8236,17 @@
             customGenres = [...new Set([...customGenres, ...importedGenres])];
             saveCustomGenres();
             syncCustomGenresFromLibrary();
+
+            if (alsoSettings) {
+                // restore the preferences, then reload so every one applies
+                try {
+                    Object.entries(importedSettings).forEach(([k, v]) => {
+                        if (SETTINGS_BACKUP_KEYS.includes(k) && typeof v === 'string') localStorage.setItem(k, v);
+                    });
+                } catch (e) {}
+                location.reload();
+                return;
+            }
 
             populateGenreSelects();
             populateAuthorOptions();

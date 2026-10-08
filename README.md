@@ -20,7 +20,7 @@ What this means in practice:
 - Your library is tied to **that specific browser on that specific device**. A copy of the app opened on your tablet has its own separate library from the one on your desktop — nothing syncs automatically between them.
 - Clearing site data/cache, switching browsers, or opening the file in a private/incognito window gives you a fresh library, not your existing books.
 - **First visit:** on the hosted site, a new visitor starts with an example shelf (`starter-library.json`, a real shelf with notes, dates and ratings left out) so they can see how everything works; they can delete those books or use Settings > Start over. Opened straight from a file, the browser can't load that, so it starts with 3 placeholder books instead.
-- **Export Library (Backup)** / **Import Library** (buttons above the shelves) are the only way to move your library between devices, or to back it up. Since there's no cloud sync, it's worth exporting a backup periodically if this data matters to you long-term.
+- **Export Library (Backup)** / **Import Library** (buttons above the shelves) are the only way to move your library between devices, or to back it up. Backups include your Settings too (color scheme, mode, name, reading goal, fonts, extras), and importing one restores them. Since there's no cloud sync, it's worth exporting a backup periodically if this data matters to you long-term.
 - Import **replaces** your current library entirely with whatever's in the file you pick — there's a confirmation prompt since this can't be undone.
 
 ## Features
@@ -74,3 +74,7 @@ What this means in practice:
   - **Shelf extras:** turn the shelf cat, dust, leaning books, and the sticky-note pile on or off.
   - **Calm mode:** turns off all the animations.
   - **Start over:** delete the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings too. The 3 starter books don't come back afterwards.
+
+## Tests
+
+Browser tests live in `tests/` and run in headless Chrome: `python tests/run.py` (needs Node.js 20+ and Google Chrome). See `tests/README.md`.
