@@ -1,6 +1,7 @@
 // @size 1100x850
 // Newer features: sticky-note filter, new-book sort order, settings in
-// backups, custom genre removal, goal shortcut, cat placement, fallen notes.
+// backups, custom genre removal, goal shortcut, cat placement, fallen notes,
+// tossing deleted notes.
 const ids = () => [...document.querySelectorAll('#library-room .book')].map(b => b.dataset.id).sort().join();
 
 // ---- sticky-note placeholders + Sticky Notes filter
@@ -80,3 +81,76 @@ for (let i = 0; i < secs.length; i++) {
     }
 }
 ok('cat never on a shelf title or count', hits === 0, hits + ' overlaps');
+
+// ---- deleting a to-get sticky note sends it off screen (thrown, paper
+// airplane, dropped and bounced, or burned up)
+openModal('sn1');
+const sn1 = q('#library-room .book[data-id="sn1"]');
+const neighbour = sn1.nextElementSibling;
+const before = neighbour && neighbour.getBoundingClientRect().left;
+const deleting = deleteCurrentBook();
+await wait(250);
+ok('delete closes the window and sends the note off', q('#book-modal').style.display !== 'flex' && !!q('#fx-layer .tossed-note'));
+ok('the next book waits while the note leaves', !neighbour || Math.abs(neighbour.getBoundingClientRect().left - before) < 1);
+await deleting;
+ok('note is gone from the shelf and library', !q('#library-room .book[data-id="sn1"]') && !library.some(b => b.id === 'sn1'));
+await wait(4500);
+library.push({ id: 'sn3', title: 'Another', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', stickyNote: true, color: '#ccc', width: 100, sortOrder: 2 });
+for (const exit of NOTE_EXITS) {
+    renderBookshelf();
+    q('.book[data-id="sn3"]').scrollIntoView({ block: 'center' });
+    tossStickyNote('sn3', exit);
+}
+await wait(650);
+const look = e => q(`#fx-layer .tossed-note[data-exit="${e}"]`);
+ok('throw and drop crumple into a ball', look('throw').classList.contains('crumpled') && look('drop').classList.contains('crumpled'));
+ok('plane folds up', look('plane').classList.contains('folded'));
+ok('burning note has a glowing ember edge', !!look('burn') && !!look('burn').querySelector('.burn-ember'));
+const bottom = innerHeight;
+await wait(1300);
+const db = look('drop') && look('drop').getBoundingClientRect();
+// (its box spins bigger than the clipped ball, so judge by the centre)
+const mid = db && (db.top + db.bottom) / 2;
+ok('dropped ball lands on the bottom edge', db && mid > bottom - 60 && mid < bottom - 20, mid + ' vs ' + bottom);
+await wait(2800);
+ok('every tossed note cleaned up', !q('#fx-layer .tossed-note'));
+
+// ---- getting a to-get book: the sticky note leaves, the real book poofs in
+library.push({ id: 'sn4', title: 'Got it now', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', stickyNote: true, color: '#ccc', width: 100, sortOrder: 3 });
+renderBookshelf();
+q('.book[data-id="sn4"]').scrollIntoView({ block: 'center' });
+openModal('sn4');
+q('#book-owned').checked = true;
+await processBookForm();
+const got = q('#library-room .book[data-id="sn4"]');
+ok('got-it note leaves, real book in its place', !!q('#fx-layer .tossed-note') && got && !got.classList.contains('sticky-book'));
+let puffed = false;
+for (let i = 0; i < 40 && !puffed; i++) { await wait(100); puffed = !!q('#fx-layer .fx-puff'); }
+ok('the book poofs in', puffed);
+await wait(700);
+ok('book fully there after the poof', getComputedStyle(got).opacity === '1' && got.getAnimations().every(a => a.playState !== 'running' || a.effect.getComputedTiming().iterations === Infinity));
+
+// ---- restyling a to-get note (color, size) turns it into a book; a plain save doesn't
+library.push({ id: 'sn5', title: 'Plain', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', stickyNote: true, color: '#ccc', width: 120, sortOrder: 4 });
+library.push({ id: 'sn6', title: 'Recolored', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', stickyNote: true, color: '#ff2e93', width: 120, sortOrder: 5 });
+library.push({ id: 'sn7', title: 'Resized', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', stickyNote: true, color: '#ff2e93', width: 120, sortOrder: 6 });
+renderBookshelf();
+openModal('sn5'); q('#book-title').value = 'Plain still'; await processBookForm();
+ok('editing just the title keeps it a sticky note', isStickyPlaceholder(library.find(b => b.id === 'sn5')));
+openModal('sn6'); q('#book-color').value = '#5fe8c4'; await processBookForm();
+ok('changing the cover color makes it a book', !isStickyPlaceholder(library.find(b => b.id === 'sn6')));
+openModal('sn7'); q('#book-width').value = '150'; await processBookForm();
+ok('changing the size makes it a book', !isStickyPlaceholder(library.find(b => b.id === 'sn7')));
+await wait(3500);
+
+// ---- a long shelf keeps its sideways scroll through redraws and re-layouts
+for (let i = 0; i < 20; i++) library.push({ id: 'lg' + i, title: 'Long ' + i, authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#ccc', width: 120, sortOrder: 100 + i });
+renderBookshelf();
+const longShelf = () => q('.shelf[data-group="Fantasy"]');
+ok('long shelf scrolls sideways', longShelf().classList.contains('scrolls'));
+longShelf().scrollLeft = longShelf().scrollWidth;
+const endScroll = longShelf().scrollLeft;
+renderBookshelf();
+ok('redraw keeps the shelf scrolled', Math.abs(longShelf().scrollLeft - endScroll) < 2 && endScroll > 0, longShelf().scrollLeft + ' vs ' + endScroll);
+layoutAllShelfSections();
+ok('re-layout (drag/resize) keeps it too', Math.abs(longShelf().scrollLeft - endScroll) < 2, longShelf().scrollLeft + ' vs ' + endScroll);

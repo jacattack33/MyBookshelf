@@ -1423,6 +1423,151 @@
             overflow: hidden;
         }
 
+        /* a deleted sticky note being crumpled up (or folded into a paper
+           airplane) and sent off the screen. The paper's outline is a
+           clip-path on the face, so the drop shadow follows the jagged ball. */
+        .toss-wrap {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .book.sticky-book.tossed-note {
+            position: absolute;
+            margin: 0;
+            translate: none;
+            pointer-events: none;
+        }
+
+        .book.sticky-book.tossed-note::before {
+            display: none; /* the curl's shadow - the paper's no longer flat */
+        }
+
+        .tossed-note .sticky-book-title,
+        .tossed-note .sticky-book-author {
+            transition: opacity 0.25s ease;
+        }
+
+        .tossed-note.crumpled .sticky-book-title,
+        .tossed-note.crumpled .sticky-book-author,
+        .tossed-note.folded .sticky-book-title,
+        .tossed-note.folded .sticky-book-author {
+            opacity: 0.2;
+        }
+
+        /* creases: criss-crossing shadow and light folds */
+        .tossed-note.crumpled .sticky-book-face {
+            background:
+                linear-gradient(115deg, transparent 30%, rgba(120,90,20,0.38) 31%, transparent 38%),
+                linear-gradient(60deg, transparent 50%, rgba(255,255,255,0.45) 51%, transparent 56%),
+                linear-gradient(160deg, transparent 58%, rgba(120,90,20,0.32) 59%, transparent 66%),
+                linear-gradient(20deg, transparent 22%, rgba(255,255,255,0.4) 23%, transparent 28%),
+                linear-gradient(80deg, transparent 70%, rgba(120,90,20,0.3) 71%, transparent 77%),
+                linear-gradient(140deg, transparent 12%, rgba(120,90,20,0.28) 13%, transparent 19%),
+                radial-gradient(circle at 38% 34%, rgba(255,255,255,0.2), transparent 30%, rgba(120,90,20,0.38) 72%),
+                var(--paper-yellow);
+        }
+
+        /* paper airplane: the centre fold, one wing a shade darker */
+        .tossed-note.folded .sticky-book-face {
+            background:
+                linear-gradient(to bottom, transparent 48.5%, rgba(120,90,20,0.45) 50%, transparent 51.5%),
+                linear-gradient(to bottom, rgba(255,255,255,0.25) 50%, rgba(120,90,20,0.16) 50%),
+                var(--paper-yellow);
+        }
+
+        /* set on fire: smoulders like a cigarette - the burn edge (the
+           face's clip-path) creeps steadily up the note, a charred band just
+           above it, and a glowing ember rim hugging the ragged edge (two
+           clipped layers peeking out below the face, glowing through a
+           drop-shadow on their unclipped wrapper) */
+        .burn-char {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 22%;
+            pointer-events: none;
+            background: linear-gradient(to bottom,
+                rgba(150, 100, 30, 0) 0%,
+                rgba(120, 70, 20, 0.3) 40%,
+                rgba(60, 30, 10, 0.75) 78%,
+                #2a1406 100%);
+        }
+
+        .burn-ember {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            filter: drop-shadow(0 0 3px rgba(255, 110, 20, 0.95)) drop-shadow(0 0 7px rgba(255, 80, 0, 0.55));
+        }
+
+        .burn-ember div {
+            position: absolute;
+            inset: 0;
+            animation: ember-glow 0.9s ease-in-out infinite alternate;
+        }
+
+        .burn-ember .ember-outer { background: #e8461a; }
+        .burn-ember .ember-inner { background: linear-gradient(to right, #ffb347, #ffe08a, #ff9a3c, #ffd36b, #ffb347); }
+
+        @keyframes ember-glow {
+            from { opacity: 0.82; }
+            to { opacity: 1; }
+        }
+
+        .fx-ember,
+        .fx-ash,
+        .fx-smoke {
+            position: absolute;
+            border-radius: 50%;
+            animation: fx-fly var(--dur, 1s) ease-out forwards;
+        }
+
+        .fx-ember {
+            width: 4px;
+            height: 4px;
+            background: #ffb43a;
+            box-shadow: 0 0 5px 1px rgba(255, 140, 30, 0.9);
+        }
+
+        .fx-ash {
+            width: 5px;
+            height: 3px;
+            border-radius: 1px;
+            background: #4a4038;
+        }
+
+        /* the cloud a got-it book poofs in with */
+        .fx-puff {
+            position: absolute;
+            border-radius: 50%;
+            animation: fx-puff var(--puff-dur, 1.1s) cubic-bezier(.1,.8,.3,1) forwards;
+            background: radial-gradient(circle at 45% 40%, rgba(255, 255, 255, 0.95), var(--puff, #dcd9de) 50%, rgba(220, 217, 222, 0) 72%);
+            filter: blur(2px) drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+        }
+
+        .fx-poof-ring {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 14px 4px rgba(200, 196, 204, 0.8), inset 0 0 12px 2px rgba(230, 228, 232, 0.7);
+            animation: fx-poof-ring 0.45s ease-out forwards;
+        }
+
+        @keyframes fx-poof-ring {
+            from { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+            to { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+        }
+
+        .fx-smoke {
+            width: 12px;
+            height: 18px;
+            background: rgba(150, 142, 138, 0.3);
+            filter: blur(4px);
+        }
+
         .fx-sparkle,
         .fx-confetti {
             position: absolute;
@@ -1438,6 +1583,12 @@
         .fx-confetti {
             width: 8px;
             height: 12px;
+        }
+
+        @keyframes fx-puff {
+            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.95; }
+            55% { opacity: 0.9; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.6); opacity: 0; }
         }
 
         @keyframes fx-fly {
@@ -5230,7 +5381,17 @@
         updateFiltersCount();
     }
 
+    // How far each sideways-scrolling shelf was scrolled before a full
+    // redraw (by its expand key), so editing or moving a book doesn't throw
+    // you back to the start of the shelf. Only set during renderShelves.
+    let restoreShelfScroll = null;
+
     function renderShelves() {
+        restoreShelfScroll = new Map();
+        room.querySelectorAll('.genre-section').forEach(section => {
+            const shelf = section.querySelector('.shelf');
+            if (shelf && shelf.scrollLeft) restoreShelfScroll.set(section.dataset.expandKey, shelf.scrollLeft);
+        });
         room.innerHTML = '';
         const selectedGenre = document.getElementById('filter-genre').value;
         const selectedStatus = document.getElementById('filter-status').value;
@@ -5433,12 +5594,14 @@
                 ? `<p class="empty-note">Your shelf is empty - add a book to get started!</p>`
                 : `<p class="empty-note">No books match this view yet.</p>`;
             placeCat();
+            restoreShelfScroll = null;
             return;
         }
 
         // Needs to run after every section is in the DOM - wrapping into
         // rows and the "does it overflow" check both measure real widths.
         layoutAllShelfSections();
+        restoreShelfScroll = null;
     }
 
     function attachShelfDropHandlers(shelf) {
@@ -5490,6 +5653,10 @@
         const shelves = [...section.querySelectorAll('.shelf')];
         const firstShelf = shelves[0];
         if (!firstShelf) return;
+        // keep the sideways scroll position (or the one from before a redraw)
+        const prevScroll = restoreShelfScroll
+            ? (restoreShelfScroll.get(section.dataset.expandKey) || 0)
+            : firstShelf.scrollLeft;
         shelves.slice(1).forEach(row => {
             [...row.children].forEach(child => firstShelf.appendChild(child));
             row.remove();
@@ -5511,6 +5678,7 @@
             btn.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9.5 Q12 16.5 18 9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`;
         }
         if (overflows && expanded) packShelfRows(section, firstShelf);
+        if (overflows && !expanded && prevScroll) firstShelf.scrollLeft = prevScroll;
         if (!skipLeans) refreshShelfLeans([section]);
     }
 
@@ -8109,7 +8277,19 @@
         const statusSince = (!existing || existing.status !== status || !existing.statusSince)
             ? Date.now() : existing.statusSince;
         const dustedAt = existing ? (existing.dustedAt || null) : null;
-        const stickyNote = existing ? !!existing.stickyNote : false;
+        // a to-get note given a look of its own (cover color, size, shape,
+        // spine or cover image) has been got: it becomes a regular book
+        const hex = c => {
+            c = String(c || '').toLowerCase();
+            return /^#[0-9a-f]{3}$/.test(c) ? '#' + [...c.slice(1)].map(d => d + d).join('') : c;
+        };
+        const restyled = existing && (
+            hex(color) !== hex(existing.color) ||
+            width !== (Number.isFinite(existing.width) ? existing.width : 120) ||
+            (ratioPreset || null) !== (existing.ratioPreset || null) ||
+            (!!finalSpineImage && finalSpineImage !== (existing.spineImage || '')) ||
+            (!!finalImage && finalImage !== (existing.image || '')));
+        const stickyNote = existing ? !!existing.stickyNote && !restyled : false;
 
         const book = {
             id: editingId || Date.now().toString(),
@@ -8135,18 +8315,121 @@
         clearSpineImageFlag = false;
         pendingCoverCrop = null;
         pendingSpineCrop = null;
+        // got the book (owned, or a cover added): the sticky note leaves
+        // like a deleted one, and the real book poofs in where it was
+        const gotIt = existing && isStickyPlaceholder(existing) && !isStickyPlaceholder(book) && !prefersReducedMotion();
+        let poofAt = 0;
+        if (gotIt) {
+            closeModal();
+            poofAt = tossStickyNote(book.id) || 0;
+        }
         closeModal();
         populateAuthorOptions();
         populateSeriesOptions();
         populateFilterTagSelect();
         animateLeans = true;
         renderBookshelf();
+        if (gotIt) poofBookIn(book.id, poofAt);
     }
 
-    async function removeBook(id) {
+    // Wait, then shrink the (hidden) book's spot to nothing so its
+    // neighbours slide over to fill it, instead of jumping
+    function closeGapAfter(id, delay) {
+        const el = document.querySelector(`#library-room .book[data-id="${CSS.escape(id)}"]`);
+        return new Promise(resolve => setTimeout(() => {
+            if (!el || !el.isConnected) return resolve();
+            const cs = getComputedStyle(el);
+            const gap = parseFloat(getComputedStyle(el.parentElement).columnGap) || 0;
+            const SLIDE = 320;
+            // (max-width, as sticky notes set their width with !important)
+            el.animate([
+                { maxWidth: el.offsetWidth + 'px', minWidth: '0px', marginLeft: cs.marginLeft, marginRight: cs.marginRight },
+                { maxWidth: '0px', minWidth: '0px', marginLeft: '0px', marginRight: -gap + 'px' }
+            ], { duration: SLIDE, easing: 'ease-in-out', fill: 'forwards' });
+            setTimeout(resolve, SLIDE);
+        }, delay));
+    }
+
+    // The new book pops into place in a little cloud (after `delay` ms,
+    // once the sticky note has cleared the spot)
+    function poofBookIn(id, delay) {
+        const el = document.querySelector(`#library-room .book[data-id="${CSS.escape(id)}"]`);
+        if (!el) return;
+        const POP = 520;
+        const total = delay + POP;
+        const at = ms => ms / total;
+        el.animate([
+            { opacity: 0, scale: '0.3', offset: 0 },
+            { opacity: 0, scale: '0.3', offset: at(delay), easing: 'cubic-bezier(.2,.9,.3,1.3)' },
+            { opacity: 1, scale: '1.12', offset: at(delay + POP * 0.6), easing: 'ease-in-out' },
+            { opacity: 1, scale: '1', offset: 1 }
+        ], { duration: total });
+        setTimeout(() => {
+            if (!el.isConnected) return;
+            // (layout size - the book is still shrunk at the start of its pop)
+            const reach = Math.max(el.offsetWidth, el.offsetHeight) * 0.9;
+            // const TINTS = ['#ffffff', '#e6d4ff', '#ffd6ec', '#d2f7ec', '#d6ecff'];
+            const puff = (min, spread) => () => {
+                const pf = document.createElement('span');
+                pf.className = 'fx-puff';
+                pf.style.width = pf.style.height = (min + Math.random() * spread) + 'px';
+                // pf.style.setProperty('--puff', TINTS[i % TINTS.length]);
+                pf.style.setProperty('--puff-dur', (1 + Math.random() * 0.5) + 's');
+                return pf;
+            };
+            burstFrom(el, 12, reach * 0.35, puff(60, 40)); // the cloud over the book
+            burstFrom(el, 24, reach, puff(34, 30)); // billowing out
+            // a glowing ring flashes out from the middle
+            const r = el.getBoundingClientRect();
+            const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+            const ring = document.createElement('div');
+            ring.className = 'fx-poof-ring';
+            ring.style.left = cx + 'px';
+            ring.style.top = cy + 'px';
+            getFxLayer().appendChild(ring);
+            setTimeout(() => ring.remove(), 500);
+            // magic sparkles fly out, then a few stars float up (switched off for now)
+            // const SPARKS = [['#ffe066', 'rgba(255,224,102,0.95)'], ['#ff8fcb', 'rgba(255,143,203,0.9)'], ['#c49bff', 'rgba(196,155,255,0.9)']];
+            // const sparkle = (min, spread) => i => {
+                // const sp = document.createElement('span');
+                // sp.className = 'fx-sparkle';
+                // sp.textContent = ['✦', '✧', '★'][i % 3];
+                // sp.style.fontSize = (min + Math.random() * spread) + 'px';
+                // const [c, glow] = SPARKS[i % SPARKS.length];
+                // sp.style.color = c;
+                // sp.style.textShadow = `0 0 8px ${glow}, 0 0 2px #fff`;
+                // return sp;
+            // };
+            // burstFrom(el, 18, reach * 1.1, sparkle(14, 14));
+            // setTimeout(() => {
+                // if (!el.isConnected) return;
+                // const er = el.getBoundingClientRect();
+                // const ex = er.left + er.width / 2, ey = er.top + er.height / 2;
+                // const layer = getFxLayer();
+                // for (let i = 0; i < 8; i++) {
+                    // // these drift up rather than flying outward
+                    // const sp = sparkle(10, 10)(i);
+                    // sp.style.left = ex + (Math.random() - 0.5) * er.width + 'px';
+                    // sp.style.top = ey + 'px';
+                    // sp.style.setProperty('--dx', (Math.random() - 0.5) * 40 + 'px');
+                    // sp.style.setProperty('--dy', -(50 + Math.random() * 70) + 'px');
+                    // sp.style.setProperty('--rot', (Math.random() - 0.5) * 90 + 'deg');
+                    // sp.style.setProperty('--dur', (1.1 + Math.random() * 0.5) + 's');
+                    // layer.appendChild(sp);
+                    // sp.addEventListener('animationend', () => sp.remove());
+                // }
+            // }, 250);
+        }, delay);
+    }
+
+    // beforeRemove can return how long (ms) to keep the book's spot open
+    // first - a tossed sticky note's spot stays put until the note has left
+    async function removeBook(id, beforeRemove) {
         if (confirm("Remove this book from the shelf?")) {
+            const holdMs = (beforeRemove && beforeRemove()) || 0;
             library = library.filter(b => b.id !== id);
             await dbDelete(id);
+            if (holdMs) await closeGapAfter(id, holdMs);
             animateLeans = true;
             renderBookshelf();
             return true;
@@ -8156,9 +8439,296 @@
 
     async function deleteCurrentBook() {
         if (!editingId) return;
-        if (await removeBook(editingId)) {
+        const id = editingId;
+        const book = library.find(b => b.id === id);
+        // a to-get sticky note gets crumpled up and thrown off the screen
+        const toss = book && isStickyPlaceholder(book) && !prefersReducedMotion()
+            ? () => { closeModal(); return tossStickyNote(id); }
+            : null;
+        if (await removeBook(id, toss)) {
             closeModal();
         }
+    }
+
+    // A deleted sticky note leaves the screen one of four ways (picked at
+    // random): crumpled into a ball and thrown off the side, folded into a
+    // paper airplane that swoops away, crumpled and dropped - it bounces
+    // on the bottom edge, sits a moment, then fades or rolls away - or set
+    // on fire, burning away from the bottom up.
+    // A copy of the note in the fx layer does the moving, inside two
+    // wrappers so x and y each get their own easing (a real arc); the
+    // note itself spins and squashes, and its face's clip-path is the
+    // paper's outline (square -> jagged ball, or -> dart).
+    const NOTE_EXITS = ['throw', 'plane', 'drop', 'burn'];
+    const CRUMPLE_MS = 560;
+    const POLY_N = 16;
+
+    const polyCss = pts => `polygon(${pts.map(([x, y]) => `${x.toFixed(1)}% ${y.toFixed(1)}%`).join(', ')})`;
+    // POLY_N points around the note's edge, clockwise from the right middle
+    function squarePoly() {
+        const pts = [];
+        for (let i = 0; i < POLY_N; i++) {
+            const a = i / POLY_N * Math.PI * 2;
+            const k = 50 / Math.max(Math.abs(Math.cos(a)), Math.abs(Math.sin(a)));
+            pts.push([50 + Math.cos(a) * k, 50 + Math.sin(a) * k]);
+        }
+        return pts;
+    }
+    // a crumpled ball: points sticking out, valleys pushed in, all a bit uneven
+    function ballPoly(spiky) {
+        const pts = [];
+        for (let i = 0; i < POLY_N; i++) {
+            const a = (i + (Math.random() - 0.5) * 0.7) / POLY_N * Math.PI * 2;
+            const r = i % 2 === 0
+                ? 40 + Math.random() * 10 // a point (some sharper than others)
+                : 50 - spiky + (Math.random() - 0.5) * 12; // a dent between points
+            pts.push([50 + Math.cos(a) * r, 50 + Math.sin(a) * r]);
+        }
+        return pts;
+    }
+    // a paper airplane seen from above, nose pointing right (dir 1) or left
+    function planePoly(dir) {
+        const A = [100, 50], B = [0, 92], C = [22, 50], D = [0, 8];
+        const lerp = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+        const right = [];
+        for (let i = 0; i < POLY_N; i++) {
+            if (i <= 6) right.push(lerp(A, B, i / 6));
+            else if (i <= 8) right.push(lerp(B, C, (i - 6) / 2));
+            else if (i <= 10) right.push(lerp(C, D, (i - 8) / 2));
+            else right.push(lerp(D, A, (i - 10) / 6));
+        }
+        if (dir > 0) return right;
+        // mirrored, keeping each point matched to the same square point
+        return right.map((_, j) => { const [x, y] = right[(POLY_N + POLY_N / 2 - j) % POLY_N]; return [100 - x, y]; });
+    }
+    const mixPoly = (a, b, t) => a.map((p, i) => [p[0] + (b[i][0] - p[0]) * t, p[1] + (b[i][1] - p[1]) * t]);
+
+    // Keyframes from [ms, value, easing-after] steps
+    function timeline(steps, prop, fmt) {
+        const total = steps[steps.length - 1][0];
+        return [steps.map(([ms, v, easing]) => {
+            const k = { offset: total ? ms / total : 0, [prop]: fmt(v) };
+            if (easing) k.easing = easing;
+            return k;
+        }), total];
+    }
+    function play(el, steps, prop, fmt) {
+        const [frames, total] = timeline(steps, prop, fmt);
+        el.animate(frames, { duration: total, fill: 'forwards' });
+        return total;
+    }
+
+    function tossStickyNote(id, exit = NOTE_EXITS[Math.floor(Math.random() * NOTE_EXITS.length)]) {
+        const el = document.querySelector(`#library-room .book.sticky-book[data-id="${CSS.escape(id)}"]`);
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        if (!r.width || r.bottom < 0 || r.top > innerHeight) return;
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const m = new DOMMatrix(getComputedStyle(el).transform);
+        const tilt = Math.atan2(m.b, m.a) * 180 / Math.PI;
+        const dir = Math.random() < 0.5 ? -1 : 1; // which side of the screen it leaves by
+        const w = el.offsetWidth, h = el.offsetHeight;
+
+        const xWrap = document.createElement('div');
+        const yWrap = document.createElement('div');
+        xWrap.className = yWrap.className = 'toss-wrap';
+        xWrap.style.left = cx + 'px';
+        xWrap.style.top = cy + 'px';
+        const note = el.cloneNode(true);
+        note.classList.remove('fallen', 'pulled-out');
+        note.classList.add('tossed-note');
+        note.dataset.exit = exit;
+        note.removeAttribute('draggable');
+        note.style.left = -w / 2 + 'px';
+        note.style.top = -h / 2 + 'px';
+        yWrap.appendChild(note);
+        xWrap.appendChild(yWrap);
+        getFxLayer().appendChild(xWrap);
+        el.style.visibility = 'hidden';
+        const face = note.querySelector('.sticky-book-face');
+        const square = squarePoly();
+        const tf = (deg, sx, sy = sx) => `rotate(${deg}deg) scale(${sx}, ${sy})`;
+        const tx = v => `translateX(${v}px)`;
+        const ty = v => `translateY(${v}px)`;
+        let total, clear;
+
+        if (exit === 'burn') {
+            // catches at the bottom, then smoulders steadily up to the top.
+            // The face and the two ember layers share each step's ragged
+            // edge (the embers sit a little lower, so they peek out as a rim);
+            // a fresh edge each step keeps it gently shifting as it burns.
+            const IGNITE = 450, BURN = 3000, N = 14;
+            const steps = [];
+            for (let k = 0; k <= N; k++) {
+                const y = k === 0 ? 104 : 100 - 112 * (k / N);
+                const jit = [];
+                for (let i = 0; i <= 10; i++) jit.push((Math.random() - 0.5) * 9);
+                steps.push([k === 0 ? 0 : IGNITE + (BURN - IGNITE) * (k / N), y, jit]);
+            }
+            const edge = (y, jit, drop) => {
+                const pts = [[0, 0], [100, 0]];
+                jit.forEach((d, i) => pts.push([100 - i * 10, y + d + drop]));
+                return pts;
+            };
+            // the embers are just a band along the edge, so only it glows
+            const band = (y, jit, drop) => [
+                ...jit.map((d, i) => [i * 10, y + jit[10 - i] - 6]),
+                ...jit.map((d, i) => [100 - i * 10, y + d + drop])
+            ];
+            const linear = st => st.map(([ms, y, jit], k) => [ms, { y, jit }, k ? 'linear' : 'ease-in']);
+            const ember = document.createElement('div');
+            ember.className = 'burn-ember';
+            const outer = document.createElement('div');
+            outer.className = 'ember-outer';
+            const inner = document.createElement('div');
+            inner.className = 'ember-inner';
+            ember.append(outer, inner);
+            note.insertBefore(ember, face);
+            play(face, linear(steps), 'clipPath', v => polyCss(edge(v.y, v.jit, 0)));
+            play(inner, linear(steps), 'clipPath', v => polyCss(band(v.y, v.jit, 2.2)));
+            play(outer, linear(steps), 'clipPath', v => polyCss(band(v.y, v.jit, 4.2)));
+            const char = document.createElement('div');
+            char.className = 'burn-char';
+            face.appendChild(char);
+            play(char, linear(steps), 'top', v => `${v.y - 20}%`);
+            ember.animate([{ opacity: 0 }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.92 }, { opacity: 0 }],
+                { duration: BURN, fill: 'forwards' });
+            // thin wisps of smoke off the ember edge, an occasional spark, ash
+            const layer = getFxLayer();
+            const bit = (cls, x, y, dx, dy, dur) => {
+                const b = document.createElement('div');
+                b.className = cls;
+                b.style.left = x + 'px';
+                b.style.top = y + 'px';
+                b.style.setProperty('--dx', dx + 'px');
+                b.style.setProperty('--dy', dy + 'px');
+                b.style.setProperty('--rot', (Math.random() * 120 - 60) + 'deg');
+                b.style.setProperty('--dur', dur + 's');
+                layer.appendChild(b);
+                b.addEventListener('animationend', () => b.remove());
+            };
+            const start = performance.now();
+            let tick = 0;
+            const sparks = setInterval(() => {
+                if (!note.isConnected) return clearInterval(sparks);
+                const t = performance.now() - start;
+                if (t < IGNITE * 0.6) return;
+                const k = Math.min(1, Math.max(0, (t - IGNITE) / (BURN - IGNITE)));
+                const nr = note.getBoundingClientRect();
+                const y = nr.top + nr.height * Math.min(1, (100 - 112 * k) / 100);
+                const x = () => nr.left + nr.width * (0.08 + Math.random() * 0.84);
+                bit('fx-smoke', x(), y - 6, (Math.random() - 0.5) * 24, -60 - Math.random() * 50, 1.3 + Math.random() * 0.6);
+                if (tick % 3 === 0) bit('fx-ash', x(), y, (Math.random() - 0.5) * 20, 40 + Math.random() * 70, 1.1 + Math.random() * 0.5);
+                if (tick % 5 === 0) bit('fx-ember', x(), y, (Math.random() - 0.5) * 24, -30 - Math.random() * 40, 0.6 + Math.random() * 0.4);
+                tick++;
+            }, 110);
+            setTimeout(() => clearInterval(sparks), BURN);
+            total = BURN + 100;
+            clear = BURN - 250;
+        } else if (exit === 'plane') {
+            // fold (the note levels out and narrows into a dart), a little
+            // pull back, then launch: dips, catches the air, climbs away
+            const FOLD = 700;
+            clear = FOLD + 350;
+            const dart = planePoly(dir);
+            play(face, [[0, square], [FOLD * 0.5, mixPoly(square, dart, 0.55)], [FOLD, dart]], 'clipPath', polyCss);
+            setTimeout(() => note.classList.add('folded'), FOLD * 0.4);
+            const dx = (dir > 0 ? innerWidth - cx : cx) + 220;
+            const fly = 1700;
+            play(note, [
+                [0, tf(tilt, 1)],
+                [FOLD * 0.5, tf(tilt / 2, 0.92, 0.8)],
+                [FOLD, tf(0, 0.85, 0.55)],
+                [FOLD + 150, tf(-dir * 6, 0.85, 0.55)],
+                [FOLD + 150 + fly * 0.3, tf(dir * 12, 0.85, 0.55), 'ease-in-out'],
+                [FOLD + 150 + fly * 0.65, tf(-dir * 16, 0.85, 0.55)],
+                [FOLD + 150 + fly, tf(-dir * 24, 0.8, 0.5)]
+            ], 'transform', v => v);
+            play(xWrap, [
+                [0, 0], [FOLD, 0], [FOLD + 150, -dir * 22, 'cubic-bezier(.3,0,.8,.6)'],
+                [FOLD + 150 + fly, dir * dx]
+            ], 'transform', tx);
+            total = play(yWrap, [
+                [0, 0], [FOLD + 150, 0, 'ease-in-out'],
+                [FOLD + 150 + fly * 0.3, 38, 'ease-in-out'],
+                [FOLD + 150 + fly * 0.65, -50, 'ease-in'],
+                [FOLD + 150 + fly, -Math.min(cy + 120, 320)]
+            ], 'transform', ty);
+        } else {
+            // crumple: squash and twist while the outline goes jagged
+            const ball = ballPoly(16);
+            play(face, [
+                [0, square],
+                [CRUMPLE_MS * 0.45, mixPoly(square, ballPoly(10), 0.6)],
+                [CRUMPLE_MS * 0.75, ball],
+                [CRUMPLE_MS, ball]
+            ], 'clipPath', polyCss);
+            setTimeout(() => note.classList.add('crumpled'), CRUMPLE_MS * 0.3);
+            const end = tilt + 4;
+            const ballSize = h * 0.5;
+            const crumple = [
+                [0, tf(tilt, 1)],
+                [CRUMPLE_MS * 0.2, tf(tilt + 6, 0.9, 0.8)],
+                [CRUMPLE_MS * 0.45, tf(tilt - 9, 0.68, 0.6)],
+                [CRUMPLE_MS * 0.7, tf(tilt + 14, 0.54, 0.5)],
+                [CRUMPLE_MS, tf(end, 0.5)]
+            ];
+            const C = CRUMPLE_MS;
+            clear = C + (exit === 'throw' ? 150 : 250);
+            if (exit === 'throw') {
+                // wind up with a little dip back, then an arc off the side
+                const T = 850;
+                const dx = (dir > 0 ? innerWidth - cx : cx) + 120;
+                play(note, [...crumple, [C + T, tf(end + dir * 720, 0.46)]], 'transform', v => v);
+                play(xWrap, [[0, 0], [C, 0], [C + 100, -dir * 14], [C + T, dir * dx]], 'transform', tx);
+                total = play(yWrap, [
+                    [0, 0], [C, 0, 'cubic-bezier(.2,.7,.4,1)'],
+                    [C + 100, 10, 'cubic-bezier(.2,.7,.4,1)'],
+                    [C + 330, -130, 'cubic-bezier(.5,0,.9,.6)'],
+                    [C + T, innerHeight - cy + 120]
+                ], 'transform', ty);
+            } else {
+                // drop to the bottom of the screen, bounce twice, settle
+                const floor = Math.max(20, innerHeight - cy - ballSize / 2 - 4);
+                const fall = Math.min(900, Math.max(320, Math.sqrt(floor) * 26));
+                const b1 = Math.min(70, floor * 0.3), b2 = b1 * 0.35;
+                const land = C + fall, rest = land + 700;
+                const drift = dir * 26;
+                play(yWrap, [
+                    [0, 0], [C, 0, 'cubic-bezier(.55,0,1,.45)'],
+                    [land, floor, 'cubic-bezier(0,.55,.45,1)'],
+                    [land + 230, floor - b1, 'cubic-bezier(.55,0,1,.45)'],
+                    [land + 460, floor, 'cubic-bezier(0,.55,.45,1)'],
+                    [land + 590, floor - b2, 'cubic-bezier(.55,0,1,.45)'],
+                    [land + 720, floor]
+                ], 'transform', ty);
+                const spun = end + dir * 160;
+                play(note, [...crumple, [land, tf(end + dir * 110, 0.5)], [land + 720, tf(spun, 0.5)]], 'transform', v => v);
+                play(xWrap, [[0, 0], [C, 0], [land + 720, drift]], 'transform', tx);
+                const settled = land + 720 + 600;
+                if (Math.random() < 0.5) {
+                    // fades away where it landed
+                    setTimeout(() => xWrap.animate([{ opacity: 1 }, { opacity: 0 }],
+                        { duration: 500, fill: 'forwards' }), settled);
+                    total = settled + 500;
+                } else {
+                    // a breeze rolls it off the nearer side; it turns as far as it travels
+                    const dist = (dir > 0 ? innerWidth - cx : cx) - Math.abs(drift) + ballSize;
+                    const rollMs = Math.min(1600, Math.max(700, dist * 1.6));
+                    const turns = dir * dist / (Math.PI * ballSize) * 360;
+                    setTimeout(() => {
+                        xWrap.animate([{ transform: tx(drift) }, { transform: tx(drift + dir * dist) }],
+                            { duration: rollMs, easing: 'cubic-bezier(.5,0,.75,1)', fill: 'forwards' });
+                        note.animate([{ transform: tf(spun, 0.5) }, { transform: tf(spun + turns, 0.5) }],
+                            { duration: rollMs, easing: 'cubic-bezier(.5,0,.75,1)', fill: 'forwards' });
+                    }, settled);
+                    total = settled + rollMs;
+                }
+            }
+        }
+        setTimeout(() => xWrap.remove(), total + 50);
+        return clear; // ms until the note has left its spot on the shelf
     }
 
     // ---------- Backup: export / import ----------

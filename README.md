@@ -39,7 +39,28 @@ What this means in practice:
   - **Dust:** books that have sat in **Want to Read** for 3+ months gather a little dust, and more after 6 months. Hover over a dusty book (or tap it on a phone) to blow the dust off. That counts as dusting, so it stays clean and slowly builds up again.
   - **Shelf cat:** a little black pixel cat naps on top of a shelf. Hover over it (or tap it) and it wakes up, stretches, and hops over to another shelf.
 - **Reading stats:** click the little ledger book in the bottom-left corner for your total number of books, counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
-- **Sticky-note quick add:** the pile of sticky notes in the bottom-left corner. Click it, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list. It shows up on the shelf as a sticky note, a reminder to go get it, until you mark it owned or give it a cover image; then it turns into a regular book. Now and then a note comes unstuck and falls to the bottom of its shelf - click it to stick it back up.
+- **Sticky notes (books you want to get):**
+  - **Quick add:** click the pile of sticky notes in the bottom-left corner, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list. The pile crumples the note and tosses it onto the shelf.
+  - **On the shelf:** the book shows up as a yellow sticky note written in pencil (Nanum Pen Script), stuck on at a slightly crooked angle; some have a curled-up corner. Click it to open and edit it like any book.
+  - **Falling off:** now and then a note comes unstuck and falls to the bottom of its shelf. Click it to stick it back up.
+  - **Turning into a real book:** a sticky note becomes a regular book when you save it with any of these:
+    - Owned ticked
+    - a cover image added
+    - a spine image added
+    - a new cover color
+    - a new width
+    - a new cover shape (ratio preset)
+
+    The sticky note takes off (one of the ways below) and the real book poofs into its spot in a little cloud with sparkles. Editing only the title, author, genre, status, rating, tags, dates or notes keeps it a sticky note. A note that became a book only because Owned was ticked turns back into a sticky note if you untick Owned. Once you've restyled it, it stays a book.
+  - **Deleting one:** the note leaves in style, one of four ways at random:
+    - crumpled into a pointy paper ball and thrown off the screen
+    - folded into a paper airplane that swoops away
+    - crumpled and dropped: it bounces on the bottom edge, sits a moment, then fades or rolls away
+    - set on fire, smouldering away from the bottom up like a cigarette, with a glowing ember edge, wisps of smoke and falling ash
+
+    It heads off a random side of the screen each time. The books next to it wait until it's gone, then slide over to fill the gap.
+  - **Filter:** use the Sticky Notes buttons (Show / Hide / Only) to mix them in with your books, hide them, or show just them (a shopping list).
+  - **Settings:** Settings can hide the sticky-note pile. With Calm mode (or your device's reduced-motion setting) on, notes simply appear and disappear without the animations.
 - Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread-but-owned books versus ones marked Read.
 
 - **On phones:** Search stays at the top and everything else folds into a **Filters & sorting** button (it shows a count like "• 2" when filters are on); button groups wrap neatly onto new lines. Books are drawn a bit smaller so more fit per row, and the edit window shows a compact preview row at the top.
