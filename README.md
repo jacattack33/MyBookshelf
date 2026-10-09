@@ -38,6 +38,23 @@ What this means in practice:
   - **Leaning books:** when a shelf has room left over, its last book leans over onto its neighbour. Adding or removing books makes it straighten up or tip over.
   - **Dust:** books that have sat in **Want to Read** for 3+ months gather a little dust, and more after 6 months. Hover over a dusty book (or tap it on a phone) to blow the dust off. That counts as dusting, so it stays clean and slowly builds up again.
   - **Shelf cat:** a little black pixel cat naps on top of a shelf. Hover over it (or tap it) and it wakes up, stretches, and hops over to another shelf.
+  - **Deleting a book:** the book leaves the shelf in style (sticky notes have their own ways, below). If it was pulled out, it slides back into its spot first, then goes one of seven ways at random:
+    - **Tip:** rocks back, tips forward off the ledge toward you and drops, with a puff of dust
+    - **Domino:** topples into its neighbour, the next few books wobble down the row, then it slips down out of sight between them
+    - **Fling:** pulled out toward you, a wind-up, then thrown end over end off the side of the screen
+    - **Shred:** a shredder pops up on the ledge; the book is fed in, rattling, and comes out underneath as strips that flutter away
+    - **Burn:** lit at the top, it burns down like a match with a glowing ember edge, smoke and sparks, leaving a little pile of ash that blows away
+    - **Pages:** the cover swings open and full-size pages burst out, flapping away like a flock of birds
+    - **Trapdoor:** a hole opens under it; it hangs in the air a beat like a cartoon, then drops straight through
+
+    Some themes have an exit of their own, used half the time:
+    - **Terminal:** the book glitches (jumping, splitting into red and green ghosts), then switches off like an old CRT (a line, a dot, gone), while `> rm "Title"` and `deleted.` type themselves out above it
+    - **Holo:** a rainbow scanline sweeps over it, it shivers into colour-shifting holographic slices, and they blink out one by one with a burst of sparkles
+    - **Blueprint:** it fades back to a dashed drawing with its width dimensioned underneath, and a pink eraser rubs it out, dropping crumbs
+    - **Library:** a red WITHDRAWN stamp slams onto the cover, then the book is slid up off the shelf and away
+    - **Deco:** a sweep of gold leaf, then it opens out like a fan, snaps shut into a thin gilt stick and sinks away in a glint
+
+    The books next to it wait until it's gone, then slide over to fill the gap. With Calm mode (or your device's reduced-motion setting) on, the book simply disappears.
 - **Reading stats:** click the little ledger book in the bottom-left corner for your total number of books, counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
 - **Sticky notes (books you want to get):**
   - **Quick add:** click the pile of sticky notes in the bottom-left corner, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list. The pile crumples the note and tosses it onto the shelf.

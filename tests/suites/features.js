@@ -115,6 +115,43 @@ ok('dropped ball lands on the bottom edge', db && mid > bottom - 60 && mid < bot
 await wait(2800);
 ok('every tossed note cleaned up', !q('#fx-layer .tossed-note'));
 
+// ---- deleting a real book: it leaves its own way (every exit, theme ones too)
+library.push({ id: 'bk1', title: 'Doomed', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#5fe8c4', width: 110, sortOrder: 1 });
+renderBookshelf();
+q('.book[data-id="bk1"]').scrollIntoView({ block: 'center' });
+openModal('bk1');
+const bk1Next = q('#library-room .book[data-id="bk1"]').nextElementSibling;
+const bk1Before = bk1Next && bk1Next.getBoundingClientRect().left;
+const deletingBook = deleteCurrentBook();
+await wait(250);
+ok('deleting a book sends a copy of it off', q('#book-modal').style.display !== 'flex' && !!q('#fx-layer .tossed-book'));
+ok('the next book waits while it leaves', !bk1Next || Math.abs(bk1Next.getBoundingClientRect().left - bk1Before) < 1);
+await deletingBook;
+ok('book is gone from the shelf and library', !q('#library-room .book[data-id="bk1"]') && !library.some(b => b.id === 'bk1'));
+await wait(4000);
+ok('its copy is cleaned up', !q('#fx-layer .tossed-book'));
+const allBookExits = [...BOOK_EXITS, ...Object.values(THEME_BOOK_EXITS)];
+library.push({ id: 'bk2', title: 'Again', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#ff2e93', width: 110, sortOrder: 1 });
+const leaving = {};
+for (const exit of allBookExits) {
+    renderBookshelf();
+    q('.book[data-id="bk2"]').scrollIntoView({ block: 'center' });
+    leaving[exit] = tossBook('bk2', exit);
+}
+ok('every book exit says how long to hold its spot', allBookExits.every(e => leaving[e] > 0), JSON.stringify(leaving));
+await wait(600);
+const bookLook = e => q(`#fx-layer .tossed-book[data-exit="${e}"]`);
+ok('burning book has an ember edge', !!bookLook('burn') && !!bookLook('burn').parentElement.querySelector('.burn-ember'));
+ok('shredder shows up for shredding', !!q('#fx-layer .fx-shredder'));
+ok('pages flutter out', document.querySelectorAll('#fx-layer .fx-page').length >= 10);
+ok('Library stamps it WITHDRAWN', !!bookLook('withdrawn') && bookLook('withdrawn').querySelector('.fx-stamp').textContent === 'WITHDRAWN');
+ok('Terminal types the rm command', /rm "Again"/.test((q('#fx-layer .fx-term-line') || {}).textContent || ''));
+ok('Blueprint leaves an outline to rub out', !!q('#fx-layer .fx-outline') && !!q('#fx-layer .fx-eraser'));
+ok('Holo and Deco split it into visible pieces', [...document.querySelectorAll('#fx-layer .tossed-book')].filter(b => getComputedStyle(b).visibility === 'visible').length > 20);
+await wait(5000);
+ok('every leaving book cleaned up', !q('#fx-layer .tossed-book'));
+library = library.filter(b => b.id !== 'bk2');
+
 // ---- getting a to-get book: the sticky note leaves, the real book poofs in
 library.push({ id: 'sn4', title: 'Got it now', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', stickyNote: true, color: '#ccc', width: 100, sortOrder: 3 });
 renderBookshelf();

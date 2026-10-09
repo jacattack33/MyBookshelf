@@ -4002,6 +4002,192 @@
             100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot)); opacity: 0; }
         }
 
+        /* ---------- A deleted book leaving the shelf (see tossBook) ---------- */
+        .book.tossed-book {
+            position: absolute;
+            margin: 0;
+            translate: none;
+            rotate: none;
+            transition: none;
+            pointer-events: none;
+        }
+
+        /* cuts a leaving book off at the shelf's floor, so it can sink through it */
+        .fx-clip {
+            position: absolute;
+            left: 0;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* burning like a match: charred just below the edge creeping down */
+        .burn-char.from-top {
+            background: linear-gradient(to top,
+                rgba(150, 100, 30, 0) 0%,
+                rgba(120, 70, 20, 0.3) 40%,
+                rgba(60, 30, 10, 0.75) 78%,
+                #2a1406 100%);
+            z-index: 3;
+        }
+
+        .fx-ash-pile {
+            position: absolute;
+            height: 12px;
+            transform-origin: 50% 100%;
+            background: radial-gradient(ellipse 50% 100% at 50% 100%, #5e5650, #3c3631 60%, rgba(60, 54, 49, 0) 100%);
+        }
+
+        /* the shredder: a dark steel mouth across the ledge */
+        .fx-shredder {
+            position: absolute;
+            height: 22px;
+            border-radius: 4px;
+            background:
+                linear-gradient(to bottom, transparent 9px, #050505 9px, #050505 12px, transparent 12px),
+                linear-gradient(to bottom, #6b6e75, #3b3e44 45%, #24262a);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .fx-page {
+            position: absolute;
+            border-radius: 1px 3px 3px 1px;
+            background:
+                repeating-linear-gradient(to bottom, transparent 0 5px, rgba(90, 80, 60, 0.28) 5px 6px) 3px 6px / calc(100% - 6px) calc(100% - 10px) no-repeat,
+                #f8f2e2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            transform-origin: 0 50%;
+            animation: fx-page-flap 0.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes fx-page-flap {
+            from { transform: perspective(700px) rotateY(0deg); }
+            to { transform: perspective(700px) rotateY(68deg); }
+        }
+
+        .fx-hole {
+            position: absolute;
+            height: 16px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 50% 45%, #000 45%, #1a1310 70%, rgba(26, 19, 16, 0) 100%);
+        }
+
+        /* Terminal: the rm command typed beside the book */
+        .fx-term-line {
+            position: absolute;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            line-height: 1;
+            white-space: pre;
+            color: var(--phosphor, #33ff66);
+            text-shadow: 0 0 6px var(--glow, rgba(51, 255, 102, 0.6));
+        }
+
+        .fx-term-line .cursor {
+            display: inline-block;
+            width: 0.5em;
+            height: 0.8em;
+            vertical-align: -0.05em;
+            background: currentColor;
+            animation: term-blink 0.6s steps(1) infinite;
+        }
+
+        /* Holo: a rainbow scanline sweeping the book away */
+        .fx-holo-scan {
+            position: absolute;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--holo, linear-gradient(90deg, #ff8fdc, #7ad9ff, #7dffc6, #ffe388));
+            box-shadow: 0 0 10px 2px rgba(180, 160, 255, 0.8);
+        }
+
+        /* Blueprint: the book left as a dashed drawing, then rubbed out */
+        .fx-outline {
+            position: absolute;
+            box-sizing: border-box;
+            border: 2px dashed rgba(var(--ink-rgb), 0.85);
+            background:
+                linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(var(--ink-rgb), 0.45) 50%, transparent calc(50% + 0.6px)),
+                linear-gradient(to bottom right, transparent calc(50% - 0.6px), rgba(var(--ink-rgb), 0.45) 50%, transparent calc(50% + 0.6px));
+        }
+
+        .fx-outline .fx-dim {
+            position: absolute;
+            left: -2px;
+            right: -2px;
+            top: calc(100% + 6px);
+            height: 0;
+            border-top: 1px solid rgba(var(--ink-rgb), 0.85);
+            font: 600 10px/1 'IBM Plex Mono', monospace;
+            color: rgb(var(--ink-rgb));
+            text-align: center;
+        }
+
+        .fx-outline .fx-dim::before,
+        .fx-outline .fx-dim::after {
+            content: "";
+            position: absolute;
+            top: -4px;
+            height: 7px;
+            border-left: 1px solid rgba(var(--ink-rgb), 0.85);
+        }
+
+        .fx-outline .fx-dim::before { left: 0; }
+        .fx-outline .fx-dim::after { right: 0; }
+
+        .fx-outline .fx-dim span {
+            position: relative;
+            top: 3px;
+            padding: 0 4px;
+            background: var(--bg-color);
+        }
+
+        .fx-eraser {
+            position: absolute;
+            width: 34px;
+            height: 16px;
+            margin: -8px 0 0 -17px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #f2a2a8 0 55%, #3a6fc4 55%);
+            box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .fx-crumb {
+            position: absolute;
+            width: 4px;
+            height: 3px;
+            border-radius: 1px;
+            background: #d98d94;
+            animation: fx-fly var(--dur, 0.8s) ease-in forwards;
+        }
+
+        /* Library: the WITHDRAWN stamp */
+        .fx-stamp {
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            z-index: 4;
+            padding: 0.25em 0.45em;
+            border: 3px double #a8322a;
+            border-radius: 3px;
+            color: #a8322a;
+            font: 700 var(--stamp-size, 15px)/1 Georgia, 'Times New Roman', serif;
+            letter-spacing: 0.12em;
+            white-space: nowrap;
+            text-shadow: 0 0 1px rgba(255, 255, 255, 0.35);
+            opacity: 0;
+        }
+
+        /* Deco: a gold-leaf shimmer across the cover */
+        .fx-gold-sweep {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            pointer-events: none;
+            background: linear-gradient(115deg, transparent 30%, rgba(255, 236, 170, 0.15) 40%, rgba(255, 220, 120, 0.9) 50%, rgba(255, 236, 170, 0.15) 60%, transparent 70%) no-repeat;
+            background-size: 250% 100%;
+            mix-blend-mode: screen;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .preview-book-wrap.wiggle,
             .preview-sticker.visible { animation: none; }
@@ -9931,6 +10117,21 @@
         }
     }
 
+    // one bit (smoke, ash, an ember...) flying from a screen point along (dx, dy)
+    function flyBit(cls, x, y, dx, dy, dur) {
+        const b = document.createElement('div');
+        b.className = cls;
+        b.style.left = x + 'px';
+        b.style.top = y + 'px';
+        b.style.setProperty('--dx', dx + 'px');
+        b.style.setProperty('--dy', dy + 'px');
+        b.style.setProperty('--rot', (Math.random() * 120 - 60) + 'deg');
+        b.style.setProperty('--dur', dur + 's');
+        getFxLayer().appendChild(b);
+        b.addEventListener('animationend', () => b.remove());
+        return b;
+    }
+
     function sparkleFrom(el, count = 7) {
         burstFrom(el, count, 38, () => {
             const sp = document.createElement('span');
@@ -10872,10 +11073,13 @@
         if (!editingId) return;
         const id = editingId;
         const book = library.find(b => b.id === id);
-        // a to-get sticky note gets crumpled up and thrown off the screen
-        const toss = book && isStickyPlaceholder(book) && !prefersReducedMotion()
-            ? () => { closeModal(); return tossStickyNote(id); }
-            : null;
+        // a to-get sticky note gets crumpled up and thrown off the screen;
+        // a book leaves one of its own ways (its pulled-out pose is read
+        // before the window closes and starts sliding it back)
+        const toss = !book || prefersReducedMotion() ? null
+            : isStickyPlaceholder(book)
+                ? () => { closeModal(); return tossStickyNote(id); }
+                : () => { const ms = tossBook(id); closeModal(); return ms; };
         if (await removeBook(id, toss)) {
             closeModal();
         }
@@ -10943,9 +11147,9 @@
             return k;
         }), total];
     }
-    function play(el, steps, prop, fmt) {
+    function play(el, steps, prop, fmt, delay = 0) {
         const [frames, total] = timeline(steps, prop, fmt);
-        el.animate(frames, { duration: total, fill: 'forwards' });
+        el.animate(frames, { duration: total, delay, fill: 'forwards' });
         return total;
     }
 
@@ -11026,19 +11230,7 @@
             ember.animate([{ opacity: 0 }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.92 }, { opacity: 0 }],
                 { duration: BURN, fill: 'forwards' });
             // thin wisps of smoke off the ember edge, an occasional spark, ash
-            const layer = getFxLayer();
-            const bit = (cls, x, y, dx, dy, dur) => {
-                const b = document.createElement('div');
-                b.className = cls;
-                b.style.left = x + 'px';
-                b.style.top = y + 'px';
-                b.style.setProperty('--dx', dx + 'px');
-                b.style.setProperty('--dy', dy + 'px');
-                b.style.setProperty('--rot', (Math.random() * 120 - 60) + 'deg');
-                b.style.setProperty('--dur', dur + 's');
-                layer.appendChild(b);
-                b.addEventListener('animationend', () => b.remove());
-            };
+            const bit = flyBit;
             const start = performance.now();
             let tick = 0;
             const sparks = setInterval(() => {
@@ -11160,6 +11352,542 @@
         }
         setTimeout(() => xWrap.remove(), total + 50);
         return clear; // ms until the note has left its spot on the shelf
+    }
+
+    // ---------- Deleted books leave the shelf ----------
+    // A deleted book goes one of seven ways (picked at random): tipped
+    // forward off the ledge, toppled into its neighbours (knocking them down
+    // the row) before slipping down between them, pulled out and flung end
+    // over end, fed through a shredder, burnt down from the top like a
+    // match, burst into fluttering pages, or dropped through a trapdoor. Some themes have an exit of their own, picked half
+    // the time: Terminal glitches it out like a CRT switching off, Holo
+    // de-rezzes it into rainbow slices, Blueprint leaves a dashed drawing
+    // and rubs it out, Library stamps it WITHDRAWN, Deco gilds it and folds
+    // it up like a fan.
+    // As with sticky notes, a copy in the fx layer does the moving (inside
+    // x and y wrappers); a pulled-out book first settles back into its spot.
+    const BOOK_EXITS = ['tip', 'domino', 'fling', 'shred', 'burn', 'pages', 'trapdoor'];
+    const THEME_BOOK_EXITS = { terminal: 'glitch', holo: 'derez', blueprint: 'erase', library: 'withdrawn', deco: 'fan' };
+
+    function pickBookExit() {
+        const own = THEME_BOOK_EXITS[document.documentElement.dataset.theme];
+        if (own && Math.random() < 0.5) return own;
+        return BOOK_EXITS[Math.floor(Math.random() * BOOK_EXITS.length)];
+    }
+
+    // a copy of a book for the fx layer, centred on its wrapper
+    function copyBook(el, w, h) {
+        const c = el.cloneNode(true);
+        c.classList.remove('leaning', 'dragging', 'dust-blowing');
+        c.classList.add('tossed-book');
+        c.removeAttribute('draggable');
+        c.style.visibility = ''; // (the book itself is hidden while its copy leaves)
+        c.style.width = w + 'px';
+        c.style.height = h + 'px';
+        c.style.left = -w / 2 + 'px';
+        c.style.top = -h / 2 + 'px';
+        return c;
+    }
+
+    // the part of a book inside a box (in % of the book; past 0-100 takes
+    // in its page tops and spine edge)
+    const slicePoly = (x1, y1, x2, y2) => `polygon(${x1}% ${y1}%, ${x2}% ${y1}%, ${x2}% ${y2}%, ${x1}% ${y2}%)`;
+    const WHOLE_BOOK = slicePoly(-12, -12, 112, 112);
+
+    function dustPuff(x, y, count, reach) {
+        burstAt(x, y, count, reach, () => {
+            const pf = document.createElement('span');
+            pf.className = 'fx-puff';
+            pf.style.width = pf.style.height = (14 + Math.random() * 16) + 'px';
+            pf.style.setProperty('--puff', '#bdb5aa');
+            pf.style.setProperty('--puff-dur', (0.7 + Math.random() * 0.4) + 's');
+            return pf;
+        });
+    }
+
+    function sparkleBurst(x, y, count, reach, colors) {
+        burstAt(x, y, count, reach, i => {
+            const sp = document.createElement('span');
+            sp.className = 'fx-sparkle';
+            sp.textContent = '✦';
+            sp.style.fontSize = (10 + Math.random() * 10) + 'px';
+            sp.style.color = colors[i % colors.length];
+            return sp;
+        });
+    }
+
+    function tossBook(id, exit = pickBookExit()) {
+        const el = document.querySelector(`#library-room .book[data-id="${CSS.escape(id)}"]`);
+        if (!el || el.classList.contains('sticky-book')) return;
+        const r = el.getBoundingClientRect();
+        if (!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return;
+        const cs = getComputedStyle(el);
+        const m = new DOMMatrix(cs.transform);
+        const tilt = Math.atan2(m.b, m.a) * 180 / Math.PI + (parseFloat(cs.rotate) || 0);
+        const lift = Math.hypot(m.a, m.b); // pulled out, it's a little bigger
+        const w = el.offsetWidth, h = el.offsetHeight;
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        // where it stands on the shelf (its layout box, not the pulled-out pose)
+        const op = el.offsetParent;
+        const opTop = !op || op === document.body ? -scrollY : op.getBoundingClientRect().top + op.clientTop - op.scrollTop;
+        let floor = opTop + el.offsetTop + h;
+        if (!Number.isFinite(floor) || Math.abs(floor - r.bottom) > h) floor = r.bottom;
+        const restCy = floor - h / 2;
+        const left = cx - w / 2, top = floor - h;
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        const away = d => (d > 0 ? innerWidth - cx : cx) + Math.max(w, h) + 40;
+        const fallOff = innerHeight - restCy + h;
+        const title = (library.find(b => b.id === id) || {}).title || 'book';
+
+        // everything for this exit lives in one scene in the fx layer
+        const scene = document.createElement('div');
+        const xWrap = document.createElement('div');
+        const yWrap = document.createElement('div');
+        const restWrap = document.createElement('div');
+        scene.className = xWrap.className = yWrap.className = restWrap.className = 'toss-wrap';
+        xWrap.style.left = cx + 'px';
+        xWrap.style.top = restCy + 'px';
+        const book = copyBook(el, w, h);
+        book.dataset.exit = exit;
+        restWrap.appendChild(book);
+        yWrap.appendChild(restWrap);
+        xWrap.appendChild(yWrap);
+        scene.appendChild(xWrap);
+        getFxLayer().appendChild(scene);
+        el.style.visibility = 'hidden';
+
+        // a pulled-out book slides back into its spot first; everything
+        // below starts S ms in
+        const S = (Math.abs(cy - restCy) > 1 || Math.abs(tilt) > 0.5 || Math.abs(lift - 1) > 0.01) ? 200 : 0;
+        if (S) restWrap.animate([
+            { transform: `translateY(${cy - restCy}px) rotate(${tilt}deg) scale(${lift})` },
+            { transform: 'none' }
+        ], { duration: S, easing: 'ease-in', fill: 'forwards' });
+        const go = (target, steps, prop, fmt) => play(target, steps, prop, fmt, S);
+        const at = (ms, fn) => setTimeout(() => { if (scene.isConnected) fn(); }, S + ms);
+        const pose = p => `perspective(900px) rotateX(${p.rx || 0}deg) rotateY(${p.ry || 0}deg) rotate(${p.r || 0}deg) scale(${p.sx ?? p.s ?? 1}, ${p.sy ?? p.s ?? 1})`;
+        const tx = v => `translateX(${v}px)`;
+        const ty = v => `translateY(${v}px)`;
+        const asIs = v => v;
+        // a box cutting things off above (or below) a line across the screen
+        const clipAt = (y, below) => {
+            const c = document.createElement('div');
+            c.className = 'fx-clip';
+            c.style.top = (below ? y : 0) + 'px';
+            c.style.height = (below ? innerHeight - y + 100 : y) + 'px';
+            scene.appendChild(c);
+            return c;
+        };
+        let total, clear;
+
+        if (exit === 'tip') {
+            // rocks back, then tips forward off the ledge toward you and drops
+            book.style.transformOrigin = '50% 100%';
+            go(book, [
+                [0, {}, 'ease-in-out'],
+                [220, { rx: 10 }, 'ease-in'],
+                [560, { rx: -40, s: 1.04 }],
+                [1250, { rx: -86, r: dir * 20, s: 1.14 }]
+            ], 'transform', pose);
+            total = go(yWrap, [[0, 0], [480, 0, 'cubic-bezier(.45,0,1,.6)'], [1250, fallOff]], 'transform', ty);
+            at(540, () => dustPuff(cx, floor, 10, w * 0.7));
+            clear = 650;
+        } else if (exit === 'domino') {
+            // nudged, it tips into its neighbour - which knocks on down the
+            // row - then slips down out of sight between them
+            const isBook = n => n && n.classList.contains('book') && n.style.visibility !== 'hidden';
+            const prev = el.previousElementSibling, next = el.nextElementSibling;
+            let d = dir;
+            if (isBook(prev) && !isBook(next)) d = -1;
+            else if (isBook(next) && !isBook(prev)) d = 1;
+            const gap = parseFloat(getComputedStyle(el.parentElement).columnGap) || 0;
+            const lean = Math.max(7, Math.asin(Math.min(1, (gap + 2) / h)) * 180 / Math.PI);
+            const pivot = d > 0 ? '100% 100%' : '0% 100%';
+            book.style.transformOrigin = pivot;
+            clipAt(floor).appendChild(xWrap);
+            go(book, [
+                [0, {}, 'ease-in-out'],
+                [200, { r: -d * 3 }, 'ease-in'],
+                [520, { r: d * lean }, 'ease-out'],
+                [640, { r: d * lean * 0.55 }, 'ease-in'],
+                [780, { r: d * lean }],
+                [950, { r: d * lean }, 'ease-in'],
+                [1500, { r: d * (lean + 8) }]
+            ], 'transform', pose);
+            total = go(yWrap, [[0, 0], [950, 0, 'cubic-bezier(.5,0,.9,.5)'], [1500, h + 30]], 'transform', ty);
+            let n = d > 0 ? next : prev;
+            for (let k = 0; k < 4 && isBook(n); k++) {
+                const target = n, amp = 5 * Math.pow(0.6, k);
+                const wob = (deg, offset) => ({ transform: `rotate(${deg}deg)`, transformOrigin: pivot, offset });
+                at(520 + k * 110, () => target.animate([
+                    wob(0, 0), wob(d * amp, 0.25), wob(-d * amp * 0.4, 0.55), wob(d * amp * 0.15, 0.8), wob(0, 1)
+                ], { duration: 650, easing: 'ease-out' }));
+                n = d > 0 ? n.nextElementSibling : n.previousElementSibling;
+            }
+            clear = 1400;
+        } else if (exit === 'fling') {
+            // pulled out toward you, a wind-up, then flung end over end off the side
+            const T = 950;
+            go(book, [
+                [0, {}, 'ease-out'],
+                [260, { s: 1.22, rx: -10 }, 'ease-in-out'],
+                [380, { s: 1.25, rx: -10, r: -dir * 8 }],
+                [380 + T, { s: 0.9, rx: -730, r: dir * 50 }]
+            ], 'transform', pose);
+            go(xWrap, [[0, 0], [260, 0, 'ease-in-out'], [380, -dir * 18], [380 + T, dir * away(dir)]], 'transform', tx);
+            total = go(yWrap, [
+                [0, 0, 'ease-out'], [260, -24, 'ease-in-out'],
+                [380, -16, 'cubic-bezier(.2,.7,.4,1)'],
+                [380 + T * 0.35, -170, 'cubic-bezier(.5,0,.9,.6)'],
+                [380 + T, fallOff]
+            ], 'transform', ty);
+            clear = 500;
+        } else if (exit === 'shred') {
+            // a shredder pops up on the ledge; the book is fed down into it,
+            // rattling, and comes out underneath as strips that flutter away
+            const FEED0 = 350, FEED = 1500, MOUTH = 22, sw = w + 24;
+            clipAt(floor).appendChild(xWrap);
+            const outOfIt = clipAt(floor - 8 + MOUTH, true);
+            const shredder = document.createElement('div');
+            shredder.className = 'fx-shredder';
+            shredder.style.left = cx - sw / 2 + 'px';
+            shredder.style.top = floor - 8 + 'px';
+            shredder.style.width = sw + 'px';
+            scene.appendChild(shredder);
+            shredder.animate([{ opacity: 0, transform: 'scaleX(0.6)' }, { opacity: 1, transform: 'none' }],
+                { duration: 250, delay: S, easing: 'cubic-bezier(.2,.9,.3,1.3)', fill: 'backwards' });
+            at(FEED0 + FEED + 150, () => shredder.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }));
+            const feed = [[0, { y: 0 }], [FEED0, { y: 0 }, 'linear'], [FEED0 + FEED, { y: h + 6 }]];
+            go(yWrap, feed, 'transform', v => ty(v.y));
+            const shake = [[0, 0], [FEED0, 0, 'steps(1, end)']];
+            for (let t = FEED0 + 45; t < FEED0 + FEED; t += 45) shake.push([t, (Math.random() - 0.5) * 3, 'steps(1, end)']);
+            shake.push([FEED0 + FEED, 0]);
+            go(xWrap, shake, 'transform', tx);
+            // the strips, lined up to carry on from where the book went in
+            const strips = document.createElement('div');
+            strips.className = 'toss-wrap';
+            strips.style.left = cx + 'px';
+            strips.style.top = -h / 2 + 'px';
+            outOfIt.appendChild(strips);
+            const N = Math.max(5, Math.min(14, Math.round(w / 9)));
+            let last = 0;
+            for (let i = 0; i < N; i++) {
+                const strip = document.createElement('div');
+                strip.className = 'toss-wrap';
+                const piece = copyBook(el, w, h);
+                piece.style.clipPath = slicePoly(i / N * 100 + 0.8, -12, (i + 1) / N * 100 - 0.8, 112);
+                strip.appendChild(piece);
+                strips.appendChild(strip);
+                const end = FEED0 + FEED + 900 + Math.random() * 700;
+                last = Math.max(last, end);
+                go(strip, [...feed.slice(0, 2), [FEED0 + FEED, { y: h + 6 }, 'cubic-bezier(.4,0,.9,.6)'],
+                    [end, { y: h + 6 + innerHeight * 0.5, x: (Math.random() - 0.5) * 60, r: (Math.random() - 0.5) * 30 }]
+                ], 'transform', v => `translate(${v.x || 0}px, ${v.y}px) rotate(${v.r || 0}deg)`);
+                piece.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: S + end - 700, fill: 'forwards' });
+            }
+            total = last;
+            clear = FEED0 + FEED + 100;
+        } else if (exit === 'burn') {
+            // lit at the top, it burns down like a match: the ember edge
+            // creeps down with the char just ahead of it, and leaves a heap
+            // of ash on the shelf that a breath of air then blows away
+            const IGNITE = 400, BURN = 3200, N = 14;
+            const steps = [];
+            for (let k = 0; k <= N; k++) {
+                // (the last edge lies flat on the bottom, nothing left)
+                const jit = [];
+                for (let i = 0; i <= 10; i++) jit.push(k === N ? 0 : (Math.random() - 0.5) * 8);
+                steps.push([k === 0 ? 0 : IGNITE + (BURN - IGNITE) * (k / N),
+                    { y: k === 0 ? -12 : k === N ? 112 : -6 + 118 * (k / N), jit }, k ? 'linear' : 'ease-in']);
+            }
+            const edge = (v, shift) => v.jit.map((d, i) => [-12 + i * 12.4, v.y + d + shift]);
+            const emberBox = document.createElement('div');
+            emberBox.style.cssText = `position:absolute;left:${-w / 2}px;top:${-h / 2}px;width:${w}px;height:${h}px;`;
+            const ember = document.createElement('div');
+            ember.className = 'burn-ember';
+            const outer = document.createElement('div');
+            outer.className = 'ember-outer';
+            const inner = document.createElement('div');
+            inner.className = 'ember-inner';
+            ember.append(outer, inner);
+            emberBox.appendChild(ember);
+            restWrap.insertBefore(emberBox, book);
+            // (the embers are a band just above the edge, behind the book)
+            const band = drop => v => polyCss([...edge(v, -drop), ...edge(v, 6).reverse()]);
+            go(book, steps, 'clipPath', v => polyCss([...edge(v, 0), [112, 112], [-12, 112]]));
+            go(inner, steps, 'clipPath', band(2.2));
+            go(outer, steps, 'clipPath', band(4.2));
+            ember.animate([{ opacity: 0 }, { opacity: 1, offset: 0.08 }, { opacity: 1, offset: 0.94 }, { opacity: 0 }],
+                { duration: BURN, delay: S, fill: 'both' });
+            const char = document.createElement('div');
+            char.className = 'burn-char from-top';
+            char.style.top = '-30%';
+            book.appendChild(char);
+            go(char, steps, 'top', v => `${v.y}%`);
+            const pw = Math.min(w * 0.9, 90) + 20;
+            const pile = document.createElement('div');
+            pile.className = 'fx-ash-pile';
+            pile.style.left = cx - pw / 2 + 'px';
+            pile.style.top = floor - 12 + 'px';
+            pile.style.width = pw + 'px';
+            scene.insertBefore(pile, scene.firstChild);
+            pile.animate([{ transform: 'scaleY(0)' }, { transform: 'scaleY(1)' }],
+                { duration: BURN - IGNITE, delay: S + IGNITE, fill: 'both' });
+            // smoke off the ember edge, an occasional spark, falling ash
+            const start = performance.now() + S;
+            let tick = 0;
+            const sparks = setInterval(() => {
+                const t = performance.now() - start;
+                if (!scene.isConnected || t > BURN) return clearInterval(sparks);
+                if (t < IGNITE * 0.6) return;
+                const k = Math.min(1, Math.max(0, (t - IGNITE) / (BURN - IGNITE)));
+                const y = Math.min(floor, top + h * Math.max(0, (-6 + 120 * k) / 100));
+                const x = () => left + w * (0.08 + Math.random() * 0.84);
+                flyBit('fx-smoke', x(), y - 6, (Math.random() - 0.5) * 24, -60 - Math.random() * 50, 1.3 + Math.random() * 0.6);
+                if (tick % 3 === 0) flyBit('fx-ash', x(), y, (Math.random() - 0.5) * 20, Math.max(10, floor - y) * Math.random(), 1 + Math.random() * 0.5);
+                if (tick % 5 === 0) flyBit('fx-ember', x(), y, (Math.random() - 0.5) * 24, -30 - Math.random() * 40, 0.6 + Math.random() * 0.4);
+                tick++;
+            }, 110);
+            at(BURN + 250, () => {
+                pile.animate([{ opacity: 1 }, { opacity: 0, transform: `translateX(${dir * 16}px) scaleY(0.2)` }],
+                    { duration: 500, fill: 'forwards' });
+                for (let i = 0; i < 24; i++) {
+                    flyBit('fx-ash', cx + (Math.random() - 0.5) * pw * 0.8, floor - Math.random() * 10,
+                        dir * (50 + Math.random() * 130), -(10 + Math.random() * 50), 0.8 + Math.random() * 0.6);
+                }
+            });
+            clear = BURN + 600;
+            total = BURN + 1300;
+        } else if (exit === 'pages') {
+            // the cover swings open and the pages burst out, flapping away
+            // like a flock of birds
+            book.style.transformOrigin = '0% 50%';
+            go(book, [[0, {}, 'ease-in-out'], [180, { s: 1.04, r: -dir * 2 }, 'ease-in'], [560, { ry: -80, s: 1.08 }]], 'transform', pose);
+            book.animate([{ opacity: 1 }, { opacity: 1, offset: 0.5 }, { opacity: 0 }], { duration: 560, delay: S, fill: 'forwards' });
+            // real-size pages, a touch smaller than the cover (a spine is
+            // only the book's edge, so size those from its height)
+            const pw = (el.classList.contains('spine-mode') ? h * 2 / 3 : w) * 0.92, ph = h * 0.95;
+            const COUNT = 10;
+            at(260, () => {
+                for (let i = 0; i < COUNT; i++) {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'toss-wrap';
+                    wrap.style.left = cx + (Math.random() - 0.5) * w * 0.3 + 'px';
+                    wrap.style.top = restCy + (Math.random() - 0.5) * h * 0.15 + 'px';
+                    const page = document.createElement('div');
+                    page.className = 'fx-page';
+                    page.style.width = pw + 'px';
+                    page.style.height = ph + 'px';
+                    page.style.left = -pw / 2 + 'px';
+                    page.style.top = -ph / 2 + 'px';
+                    page.style.animationDuration = (0.28 + Math.random() * 0.16) + 's';
+                    page.style.animationDelay = -Math.random() + 's';
+                    wrap.appendChild(page);
+                    scene.appendChild(wrap);
+                    const ex = (Math.random() - 0.5) * Math.min(innerWidth, 900) * 0.9, ey = -(160 + Math.random() * 320);
+                    const mx = ex * 0.35 + (Math.random() - 0.5) * 120, my = ey * 0.4 + (Math.random() - 0.5) * 50;
+                    const spin = (Math.random() - 0.5) * 60;
+                    wrap.animate([
+                        { transform: 'translate(0, 0) rotate(0deg) scale(0.95)', opacity: 1 },
+                        { transform: `translate(${mx}px, ${my}px) rotate(${spin}deg) scale(1)`, opacity: 1, offset: 0.4 },
+                        { transform: `translate(${ex}px, ${ey}px) rotate(${-spin}deg) scale(0.9)`, opacity: 0 }
+                    ], { duration: 1500 + Math.random() * 900, delay: i * 50, easing: 'cubic-bezier(.25,.6,.45,1)', fill: 'both' });
+                }
+            });
+            total = 260 + 50 * COUNT + 2400;
+            clear = 600;
+        } else if (exit === 'trapdoor') {
+            // a trapdoor opens under it: it hangs in the air a beat (the
+            // cartoon look down), then drops straight through
+            const hw = w + 18;
+            const hole = document.createElement('div');
+            hole.className = 'fx-hole';
+            hole.style.left = cx - hw / 2 + 'px';
+            hole.style.top = floor - 8 + 'px';
+            hole.style.width = hw + 'px';
+            scene.insertBefore(hole, scene.firstChild);
+            clipAt(floor).appendChild(xWrap);
+            hole.animate([
+                { transform: 'scaleX(0)' }, { transform: 'scaleX(1)', offset: 0.2 },
+                { transform: 'scaleX(1)', offset: 0.82 }, { transform: 'scaleX(0)' }
+            ], { duration: 1250, delay: S + 120, easing: 'ease-in-out', fill: 'both' });
+            go(book, [[0, {}], [300, {}, 'ease-out'], [430, { sx: 0.97, sy: 1.04 }], [580, {}, 'ease-in'], [900, { r: (Math.random() - 0.5) * 10 }]],
+                'transform', pose);
+            go(yWrap, [[0, 0], [300, 0, 'ease-out'], [430, -12], [580, -12, 'cubic-bezier(.6,0,1,.6)'], [900, h + 24]], 'transform', ty);
+            at(880, () => dustPuff(cx, floor, 8, w * 0.5));
+            total = 120 + 1250;
+            clear = 950;
+        } else if (exit === 'glitch') {
+            // glitches - jumping, splitting into red/green ghosts, torn into
+            // bands - then switches off like an old CRT: a line, a dot,
+            // gone. The rm command types itself out above it meanwhile.
+            const STEP = 55, G = 12, OFF = G * STEP;
+            const split = 'drop-shadow(-4px 0 0 rgba(255, 40, 120, 0.75)) drop-shadow(4px 0 0 rgba(40, 255, 140, 0.75))';
+            const clean = 'drop-shadow(0 0 0 transparent) drop-shadow(0 0 0 transparent)';
+            const jx = [[0, 0, 'steps(1, end)']], cut = [[0, WHOLE_BOOK, 'steps(1, end)']], fl = [[0, clean, 'steps(1, end)']];
+            for (let k = 1; k <= G; k++) {
+                const t = k * STEP, end = k === G, a = Math.random() * 50;
+                jx.push([t, end || Math.random() < 0.35 ? 0 : (Math.random() - 0.5) * 18, 'steps(1, end)']);
+                cut.push([t, end || Math.random() < 0.5 ? WHOLE_BOOK : slicePoly(-12, a, 112, a + 30 + Math.random() * 50), 'steps(1, end)']);
+                fl.push([t, !end && Math.random() < 0.6 ? split : clean, 'steps(1, end)']);
+            }
+            fl.push([OFF + 180, 'brightness(2.4) drop-shadow(0 0 8px #39ff6a)']);
+            go(xWrap, jx, 'transform', tx);
+            go(book, cut, 'clipPath', asIs);
+            go(book, fl, 'filter', asIs);
+            go(book, [[0, {}], [OFF, {}, 'ease-in'], [OFF + 180, { sx: 1.08, sy: 0.02 }, 'ease-in'], [OFF + 380, { sx: 0.03, sy: 0.02 }]], 'transform', pose);
+            book.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, delay: S + OFF + 380, fill: 'forwards' });
+            const cmd = `> rm "${title.length > 22 ? title.slice(0, 21) + '…' : title}"`;
+            const term = document.createElement('div');
+            term.className = 'fx-term-line';
+            const typed = document.createElement('span');
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            term.append(typed, cursor);
+            term.style.left = Math.max(12, Math.min(innerWidth - 280, left)) + 'px';
+            term.style.top = (top - 52 > 8 ? top - 52 : floor + 14) + 'px'; // (two lines, above the book)
+            scene.appendChild(term);
+            let i = 0;
+            const typing = setInterval(() => {
+                if (!scene.isConnected || i >= cmd.length) return clearInterval(typing);
+                typed.textContent = cmd.slice(0, ++i);
+            }, 22);
+            at(OFF + 420, () => { typed.textContent = cmd + '\ndeleted.'; });
+            at(OFF + 1000, () => term.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }));
+            total = OFF + 1350;
+            clear = OFF + 400;
+        } else if (exit === 'derez') {
+            // a rainbow scanline passes over it, it shivers into glitchy
+            // holographic slices, and the slices blink out top to bottom
+            const N = 9, SHIVER = 520, STAGGER = 55;
+            const slices = [];
+            for (let i = 0; i < N; i++) {
+                const s = copyBook(el, w, h);
+                s.style.clipPath = slicePoly(-12, i === 0 ? -12 : i / N * 100, 112, i === N - 1 ? 112 : (i + 1) / N * 100);
+                slices.push(s);
+            }
+            at(0, () => book.replaceWith(...slices));
+            slices.forEach((s, i) => {
+                const out = SHIVER + i * STAGGER;
+                const shiver = [[0, { x: 0 }, 'steps(1, end)']];
+                for (let t = 70; t < out; t += 70) shiver.push([t, { x: Math.random() < 0.4 ? 0 : (Math.random() - 0.5) * 16 }, 'steps(1, end)']);
+                shiver.push([out, { x: 0 }, 'ease-in'], [out + 260, { x: dir * 30, sx: 0 }]);
+                go(s, shiver, 'transform', v => `translateX(${v.x}px) scaleX(${v.sx ?? 1})`);
+                s.animate([
+                    { filter: 'hue-rotate(0deg) saturate(1) brightness(1)' },
+                    { filter: 'hue-rotate(180deg) saturate(1.8) brightness(1.15)', offset: 0.5 },
+                    { filter: 'hue-rotate(360deg) saturate(2) brightness(1.6)' }
+                ], { duration: out + 260, delay: S, fill: 'forwards' });
+                s.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: S + out + 60, fill: 'forwards' });
+            });
+            const scan = document.createElement('div');
+            scan.className = 'fx-holo-scan';
+            scan.style.left = left - 10 + 'px';
+            scan.style.width = w + 20 + 'px';
+            scan.style.top = top + 'px';
+            scene.appendChild(scan);
+            scan.animate([
+                { transform: 'translateY(0)', opacity: 0 }, { opacity: 1, offset: 0.15 },
+                { opacity: 1, offset: 0.85 }, { transform: `translateY(${h}px)`, opacity: 0 }
+            ], { duration: 480, delay: S, easing: 'ease-in-out', fill: 'both' });
+            at(SHIVER + N * STAGGER / 2, () => sparkleBurst(cx, restCy, 12, Math.max(w, 60), ['#ff8fdc', '#b29bff', '#7ad9ff', '#7dffc6', '#ffe388']));
+            total = SHIVER + N * STAGGER + 1300;
+            clear = SHIVER + N * STAGGER;
+        } else if (exit === 'erase') {
+            // it fades back to a dashed drawing on the blueprint (its width
+            // dimensioned underneath), and an eraser rubs it out row by row
+            const FADE = 650, RUB = 1200, STROKES = 8;
+            book.animate([
+                { filter: 'grayscale(0) brightness(1)', opacity: 1 },
+                { filter: 'grayscale(1) brightness(1.6)', opacity: 0 }
+            ], { duration: FADE, delay: S, fill: 'forwards' });
+            const outline = document.createElement('div');
+            outline.className = 'fx-outline';
+            outline.style.left = left + 'px';
+            outline.style.top = top + 'px';
+            outline.style.width = w + 'px';
+            outline.style.height = h + 'px';
+            const dim = document.createElement('div');
+            dim.className = 'fx-dim';
+            const label = document.createElement('span');
+            label.textContent = (library.find(b => b.id === id) || {}).width || Math.round(w);
+            dim.appendChild(label);
+            outline.appendChild(dim);
+            scene.appendChild(outline);
+            outline.animate([{ opacity: 0 }, { opacity: 1 }], { duration: FADE * 0.7, delay: S + FADE * 0.3, fill: 'both' });
+            go(outline, [[0, -12], [FADE, -12, 'linear'], [FADE + RUB, h + 36]], 'clipPath', y => `inset(${y}px -24px -40px -24px)`);
+            const eraser = document.createElement('div');
+            eraser.className = 'fx-eraser';
+            scene.appendChild(eraser);
+            const path = [[0, [left + w + 50, top - 50]], [FADE, [left + w, top - 6], 'ease-in-out']];
+            for (let k = 1; k <= STROKES; k++) {
+                path.push([FADE + RUB * k / STROKES, [k % 2 ? left : left + w, top - 6 + (h + 40) * k / STROKES], 'ease-in-out']);
+            }
+            path.push([FADE + RUB + 350, [cx + dir * 120, floor + 80]]);
+            go(eraser, path, 'transform', ([x, y]) => `translate(${x}px, ${y}px) rotate(-25deg)`);
+            eraser.animate([{ opacity: 0 }, { opacity: 1, offset: 0.2 }, { opacity: 1, offset: 0.88 }, { opacity: 0 }],
+                { duration: FADE + RUB + 350, delay: S, fill: 'both' });
+            at(FADE, () => {
+                const crumbs = setInterval(() => {
+                    if (!scene.isConnected) return clearInterval(crumbs);
+                    const er = eraser.getBoundingClientRect();
+                    flyBit('fx-crumb', er.left + er.width / 2, er.bottom, (Math.random() - 0.5) * 40, 30 + Math.random() * 60, 0.6 + Math.random() * 0.4);
+                }, 70);
+                setTimeout(() => clearInterval(crumbs), RUB);
+            });
+            total = FADE + RUB + 400;
+            clear = FADE + RUB;
+        } else if (exit === 'withdrawn') {
+            // stamped WITHDRAWN (the book gives a little under the stamp),
+            // then slid up off the shelf and away
+            const stamp = document.createElement('div');
+            stamp.className = 'fx-stamp';
+            stamp.textContent = 'WITHDRAWN';
+            const narrow = w < 60;
+            stamp.style.setProperty('--stamp-size', Math.max(7, narrow ? Math.min(h / 11, 15) : Math.min(w / 7.5, 18)) + 'px');
+            const turn = (narrow ? -90 : -14) + (Math.random() - 0.5) * 8;
+            book.appendChild(stamp);
+            const st = (s, opacity, offset) => ({ transform: `translate(-50%, -50%) rotate(${turn}deg) scale(${s})`, opacity, offset });
+            stamp.animate([st(2.4, 0, 0), st(0.94, 0.9, 0.7), st(1, 0.88, 1)], { duration: 260, delay: S + 150, easing: 'ease-in', fill: 'both' });
+            go(book, [[0, {}], [380, {}, 'ease-out'], [440, { sx: 1.03, sy: 0.96 }, 'ease-out'], [560, {}]], 'transform', pose);
+            go(yWrap, [[0, 0], [1000, 0, 'ease-in-out'], [1250, -26]], 'transform', ty);
+            total = go(xWrap, [[0, 0], [1150, 0, 'cubic-bezier(.5,0,.9,.5)'], [1800, dir * away(dir)]], 'transform', tx);
+            clear = 1250;
+        } else if (exit === 'fan') {
+            // a sweep of gold leaf, then it opens out like a fan, snaps shut
+            // into a thin gilt stick and sinks away in a glint
+            const SHINE = 650, N = 7, SPREAD = 10;
+            const sweep = document.createElement('div');
+            sweep.className = 'fx-gold-sweep';
+            book.appendChild(sweep);
+            sweep.animate([{ backgroundPosition: '100% 0' }, { backgroundPosition: '0% 0' }],
+                { duration: SHINE, delay: S, easing: 'ease-in-out', fill: 'both' });
+            const ribs = [];
+            for (let i = 0; i < N; i++) {
+                const s = copyBook(el, w, h);
+                s.style.clipPath = slicePoly(i === 0 ? -12 : i / N * 100, -12, i === N - 1 ? 112 : (i + 1) / N * 100, 112);
+                s.style.transformOrigin = '50% 100%';
+                ribs.push(s);
+            }
+            at(SHINE, () => book.replaceWith(...ribs));
+            ribs.forEach((s, i) => {
+                const a = (i - (N - 1) / 2) * SPREAD;
+                go(s, [
+                    [0, {}], [SHINE, {}, 'cubic-bezier(.2,.9,.3,1.2)'],
+                    [SHINE + 380, { r: a }], [SHINE + 560, { r: a }, 'cubic-bezier(.6,0,.3,1)'],
+                    [SHINE + 900, { r: 0, sx: 0.12 }]
+                ], 'transform', pose);
+                s.animate([{ filter: 'none' }, { filter: 'sepia(0.6) saturate(1.6) brightness(1.1)' }],
+                    { duration: 400, delay: S + SHINE, fill: 'forwards' });
+            });
+            go(yWrap, [[0, 0], [SHINE + 950, 0, 'ease-in'], [SHINE + 1350, 40]], 'transform', ty);
+            yWrap.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, delay: S + SHINE + 950, fill: 'forwards' });
+            at(SHINE + 920, () => sparkleBurst(cx, floor - h * 0.6, 10, 50, ['#e8c66a', '#f6e3a1', '#c9a14a']));
+            total = SHINE + 1400;
+            clear = SHINE + 1000;
+        }
+        setTimeout(() => scene.remove(), S + (total || 0) + 80);
+        return S + (clear || 0); // ms until the book has left its spot on the shelf
     }
 
     // ---------- Backup: export / import ----------
