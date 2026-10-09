@@ -154,3 +154,17 @@ renderBookshelf();
 ok('redraw keeps the shelf scrolled', Math.abs(longShelf().scrollLeft - endScroll) < 2 && endScroll > 0, longShelf().scrollLeft + ' vs ' + endScroll);
 layoutAllShelfSections();
 ok('re-layout (drag/resize) keeps it too', Math.abs(longShelf().scrollLeft - endScroll) < 2, longShelf().scrollLeft + ' vs ' + endScroll);
+
+// ---- the Holo theme switches on and off and travels with backups
+setTheme('holo');
+ok('Holo theme applies', document.documentElement.dataset.theme === 'holo' && q('[data-theme-choice="holo"]').classList.contains('active'));
+ok('Holo theme saved in backups', collectSettingsForBackup().bookShelfTheme === 'holo');
+setTheme('candy');
+ok('back to Candy clears it', !document.documentElement.dataset.theme && q('[data-theme-choice="candy"]').classList.contains('active'));
+
+// ---- Holo buttons: capsules for choices, cut corners for actions
+setTheme('holo');
+ok('Holo choice buttons are capsules', getComputedStyle(q('.toggle-btn')).borderRadius === '999px');
+ok('Holo action buttons have cut corners', getComputedStyle(q('.add-book-btn')).clipPath.startsWith('polygon'));
+setTheme('candy');
+ok('other themes keep their usual buttons', getComputedStyle(q('.toggle-btn')).borderRadius === '8px' && getComputedStyle(q('.add-book-btn')).clipPath === 'none');

@@ -20,7 +20,7 @@ What this means in practice:
 - Your library is tied to **that specific browser on that specific device**. A copy of the app opened on your tablet has its own separate library from the one on your desktop — nothing syncs automatically between them.
 - Clearing site data/cache, switching browsers, or opening the file in a private/incognito window gives you a fresh library, not your existing books.
 - **First visit:** on the hosted site, a new visitor starts with an example shelf (`starter-library.json`, a real shelf with notes, dates and ratings left out) so they can see how everything works; they can delete those books or use Settings > Start over. Opened straight from a file, the browser can't load that, so it starts with 3 placeholder books instead.
-- **Export Library (Backup)** / **Import Library** (buttons above the shelves) are the only way to move your library between devices, or to back it up. Backups include your Settings too (color scheme, mode, name, reading goal, fonts, extras), and importing one restores them. Since there's no cloud sync, it's worth exporting a backup periodically if this data matters to you long-term.
+- **Export Library (Backup)** / **Import Library** (buttons above the shelves) are the only way to move your library between devices, or to back it up. Backups include your Settings too (theme, mode, name, reading goal, fonts, extras), and importing one restores them. Since there's no cloud sync, it's worth exporting a backup periodically if this data matters to you long-term.
 - Import **replaces** your current library entirely with whatever's in the file you pick — there's a confirmation prompt since this can't be undone.
 
 ## Features
@@ -85,8 +85,8 @@ What this means in practice:
 
 ### Other
 - **Settings** (button next to Export/Import). Everything here is remembered:
-  - **Color scheme:** **Candy** (pinks and purples) or **Sea Glass** (blues and greens).
-  - **Mode:** Light, Dark, or Match device (follows your computer or phone's setting). Works with either color scheme; the notepad, library card and sticky notes stay paper-colored.
+  - **Theme:** **Candy** (pinks and purples), **Sea Glass** (blues and greens), or **Holo** (Y2K liquid silver: a sleek space-age font (Orbitron) for the headings, chrome shelves, pearly buttons, and a holographic rainbow shine on the title bars, panel edges and shelf tags, slowly shimmering unless Calm mode is on). Its pick-one buttons (filters, sorting, status) are glossy capsule pills, and its action buttons (add, save, cancel, notes, delete, backup) are cut-corner sci-fi panels.
+  - **Mode:** Light, Dark, or Match device (follows your computer or phone's setting). Works with every theme; the notepad, library card and sticky notes stay paper-colored.
   - **Bookshelf name:** rename the title at the top of the page.
   - **Yearly reading goal:** shows a progress bar in the Reading Stats window, counting books marked Read with a finish date this year.
   - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.

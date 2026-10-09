@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
     <script>
         try {
-            if (localStorage.getItem('bookShelfTheme') === 'seaglass') {
-                document.documentElement.dataset.theme = 'seaglass';
+            const theme = localStorage.getItem('bookShelfTheme');
+            if (theme === 'seaglass' || theme === 'holo') {
+                document.documentElement.dataset.theme = theme;
             }
             const mode = localStorage.getItem('bookShelfMode') || 'light';
             if (mode === 'dark' || (mode === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -66,6 +67,8 @@
             --chart-bar: #8a4fe0;        /* chart columns (3:1+ on white) */
             --chart-bar-hover: #a374ec;
             --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff2e93' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");  /* dropdown arrow */
+            --focus-fill: var(--pastel-lavender); /* inside a clicked-in text box or dropdown */
+            --focus-glow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45); /* ...and the glow around it */
         }
 
         /* ---------- Sea Glass theme: blues and greens ----------
@@ -94,6 +97,72 @@
             --status-hover: #e4f2f0;
             --secondary-hover: #b9d7ec;
             --shelf-color-hover: #7fb3aa;
+        }
+
+        /* ---------- Holo theme: Y2K liquid silver with a rainbow shine ----------
+           Chrome and pearl instead of candy: silver surfaces, gunmetal ink,
+           a violet accent, and a holographic rainbow (--holo) on the title
+           bars, panel edges and shelf tags. Besides the shared colour
+           variables it has a few material rules of its own (below the dark
+           mode blocks), all scoped to :root[data-theme="holo"]. */
+        :root[data-theme="holo"] {
+            --shelf-color: #b3bac8;
+            --bg-color: #eef0f5;
+            --y2k-pink: #6cc9f0;
+            --y2k-hot-pink: #8a5cff;
+            --y2k-purple: #7d6cf0;
+            --y2k-lavender: #dcdff0;
+            --y2k-dark: #2b2f4a;
+            --y2k-text: #2b2f4a;
+            --pastel-mint: #e3f6f0;
+            --pastel-yellow: #f8f4e2;
+            --pastel-blue: #e2eef8;
+            --pastel-pink: #f3e6f3;
+            --pastel-lavender: #e7e6f5;
+            --pastel-lilac: #ebe5f7;
+            --pastel-peach: #f8e6f1;
+            /* button-group colours, shifted from candy to holographic:
+               aqua glass, butter, ice blue, periwinkle, holo pink */
+            --y2k-mint: #7fe6d9;
+            --y2k-yellow: #ffe9a0;
+            --y2k-blue: #9cd6ff;
+            --y2k-lilac: #bfa8ff;
+            --y2k-peach: #ffb8de;
+            --y2k-green: #a8f0cf;
+            --y2k-coral: #ff9fc4;
+            --ink-rgb: 43, 47, 74;
+            --accent-rgb: 138, 92, 255;
+            --bg-a: #f1f2f7;
+            --bg-b: #dcdfe8;
+            --bg-c: #eef1f6;
+            --panel-bg: #f7f8fb;
+            --section-bg: #fbfbfd;
+            --disabled-bg: #eceef3;
+            --status-hover: #eef0f8;
+            --secondary-hover: #d9dcf0;
+            --shelf-color-hover: #a3abbe;
+            --outline: #3a3f5c;
+            --surface: #fbfbfd;
+            --shelf-bg: rgba(255, 255, 255, 0.4);
+            --on-bright: #2b2f4a;
+            --chart-bar: #7a5cf0;
+            --chart-bar-hover: #9479f3;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%238a5cff' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            /* the materials */
+            --holo: linear-gradient(115deg, #ffc9ef, #d4c4ff 18%, #b8ecff 36%, #c9ffe6 54%, #fff1b8 72%, #ffc9ef 90%);
+            /* the same rainbow twice over, for drifting (200% wide, slides one copy) */
+            --holo-loop: linear-gradient(90deg, #ffc9ef, #d4c4ff 10%, #b8ecff 20%, #c9ffe6 30%, #fff1b8 40%, #ffc9ef 50%, #d4c4ff 60%, #b8ecff 70%, #c9ffe6 80%, #fff1b8 90%, #ffc9ef);
+            --chrome: linear-gradient(180deg, #ffffff 0%, #e4e7ee 20%, #b3bac8 46%, #8f97a8 50%, #d7dbe4 55%, #f3f4f8 80%, #c9ced9 100%);
+            /* the ledge is only 20px tall, so its bands are bolder */
+            --chrome-ledge: linear-gradient(180deg, #ffffff 0%, #d5dae3 28%, #9aa2b4 48%, #7d869b 54%, #c4cad6 64%, #f0f2f6 86%, #a7aebd 100%);
+            --holo-glow: rgba(170, 140, 255, 0.28);
+            /* a sleek space-age font instead of the pixel one */
+            --pixel-font: 'Orbitron', 'Quicksand', sans-serif;
+            --body-glows:
+                radial-gradient(ellipse 60% 40% at 12% 8%, rgba(255, 190, 235, 0.5), transparent 70%),
+                radial-gradient(ellipse 50% 45% at 88% 22%, rgba(170, 230, 255, 0.5), transparent 70%),
+                radial-gradient(ellipse 55% 40% at 45% 88%, rgba(205, 190, 255, 0.45), transparent 70%),
+                radial-gradient(ellipse 40% 30% at 92% 92%, rgba(200, 255, 230, 0.4), transparent 70%);
         }
 
         /* ---------- Dark mode (Settings > Mode) ----------
@@ -127,6 +196,10 @@
             --shelf-color-hover: #a98be0;
             --on-bright: #2a1d40;
             --outline: #8c7aae;          /* dusty lavender, softer than the text */
+            /* a clicked-in box: a clear tint of the theme's accent (the dark
+               pastels sit too close to the normal fill to notice) */
+            --focus-fill: color-mix(in srgb, var(--surface) 72%, rgb(var(--accent-rgb)));
+            --focus-glow: 0 0 16px 4px rgba(var(--accent-rgb), 0.75), 0 0 4px 1px rgba(var(--accent-rgb), 0.6);
             --chart-bar: #a070ee;        /* checked against the dark surface */
             --chart-bar-hover: #b58cf3;
         }
@@ -153,6 +226,359 @@
             --outline: #7b9aa2;          /* dusty teal */
             --chart-bar: #4f97d4;
             --chart-bar-hover: #6aa8dc;
+        }
+
+        /* Holo in dark mode: mercury on black vinyl - gunmetal and smoked
+           glass, pale silver ink, an oil-slick rainbow */
+        :root[data-mode="dark"][data-theme="holo"] {
+            --y2k-dark: #e3e6ef;
+            --y2k-text: #e3e6ef;
+            --ink-rgb: 227, 230, 239;
+            --y2k-pink: #6fd8ff;
+            --y2k-hot-pink: #a98bff;
+            --y2k-purple: #8f86f5;
+            --y2k-lavender: #3c4058;
+            --pastel-mint: #24413b;
+            --pastel-yellow: #45412a;
+            --pastel-blue: #243548;
+            --pastel-pink: #40283f;
+            --pastel-lavender: #33314a;
+            --pastel-lilac: #352e4a;
+            --pastel-peach: #46352c;
+            --bg-a: #15161c;
+            --bg-b: #1d1f28;
+            --bg-c: #171a22;
+            --panel-bg: #22242e;
+            --section-bg: #272a35;
+            --disabled-bg: #2f3240;
+            --status-hover: #30344a;
+            --secondary-hover: #3a3f58;
+            --surface: #272a35;
+            --shelf-bg: rgba(255, 255, 255, 0.06);
+            --shelf-color: #5d6478;
+            --shelf-color-hover: #6d7489;
+            --on-bright: #1a1b24;
+            --outline: #7c8299;
+            --chart-bar: #9b7cff;
+            --chart-bar-hover: #b096ff;
+            --holo: linear-gradient(115deg, #ff8fdc, #b29bff 18%, #7ad9ff 36%, #7dffc6 54%, #ffe388 72%, #ff8fdc 90%);
+            --holo-loop: linear-gradient(90deg, #ff8fdc, #b29bff 10%, #7ad9ff 20%, #7dffc6 30%, #ffe388 40%, #ff8fdc 50%, #b29bff 60%, #7ad9ff 70%, #7dffc6 80%, #ffe388 90%, #ff8fdc);
+            --chrome: linear-gradient(180deg, #9aa1b2 0%, #666d80 22%, #3a404e 47%, #222733 51%, #4e5566 56%, #767d90 82%, #444a5a 100%);
+            --chrome-ledge: var(--chrome);
+            --holo-glow: rgba(150, 120, 255, 0.35);
+            --body-glows:
+                radial-gradient(ellipse 60% 40% at 12% 8%, rgba(255, 110, 210, 0.16), transparent 70%),
+                radial-gradient(ellipse 50% 45% at 88% 22%, rgba(90, 200, 255, 0.16), transparent 70%),
+                radial-gradient(ellipse 55% 40% at 45% 88%, rgba(150, 120, 255, 0.18), transparent 70%),
+                radial-gradient(ellipse 40% 30% at 92% 92%, rgba(90, 255, 190, 0.12), transparent 70%);
+        }
+
+        /* ---------- Holo materials ---------- */
+        :root[data-theme="holo"] body {
+            background: var(--body-glows), linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 45%, var(--bg-c) 100%);
+            background-attachment: fixed;
+        }
+
+        /* chrome-and-rainbow title with a dark edge (a drop-shadow, since a
+           text-shadow would show through the see-through letters) */
+        :root[data-theme="holo"] h1 {
+            background:
+                linear-gradient(90deg, rgba(255, 170, 225, 0.4), rgba(150, 220, 255, 0.4), rgba(190, 255, 220, 0.35), rgba(255, 230, 150, 0.4)),
+                linear-gradient(180deg, #ffffff 0%, #dde2eb 34%, #8a93a9 49%, #565f7a 54%, #b4bccd 66%, #f3f4f9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            filter: drop-shadow(2px 2px 0 #2b2f4a) drop-shadow(0 0 10px rgba(190, 160, 255, 0.6));
+        }
+
+        /* Orbitron is narrower and lighter than the pixel font it replaces,
+           so headings go up a little in size and weight */
+        :root[data-theme="holo"] h1 {
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        :root[data-theme="holo"] .genre-title {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        :root[data-theme="holo"] .shelf-count {
+            font-size: 38px;
+            font-weight: 900;
+        }
+
+        :root[data-theme="holo"] .modal-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        :root[data-theme="holo"] .field-section-title,
+        :root[data-theme="holo"] .preview-label {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+        }
+
+        :root[data-theme="holo"] .series-missing-label,
+        :root[data-theme="holo"] .shelf-empty-hint {
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            :root[data-theme="holo"] h1 { font-size: 22px; letter-spacing: 2px; }
+            :root[data-theme="holo"] .genre-title { font-size: 17px; letter-spacing: 1px; }
+            :root[data-theme="holo"] .shelf-count { font-size: 24px; }
+        }
+
+        /* the pixel cat keeps its pixel z's */
+        :root[data-theme="holo"] .cat-z {
+            font-family: 'Press Start 2P', monospace;
+        }
+
+        /* panels: a rainbow rim (rounded corners kept) that slowly drifts */
+        :root[data-theme="holo"] .controls,
+        :root[data-theme="holo"] .modal-content {
+            border-color: transparent;
+            background:
+                linear-gradient(var(--surface), var(--surface)) padding-box,
+                var(--holo-loop) border-box;
+            background-size: auto, 200% 100%;
+            box-shadow: 5px 5px 0 rgba(var(--ink-rgb), 0.3), 0 0 22px var(--holo-glow);
+            animation: holo-drift 14s linear infinite;
+        }
+
+        :root[data-theme="holo"] .modal-content {
+            background:
+                linear-gradient(var(--panel-bg), var(--panel-bg)) padding-box,
+                var(--holo-loop) border-box;
+            background-size: auto, 200% 100%;
+        }
+
+        /* title bars: rainbow vinyl with a glossy top half */
+        :root[data-theme="holo"] .window-titlebar,
+        :root[data-theme="holo"] .modal-header {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 51%),
+                var(--holo-loop);
+            background-size: auto, 200% 100%;
+            animation: holo-drift 14s linear infinite;
+        }
+
+        :root[data-theme="holo"] .modal-header h3 {
+            color: var(--on-bright);
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.55);
+        }
+
+        @keyframes holo-drift {
+            from { background-position: 0 0, 0% 0; }
+            to { background-position: 0 0, 100% 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            :root[data-theme="holo"] .controls,
+            :root[data-theme="holo"] .modal-content,
+            :root[data-theme="holo"] .window-titlebar,
+            :root[data-theme="holo"] .modal-header { animation: none; }
+        }
+
+        /* shelves: frosted glass on a chrome ledge with a rainbow sheen */
+        :root[data-theme="holo"] .shelf {
+            background:
+                linear-gradient(90deg, rgba(255, 201, 239, 0.3), rgba(184, 236, 255, 0.3), rgba(201, 255, 230, 0.25), rgba(255, 241, 184, 0.25), rgba(255, 201, 239, 0.3)) bottom / 100% 20px no-repeat,
+                var(--chrome-ledge) bottom / 100% 20px no-repeat,
+                var(--shelf-bg);
+        }
+
+        :root[data-theme="holo"] .shelf.scrolls {
+            background: var(--shelf-bg);
+            border-image: var(--chrome-ledge) 0 0 100% 0 / 0 0 20px 0 stretch;
+        }
+
+        :root[data-theme="holo"] .shelf::-webkit-scrollbar-track {
+            background: rgba(var(--ink-rgb), 0.08);
+        }
+
+        :root[data-theme="holo"] .shelf::-webkit-scrollbar-thumb {
+            background: var(--chrome);
+            border-color: transparent;
+            background-clip: padding-box;
+        }
+
+        :root[data-theme="holo"] .shelf-expand-btn {
+            background: var(--chrome);
+            color: var(--on-bright);
+            border-color: var(--shelf-color);
+        }
+
+        /* shelf name tags: holographic vinyl stickers with a gloss streak
+           (status shelves keep their own colours, plus the gloss) */
+        :root[data-theme="holo"] .genre-title {
+            overflow: hidden;
+        }
+
+        :root[data-theme="holo"] .genre-title:not([class*="tag-status-"]) {
+            background: var(--holo);
+            color: var(--on-bright);
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        :root[data-theme="holo"] .genre-title::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(105deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.75) 42%, rgba(255, 255, 255, 0) 52%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 50%);
+        }
+
+        /* buttons: a pearly rainbow sheen over each group's own colour, and
+           a glossy streak on the pressed one */
+        :root[data-theme="holo"]:not([data-mode="dark"]) .toggle-btn:not(.active),
+        :root[data-theme="holo"]:not([data-mode="dark"]) .status-btn:not(.active) {
+            background-image: var(--holo);
+            background-blend-mode: soft-light;
+        }
+
+        :root[data-theme="holo"] .toggle-btn.active,
+        :root[data-theme="holo"] .status-btn.active {
+            background-image:
+                linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.5) 45%, rgba(255, 255, 255, 0) 60%),
+                var(--holo);
+            background-blend-mode: normal, soft-light;
+        }
+
+        /* Holo's dark-mode unpressed buttons: see-through tints of its own
+           holographic group colours */
+        :root[data-mode="dark"][data-theme="holo"] .toggle-btn:not(.active) {
+            background-color: rgba(127, 230, 217, 0.12);
+            color: #a9f2e8;
+            border-color: rgba(127, 230, 217, 0.55);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-btn:not(.active):hover {
+            background-color: rgba(127, 230, 217, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-yellow .toggle-btn:not(.active) {
+            background-color: rgba(255, 233, 160, 0.12);
+            color: #fff0bf;
+            border-color: rgba(255, 233, 160, 0.55);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background-color: rgba(255, 233, 160, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-blue .toggle-btn:not(.active) {
+            background-color: rgba(156, 214, 255, 0.12);
+            color: #c4e6ff;
+            border-color: rgba(156, 214, 255, 0.55);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-blue .toggle-btn:not(.active):hover {
+            background-color: rgba(156, 214, 255, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-lilac .toggle-btn:not(.active) {
+            background-color: rgba(191, 168, 255, 0.12);
+            color: #dacdff;
+            border-color: rgba(191, 168, 255, 0.55);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background-color: rgba(191, 168, 255, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-peach .toggle-btn:not(.active) {
+            background-color: rgba(255, 184, 222, 0.12);
+            color: #ffd3eb;
+            border-color: rgba(255, 184, 222, 0.55);
+        }
+
+        :root[data-mode="dark"][data-theme="holo"] .toggle-peach .toggle-btn:not(.active):hover {
+            background-color: rgba(255, 184, 222, 0.22);
+        }
+
+        :root[data-theme="holo"] button.danger:hover {
+            background-color: #ff86b5;
+        }
+
+        /* ---------- Holo button shapes ----------
+           Pick-one buttons (organize, filters, view, status, Settings
+           choices) are glossy capsules, Y2K Aqua jelly; action buttons (add,
+           save, cancel, notes, delete, backup) are cut-corner sci-fi
+           panels. Each keeps its group's own colour. The extra `body` in
+           the selectors lifts them just above the dark-mode button rules
+           further down. */
+
+        /* Capsule: a pill with a jelly gloss on top and a soft glow */
+        :root[data-theme="holo"] body :is(.toggle-btn, .status-btn) {
+            border-radius: 999px;
+            border-color: rgba(var(--ink-rgb), 0.35);
+            box-shadow:
+                inset 0 0 0 1.5px rgba(255, 255, 255, 0.55),
+                inset 0 -3px 6px rgba(var(--ink-rgb), 0.12),
+                0 3px 8px rgba(var(--ink-rgb), 0.22),
+                0 0 12px var(--holo-glow);
+        }
+
+        :root[data-theme="holo"] body :is(.toggle-btn, .status-btn)::before {
+            inset: 2px 8px 50% 8px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.15));
+        }
+
+        /* (pale text on dark buttons needs a fainter gloss) */
+        :root[data-mode="dark"][data-theme="holo"] body :is(.toggle-btn, .status-btn)::before {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.04));
+        }
+
+        :root[data-theme="holo"] body :is(.toggle-btn, .status-btn):is(.active, :active) {
+            transform: translateY(1px);
+            box-shadow:
+                inset 0 2px 6px rgba(var(--ink-rgb), 0.35),
+                0 1px 3px rgba(var(--ink-rgb), 0.2),
+                0 0 16px var(--holo-glow);
+        }
+
+        /* Cut corner: two corners sliced off like a spaceship control
+           panel, in the Orbitron font. (The cut also clips any outer
+           shadow, so depth comes from inside, and the two diagonal edges
+           get drawn-on outline strokes.) */
+        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .modal-buttons button, .sticky-submit, .filters-toggle) {
+            border-radius: 0;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            font-family: var(--pixel-font);
+            font-weight: 700;
+            font-size: 11.5px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            box-shadow:
+                inset 0 -3px 0 rgba(var(--ink-rgb), 0.22),
+                inset 0 2px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .modal-buttons button, .sticky-submit, .filters-toggle)::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(135deg, transparent calc(50% - 1.5px), var(--outline) calc(50% - 1.5px), var(--outline) calc(50% + 1.5px), transparent calc(50% + 1.5px)) top left / 10px 10px no-repeat,
+                linear-gradient(135deg, transparent calc(50% - 1.5px), var(--outline) calc(50% - 1.5px), var(--outline) calc(50% + 1.5px), transparent calc(50% + 1.5px)) bottom right / 10px 10px no-repeat;
+        }
+
+        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+            transform: translateY(1px);
+            box-shadow:
+                inset 0 3px 5px rgba(var(--ink-rgb), 0.35),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.4);
         }
 
         /* bright fills keep dark text so it stays readable */
@@ -392,18 +818,23 @@
             outline: none;     /* the browser's focus ring would sit right on top of the border */
             background:
                 linear-gradient(var(--search-fill), var(--search-fill)) padding-box,
-                linear-gradient(90deg, var(--outline), var(--outline)) border-box;
+                linear-gradient(90deg, var(--search-edge, var(--y2k-purple)), var(--search-edge, var(--y2k-purple))) border-box;
             transition: --search-fill 0.4s, box-shadow 0.4s;
         }
 
+        /* resting border matches the dropdowns: theme purple, accent on hover */
+        #search-input:hover:not(:focus) {
+            --search-edge: var(--y2k-hot-pink);
+        }
+
         #search-input:focus {
-            --search-fill: var(--pastel-lavender);
+            --search-fill: var(--focus-fill);
             background:
                 linear-gradient(var(--search-fill), var(--search-fill)) padding-box,
                 linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
             background-size: 100% 100%, 300% 100%;
             animation: search-border-flow 1.6s linear infinite;
-            box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45);
+            box-shadow: var(--focus-glow);
         }
 
         @keyframes search-border-flow {
@@ -482,11 +913,11 @@
             border-color: transparent;
             background:
                 var(--caret-url) right 11px center / 15px no-repeat padding-box,
-                linear-gradient(var(--pastel-lavender), var(--pastel-lavender)) padding-box,
+                linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
                 linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
             background-size: 15px, 100% 100%, 300% 100%;
             animation: select-border-flow 1.6s linear infinite;
-            box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45);
+            box-shadow: var(--focus-glow);
         }
 
         @keyframes select-border-flow {
@@ -796,22 +1227,22 @@
 
         .genre-title.tag-status-want {
             background: var(--y2k-yellow);
-            color: var(--y2k-dark);
+            color: var(--on-bright); /* dark text on the bright tag, dark mode too */
         }
 
         .genre-title.tag-status-reading {
             background: var(--y2k-blue);
-            color: var(--y2k-dark);
+            color: var(--on-bright); /* dark text on the bright tag, dark mode too */
         }
 
         .genre-title.tag-status-read {
             background: var(--y2k-green);
-            color: var(--y2k-dark);
+            color: var(--on-bright); /* dark text on the bright tag, dark mode too */
         }
 
         .genre-title.tag-status-dnf {
             background: var(--y2k-coral);
-            color: var(--y2k-dark);
+            color: var(--on-bright); /* dark text on the bright tag, dark mode too */
         }
 
         .shelf-count {
@@ -1805,22 +2236,22 @@
         .field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]):focus {
             border-color: transparent;
             background:
-                linear-gradient(var(--pastel-lavender), var(--pastel-lavender)) padding-box,
+                linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
                 linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
             background-size: 100% 100%, 300% 100%;
             animation: search-border-flow 1.6s linear infinite;
-            box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45);
+            box-shadow: var(--focus-glow);
         }
 
         .field-label select:focus {
             border-color: transparent;
             background:
                 var(--caret-url) right 11px center / 15px no-repeat padding-box,
-                linear-gradient(var(--pastel-lavender), var(--pastel-lavender)) padding-box,
+                linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
                 linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
             background-size: 15px, 100% 100%, 300% 100%;
             animation: select-border-flow 1.6s linear infinite;
-            box-shadow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45);
+            box-shadow: var(--focus-glow);
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -4286,12 +4717,13 @@
             </div>
             <div class="settings-body">
                 <div class="field-section">
-                    <div class="field-section-title">Color scheme</div>
-                    <div class="toggle-group theme-toggle" role="group" aria-label="Color scheme">
+                    <div class="field-section-title">Theme</div>
+                    <div class="toggle-group theme-toggle" role="group" aria-label="Theme">
                         <button type="button" class="toggle-btn" data-theme-choice="candy" onclick="setTheme('candy')">Candy</button>
                         <button type="button" class="toggle-btn" data-theme-choice="seaglass" onclick="setTheme('seaglass')">Sea Glass</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="holo" onclick="setTheme('holo')">Holo</button>
                     </div>
-                    <div class="field-hint">Candy is pinks and purples; Sea Glass is blues and greens.</div>
+                    <div class="field-hint">Candy is pinks and purples; Sea Glass is blues and greens; Holo is liquid silver with a rainbow shine.</div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
                         <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
@@ -6674,12 +7106,14 @@
         input.focus();
     }
 
-    // ---------- Color theme (Candy / Sea Glass) ----------
+    // ---------- Theme (Candy / Sea Glass / Holo) ----------
     const THEME_KEY = 'bookShelfTheme';
+    const THEMES = ['candy', 'seaglass', 'holo'];
 
     function setTheme(theme) {
-        if (theme === 'seaglass') {
-            document.documentElement.dataset.theme = 'seaglass';
+        if (!THEMES.includes(theme)) theme = 'candy';
+        if (theme !== 'candy') {
+            document.documentElement.dataset.theme = theme;
         } else {
             delete document.documentElement.dataset.theme;
         }
@@ -7217,7 +7651,7 @@
 
     function initThemeToggle() {
         applyMode(currentMode());
-        setTheme(document.documentElement.dataset.theme === 'seaglass' ? 'seaglass' : 'candy');
+        setTheme(document.documentElement.dataset.theme || 'candy');
     }
 
     // ---------- Reading dates (started / finished) ----------
@@ -8794,7 +9228,7 @@
                 return;
             }
             const alsoSettings = importedSettings && Object.keys(importedSettings).length
-                ? ' and your settings (color scheme, mode, name, reading goal, fonts...)' : '';
+                ? ' and your settings (theme, mode, name, reading goal, fonts...)' : '';
             if (!confirm(`Replace your current library with the ${importedBooks.length} book(s) in this file${alsoSettings}? This cannot be undone.`)) {
                 return;
             }
