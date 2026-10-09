@@ -170,7 +170,7 @@ setTheme('candy');
 ok('other themes keep their usual buttons', getComputedStyle(q('.toggle-btn')).borderRadius === '8px' && getComputedStyle(q('.add-book-btn')).clipPath === 'none');
 
 // ---- every theme applies, shows as chosen, and travels with backups
-for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint']) {
+for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal']) {
     setTheme(th);
     ok(`${th} theme applies`, document.documentElement.dataset.theme === th && q(`[data-theme-choice="${th}"]`).classList.contains('active') && collectSettingsForBackup().bookShelfTheme === th);
 }

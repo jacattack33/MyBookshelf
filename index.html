@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
     <script>
         try {
             const theme = localStorage.getItem('bookShelfTheme');
-            if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint'].includes(theme)) {
+            if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal'].includes(theme)) {
                 document.documentElement.dataset.theme = theme;
             }
             const mode = localStorage.getItem('bookShelfMode') || 'light';
@@ -382,6 +382,67 @@
             --panel-shadow: 5px 5px 0 rgba(19, 41, 75, 0.14);
             --signal-orange: #f07c2a;
             --sketch: rgba(47, 95, 168, 0.2); /* compass circles + construction lines */
+        }
+
+        /* Terminal: a retro computer in a beige monitor - by day a paper-white
+           CRT with dark phosphor text, after dark a green phosphor CRT */
+        :root[data-theme="terminal"] {
+            --shelf-color: #1d4a24;
+            --bg-color: #e9eee3;
+            --y2k-pink: #3a7d45;
+            --y2k-hot-pink: #2e6b38;
+            --y2k-purple: #2f7a3c;
+            --y2k-lavender: #e1efdc;
+            --y2k-dark: #1c2b1c;
+            --y2k-text: #1c2b1c;
+            --y2k-mint: #7fd88f;
+            --y2k-peach: #b5e07a;
+            --y2k-blue: #a9e8b4;
+            --y2k-lilac: #9fd4a5;
+            --y2k-yellow: #8fd16f;
+            --y2k-green: #7fd88f;
+            --y2k-coral: #e8836b;
+            --pastel-mint: #eaf6e8;
+            --pastel-peach: #f1f7e3;
+            --pastel-blue: #ecf6ea;
+            --pastel-lilac: #ecf5ec;
+            --pastel-yellow: #eef6e4;
+            --pastel-pink: #f2f7ee;
+            --pastel-lavender: #eef5ea;
+            --ink-rgb: 28, 43, 28;
+            --accent-rgb: 31, 122, 53;
+            --bg-a: #e9eee3;
+            --bg-b: #e9eee3;
+            --bg-c: #e9eee3;
+            --panel-bg: #f1f5ec;
+            --section-bg: #f5f8f1;
+            --disabled-bg: #eaf1e4;
+            --status-hover: #eef6ea;
+            --secondary-hover: #d8e9d2;
+            --shelf-color-hover: #2a8f44;
+            --outline: #2f6b3a;
+            --surface: #f5f8f1;
+            --shelf-bg: rgba(31, 122, 53, 0.03);
+            --on-bright: #102410;
+            --chart-bar: #1f7a35;
+            --chart-bar-hover: #2a8f44;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%231f7a35' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --pixel-font: 'VT323', 'Courier New', monospace;
+            --phosphor: #1d4a24;
+            --phosphor-dim: #5f7a5f;
+            --cursor: #1d4a24;
+            --on-accent: #eef3e6;
+            --tab-bg: #1d4a24;
+            --glow: rgba(29, 74, 36, 0.18);
+            --scan: rgba(0, 0, 0, 0.045);
+            --btn-shadow: none;
+            --panel-shadow: 0 2px 0 rgba(29, 59, 29, 0.15);
+            --page-bg: radial-gradient(ellipse 90% 85% at 50% 45%, #f2f6ec 0%, #e6ece0 65%, #cfd8c8 100%);
+            --bezel: #ddd4bb;
+            --bezel-edge: #b9ae90;
+            --bezel-ink: #6b6247;
+            --screen-shade: inset 0 0 70px rgba(60, 70, 50, 0.28), inset 0 0 0 2px rgba(0, 0, 0, 0.25);
+            --flicker-tint: rgba(0, 0, 0, 0.015);
         }
 
         /* ---------- Dark mode (Settings > Mode) ----------
@@ -1869,7 +1930,7 @@
 
         /* Recent-colour swatches are hearts in the cute themes; the classy
            ones get their own shape: wax seals, deco diamonds, paint chips */
-        :root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"]) .recent-color-swatch {
+        :root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .recent-color-swatch {
             width: 34px;
             height: 34px;
             margin: 0 3px;
@@ -1895,9 +1956,517 @@
             transform: rotate(45deg) scale(1.12);
         }
 
-        :root:is([data-theme="loft"], [data-theme="blueprint"]) .recent-color-swatch {
+        :root:is([data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .recent-color-swatch {
             border-radius: 3px;
             box-shadow: 2px 2px 0 rgba(var(--ink-rgb), 0.3);
+        }
+
+        /* Terminal after dark: a green phosphor CRT, all in shades of green */
+        :root[data-mode="dark"][data-theme="terminal"] {
+            --shelf-color: #33ff66;
+            --bg-color: #030803;
+            --y2k-pink: #66ff8c;
+            --y2k-hot-pink: #33ff66;
+            --y2k-purple: #2bd96b;
+            --y2k-lavender: #0f2a14;
+            --y2k-dark: #33ff66;
+            --y2k-text: #33ff66;
+            --y2k-mint: #33ff66;
+            --y2k-peach: #9cff57;
+            --y2k-blue: #b8ffcb;
+            --y2k-lilac: #2bd96b;
+            --y2k-yellow: #5cff8f;
+            --y2k-green: #33ff66;
+            --y2k-coral: #ff6a3d;
+            --pastel-mint: #0b1f0f;
+            --pastel-peach: #13200b;
+            --pastel-blue: #0b1f10;
+            --pastel-lilac: #0a1c10;
+            --pastel-yellow: #0d200f;
+            --pastel-pink: #0b1a0e;
+            --pastel-lavender: #0b1a0e;
+            --ink-rgb: 51, 255, 102;
+            --accent-rgb: 51, 255, 102;
+            --bg-a: #030803;
+            --bg-b: #050c05;
+            --bg-c: #030803;
+            --panel-bg: #061007;
+            --section-bg: #081509;
+            --disabled-bg: #0c1f0f;
+            --status-hover: #0f2a14;
+            --secondary-hover: #143a1b;
+            --surface: #050c06;
+            --shelf-bg: rgba(51, 255, 102, 0.03);
+            --shelf-color-hover: #66ff8c;
+            --on-bright: #031004;
+            --outline: #1f9a3d;
+            --chart-bar: #33ff66;
+            --chart-bar-hover: #66ff8c;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%2333ff66' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --phosphor: #33ff66;
+            --phosphor-dim: #1f9a3d;
+            --cursor: #33ff66;
+            --on-accent: #031004;
+            --tab-bg: #33ff66;
+            --glow: rgba(51, 255, 102, 0.55);
+            --scan: rgba(0, 0, 0, 0.22);
+            --focus-fill: #0c2611;
+            --focus-glow: 0 0 12px 2px rgba(51, 255, 102, 0.55);
+            --btn-shadow: none;
+            --panel-shadow: 0 0 26px rgba(51, 255, 102, 0.14);
+            --page-bg: radial-gradient(ellipse 90% 80% at 50% 40%, #082008 0%, #030803 70%, #010301 100%);
+            --bezel: #c9bf9f;
+            --bezel-edge: #9c9274;
+            --bezel-ink: #5e5640;
+            --screen-shade: inset 0 0 90px rgba(0, 0, 0, 0.9), inset 0 0 0 2px rgba(0, 0, 0, 0.6);
+            --flicker-tint: rgba(51, 255, 102, 0.02);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-btn:not(.active) {
+            background-color: rgba(51, 255, 102, 0.06);
+            color: #33ff66;
+            border-color: rgba(51, 255, 102, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-btn:not(.active):hover {
+            background-color: rgba(51, 255, 102, 0.16);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-yellow .toggle-btn:not(.active) {
+            background-color: rgba(92, 255, 143, 0.06);
+            color: #5cff8f;
+            border-color: rgba(92, 255, 143, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background-color: rgba(92, 255, 143, 0.16);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-blue .toggle-btn:not(.active) {
+            background-color: rgba(184, 255, 203, 0.06);
+            color: #b8ffcb;
+            border-color: rgba(184, 255, 203, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-blue .toggle-btn:not(.active):hover {
+            background-color: rgba(184, 255, 203, 0.16);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-lilac .toggle-btn:not(.active) {
+            background-color: rgba(43, 217, 107, 0.06);
+            color: #2bd96b;
+            border-color: rgba(43, 217, 107, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background-color: rgba(43, 217, 107, 0.16);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-peach .toggle-btn:not(.active) {
+            background-color: rgba(156, 255, 87, 0.06);
+            color: #9cff57;
+            border-color: rgba(156, 255, 87, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .toggle-peach .toggle-btn:not(.active):hover {
+            background-color: rgba(156, 255, 87, 0.16);
+        }
+
+        /* ---------- Terminal materials ---------- */
+        :root[data-theme="terminal"] body {
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            background: var(--page-bg);
+            background-attachment: scroll;
+        }
+
+        /* the CRT: scanlines over the whole screen - text included - but the
+           books are lifted above the sheet so their covers stay clean.
+           (The edit window sits above it, so it gets its own sheet, with the
+           preview book lifted above that one.) */
+        :root[data-theme="terminal"] body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 40;
+            background: repeating-linear-gradient(180deg, var(--scan) 0 1px, transparent 1px 3px), var(--flicker-tint);
+        }
+
+        :root[data-theme="terminal"] .book {
+            z-index: 41;
+        }
+
+        :root[data-theme="terminal"] .modal-content {
+            position: relative;
+        }
+
+        :root[data-theme="terminal"] .modal-content::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 30;
+            background: repeating-linear-gradient(180deg, var(--scan) 0 1px, transparent 1px 3px);
+        }
+
+        :root[data-theme="terminal"] .modal-preview {
+            position: relative;
+            z-index: 31;
+        }
+
+        /* every text box types in phosphor */
+        :root[data-theme="terminal"] :is(input, select, textarea) {
+            color: var(--phosphor);
+        }
+
+        /* the monitor: a beige plastic bezel framing the window, rounded screen
+           corners with the glass shading darker at the edges, a power LED and
+           a badge. Content is padded in so nothing hides under the bezel. */
+        :root[data-theme="terminal"] body {
+            padding: 32px 32px 48px;
+        }
+
+        :root[data-theme="terminal"] body::before {
+            content: "";
+            position: fixed;
+            inset: 12px 12px 30px 12px;
+            border-radius: 22px;
+            pointer-events: none;
+            z-index: 2999;
+            box-shadow:
+                var(--screen-shade),
+                0 0 0 3px var(--bezel-edge),
+                0 0 0 80px var(--bezel);
+        }
+
+        :root[data-theme="terminal"] body::after {
+            inset: 12px 12px 30px 12px;
+            border-radius: 22px;
+            animation: crt-flicker 7s steps(1) infinite;
+        }
+
+        @keyframes crt-flicker {
+            0%, 96%, 98%, 100% { opacity: 1; }
+            97% { opacity: 0.6; }
+            99% { opacity: 0.8; }
+        }
+
+        /* the badge, centred on the chin, and the power light beside it */
+        :root[data-theme="terminal"]::after {
+            content: "BOOKSHELF  \00B7  2000";
+            position: fixed;
+            bottom: 7px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3001;
+            pointer-events: none;
+            font-family: 'VT323', monospace;
+            font-size: 15px;
+            letter-spacing: 3px;
+            color: var(--bezel-ink);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        :root[data-theme="terminal"]::before {
+            content: "";
+            position: fixed;
+            bottom: 11px;
+            right: 34px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            z-index: 3001;
+            pointer-events: none;
+            background: #39ff6a;
+            box-shadow: 0 0 6px 2px rgba(57, 255, 106, 0.7), inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        /* corner widgets move in off the bezel */
+        :root[data-theme="terminal"] .sticky-pile { left: 28px; bottom: 42px; }
+        :root[data-theme="terminal"] .stats-ledger { left: 122px; bottom: 40px; }
+        :root[data-theme="terminal"] .secret-heart { right: 26px; bottom: 40px; }
+
+        @media (max-width: 600px) {
+            :root[data-theme="terminal"] body { padding: 22px 18px 40px; }
+            :root[data-theme="terminal"] body::before,
+            :root[data-theme="terminal"] body::after {
+                inset: 7px 7px 24px 7px;
+                border-radius: 16px;
+            }
+            :root[data-theme="terminal"]::after { bottom: 4px; font-size: 13px; }
+            :root[data-theme="terminal"]::before { bottom: 8px; right: 18px; }
+            :root[data-theme="terminal"] .sticky-pile { left: 18px; bottom: 34px; }
+            :root[data-theme="terminal"] .stats-ledger { left: 80px; bottom: 32px; }
+            :root[data-theme="terminal"] .secret-heart { right: 16px; bottom: 32px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            :root[data-theme="terminal"] body::after { animation: none; }
+        }
+
+        /* a classic READY. prompt above the shelves */
+        :root[data-theme="terminal"] #library-room::before {
+            content: "READY.";
+            display: block;
+            margin: 4px 0 -10px;
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            color: var(--phosphor);
+            letter-spacing: 2px;
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] #library-room::before {
+            text-shadow: 0 0 6px var(--glow);
+        }
+
+        /* glowing phosphor text */
+        :root[data-mode="dark"][data-theme="terminal"] :is(h1, .controls, .modal-content, .backup-bar, .shelf-count, .shelf-empty-hint) {
+            text-shadow: 0 0 4px var(--glow);
+        }
+
+        /* the title is a prompt: "C:\> MY BOOKSHELF" and a blinking block cursor */
+        :root[data-theme="terminal"] h1 {
+            animation: none; /* a monitor's text sits still */
+            font-family: var(--pixel-font);
+            color: var(--phosphor);
+            text-transform: uppercase;
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] h1 {
+            text-shadow: 0 0 10px var(--glow), 0 0 2px var(--glow);
+        }
+
+        :root[data-theme="terminal"] h1 .h1-spark {
+            display: none;
+        }
+
+        :root[data-theme="terminal"] h1::before {
+            content: "C:\005C> ";
+        }
+
+        :root[data-theme="terminal"] h1::after {
+            content: "";
+            display: inline-block;
+            width: 0.5em;
+            height: 0.85em;
+            margin-left: 6px;
+            vertical-align: -0.08em;
+            background: var(--cursor);
+            box-shadow: 0 0 10px var(--glow);
+            animation: term-blink 1.05s steps(1) infinite;
+        }
+
+        @keyframes term-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            :root[data-theme="terminal"] h1::after { animation: none; }
+        }
+
+        /* panels: square boxes drawn in phosphor */
+        :root[data-theme="terminal"] .controls,
+        :root[data-theme="terminal"] .modal-content {
+            border: 2px solid var(--phosphor-dim);
+            border-radius: 0;
+            box-shadow: var(--panel-shadow);
+        }
+
+        /* title bars: old-computer stripes; window titles in inverse video */
+        :root[data-theme="terminal"] .window-titlebar {
+            height: 12px;
+            background: repeating-linear-gradient(180deg, var(--phosphor) 0 2px, transparent 2px 4px);
+            opacity: 0.8;
+        }
+
+        :root[data-theme="terminal"] .modal-header {
+            background: var(--phosphor);
+        }
+
+        :root[data-theme="terminal"] .modal-header h3 {
+            font-family: var(--pixel-font);
+            color: var(--on-accent);
+            text-transform: uppercase;
+            text-shadow: none;
+        }
+
+        :root[data-theme="terminal"] .modal-header h3::before {
+            content: "C:\005C> ";
+        }
+
+        /* shelves: boxes with a double-line ledge, like box-drawing characters */
+        :root[data-theme="terminal"] .shelf {
+            border-radius: 0;
+            background:
+                linear-gradient(var(--phosphor), var(--phosphor)) left bottom 13px / 100% 2px no-repeat,
+                linear-gradient(var(--phosphor), var(--phosphor)) left bottom 7px / 100% 2px no-repeat,
+                var(--shelf-bg);
+            box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.25);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .shelf {
+            box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.25), 0 6px 14px -8px var(--glow);
+        }
+
+        :root[data-theme="terminal"] .shelf.scrolls {
+            background: var(--shelf-bg);
+            border-bottom: 6px double var(--phosphor);
+        }
+
+        :root[data-theme="terminal"] .shelf::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        :root[data-theme="terminal"] .shelf::-webkit-scrollbar-thumb {
+            background: var(--phosphor);
+            border-radius: 0;
+            border-color: transparent;
+            background-clip: padding-box;
+        }
+
+        :root[data-theme="terminal"] .shelf-expand-btn {
+            border-radius: 0;
+        }
+
+        /* shelf names: an inverse-video prompt, "> FANTASY" */
+        :root[data-theme="terminal"] .genre-title {
+            transform: none;
+            left: -10px;
+            top: -22px;
+            border: none;
+            border-radius: 0;
+            padding: 4px 16px;
+            text-transform: uppercase;
+            box-shadow: none;
+        }
+
+        :root[data-theme="terminal"] .genre-title:not([class*="tag-status-"]) {
+            background: var(--tab-bg);
+            color: var(--on-accent);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .genre-title {
+            box-shadow: 0 0 12px var(--glow);
+        }
+
+        :root[data-theme="terminal"] .genre-title::before {
+            content: "> ";
+        }
+
+        /* buttons: square, VT323 capitals; pressed ones go inverse video */
+        :root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+            border-radius: 0;
+            border-width: 2px;
+            font-family: var(--pixel-font);
+            font-weight: 400;
+            font-size: 19px;
+            line-height: 1;
+            text-transform: uppercase;
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+            display: none;
+        }
+
+        :root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+            transform: translateY(1px);
+        }
+
+        :root[data-theme="terminal"] body :is(.toggle-btn, .status-btn).active {
+            transform: none;
+            box-shadow: none;
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] body :is(.toggle-btn, .status-btn).active,
+        :root[data-mode="dark"][data-theme="terminal"] :is(.add-book-btn, #modal-save-btn, .sticky-submit) {
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        /* the run buttons: add / save / stick it, solid phosphor */
+        :root[data-theme="terminal"] :is(.add-book-btn, #modal-save-btn, .sticky-submit),
+        :root[data-theme="terminal"] .status-btn.active {
+            color: var(--on-accent);
+            text-shadow: none;
+        }
+
+        :root[data-theme="terminal"] button.danger:hover {
+            background-color: var(--y2k-coral);
+            filter: brightness(1.08);
+        }
+
+        /* (VT323 runs small - the edit window's notes/delete buttons need more) */
+        :root[data-theme="terminal"] :is(#modal-notes-btn, #modal-delete-btn) {
+            font-size: 17px;
+        }
+
+        /* box-drawing sections, like a system-info readout:
+           ┌──── Details ────
+           │  ...
+           └─────────────── */
+        :root[data-theme="terminal"] .field-section {
+            border: none;
+            border-left: 2px solid var(--phosphor-dim);
+            border-bottom: 2px solid var(--phosphor-dim);
+            border-radius: 0;
+            padding: 0 16px 16px 16px;
+        }
+
+        :root[data-theme="terminal"] .field-section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 -16px 2px -16px;
+            color: var(--phosphor);
+        }
+
+        :root[data-theme="terminal"] .field-section-title::before,
+        :root[data-theme="terminal"] .field-section-title::after {
+            content: "";
+            flex: 1;
+            height: 2px;
+            background: var(--phosphor-dim);
+        }
+
+        /* the main panel's labels hang off a tree: ├─ Organize by: */
+        :root[data-theme="terminal"] .controls .control-group > label::before {
+            content: "\251C\2500\00A0";
+            color: var(--phosphor-dim);
+        }
+
+        :root[data-theme="terminal"] .controls .search-row > label::before {
+            content: "\250C\2500\00A0";
+        }
+
+        /* typing in a text box: a green block caret */
+        :root[data-theme="terminal"] :is(input, select, textarea) {
+            caret-color: var(--phosphor);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] ::placeholder {
+            color: rgba(51, 255, 102, 0.4);
+        }
+
+        /* Terminal: heading font sizes (VT323 runs small, so these are big) */
+        :root[data-theme="terminal"] h1 { font-size: 64px; font-weight: 400; letter-spacing: 2px; }
+        :root[data-theme="terminal"] .genre-title { font-size: 30px; font-weight: 400; letter-spacing: 1px; }
+        :root[data-theme="terminal"] .shelf-count { font-size: 46px; font-weight: 400; }
+        :root[data-theme="terminal"] .modal-header h3 { font-size: 24px; font-weight: 400; }
+        :root[data-theme="terminal"] .field-section-title,
+        :root[data-theme="terminal"] .preview-label { font-size: 18px; font-weight: 400; letter-spacing: 0.08em; }
+        :root[data-theme="terminal"] .series-missing-label,
+        :root[data-theme="terminal"] .shelf-empty-hint { font-size: 16px; font-weight: 400; }
+        :root[data-theme="terminal"] .cat-z { font-family: 'Press Start 2P', monospace; }
+        @media (max-width: 600px) {
+            :root[data-theme="terminal"] h1 { font-size: 38px; }
+            :root[data-theme="terminal"] .genre-title { font-size: 22px; left: 0; padding: 3px 12px; }
+            :root[data-theme="terminal"] .shelf-count { font-size: 30px; }
         }
 
         /* bright fills keep dark text so it stays readable */
@@ -3616,6 +4185,20 @@
             color: var(--y2k-dark);
         }
 
+        /* the classy themes: no candy gloss on the little "today" pills */
+        :root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .date-today-btn {
+            border-radius: 4px;
+            box-shadow: none;
+        }
+
+        :root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .date-today-btn::before {
+            display: none;
+        }
+
+        :root[data-theme="terminal"] .date-today-btn {
+            font-family: var(--pixel-font);
+        }
+
         .sr-only {
             position: absolute;
             width: 1px;
@@ -3836,7 +4419,7 @@
         }
 
         /* (the newer themes' file buttons keep their own colour on hover) */
-        :root:is([data-theme="holo"], [data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"]) .file-upload-btn:hover {
+        :root:is([data-theme="holo"], [data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .file-upload-btn:hover {
             background-color: var(--y2k-green);
             filter: brightness(1.06);
         }
@@ -5624,7 +6207,7 @@
 </head>
 <body>
 
-    <h1>&#10022; <span id="shelf-name">My Bookshelf</span> &#10022;</h1>
+    <h1><span class="h1-spark">&#10022;</span> <span id="shelf-name">My Bookshelf</span> <span class="h1-spark">&#10022;</span></h1>
 
     <div class="controls">
         <div class="window-titlebar"></div>
@@ -6051,8 +6634,9 @@
                         <button type="button" class="toggle-btn" data-theme-choice="deco" onclick="setTheme('deco')">Deco</button>
                         <button type="button" class="toggle-btn" data-theme-choice="loft" onclick="setTheme('loft')">Loft</button>
                         <button type="button" class="toggle-btn" data-theme-choice="blueprint" onclick="setTheme('blueprint')">Blueprint</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="terminal" onclick="setTheme('terminal')">Terminal</button>
                     </div>
-                    <div class="field-hint">Candy: pinks and purples. Sea Glass: blues and greens. Holo: liquid silver with a rainbow shine. Library: walnut, leather and brass. Deco: navy and gold Art Deco. Loft: slate, steel and copper. Blueprint: drafting-table blues with signal orange.</div>
+                    <div class="field-hint">Candy: pinks and purples. Sea Glass: blues and greens. Holo: liquid silver with a rainbow shine. Library: walnut, leather and brass. Deco: navy and gold Art Deco. Loft: slate, steel and copper. Blueprint: drafting-table blues with signal orange. Terminal: a retro computer monitor, green phosphor after dark.</div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
                         <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
@@ -8435,9 +9019,9 @@
         input.focus();
     }
 
-    // ---------- Theme (Candy / Sea Glass / Holo / Library / Deco / Loft / Blueprint) ----------
+    // ---------- Theme (Candy / Sea Glass / Holo / Library / Deco / Loft / Blueprint / Terminal) ----------
     const THEME_KEY = 'bookShelfTheme';
-    const THEMES = ['candy', 'seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint'];
+    const THEMES = ['candy', 'seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal'];
 
     function setTheme(theme) {
         if (!THEMES.includes(theme)) theme = 'candy';
