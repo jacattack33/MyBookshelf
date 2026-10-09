@@ -224,6 +224,7 @@
                 linear-gradient(180deg, rgba(20, 10, 5, 0.32), rgba(20, 10, 5, 0) 30px),
                 linear-gradient(90deg, rgba(20, 10, 5, 0.12), rgba(20, 10, 5, 0) 12%, rgba(20, 10, 5, 0) 88%, rgba(20, 10, 5, 0.12)),
                 linear-gradient(180deg, #82593e, #6f4b34);
+            --wood-flat: #785239; /* the back's average, for tall expanded shelves */
             --btn-shadow: 0 2px 0 rgba(var(--ink-rgb), 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35)  /* resting button shadow */;
         }
 
@@ -915,6 +916,7 @@
                 linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 30px),
                 linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 88%, rgba(0, 0, 0, 0.2)),
                 linear-gradient(180deg, #2a221e, #211b18);
+            --wood-flat: #261f1b; /* the back's average, for tall expanded shelves */
         }
 
         /* Deco after dark: a gold-on-black speakeasy */
@@ -1267,6 +1269,35 @@
                 repeating-linear-gradient(178deg, rgba(0, 0, 0, 0) 0 3px, rgba(0, 0, 0, 0.3) 3px 4px, rgba(0, 0, 0, 0) 4px 9px, rgba(255, 240, 220, 0.04) 9px 10px) bottom / 100% 20px no-repeat,
                 linear-gradient(180deg, #3a2f29, #2a221e 60%, #1c1714) bottom / 100% 20px no-repeat,
                 var(--wood-back);
+        }
+
+        /* expanded rows above the last: plain back wall, side panels, no
+           ledge or shadow (applies to dark mode too, being later) */
+        :root[data-theme="library"] .shelf.shelf-continues {
+            background: var(--wood-back);
+            box-shadow: inset 7px 0 0 var(--wood-side), inset -7px 0 0 var(--wood-side);
+        }
+
+        /* ...and so the rows read as one tall back wall, the top-to-bottom
+           wood gradient is swapped for its flat average (it would band at
+           each row), and only the top row keeps the shadow under the shelf
+           above. background-size per layer: [shadow, sides, gradient],
+           after the three ledge layers on the last row. */
+        :root[data-theme="library"] .shelf.shelf-continues,
+        :root[data-theme="library"] .shelf.shelf-row {
+            background-color: var(--wood-flat);
+        }
+
+        :root[data-theme="library"] .shelf.shelf-continues {
+            background-size: auto, auto, 100% 0;
+        }
+
+        :root[data-theme="library"] .shelf.shelf-row.shelf-continues {
+            background-size: 100% 0, auto, 100% 0;
+        }
+
+        :root[data-theme="library"] .shelf.shelf-row:not(.shelf-continues) {
+            background-size: 100% 20px, 100% 20px, 100% 20px, 100% 0, auto, 100% 0;
         }
 
         :root[data-theme="library"] .shelf.scrolls {
@@ -1845,6 +1876,15 @@
             padding-left: 56px;
         }
 
+        /* no orange tab on the Settings header */
+        :root[data-theme="blueprint"] #settings-modal .modal-header {
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+                linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+                #1d3d6e;
+            padding-left: 18px;
+        }
+
         :root[data-theme="blueprint"] .modal-header h3 {
             font-family: 'Architects Daughter', 'Barlow', cursive;
             color: #ffffff;
@@ -2241,7 +2281,9 @@
             text-shadow: 0 0 10px var(--glow), 0 0 2px var(--glow);
         }
 
-        :root[data-theme="terminal"] h1 .h1-spark {
+        :root[data-theme="terminal"] h1 .h1-spark,
+        :root[data-theme="blueprint"] h1 .h1-spark,
+        :root[data-theme="terminal"] .title-mark {
             display: none;
         }
 
@@ -2317,6 +2359,35 @@
         :root[data-theme="terminal"] .shelf.scrolls {
             background: var(--shelf-bg);
             border-bottom: 6px double var(--phosphor);
+        }
+
+        /* expanded rows above the last, in themes that paint their own ledge:
+           just the back of the shelf (their .scrolls border-image would
+           still draw a ledge, so it isn't shared) */
+        :root[data-theme="holo"] .shelf.shelf-continues,
+        :root[data-theme="deco"] .shelf.shelf-continues,
+        :root[data-theme="loft"] .shelf.shelf-continues,
+        :root[data-theme="blueprint"] .shelf.shelf-continues {
+            background: var(--shelf-bg);
+        }
+
+        /* expanded rows: one outline around the whole stack, no lines between */
+        :root[data-theme="terminal"] .shelf.shelf-continues {
+            background: var(--shelf-bg);
+            box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25), inset 0 1px 0 rgba(var(--ink-rgb), 0.25);
+        }
+
+        :root[data-theme="terminal"] .shelf.shelf-row {
+            box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25), inset 0 -1px 0 rgba(var(--ink-rgb), 0.25);
+        }
+
+        :root[data-mode="dark"][data-theme="terminal"] .shelf.shelf-row {
+            box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25), inset 0 -1px 0 rgba(var(--ink-rgb), 0.25), 0 6px 14px -8px var(--glow);
+        }
+
+        :root[data-theme="terminal"] .shelf.shelf-row.shelf-continues,
+        :root[data-mode="dark"][data-theme="terminal"] .shelf.shelf-row.shelf-continues {
+            box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25);
         }
 
         :root[data-theme="terminal"] .shelf::-webkit-scrollbar-track {
@@ -3187,10 +3258,25 @@
             translate: 0 2px; /* rests above the scrollbar here */
         }
 
-        /* Extra rows of an expanded shelf - each is its own .shelf so it
-           gets a ledge, stacked with some breathing room for hover lift. */
+        /* Extra rows of an expanded shelf - each is its own .shelf (drag &
+           drop and leaning work per row), but they butt together into one
+           tall shelf: only the last row keeps its ledge and shadow. */
         .shelf.shelf-row {
-            margin-top: 30px;
+            margin-top: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .shelf.shelf-continues {
+            background: var(--shelf-bg);
+            box-shadow: none;
+            padding-bottom: 8px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .shelf.shelf-continues .book.sticky-book.fallen {
+            translate: 0 2px; /* no ledge to land on mid-shelf */
         }
 
         /* a little round chevron (no words): points down to show the whole
@@ -6138,10 +6224,6 @@
                 min-height: 160px;
             }
 
-            .shelf.shelf-row {
-                margin-top: 18px;
-            }
-
             .shelf-count {
                 font-size: 22px;
             }
@@ -6620,7 +6702,7 @@
     <div class="modal" id="settings-modal" onclick="if (event.target === this) closeSettings()">
         <div class="modal-content settings-content">
             <div class="modal-header">
-                <h3>&#9670; Settings</h3>
+                <h3><span class="title-mark">&#9670;</span> Settings</h3>
                 <button type="button" class="modal-close-x" onclick="closeSettings()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
             <div class="settings-body">
@@ -6636,7 +6718,6 @@
                         <button type="button" class="toggle-btn" data-theme-choice="blueprint" onclick="setTheme('blueprint')">Blueprint</button>
                         <button type="button" class="toggle-btn" data-theme-choice="terminal" onclick="setTheme('terminal')">Terminal</button>
                     </div>
-                    <div class="field-hint">Candy: pinks and purples. Sea Glass: blues and greens. Holo: liquid silver with a rainbow shine. Library: walnut, leather and brass. Deco: navy and gold Art Deco. Loft: slate, steel and copper. Blueprint: drafting-table blues with signal orange. Terminal: a retro computer monitor, green phosphor after dark.</div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
                         <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
@@ -8006,6 +8087,7 @@
             [...row.children].forEach(child => firstShelf.appendChild(child));
             row.remove();
         });
+        firstShelf.classList.remove('shelf-continues');
         firstShelf.scrollLeft = 0;
 
         const btn = section.querySelector('.shelf-expand-btn');
@@ -8054,10 +8136,12 @@
         let insertAfter = firstShelf;
         rows.slice(1).forEach(rowChildren => {
             const row = document.createElement('div');
-            row.className = firstShelf.className + ' shelf-row';
+            row.className = firstShelf.className.replace(' shelf-continues', '') + ' shelf-row';
             row.dataset.group = firstShelf.dataset.group;
             rowChildren.forEach(child => row.appendChild(child));
             if (section.dataset.draggable) attachShelfDropHandlers(row);
+            // the row above runs straight on into this one - no ledge between
+            insertAfter.classList.add('shelf-continues');
             insertAfter.after(row);
             insertAfter = row;
         });
