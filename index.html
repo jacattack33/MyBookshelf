@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
     <script>
         try {
             const theme = localStorage.getItem('bookShelfTheme');
-            if (theme === 'seaglass' || theme === 'holo') {
+            if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint'].includes(theme)) {
                 document.documentElement.dataset.theme = theme;
             }
             const mode = localStorage.getItem('bookShelfMode') || 'light';
@@ -163,6 +163,225 @@
                 radial-gradient(ellipse 50% 45% at 88% 22%, rgba(170, 230, 255, 0.5), transparent 70%),
                 radial-gradient(ellipse 55% 40% at 45% 88%, rgba(205, 190, 255, 0.45), transparent 70%),
                 radial-gradient(ellipse 40% 30% at 92% 92%, rgba(200, 255, 230, 0.4), transparent 70%);
+        }
+
+        /* ---------- Library, Deco, Loft: three classy themes ----------
+           Library is a gentleman's study (walnut, forest leather, brass);
+           Deco is midnight Art Deco (navy, gold, cream); Loft is an
+           industrial loft (slate, concrete, copper). Same variable names as
+           the other themes, plus a few material ones; their material
+           rules sit below the dark-mode blocks. */
+        /* Library: walnut, oxblood leather, bottle green, brass, cream -
+           buttons in grey-green, ink blue, cognac, walnut tan and brass */
+        :root[data-theme="library"] {
+            --shelf-color: #6b4630;
+            --bg-color: #f4ecdc;
+            --y2k-pink: #365753;
+            --y2k-hot-pink: #2b4744;
+            --y2k-purple: #5b3a29;
+            --y2k-lavender: #e6dcc6;
+            --y2k-dark: #2b1d14;
+            --y2k-text: #2b1d14;
+            --y2k-mint: #7f9a94;
+            --y2k-yellow: #c9a55a;
+            --y2k-blue: #8696a8;
+            --y2k-lilac: #b07a52;
+            --y2k-peach: #b48d6a;
+            --y2k-green: #97aea6;
+            --y2k-coral: #b0645c;
+            --pastel-mint: #e3eae8;
+            --pastel-yellow: #f2e8cf;
+            --pastel-blue: #e4e8ee;
+            --pastel-pink: #efe3da;
+            --pastel-lavender: #ece4d4;
+            --pastel-lilac: #efe0d6;
+            --pastel-peach: #efe4d8;
+            --ink-rgb: 43, 29, 20;
+            --accent-rgb: 43, 71, 68;
+            --bg-a: #f4ecdc;
+            --bg-b: #ece0c8;
+            --bg-c: #efe5d0;
+            --panel-bg: #faf5ea;
+            --section-bg: #fdf9f0;
+            --disabled-bg: #ece4d4;
+            --status-hover: #f1e8d6;
+            --secondary-hover: #dccfb3;
+            --shelf-color-hover: #7a5238;
+            --outline: #3b2a1e;
+            --surface: #fffaf0;
+            --shelf-bg: rgba(120, 80, 40, 0.07);
+            --on-bright: #2b1d14;
+            --chart-bar: #2b4744;
+            --chart-bar-hover: #3f625e;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%235b3a29' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --pixel-font: 'Cinzel', Georgia, serif;
+            --brass: linear-gradient(180deg, #f3dc94 0%, #d4ae55 35%, #a88232 62%, #e2c374 86%, #b8923a 100%);
+            --leather: linear-gradient(180deg, #6b2a2c, #4f1d20);
+            --page-glow: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255, 250, 235, 0.6), transparent 70%);
+            --stitch: rgba(236, 223, 198, 0.55);
+            --wood-side: #4a2f21;
+            --wood-back: 
+                linear-gradient(180deg, rgba(20, 10, 5, 0.32), rgba(20, 10, 5, 0) 30px),
+                linear-gradient(90deg, rgba(20, 10, 5, 0.12), rgba(20, 10, 5, 0) 12%, rgba(20, 10, 5, 0) 88%, rgba(20, 10, 5, 0.12)),
+                linear-gradient(180deg, #82593e, #6f4b34);
+            --btn-shadow: 0 2px 0 rgba(var(--ink-rgb), 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35)  /* resting button shadow */;
+        }
+
+        /* Deco: navy, ink, gold, cream - buttons in sapphire blues, old gold,
+           bronze and champagne */
+        :root[data-theme="deco"] {
+            --shelf-color: #1b1d24;
+            --bg-color: #f3ead7;
+            --y2k-pink: #2a4b78;
+            --y2k-hot-pink: #1f3a5f;
+            --y2k-purple: #a8873a;
+            --y2k-lavender: #e9e0c9;
+            --y2k-dark: #14213d;
+            --y2k-text: #14213d;
+            --y2k-mint: #8fa7cf;
+            --y2k-yellow: #e8d29a;
+            --y2k-blue: #a9bddc;
+            --y2k-lilac: #b9a27a;
+            --y2k-peach: #c9a96a;
+            --y2k-green: #a9c0b4;
+            --y2k-coral: #c98f86;
+            --pastel-mint: #e5ebf5;
+            --pastel-yellow: #f7f0dc;
+            --pastel-blue: #eaf0f8;
+            --pastel-pink: #f3ebde;
+            --pastel-lavender: #ece6d8;
+            --pastel-lilac: #f0e9dc;
+            --pastel-peach: #f3ebd9;
+            --ink-rgb: 20, 33, 61;
+            --accent-rgb: 176, 141, 60;
+            --bg-a: #f3ead7;
+            --bg-b: #ece1c9;
+            --bg-c: #efe6d2;
+            --panel-bg: #fbf7ee;
+            --section-bg: #fffdf7;
+            --disabled-bg: #ece5d3;
+            --status-hover: #f3ecdc;
+            --secondary-hover: #e0d4b6;
+            --shelf-color-hover: #2a2d36;
+            --outline: #14213d;
+            --surface: #fffdf7;
+            --shelf-bg: rgba(20, 33, 61, 0.06);
+            --on-bright: #14213d;
+            --chart-bar: #1f3a5f;
+            --chart-bar-hover: #2f5287;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23a8873a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --pixel-font: 'Limelight', Georgia, serif;
+            --gold: #c9a54a;
+            --gold-sheen: linear-gradient(180deg, #f6e3a4 0%, #d9b65e 40%, #a8873a 65%, #e8cf86 100%);
+            --deco-navy: #14213d;
+            --deco-rays: rgba(176, 141, 60, 0.07);
+            --btn-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45), inset 0 0 0 3px rgba(176, 141, 60, 0.75), 2px 2px 0 rgba(var(--ink-rgb), 0.35)  /* resting button shadow */;
+        }
+
+        /* Loft: charcoal, slate, concrete, copper, blackened steel - buttons
+           in steel greys, copper, bronze and brass */
+        :root[data-theme="loft"] {
+            --shelf-color: #3a3e44;
+            --bg-color: #e6e4df;
+            --y2k-pink: #c8845a;
+            --y2k-hot-pink: #b8734a;
+            --y2k-purple: #4a5059;
+            --y2k-lavender: #dddad4;
+            --y2k-dark: #24272b;
+            --y2k-text: #24272b;
+            --y2k-mint: #8e9aa6;
+            --y2k-yellow: #c4a46a;
+            --y2k-blue: #a3adb7;
+            --y2k-lilac: #a8896b;
+            --y2k-peach: #c58a62;
+            --y2k-green: #a5ae9c;
+            --y2k-coral: #c07a62;
+            --pastel-mint: #e6e9ec;
+            --pastel-yellow: #f1ebdc;
+            --pastel-blue: #ebeef1;
+            --pastel-pink: #efe6df;
+            --pastel-lavender: #e7e5e1;
+            --pastel-lilac: #ece6df;
+            --pastel-peach: #f1e6dd;
+            --ink-rgb: 36, 39, 43;
+            --accent-rgb: 184, 115, 74;
+            --bg-a: #e9e7e2;
+            --bg-b: #d9d7d2;
+            --bg-c: #e2e0db;
+            --panel-bg: #f5f4f1;
+            --section-bg: #faf9f7;
+            --disabled-bg: #e5e3de;
+            --status-hover: #eeece8;
+            --secondary-hover: #cfccc5;
+            --shelf-color-hover: #4a4f56;
+            --outline: #1d1f22;
+            --surface: #fbfaf8;
+            --shelf-bg: rgba(36, 39, 43, 0.05);
+            --on-bright: #1d1f22;
+            --chart-bar: #b8734a;
+            --chart-bar-hover: #c8845a;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23b8734a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --pixel-font: 'Oswald', 'Arial Narrow', sans-serif;
+            --copper: linear-gradient(180deg, #e7ad84 0%, #c07a55 40%, #9a5a37 70%, #d39370 100%);
+            --steel: linear-gradient(180deg, #6b717a 0 2px, #3a3e44 2px, #33373c 60%, #2a2d31);
+            --steel-bar: repeating-linear-gradient(180deg, #a3a9b1 0 1px, #b3b8bf 1px 2px, #959ba3 2px 3px);
+            --loft-title: #2b2e33;
+            --speck-dark: rgba(0, 0, 0, 0.035);   /* concrete speckle */
+            --speck-light: rgba(255, 255, 255, 0.25);
+            --loft-glow: linear-gradient(transparent, transparent); /* (must be an image - it's a background layer) */
+            --btn-shadow: 0 3px 0 var(--outline), inset 0 1px 0 rgba(255, 255, 255, 0.4)  /* resting button shadow */;
+        }
+
+        /* Blueprint: an engineer's drafting table - blueprint grid, crisp navy
+           linework, cobalt and sky tones, pops of signal orange */
+        :root[data-theme="blueprint"] {
+            --shelf-color: #1d3d6e;
+            --bg-color: #e9eff6;
+            --y2k-pink: #e8762c;
+            --y2k-hot-pink: #d9621a;
+            --y2k-purple: #2f5fa8;
+            --y2k-lavender: #d6e1ef;
+            --y2k-dark: #13294b;
+            --y2k-text: #13294b;
+            --y2k-mint: #8fb3e0;
+            --y2k-peach: #f4a261;
+            --y2k-blue: #b3cdea;
+            --y2k-lilac: #7f9fca;
+            --y2k-yellow: #f7c58f;
+            --y2k-green: #8fc4c4;
+            --y2k-coral: #e8735a;
+            --pastel-mint: #e6eef8;
+            --pastel-peach: #fcebdc;
+            --pastel-blue: #edf3fa;
+            --pastel-lilac: #e3eaf4;
+            --pastel-yellow: #fdf0e0;
+            --pastel-pink: #fbe9e1;
+            --pastel-lavender: #e8eef6;
+            --ink-rgb: 19, 41, 75;
+            --accent-rgb: 217, 98, 26;
+            --bg-a: #edf2f8;
+            --bg-b: #e3ebf5;
+            --bg-c: #eaf0f7;
+            --panel-bg: #f7f9fc;
+            --section-bg: #fbfcfe;
+            --disabled-bg: #e6ecf4;
+            --status-hover: #eaf1f9;
+            --secondary-hover: #c9d7ea;
+            --shelf-color-hover: #2a4f86;
+            --outline: #1d3d6e;
+            --surface: #fbfcfe;
+            --shelf-bg: rgba(47, 95, 168, 0.05);
+            --on-bright: #13294b;
+            --chart-bar: #2f5fa8;
+            --chart-bar-hover: #4a78c0;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23d9621a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --pixel-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+            --grid-line: rgba(47, 95, 168, 0.09);
+            --grid-major: rgba(47, 95, 168, 0.16);
+            --btn-shadow: 2px 2px 0 rgba(19, 41, 75, 0.22);
+            --panel-shadow: 5px 5px 0 rgba(19, 41, 75, 0.14);
+            --signal-orange: #f07c2a;
+            --sketch: rgba(47, 95, 168, 0.2); /* compass circles + construction lines */
         }
 
         /* ---------- Dark mode (Settings > Mode) ----------
@@ -551,7 +770,7 @@
            panel, in the Orbitron font. (The cut also clips any outer
            shadow, so depth comes from inside, and the two diagonal edges
            get drawn-on outline strokes.) */
-        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .modal-buttons button, .sticky-submit, .filters-toggle) {
+        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
             border-radius: 0;
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
             font-family: var(--pixel-font);
@@ -564,7 +783,7 @@
                 inset 0 2px 0 rgba(255, 255, 255, 0.6);
         }
 
-        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .modal-buttons button, .sticky-submit, .filters-toggle)::after {
+        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::after {
             content: "";
             position: absolute;
             inset: 0;
@@ -574,11 +793,1111 @@
                 linear-gradient(135deg, transparent calc(50% - 1.5px), var(--outline) calc(50% - 1.5px), var(--outline) calc(50% + 1.5px), transparent calc(50% + 1.5px)) bottom right / 10px 10px no-repeat;
         }
 
-        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+        :root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):active {
             transform: translateY(1px);
             box-shadow:
                 inset 0 3px 5px rgba(var(--ink-rgb), 0.35),
                 inset 0 -1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        /* Library after dark: a lamp-lit evening study */
+        :root[data-mode="dark"][data-theme="library"] {
+            /* dark academia: near-black charcoal with a green undertone, aged
+               parchment ink, oxblood leather, deep royal blue, antique brass
+               (kept to the title and nameplates), ebony shelves */
+            --y2k-dark: #e2dacb;
+            --y2k-text: #e2dacb;
+            --ink-rgb: 226, 218, 203;
+            --accent-rgb: 93, 114, 184;
+            --y2k-pink: #3b52a0;
+            --y2k-hot-pink: #2f448a;
+            --y2k-purple: #5d72b8;
+            --y2k-lavender: #2c3230;
+            --y2k-mint: #8a9e98;
+            --y2k-yellow: #b39a5e;
+            --y2k-blue: #7d8fc4;
+            --y2k-lilac: #9c6b62;
+            --y2k-peach: #a89580;
+            --y2k-green: #8fa69d;
+            --y2k-coral: #a85a5a;
+            --pastel-mint: #232b29;
+            --pastel-yellow: #2e2b22;
+            --pastel-blue: #232830;
+            --pastel-pink: #2f2324;
+            --pastel-lavender: #262b29;
+            --pastel-lilac: #2c2426;
+            --pastel-peach: #2d2824;
+            --bg-a: #121514;
+            --bg-b: #161a19;
+            --bg-c: #111312;
+            --panel-bg: #1b1f1e;
+            --section-bg: #202524;
+            --disabled-bg: #2a302e;
+            --status-hover: #2a3230;
+            --secondary-hover: #343c3a;
+            --surface: #202524;
+            --shelf-bg: rgba(255, 255, 255, 0.03);
+            --shelf-color: #241c18;
+            --shelf-color-hover: #2f2520;
+            --on-bright: #141716;
+            --outline: #5f6662;
+            --chart-bar: #b39a5e;
+            --chart-bar-hover: #c7b07a;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%238f9fd6' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --page-glow: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(200, 210, 200, 0.05), transparent 70%);
+            --btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            --brass: linear-gradient(180deg, #d9c48e 0%, #b39a5e 35%, #85703f 62%, #c2ab72 86%, #9c844c 100%);
+            --leather: linear-gradient(180deg, #4e1c21, #3a1418);
+            --stitch: rgba(226, 218, 203, 0.35);
+            --wood-side: #120e0c;
+            --wood-back:
+                linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 30px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 88%, rgba(0, 0, 0, 0.2)),
+                linear-gradient(180deg, #2a221e, #211b18);
+        }
+
+        /* Deco after dark: a gold-on-black speakeasy */
+        :root[data-mode="dark"][data-theme="deco"] {
+            --y2k-dark: #efe6d2;
+            --y2k-text: #efe6d2;
+            --ink-rgb: 239, 230, 210;
+            --accent-rgb: 212, 176, 90;
+            --y2k-pink: #3d64a0;
+            --y2k-hot-pink: #33558a;
+            --y2k-purple: #7f97c4;
+            --y2k-lavender: #26304a;
+            --y2k-mint: #8fa7cf;
+            --y2k-yellow: #e8d29a;
+            --y2k-blue: #a9bddc;
+            --y2k-lilac: #8f9bb5;
+            --y2k-peach: #c9a96a;
+            --y2k-green: #a9c0b4;
+            --y2k-coral: #c98f86;
+            --pastel-mint: #1d3a35;
+            --pastel-yellow: #3d3622;
+            --pastel-blue: #1f2d45;
+            --pastel-pink: #3d2626;
+            --pastel-lavender: #232b40;
+            --pastel-lilac: #2d2742;
+            --pastel-peach: #3d2a22;
+            --bg-a: #0b1020;
+            --bg-b: #111a30;
+            --bg-c: #0d1426;
+            --panel-bg: #141d33;
+            --section-bg: #18223b;
+            --disabled-bg: #212c47;
+            --status-hover: #222d4a;
+            --secondary-hover: #2c3a5c;
+            --surface: #18223b;
+            --shelf-bg: rgba(201, 165, 74, 0.05);
+            --shelf-color: #0e0f14;
+            --shelf-color-hover: #1b1d24;
+            --on-bright: #0b1020;
+            --outline: #5a6788;
+            --chart-bar: #d4b05a;
+            --chart-bar-hover: #e3c77a;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23d4b05a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --deco-navy: #0b1020;
+            --deco-rays: rgba(201, 165, 74, 0.06);
+            --btn-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06), inset 0 0 0 3px rgba(143, 167, 207, 0.35), 2px 2px 0 rgba(0, 0, 0, 0.5);
+            /* (fewer gold things up top: sapphire edges and headings; gold stays
+               on the title, panel border and shelf plaques) */
+        }
+
+        /* Loft after dark: a moody loft under Edison bulbs */
+        :root[data-mode="dark"][data-theme="loft"] {
+            --y2k-dark: #dcd9d3;
+            --y2k-text: #dcd9d3;
+            --ink-rgb: 220, 217, 211;
+            --accent-rgb: 200, 132, 90;
+            --y2k-pink: #d6956b;
+            --y2k-hot-pink: #c8845a;
+            --y2k-purple: #9aa0a8;
+            --y2k-lavender: #3a3e44;
+            --y2k-mint: #8e9aa6;
+            --y2k-yellow: #c4a46a;
+            --y2k-blue: #a3adb7;
+            --y2k-lilac: #a8896b;
+            --y2k-peach: #c58a62;
+            --y2k-green: #a5ae9c;
+            --y2k-coral: #c07a62;
+            --pastel-mint: #2c332b;
+            --pastel-yellow: #3d3524;
+            --pastel-blue: #283139;
+            --pastel-pink: #3a2c28;
+            --pastel-lavender: #33363b;
+            --pastel-lilac: #33303a;
+            --pastel-peach: #3d2d24;
+            --bg-a: #1d1f22;
+            --bg-b: #24272b;
+            --bg-c: #1a1c1f;
+            --panel-bg: #2b2e33;
+            --section-bg: #30343a;
+            --disabled-bg: #3a3e44;
+            --status-hover: #3d4148;
+            --secondary-hover: #4a4f56;
+            --surface: #30343a;
+            --shelf-bg: rgba(255, 255, 255, 0.04);
+            --shelf-color: #2b2e33;
+            --shelf-color-hover: #3a3e44;
+            --on-bright: #1d1f22;
+            --outline: #6b717a;
+            --chart-bar: #c8845a;
+            --chart-bar-hover: #d6956b;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23c8845a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --steel: linear-gradient(180deg, #5a6068 0 2px, #2a2d31 2px, #222528 60%, #1a1c1f);
+            --steel-bar: repeating-linear-gradient(180deg, #5a6068 0 1px, #666c74 1px 2px, #4f555d 2px 3px);
+            --loft-title: #dcd9d3;
+            --speck-dark: rgba(0, 0, 0, 0.18);
+            --speck-light: rgba(255, 255, 255, 0.025);
+            --loft-glow: radial-gradient(ellipse 40% 35% at 20% 5%, rgba(255, 170, 80, 0.14), transparent 70%), radial-gradient(ellipse 35% 30% at 85% 15%, rgba(255, 170, 80, 0.1), transparent 70%);
+            --btn-shadow: 0 3px 0 #0e0f11, inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* dark-mode unpressed buttons: see-through tints of each theme's own group colours */
+        :root[data-mode="dark"][data-theme="library"] .toggle-btn:not(.active) {
+            background-color: rgba(138, 158, 152, 0.12);
+            color: #bfcac6;
+            border-color: rgba(138, 158, 152, 0.5);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-btn:not(.active):hover {
+            background-color: rgba(138, 158, 152, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-yellow .toggle-btn:not(.active) {
+            background-color: rgba(179, 154, 94, 0.12);
+            color: #d5c7a6;
+            border-color: rgba(179, 154, 94, 0.5);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background-color: rgba(179, 154, 94, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-blue .toggle-btn:not(.active) {
+            background-color: rgba(125, 143, 196, 0.12);
+            color: #b6c0e0;
+            border-color: rgba(125, 143, 196, 0.5);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-blue .toggle-btn:not(.active):hover {
+            background-color: rgba(125, 143, 196, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-lilac .toggle-btn:not(.active) {
+            background-color: rgba(156, 107, 98, 0.12);
+            color: #c9aea9;
+            border-color: rgba(156, 107, 98, 0.5);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background-color: rgba(156, 107, 98, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-peach .toggle-btn:not(.active) {
+            background-color: rgba(168, 149, 128, 0.12);
+            color: #cfc5b9;
+            border-color: rgba(168, 149, 128, 0.5);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .toggle-peach .toggle-btn:not(.active):hover {
+            background-color: rgba(168, 149, 128, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-btn:not(.active) {
+            background-color: rgba(143, 167, 207, 0.12);
+            color: #c1cfe5;
+            border-color: rgba(143, 167, 207, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-btn:not(.active):hover {
+            background-color: rgba(143, 167, 207, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-yellow .toggle-btn:not(.active) {
+            background-color: rgba(232, 210, 154, 0.12);
+            color: #f2e6c7;
+            border-color: rgba(232, 210, 154, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background-color: rgba(232, 210, 154, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-blue .toggle-btn:not(.active) {
+            background-color: rgba(169, 189, 220, 0.12);
+            color: #d0dbec;
+            border-color: rgba(169, 189, 220, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-blue .toggle-btn:not(.active):hover {
+            background-color: rgba(169, 189, 220, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-lilac .toggle-btn:not(.active) {
+            background-color: rgba(143, 155, 181, 0.12);
+            color: #c3cad9;
+            border-color: rgba(143, 155, 181, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background-color: rgba(143, 155, 181, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-peach .toggle-btn:not(.active) {
+            background-color: rgba(201, 169, 106, 0.12);
+            color: #e1d0ad;
+            border-color: rgba(201, 169, 106, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="deco"] .toggle-peach .toggle-btn:not(.active):hover {
+            background-color: rgba(201, 169, 106, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-btn:not(.active) {
+            background-color: rgba(142, 154, 166, 0.12);
+            color: #c1c7ce;
+            border-color: rgba(142, 154, 166, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-btn:not(.active):hover {
+            background-color: rgba(142, 154, 166, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-yellow .toggle-btn:not(.active) {
+            background-color: rgba(196, 164, 106, 0.12);
+            color: #dfcdad;
+            border-color: rgba(196, 164, 106, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background-color: rgba(196, 164, 106, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-blue .toggle-btn:not(.active) {
+            background-color: rgba(163, 173, 183, 0.12);
+            color: #ccd2d7;
+            border-color: rgba(163, 173, 183, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-blue .toggle-btn:not(.active):hover {
+            background-color: rgba(163, 173, 183, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-lilac .toggle-btn:not(.active) {
+            background-color: rgba(168, 137, 107, 0.12);
+            color: #cfbeae;
+            border-color: rgba(168, 137, 107, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background-color: rgba(168, 137, 107, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-peach .toggle-btn:not(.active) {
+            background-color: rgba(197, 138, 98, 0.12);
+            color: #dfbfa9;
+            border-color: rgba(197, 138, 98, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .toggle-peach .toggle-btn:not(.active):hover {
+            background-color: rgba(197, 138, 98, 0.22);
+        }
+
+
+        /* ---------- Library materials ---------- */
+        :root[data-theme="library"] body {
+            font-family: 'Lora', Georgia, serif;
+            background:
+                var(--page-glow),
+                repeating-linear-gradient(0deg, rgba(var(--ink-rgb), 0.025) 0 1px, transparent 1px 4px),
+                repeating-linear-gradient(90deg, rgba(var(--ink-rgb), 0.025) 0 1px, transparent 1px 4px),
+                linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 50%, var(--bg-c) 100%);
+            background-attachment: fixed;
+        }
+
+        /* brass lettering, slightly embossed */
+        :root[data-theme="library"] h1 {
+            background: var(--brass);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            filter: drop-shadow(1px 2px 0 rgba(43, 29, 20, 0.55));
+        }
+
+        /* panels: a thin brass pinline inside a deep brown edge */
+        :root[data-theme="library"] .controls,
+        :root[data-theme="library"] .modal-content {
+            border: 2px solid var(--outline);
+            border-radius: 6px;
+            box-shadow:
+                inset 0 0 0 4px var(--surface),
+                inset 0 0 0 5px rgba(184, 146, 58, 0.65),
+                0 8px 22px rgba(43, 29, 20, 0.28);
+        }
+
+        :root[data-theme="library"] .modal-content {
+            box-shadow:
+                inset 0 0 0 4px var(--panel-bg),
+                inset 0 0 0 5px rgba(184, 146, 58, 0.65),
+                0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        /* title bars: oxblood leather with a faint grain and stitching */
+        :root[data-theme="library"] .window-titlebar,
+        :root[data-theme="library"] .modal-header {
+            position: relative;
+            background:
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px),
+                repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px),
+                var(--leather);
+        }
+
+        :root[data-theme="library"] .window-titlebar {
+            height: 14px;
+        }
+
+        :root[data-theme="library"] .modal-header::after {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border: 1px dashed var(--stitch);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        :root[data-theme="library"] .modal-header h3 {
+            color: #f1e6cc;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        /* shelves: a walnut ledge with wood grain */
+        /* shelves: a whole walnut bookcase - a solid back, darker uprights
+           at the sides, a shadow under the shelf above, a grained ledge */
+        :root[data-theme="library"] .shelf {
+            background:
+                linear-gradient(180deg, rgba(255, 228, 185, 0.35), rgba(255, 228, 185, 0) 4px) bottom / 100% 20px no-repeat,
+                repeating-linear-gradient(178deg, rgba(40, 20, 10, 0) 0 3px, rgba(40, 20, 10, 0.22) 3px 4px, rgba(40, 20, 10, 0) 4px 9px, rgba(255, 220, 170, 0.1) 9px 10px) bottom / 100% 20px no-repeat,
+                linear-gradient(180deg, #7a4f34, #5b3a29 60%, #45291c) bottom / 100% 20px no-repeat,
+                var(--wood-back);
+            box-shadow: inset 7px 0 0 var(--wood-side), inset -7px 0 0 var(--wood-side), 0 10px 8px -6px rgba(0, 0, 0, 0.45);
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .shelf {
+            background:
+                linear-gradient(180deg, rgba(200, 190, 175, 0.18), rgba(200, 190, 175, 0) 3px) bottom / 100% 20px no-repeat,
+                repeating-linear-gradient(178deg, rgba(0, 0, 0, 0) 0 3px, rgba(0, 0, 0, 0.3) 3px 4px, rgba(0, 0, 0, 0) 4px 9px, rgba(255, 240, 220, 0.04) 9px 10px) bottom / 100% 20px no-repeat,
+                linear-gradient(180deg, #3a2f29, #2a221e 60%, #1c1714) bottom / 100% 20px no-repeat,
+                var(--wood-back);
+        }
+
+        :root[data-theme="library"] .shelf.scrolls {
+            background: var(--wood-back);
+            border-image: repeating-linear-gradient(178deg, #6b4630 0 3px, #5b3a29 3px 5px, #74503a 5px 7px) 0 0 100% 0 / 0 0 20px 0 stretch;
+        }
+
+        :root[data-mode="dark"][data-theme="library"] .shelf.scrolls {
+            background: var(--wood-back);
+            border-image: repeating-linear-gradient(178deg, #332923 0 3px, #2a221e 3px 5px, #3a2f29 5px 7px) 0 0 100% 0 / 0 0 20px 0 stretch;
+        }
+
+        :root[data-theme="library"] .shelf::-webkit-scrollbar-track {
+            background: rgba(20, 10, 5, 0.35); /* a groove in the wood */
+        }
+
+        :root[data-theme="library"] .shelf::-webkit-scrollbar-thumb {
+            background: var(--brass);
+            border-color: transparent;
+            background-clip: padding-box;
+        }
+
+        :root[data-theme="library"] .shelf-count {
+            color: rgba(255, 236, 205, 0.22);
+        }
+
+        :root[data-theme="library"] .shelf-empty-hint {
+            color: rgba(255, 236, 205, 0.6);
+        }
+
+        /* shelf names: engraved brass nameplates with two screws */
+        :root[data-theme="library"] .genre-title {
+            border: 2px solid #6b4e1e;
+            border-radius: 4px;
+            padding: 12px 34px;
+            transform: rotate(-1.5deg);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.55),
+                inset 0 0 0 3px rgba(107, 78, 30, 0.3),
+                3px 4px 0 rgba(43, 29, 20, 0.35);
+        }
+
+        :root[data-theme="library"] .genre-title:not([class*="tag-status-"]) {
+            background: var(--brass);
+            color: #2b1d14;
+            text-shadow: 0 1px 0 rgba(255, 240, 200, 0.6);
+        }
+
+        :root[data-theme="library"] .genre-title::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle, #6b4e1e 0 1.5px, #f3dc94 2px 3px, #8a6a2a 3.5px, transparent 4px) left 9px center / 9px 9px no-repeat,
+                radial-gradient(circle, #6b4e1e 0 1.5px, #f3dc94 2px 3px, #8a6a2a 3.5px, transparent 4px) right 9px center / 9px 9px no-repeat;
+        }
+
+        /* buttons: soft leather with a stitched edge */
+        :root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+            border-radius: 6px;
+            border-width: 1.5px;
+            border-color: rgba(var(--ink-rgb), 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+            opacity: 0.35;
+        }
+
+        :root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::after {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border: 1px dashed rgba(var(--ink-rgb), 0.28);
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        :root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+            transform: translateY(1px);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ---------- Deco materials ---------- */
+        :root[data-theme="deco"] body {
+            font-family: 'Josefin Sans', 'Quicksand', sans-serif;
+            background:
+                repeating-conic-gradient(from 0deg at 50% -10%, var(--deco-rays) 0 3deg, transparent 3deg 9deg),
+                linear-gradient(180deg, var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 100%);
+            background-attachment: fixed;
+        }
+
+        :root[data-theme="deco"] h1 {
+            background: var(--gold-sheen);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            filter: drop-shadow(1px 1px 0 var(--deco-navy)) drop-shadow(0 0 14px rgba(201, 165, 74, 0.35));
+        }
+
+        /* panels: a double gold border with stepped deco corners */
+        :root[data-theme="deco"] .controls,
+        :root[data-theme="deco"] .modal-content {
+            position: relative;
+            border: 2px solid var(--gold);
+            border-radius: 2px;
+            box-shadow:
+                inset 0 0 0 3px var(--surface),
+                inset 0 0 0 4px var(--gold),
+                0 10px 26px rgba(11, 16, 32, 0.25);
+        }
+
+        :root[data-theme="deco"] .modal-content {
+            box-shadow:
+                inset 0 0 0 3px var(--panel-bg),
+                inset 0 0 0 4px var(--gold),
+                0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        :root[data-theme="deco"] .controls::before,
+        :root[data-theme="deco"] .controls::after,
+        :root[data-theme="deco"] .modal-content::before,
+        :root[data-theme="deco"] .modal-content::after {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        :root[data-theme="deco"] .controls::before,
+        :root[data-theme="deco"] .modal-content::before {
+            left: 9px;
+            bottom: 9px;
+            border-left: 2px solid var(--gold);
+            border-bottom: 2px solid var(--gold);
+            box-shadow: -4px 4px 0 -2px var(--gold);
+        }
+
+        :root[data-theme="deco"] .controls::after,
+        :root[data-theme="deco"] .modal-content::after {
+            right: 9px;
+            bottom: 9px;
+            border-right: 2px solid var(--gold);
+            border-bottom: 2px solid var(--gold);
+            box-shadow: 4px 4px 0 -2px var(--gold);
+        }
+
+        /* title bars: navy with a gold rule */
+        :root[data-theme="deco"] .window-titlebar,
+        :root[data-theme="deco"] .modal-header {
+            background:
+                repeating-linear-gradient(90deg, rgba(201, 165, 74, 0.12) 0 1px, transparent 1px 10px),
+                var(--deco-navy);
+            box-shadow: inset 0 -2px 0 var(--gold);
+        }
+
+        :root[data-theme="deco"] .modal-header h3 {
+            color: #e3c77a;
+        }
+
+        /* shelves: black lacquer ledge with a gold pinstripe */
+        :root[data-theme="deco"] .shelf {
+            background:
+                linear-gradient(180deg, var(--gold) 0 2px, #3a3d48 2px, #1b1d24 45%, #0e0f14) bottom / 100% 20px no-repeat,
+                var(--shelf-bg);
+        }
+
+        :root[data-theme="deco"] .shelf.scrolls {
+            background: var(--shelf-bg);
+            border-image: linear-gradient(180deg, #c9a54a 0 2px, #3a3d48 2px, #1b1d24 45%, #0e0f14) 0 0 100% 0 / 0 0 20px 0 stretch;
+        }
+
+        :root[data-theme="deco"] .shelf::-webkit-scrollbar-thumb {
+            background: var(--gold-sheen);
+        }
+
+        /* shelf names: navy plaques, gold double border, gold lettering */
+        :root[data-theme="deco"] .genre-title {
+            border: 2px solid var(--gold);
+            border-radius: 2px;
+            letter-spacing: 2px;
+            transform: rotate(-1deg);
+            box-shadow:
+                inset 0 0 0 3px var(--deco-navy),
+                inset 0 0 0 4px rgba(201, 165, 74, 0.75),
+                4px 4px 0 rgba(11, 16, 32, 0.3);
+        }
+
+        :root[data-theme="deco"] .genre-title:not([class*="tag-status-"]) {
+            background: var(--deco-navy);
+            color: #e3c77a;
+        }
+
+        :root[data-theme="deco"] .genre-title[class*="tag-status-"] {
+            box-shadow:
+                inset 0 0 0 3px rgba(255, 255, 255, 0.4),
+                inset 0 0 0 4px rgba(176, 141, 60, 0.8),
+                4px 4px 0 rgba(11, 16, 32, 0.3);
+        }
+
+        :root[data-theme="deco"] .genre-title::before,
+        :root[data-theme="deco"] .genre-title::after {
+            content: "\25C6";
+            font-size: 0.5em;
+            vertical-align: middle;
+            opacity: 0.8;
+        }
+
+        :root[data-theme="deco"] .genre-title::before { margin-right: 12px; }
+        :root[data-theme="deco"] .genre-title::after { margin-left: 12px; }
+
+        /* buttons: sharp lacquer with a thin gold inner rule, uppercase */
+        :root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+            border-radius: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 12px;
+            box-shadow: var(--btn-shadow);
+        }
+
+        /* (gold on the pale unpressed status buttons is too faint - navy ink) */
+        :root[data-theme="deco"] .status-btn:not(.active) {
+            color: var(--y2k-dark);
+        }
+
+        :root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+            display: none;
+        }
+
+        :root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+            transform: translate(1px, 1px);
+            box-shadow:
+                inset 0 0 0 2px rgba(255, 255, 255, 0.3),
+                inset 0 0 0 3px rgba(176, 141, 60, 0.9),
+                inset 0 2px 5px rgba(0, 0, 0, 0.35);
+        }
+
+        /* ---------- Loft materials ---------- */
+        :root[data-theme="loft"] body {
+            font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background:
+                var(--loft-glow),
+                radial-gradient(var(--speck-dark) 0.8px, transparent 1.3px) 0 0 / 9px 9px,
+                radial-gradient(var(--speck-light) 0.8px, transparent 1.3px) 4px 5px / 13px 13px,
+                radial-gradient(var(--speck-dark) 1.2px, transparent 1.8px) 6px 2px / 23px 23px,
+                linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 100%);
+            background-attachment: fixed;
+        }
+
+        :root[data-theme="loft"] h1 {
+            color: var(--loft-title);
+            text-transform: uppercase;
+            text-shadow: 3px 3px 0 var(--y2k-hot-pink);
+        }
+
+        /* panels: blackened-steel edge, square-ish, hard shadow */
+        :root[data-theme="loft"] .controls,
+        :root[data-theme="loft"] .modal-content {
+            border: 2px solid var(--outline);
+            border-radius: 4px;
+            box-shadow: 6px 6px 0 rgba(29, 31, 34, 0.85);
+        }
+
+        /* title bars: brushed steel with rivets */
+        :root[data-theme="loft"] .window-titlebar,
+        :root[data-theme="loft"] .modal-header {
+            background:
+                radial-gradient(circle, #e2e5e9 0 1.5px, #4a5059 2px 3px, transparent 3.5px) left 6px center / 8px 8px no-repeat,
+                radial-gradient(circle, #e2e5e9 0 1.5px, #4a5059 2px 3px, transparent 3.5px) right 6px center / 8px 8px no-repeat,
+                linear-gradient(90deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.15) 70%, rgba(255, 255, 255, 0)),
+                var(--steel-bar);
+            border-bottom: 2px solid var(--outline);
+        }
+
+        :root[data-theme="loft"] .window-titlebar {
+            height: 12px;
+        }
+
+        :root[data-theme="loft"] .modal-header {
+            padding-left: 22px;
+        }
+
+        :root[data-theme="loft"] .modal-header h3 {
+            color: #1d1f22;
+            text-transform: uppercase;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        :root[data-mode="dark"][data-theme="loft"] .modal-header h3 {
+            color: #e6e3dd;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* shelves: a plain, solid blackened-steel plank */
+        :root[data-theme="loft"] .shelf {
+            background:
+                var(--steel) bottom / 100% 20px no-repeat,
+                var(--shelf-bg);
+        }
+
+        :root[data-theme="loft"] .shelf.scrolls {
+            background: var(--shelf-bg);
+            border-image: var(--steel) 0 0 100% 0 / 0 0 20px 0 stretch;
+        }
+
+        :root[data-theme="loft"] .shelf::-webkit-scrollbar-thumb {
+            background: var(--copper);
+        }
+
+        /* shelf names: flat, straight blackened-steel signage plates with a
+           copper bar down the left edge (status shelves: their own colour) */
+        :root[data-theme="loft"] .genre-title {
+            --sign-accent: #c8845a;
+            transform: none;
+            left: -10px; /* mounted on the shelf's corner, not hanging off it */
+            top: -24px;
+            border: none;
+            border-left: 6px solid var(--sign-accent);
+            border-radius: 2px;
+            padding: 10px 22px 10px 18px;
+            text-transform: uppercase;
+            background: #24272b;
+            color: #e6e3dd;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        :root[data-theme="loft"] .genre-title[class*="tag-status-"] {
+            background: #24272b;
+            color: var(--sign-accent);
+        }
+
+        :root[data-theme="loft"] .genre-title.tag-status-want { --sign-accent: var(--y2k-yellow); }
+        :root[data-theme="loft"] .genre-title.tag-status-reading { --sign-accent: var(--y2k-blue); }
+        :root[data-theme="loft"] .genre-title.tag-status-read { --sign-accent: var(--y2k-green); }
+        :root[data-theme="loft"] .genre-title.tag-status-dnf { --sign-accent: var(--y2k-coral); }
+
+        :root[data-mode="dark"][data-theme="loft"] .genre-title {
+            background: #3a3e44;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* buttons: flat industrial keys with a hard bottom edge */
+        :root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+            border-radius: 3px;
+            font-family: var(--pixel-font);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+            display: none;
+        }
+
+        :root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 var(--outline), inset 0 2px 3px rgba(0, 0, 0, 0.25);
+        }
+
+        /* library: heading font sizes */
+        :root[data-theme="library"] h1 { font-size: 34px; font-weight: 700; letter-spacing: 4px; }
+        :root[data-theme="library"] .genre-title { font-size: 24px; font-weight: 700; letter-spacing: 2px; }
+        :root[data-theme="library"] .shelf-count { font-size: 34px; font-weight: 700; }
+        :root[data-theme="library"] .modal-header h3 { font-size: 17px; font-weight: 700; letter-spacing: 1px; }
+        :root[data-theme="library"] .field-section-title,
+        :root[data-theme="library"] .preview-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+        :root[data-theme="library"] .series-missing-label,
+        :root[data-theme="library"] .shelf-empty-hint { font-weight: 600; }
+        :root[data-theme="library"] .cat-z { font-family: 'Press Start 2P', monospace; }
+        @media (max-width: 600px) {
+            :root[data-theme="library"] h1 { font-size: 22px; letter-spacing: 2px; }
+            :root[data-theme="library"] .genre-title { font-size: 15px; letter-spacing: 1px; }
+            :root[data-theme="library"] .shelf-count { font-size: 22px; }
+        }
+
+        /* deco: heading font sizes */
+        :root[data-theme="deco"] h1 { font-size: 38px; letter-spacing: 4px; }
+        :root[data-theme="deco"] .genre-title { font-size: 24px; }
+        :root[data-theme="deco"] .shelf-count { font-size: 34px; }
+        :root[data-theme="deco"] .modal-header h3 { font-size: 16px; letter-spacing: 2px; }
+        :root[data-theme="deco"] .field-section-title,
+        :root[data-theme="deco"] .preview-label { font-size: 12px; letter-spacing: 0.12em; }
+        :root[data-theme="deco"] .series-missing-label,
+        :root[data-theme="deco"] .shelf-empty-hint { font-weight: 600; }
+        :root[data-theme="deco"] .cat-z { font-family: 'Press Start 2P', monospace; }
+        @media (max-width: 600px) {
+            :root[data-theme="deco"] h1 { font-size: 24px; letter-spacing: 2px; }
+            :root[data-theme="deco"] .genre-title { font-size: 15px; letter-spacing: 1px; }
+            :root[data-theme="deco"] .shelf-count { font-size: 22px; }
+        }
+
+        /* loft: heading font sizes */
+        :root[data-theme="loft"] h1 { font-size: 40px; font-weight: 600; letter-spacing: 8px; }
+        :root[data-theme="loft"] .genre-title { font-size: 22px; font-weight: 600; letter-spacing: 4px; }
+        :root[data-theme="loft"] .shelf-count { font-size: 40px; font-weight: 600; }
+        :root[data-theme="loft"] .modal-header h3 { font-size: 18px; font-weight: 600; letter-spacing: 2px; }
+        :root[data-theme="loft"] .field-section-title,
+        :root[data-theme="loft"] .preview-label { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; }
+        :root[data-theme="loft"] .series-missing-label,
+        :root[data-theme="loft"] .shelf-empty-hint { font-weight: 600; }
+        :root[data-theme="loft"] .cat-z { font-family: 'Press Start 2P', monospace; }
+        @media (max-width: 600px) {
+            :root[data-theme="loft"] h1 { font-size: 26px; letter-spacing: 4px; }
+            :root[data-theme="loft"] .genre-title { font-size: 17px; letter-spacing: 1.5px; left: 0; padding: 8px 14px 8px 12px; }
+            :root[data-theme="loft"] .shelf-count { font-size: 24px; }
+        }
+
+        /* Blueprint after dark: the classic deep-blue blueprint, white lines */
+        :root[data-mode="dark"][data-theme="blueprint"] {
+            --y2k-dark: #e6edf7;
+            --y2k-text: #e6edf7;
+            --ink-rgb: 230, 237, 247;
+            --accent-rgb: 242, 140, 58;
+            --y2k-pink: #f28c3a;
+            --y2k-hot-pink: #e8762c;
+            --y2k-purple: #8fb3e0;
+            --y2k-lavender: #2a4570;
+            --pastel-mint: #1f3354;
+            --pastel-peach: #3d2c22;
+            --pastel-blue: #22385a;
+            --pastel-lilac: #26395a;
+            --pastel-yellow: #3d3322;
+            --pastel-pink: #3a2a26;
+            --pastel-lavender: #22375a;
+            --bg-a: #12264a;
+            --bg-b: #0f2142;
+            --bg-c: #132a50;
+            --panel-bg: #17305a;
+            --section-bg: #1b3663;
+            --disabled-bg: #23406f;
+            --status-hover: #244373;
+            --secondary-hover: #2c4d80;
+            --surface: #1b3663;
+            --shelf-bg: rgba(255, 255, 255, 0.04);
+            --shelf-color: #2a4f86;
+            --shelf-color-hover: #12264a;
+            --on-bright: #0f2142;
+            --outline: #7f9cc6;
+            --chart-bar: #f28c3a;
+            --chart-bar-hover: #f5a35f;
+            --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23f28c3a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+            --grid-line: rgba(255, 255, 255, 0.05);
+            --grid-major: rgba(255, 255, 255, 0.1);
+            --btn-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+            --panel-shadow: 5px 5px 0 rgba(0, 0, 0, 0.35);
+            --sketch: rgba(255, 255, 255, 0.11); /* compass circles + construction lines */
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-btn:not(.active) {
+            background-color: rgba(143, 179, 224, 0.12);
+            color: #c1d5ee;
+            border-color: rgba(143, 179, 224, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-btn:not(.active):hover {
+            background-color: rgba(143, 179, 224, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-yellow .toggle-btn:not(.active) {
+            background-color: rgba(247, 197, 143, 0.12);
+            color: #fbdfc1;
+            border-color: rgba(247, 197, 143, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-yellow .toggle-btn:not(.active):hover {
+            background-color: rgba(247, 197, 143, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-blue .toggle-btn:not(.active) {
+            background-color: rgba(179, 205, 234, 0.12);
+            color: #d5e4f3;
+            border-color: rgba(179, 205, 234, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-blue .toggle-btn:not(.active):hover {
+            background-color: rgba(179, 205, 234, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-lilac .toggle-btn:not(.active) {
+            background-color: rgba(127, 159, 202, 0.12);
+            color: #b9cae2;
+            border-color: rgba(127, 159, 202, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-lilac .toggle-btn:not(.active):hover {
+            background-color: rgba(127, 159, 202, 0.22);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-peach .toggle-btn:not(.active) {
+            background-color: rgba(244, 162, 97, 0.12);
+            color: #f9cca8;
+            border-color: rgba(244, 162, 97, 0.55);
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-mode="dark"][data-theme="blueprint"] .toggle-peach .toggle-btn:not(.active):hover {
+            background-color: rgba(244, 162, 97, 0.22);
+        }
+
+        /* ---------- Blueprint materials ----------
+           Neat drafting-table order (grid, squared panels, condensed
+           buttons) with an artsy hand: architect's hand lettering, compass
+           circles sketched on the grid, taped-on labels, registration marks */
+        :root[data-theme="blueprint"] body {
+            font-family: 'Barlow', 'Segoe UI', sans-serif;
+            background:
+                radial-gradient(circle at 90% 16%, transparent 0 89px, var(--sketch) 90px 91px, transparent 92px 139px, var(--sketch) 140px 141px, transparent 142px),
+                radial-gradient(circle at 6% 62%, transparent 0 169px, var(--sketch) 170px 171px, transparent 172px),
+                radial-gradient(circle at 70% 96%, transparent 0 119px, var(--sketch) 120px 121px, transparent 122px),
+                linear-gradient(28deg, transparent calc(50% - 0.6px), var(--sketch) 50%, transparent calc(50% + 0.6px)),
+                linear-gradient(var(--grid-major) 1px, transparent 1px) 0 0 / 100px 100px,
+                linear-gradient(90deg, var(--grid-major) 1px, transparent 1px) 0 0 / 100px 100px,
+                linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 20px 20px,
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 20px 20px,
+                linear-gradient(180deg, var(--bg-a), var(--bg-b) 60%, var(--bg-c));
+            background-attachment: fixed;
+        }
+
+        /* the title: hand-lettered */
+        :root[data-theme="blueprint"] h1 {
+            font-family: 'Architects Daughter', 'Barlow', cursive;
+            color: var(--y2k-dark);
+            text-shadow: none;
+        }
+
+        /* panels: square, crisp navy line, a flat offset shadow */
+        :root[data-theme="blueprint"] .controls,
+        :root[data-theme="blueprint"] .modal-content {
+            border: 2px solid var(--outline);
+            border-radius: 3px;
+            box-shadow: var(--panel-shadow);
+        }
+
+        /* orange registration marks in the main panel's bottom corners */
+        :root[data-theme="blueprint"] .controls {
+            position: relative;
+        }
+
+        :root[data-theme="blueprint"] .controls::before,
+        :root[data-theme="blueprint"] .controls::after {
+            content: "";
+            position: absolute;
+            bottom: 5px;
+            width: 14px;
+            height: 14px;
+            pointer-events: none;
+            background:
+                radial-gradient(circle, transparent 0 3.5px, var(--signal-orange) 4px 5px, transparent 5.5px),
+                linear-gradient(var(--signal-orange), var(--signal-orange)) center / 1.5px 100% no-repeat,
+                linear-gradient(var(--signal-orange), var(--signal-orange)) center / 100% 1.5px no-repeat;
+        }
+
+        :root[data-theme="blueprint"] .controls::before { left: 5px; }
+        :root[data-theme="blueprint"] .controls::after { right: 5px; }
+
+        /* title bars: navy drafting film with a fine grid and an orange tab */
+        :root[data-theme="blueprint"] .window-titlebar,
+        :root[data-theme="blueprint"] .modal-header {
+            background:
+                linear-gradient(90deg, var(--signal-orange) 0 40px, transparent 40px),
+                linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+                linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+                #1d3d6e;
+        }
+
+        :root[data-theme="blueprint"] .modal-header {
+            padding-left: 56px;
+        }
+
+        :root[data-theme="blueprint"] .modal-header h3 {
+            font-family: 'Architects Daughter', 'Barlow', cursive;
+            color: #ffffff;
+        }
+
+        /* shelves: a clean cobalt beam */
+        :root[data-theme="blueprint"] .shelf {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 2px, var(--shelf-color) 2px 80%, rgba(0, 0, 0, 0.18)) bottom / 100% 20px no-repeat,
+                var(--shelf-bg);
+        }
+
+        :root[data-theme="blueprint"] .shelf.scrolls {
+            background: var(--shelf-bg);
+        }
+
+        :root[data-theme="blueprint"] .shelf::-webkit-scrollbar-thumb {
+            background: var(--signal-orange);
+        }
+
+        :root[data-theme="blueprint"] .shelf-count {
+            font-family: 'Architects Daughter', 'Barlow', cursive;
+        }
+
+        /* shelf names: hand-lettered grid-paper labels, squared up on the
+           shelf corner, with an orange edge */
+        :root[data-theme="blueprint"] .genre-title {
+            font-family: 'Architects Daughter', 'Barlow', cursive;
+            transform: none;
+            left: -10px;
+            top: -24px;
+            border: 1.5px solid var(--outline);
+            border-left: 5px solid var(--signal-orange);
+            border-radius: 2px;
+            padding: 10px 24px;
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-theme="blueprint"] .genre-title:not([class*="tag-status-"]) {
+            background:
+                linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 10px 10px,
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 10px 10px,
+                var(--surface);
+            color: var(--y2k-dark);
+        }
+
+        /* buttons: flat, squared, condensed capitals */
+        :root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+            border-radius: 3px;
+            border-width: 1.5px;
+            font-family: var(--pixel-font);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            box-shadow: var(--btn-shadow);
+        }
+
+        :root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+            display: none;
+        }
+
+        :root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+            transform: translate(1px, 1px);
+            box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Blueprint: heading font sizes */
+        :root[data-theme="blueprint"] h1 { font-size: 40px; font-weight: 400; letter-spacing: 2px; }
+        :root[data-theme="blueprint"] .genre-title { font-size: 24px; font-weight: 400; letter-spacing: 1px; }
+        :root[data-theme="blueprint"] .shelf-count { font-size: 40px; font-weight: 400; }
+        :root[data-theme="blueprint"] .modal-header h3 { font-size: 19px; font-weight: 400; letter-spacing: 1px; }
+        :root[data-theme="blueprint"] .field-section-title,
+        :root[data-theme="blueprint"] .preview-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; }
+        :root[data-theme="blueprint"] .series-missing-label,
+        :root[data-theme="blueprint"] .shelf-empty-hint { font-weight: 600; }
+        :root[data-theme="blueprint"] .cat-z { font-family: 'Press Start 2P', monospace; }
+        @media (max-width: 600px) {
+            :root[data-theme="blueprint"] h1 { font-size: 26px; letter-spacing: 1px; }
+            :root[data-theme="blueprint"] .genre-title { font-size: 17px; letter-spacing: 0.5px; left: 0; padding: 7px 14px; }
+            :root[data-theme="blueprint"] .shelf-count { font-size: 24px; }
+        }
+
+        /* Recent-colour swatches are hearts in the cute themes; the classy
+           ones get their own shape: wax seals, deco diamonds, paint chips */
+        :root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"]) .recent-color-swatch {
+            width: 34px;
+            height: 34px;
+            margin: 0 3px;
+            clip-path: none;
+        }
+
+        :root[data-theme="library"] .recent-color-swatch {
+            border-radius: 50%;
+            border-color: #8a6a2a;
+            box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.3);
+        }
+
+        :root[data-theme="deco"] .recent-color-swatch {
+            width: 28px;
+            height: 28px;
+            margin: 0 6px;
+            border: 2px solid var(--gold);
+            border-radius: 0;
+            transform: rotate(45deg);
+        }
+
+        :root[data-theme="deco"] .recent-color-swatch:hover {
+            transform: rotate(45deg) scale(1.12);
+        }
+
+        :root:is([data-theme="loft"], [data-theme="blueprint"]) .recent-color-swatch {
+            border-radius: 3px;
+            box-shadow: 2px 2px 0 rgba(var(--ink-rgb), 0.3);
         }
 
         /* bright fills keep dark text so it stays readable */
@@ -2514,6 +3833,12 @@
 
         .file-upload-btn:hover {
             background-color: #b8f0c7;
+        }
+
+        /* (the newer themes' file buttons keep their own colour on hover) */
+        :root:is([data-theme="holo"], [data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"]) .file-upload-btn:hover {
+            background-color: var(--y2k-green);
+            filter: brightness(1.06);
         }
 
         .file-upload-btn:active {
@@ -4722,8 +6047,12 @@
                         <button type="button" class="toggle-btn" data-theme-choice="candy" onclick="setTheme('candy')">Candy</button>
                         <button type="button" class="toggle-btn" data-theme-choice="seaglass" onclick="setTheme('seaglass')">Sea Glass</button>
                         <button type="button" class="toggle-btn" data-theme-choice="holo" onclick="setTheme('holo')">Holo</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="library" onclick="setTheme('library')">Library</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="deco" onclick="setTheme('deco')">Deco</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="loft" onclick="setTheme('loft')">Loft</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="blueprint" onclick="setTheme('blueprint')">Blueprint</button>
                     </div>
-                    <div class="field-hint">Candy is pinks and purples; Sea Glass is blues and greens; Holo is liquid silver with a rainbow shine.</div>
+                    <div class="field-hint">Candy: pinks and purples. Sea Glass: blues and greens. Holo: liquid silver with a rainbow shine. Library: walnut, leather and brass. Deco: navy and gold Art Deco. Loft: slate, steel and copper. Blueprint: drafting-table blues with signal orange.</div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
                         <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
@@ -7106,9 +8435,9 @@
         input.focus();
     }
 
-    // ---------- Theme (Candy / Sea Glass / Holo) ----------
+    // ---------- Theme (Candy / Sea Glass / Holo / Library / Deco / Loft / Blueprint) ----------
     const THEME_KEY = 'bookShelfTheme';
-    const THEMES = ['candy', 'seaglass', 'holo'];
+    const THEMES = ['candy', 'seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint'];
 
     function setTheme(theme) {
         if (!THEMES.includes(theme)) theme = 'candy';

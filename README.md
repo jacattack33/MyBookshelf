@@ -85,7 +85,15 @@ What this means in practice:
 
 ### Other
 - **Settings** (button next to Export/Import). Everything here is remembered:
-  - **Theme:** **Candy** (pinks and purples), **Sea Glass** (blues and greens), or **Holo** (Y2K liquid silver: a sleek space-age font (Orbitron) for the headings, chrome shelves, pearly buttons, and a holographic rainbow shine on the title bars, panel edges and shelf tags, slowly shimmering unless Calm mode is on). Its pick-one buttons (filters, sorting, status) are glossy capsule pills, and its action buttons (add, save, cancel, notes, delete, backup) are cut-corner sci-fi panels.
+  - **Theme:** seven to pick from, each with a light and a dark version:
+    - **Candy:** pinks and purples.
+    - **Sea Glass:** blues and greens.
+    - **Holo:** Y2K liquid silver. A sleek space-age font (Orbitron) for the headings, chrome shelves, and a holographic rainbow shine on the title bars, panel edges and shelf tags (slowly shimmering unless Calm mode is on). Its pick-one buttons (filters, sorting, status) are glossy capsule pills, and its action buttons (add, save, cancel, notes, delete, backup) are cut-corner sci-fi panels.
+    - **Library:** a gentleman's study. Cream linen, oxblood leather title bars with stitching, bottle-green accents, fully wooden walnut bookcase shelves (a solid walnut back, dark uprights, grained ledges), engraved brass nameplates, brass Cinzel lettering, and stitched leather buttons. After dark it turns dark academia: near-black charcoal, aged parchment text, oxblood leather, deep royal blue accents, antique brass and ebony shelves.
+    - **Deco:** midnight Art Deco. Gold sunburst rays, double gold borders with stepped corners, black-lacquer shelves with a gold pinstripe, navy plaques with gold Limelight lettering, and sharp uppercase buttons. After dark it's a gold-on-navy speakeasy.
+    - **Loft:** an industrial loft. Concrete, blackened-steel edges, brushed-steel title bars with rivets, solid blackened-steel shelf planks, flat blackened-steel shelf signs with a copper edge bar, bold Oswald lettering, and flat industrial-key buttons. After dark it's lit by warm Edison bulbs.
+    - **Blueprint:** an artsy drafting table. Blueprint grid paper with compass circles and construction lines sketched across it, hand lettering (Architects Daughter), hand-lettered grid-paper shelf labels with an orange edge, clean cobalt shelf beams, orange registration marks, and neat condensed buttons with pops of signal orange on add and save. After dark it's a classic deep-blue blueprint with white lines.
+    - In Library, Deco, Loft and Blueprint the recent-colour swatches in the edit window are wax seals, diamonds or paint chips instead of hearts.
   - **Mode:** Light, Dark, or Match device (follows your computer or phone's setting). Works with every theme; the notepad, library card and sticky notes stay paper-colored.
   - **Bookshelf name:** rename the title at the top of the page.
   - **Yearly reading goal:** shows a progress bar in the Reading Stats window, counting books marked Read with a finish date this year.

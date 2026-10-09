@@ -168,3 +168,11 @@ ok('Holo choice buttons are capsules', getComputedStyle(q('.toggle-btn')).border
 ok('Holo action buttons have cut corners', getComputedStyle(q('.add-book-btn')).clipPath.startsWith('polygon'));
 setTheme('candy');
 ok('other themes keep their usual buttons', getComputedStyle(q('.toggle-btn')).borderRadius === '8px' && getComputedStyle(q('.add-book-btn')).clipPath === 'none');
+
+// ---- every theme applies, shows as chosen, and travels with backups
+for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint']) {
+    setTheme(th);
+    ok(`${th} theme applies`, document.documentElement.dataset.theme === th && q(`[data-theme-choice="${th}"]`).classList.contains('active') && collectSettingsForBackup().bookShelfTheme === th);
+}
+setTheme('candy');
+ok('Candy again clears the theme', !document.documentElement.dataset.theme);
