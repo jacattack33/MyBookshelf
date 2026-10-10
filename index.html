@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Special+Elite&display=swap" rel="stylesheet">
     <script>
         try {
             const theme = localStorage.getItem('bookShelfTheme');
@@ -2524,6 +2524,21 @@
             color: rgba(51, 255, 102, 0.4);
         }
 
+        /* the sticky note is still paper: pencil charcoal, not phosphor */
+        :root[data-theme="terminal"] .sticky-note :is(input, select, .sticky-submit) {
+            color: #3d3d3d;
+            caret-color: #3d3d3d;
+            text-shadow: none;
+        }
+
+        :root[data-theme="terminal"] .sticky-note .sticky-submit {
+            box-shadow: none;
+        }
+
+        :root[data-theme="terminal"] .sticky-note input::placeholder {
+            color: rgba(61, 61, 61, 0.4);
+        }
+
         /* Terminal: heading font sizes (VT323 runs small, so these are big) */
         :root[data-theme="terminal"] h1 { font-size: 64px; font-weight: 400; letter-spacing: 2px; }
         :root[data-theme="terminal"] .genre-title { font-size: 30px; font-weight: 400; letter-spacing: 1px; }
@@ -3602,6 +3617,21 @@
             justify-content: center;
             align-items: center;
             z-index: 1100;
+        }
+
+        /* While a window is open the page behind it stays put - otherwise on
+           phones a swipe on the dimmed backdrop, or one that runs past the end
+           of a window's own scroll, carries on into the shelves underneath.
+           (Windows are opened by setting display: flex inline.) */
+        html:has(.modal[style*="flex"]) {
+            overflow: hidden;
+        }
+
+        .modal-body,
+        .settings-body,
+        .stats-body,
+        #notepad-text {
+            overscroll-behavior: contain;
         }
 
         .modal-content {
@@ -5630,8 +5660,6 @@
             font-weight: normal;
             color: #4a4a4a;
             margin-bottom: 6px;
-            /* a slightly wobbly hand-drawn underline */
-            background: linear-gradient(transparent 86%, rgba(61, 61, 61, 0.55) 86%, rgba(61, 61, 61, 0.55) 93%, transparent 93%) 0 0 / 100% 100% no-repeat;
             rotate: -1.5deg;
         }
 
@@ -5642,7 +5670,6 @@
             margin: 0 0 8px;
             padding: 2px 0;
             border: none;
-            border-bottom: 1px solid rgba(61, 61, 61, 0.3); /* faint pencil line */
             border-radius: 0;
             background: transparent;
             font-family: inherit;
@@ -5658,7 +5685,6 @@
 
         .sticky-note input:focus {
             outline: none;
-            border-bottom-color: rgba(61, 61, 61, 0.75); /* pressed a bit harder */
         }
 
         /* everything on the note is in the sticky-note handwriting */
@@ -5670,11 +5696,10 @@
         .sticky-note select {
             width: 100%;
             margin: 4px 0 12px;
-            padding: 2px 26px 2px 0;
+            padding: 2px 26px 2px 8px; /* off the paper's left edge */
             font-size: calc(20px * var(--sticky-scale, 1));
             font-weight: normal;
             border: none;
-            border-bottom: 1px solid rgba(61, 61, 61, 0.3);
             border-radius: 0;
             appearance: none;
             -webkit-appearance: none;
@@ -5686,10 +5711,10 @@
 
         .sticky-note select:focus {
             outline: none;
-            border-bottom-color: rgba(61, 61, 61, 0.75);
         }
 
         .sticky-note select option {
+            padding-left: 8px;
             color: #3d3d3d;
             background: #fff6c2;
         }
@@ -8913,7 +8938,7 @@
         };
         const [stampText, stampClass] = stamps[status] || ['', ''];
         const cardFont = appSettings.cardFont || document.getElementById('book-notes-font').value;
-        const hand = `font-family: '${getNoteFont(cardFont).name}', cursive;`;
+        const hand = `font-family: ${noteFontStack(getNoteFont(cardFont))};`;
 
         const card = document.getElementById('library-card');
         card.innerHTML = `
@@ -9476,7 +9501,7 @@
             const box = document.getElementById(containerId);
             if (box.childElementCount) return;
             const options = includeMatch ? [{ name: null, label: 'Match notes' }] : [];
-            NOTE_FONTS.forEach(f => options.push({ name: f.name, label: f.name, size: f.size }));
+            NOTE_FONTS.forEach(f => options.push({ name: f.name, label: f.name, size: f.size, stack: noteFontStack(f) }));
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
@@ -9485,7 +9510,7 @@
                 btn.dataset.fontName = opt.name || '';
                 btn.textContent = opt.label;
                 if (opt.name) {
-                    btn.style.fontFamily = `'${opt.name}', cursive`;
+                    btn.style.fontFamily = opt.stack;
                     // same per-font scale the notepad uses, so the buttons
                     // all look about the same size
                     btn.style.fontSize = (opt.size * 3.2).toFixed(1) + 'px';
@@ -9926,12 +9951,19 @@
         { name: 'Homemade Apple', size: 3.8, shift: 0.8 },
         { name: 'Nanum Pen Script', size: 6.4, shift: 1.5 },
         { name: 'Shadows Into Light', size: 4.9, shift: 1.0 },
-        { name: 'Gloria Hallelujah', size: 4.2, shift: 1.0 }
+        { name: 'Gloria Hallelujah', size: 4.2, shift: 1.0 },
+        // typed, not handwritten - falls back to monospace, not cursive
+        { name: 'Special Elite', size: 4.2, shift: 1.6, fallback: 'monospace' }
     ];
     const LAST_NOTE_FONT_KEY = 'bookShelfLastNoteFont';
 
     function getNoteFont(name) {
         return NOTE_FONTS.find(f => f.name === name) || NOTE_FONTS[0];
+    }
+
+    // CSS font-family value for a note font, with its own fallback
+    function noteFontStack(font) {
+        return `'${font.name}', ${font.fallback || 'cursive'}`;
     }
 
     // font new notes start in: the Settings choice, else the last one used
@@ -9956,7 +9988,7 @@
         const font = getNoteFont(name);
         const text = document.getElementById('notepad-text');
         text.dataset.font = font.name;
-        text.style.setProperty('--np-font', `'${font.name}'`);
+        text.style.setProperty('--np-font', noteFontStack(font));
         text.style.setProperty('--np-size', font.size + 'cqw');
         text.style.setProperty('--np-shift', font.shift + 'cqw');
         document.querySelectorAll('.notepad-font-btn').forEach(btn => {
@@ -9972,7 +10004,7 @@
             btn.type = 'button';
             btn.className = 'notepad-font-btn';
             btn.dataset.font = font.name;
-            btn.style.fontFamily = `'${font.name}', cursive`;
+            btn.style.fontFamily = noteFontStack(font);
             btn.innerText = font.name;
             btn.addEventListener('click', () => {
                 applyNotepadFont(font.name);

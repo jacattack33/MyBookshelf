@@ -87,7 +87,7 @@ What this means in practice:
 - **Reading dates:** Started and Finished dates under Status. A full date, a month and year, or just a year all work, and each has a **today** button. The app catches impossible dates and a finish date before the start date. Dates are saved as `2024`, `2024-03`, or `2024-03-15`, ready for future per-month/per-year charts.
 - **Genre vs. tags:** a book's genre is what it's about (Fantasy, Mystery, History…). Audience and format are tags instead, the way libraries label them: Children's, Middle Grade, Young Adult, New Adult, Graphic Novel, Short Stories, Poetry, Audiobook and Series are always suggested in the tag dropdown.
 - **Tags:** pick from a dropdown of tags you've already used, or type a new one and press Enter. Tags show as removable badges that slowly drift through pastel colors.
-- **Notes:** write about a book on a torn-paper notepad, in your choice of six handwriting fonts (Caveat, Indie Flower, Homemade Apple, Nanum Pen Script, Shadows Into Light, Gloria Hallelujah). Notes and font are saved per book; notes on an existing book save as soon as you close the notepad.
+- **Notes:** write about a book on a torn-paper notepad, in your choice of six handwriting fonts (Caveat, Indie Flower, Homemade Apple, Nanum Pen Script, Shadows Into Light, Gloria Hallelujah) or a typewriter font (Special Elite). Notes and font are saved per book; notes on an existing book save as soon as you close the notepad.
 - Image cropping on upload for covers and spine photos.
 
 ### Little delights in the edit window
