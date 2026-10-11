@@ -121,7 +121,30 @@ function collectSettingsForBackup() {
     return out;
 }
 
+// True when the shelf is nothing but the 3 built-in placeholder books -
+// what a browser with no saved shelf starts with when opened from a file.
+function onlyPlaceholderBooks() {
+    const seedIds = SEED_LIBRARY.map(b => b.id);
+    return library.length > 0 && library.every(b => seedIds.includes(b.id));
+}
+
+// Ask the browser to keep the shelf for good. Without this, storage is
+// "best effort" and can be cleared when the disk runs low or the site
+// hasn't been visited in a while - next visit you'd get the 3
+// placeholder books back instead of your shelf.
+function requestPersistentStorage() {
+    try {
+        if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+    } catch (e) {}
+}
+
 function exportLibrary() {
+    if (onlyPlaceholderBooks() && !confirm(
+        'This shelf only has the 3 placeholder books (Dune, The Hobbit, The Republic), so that\'s all this backup would hold.\n\n' +
+        'If your real books are missing, they\'re probably saved in a different browser, a different copy of the app, or a private window - open the app there and export from it instead.\n\n' +
+        'Export these 3 anyway?')) {
+        return;
+    }
     const payload = { books: library, customGenres: customGenres, settings: collectSettingsForBackup() };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -175,7 +198,7 @@ function backupAge() {
 }
 
 function backupReminderDue() {
-    if (!appSettings.backupReminders || !library.length) return false;
+    if (!appSettings.backupReminders || !library.length || onlyPlaceholderBooks()) return false;
     if (readTimeKey(BACKUP_SNOOZE_KEY) > Date.now()) return false;
     const { days, ever } = backupAge();
     return days >= (ever ? BACKUP_REMIND_DAYS : BACKUP_FIRST_REMIND_DAYS);
@@ -225,7 +248,7 @@ function initBackupReminder() {
     if (backupReminderDue()) setTimeout(() => { if (backupReminderDue()) showBackupReminder(); }, 2500);
     // ...and the Export button glows every so often while a backup is getting old
     const glowIfOld = () => {
-        if (appSettings.backupReminders && library.length && backupAge().days >= BACKUP_GLOW_DAYS) glowExportButton();
+        if (appSettings.backupReminders && library.length && !onlyPlaceholderBooks() && backupAge().days >= BACKUP_GLOW_DAYS) glowExportButton();
     };
     setTimeout(glowIfOld, 20 * 1000);
     setInterval(glowIfOld, BACKUP_GLOW_EVERY_MS);

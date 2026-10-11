@@ -59,6 +59,28 @@ openStats();
 ok('no goal: shortcut to set one', !!q('.reading-goal-set'));
 closeStats();
 
+// ---- series, top lists and highlights in Stats
+const statBooks = [
+    { id: 'st1', title: 'Trilogy 1', authors: ['Ann Author'], genre: 'Fantasy', series: 'Trio', seriesNumber: 1, seriesTotal: 3, status: 'Read', pages: 300, startedDate: '2024-01-01', finishedDate: '2024-01-10', color: '#ccc', width: 100, sortOrder: 30 },
+    { id: 'st2', title: 'Trilogy 2', authors: ['Ann Author'], genre: 'Fantasy', series: 'Trio', seriesNumber: 2, seriesTotal: 3, status: 'Read', pages: 500, startedDate: '2024-02-01', finishedDate: '2024-02-03', color: '#ccc', width: 100, sortOrder: 31 },
+    { id: 'st3', title: 'Trilogy 3', authors: ['Ann Author'], genre: 'Fantasy', series: 'Trio', seriesNumber: 3, seriesTotal: 3, status: 'Read', color: '#ccc', width: 100, sortOrder: 32 },
+    { id: 'st4', title: 'Duo 1', authors: ['Bo Writer'], genre: 'History', series: 'Duo', seriesNumber: 1, seriesTotal: 2, status: 'Reading', color: '#ccc', width: 100, sortOrder: 33 },
+    { id: 'st5', title: 'Loose 1', authors: ['Bo Writer'], genre: 'History', series: 'Loose', seriesNumber: 1, status: 'Read', color: '#ccc', width: 100, sortOrder: 34 }
+];
+library.push(...statBooks);
+openStats();
+const seriesTile = label => [...q('#stats-series-tiles').children].find(t => t.firstChild.textContent === label).lastChild.textContent;
+ok('series started / finished', seriesTile('Started') === '3' && seriesTile('Finished') === '1' && seriesTile('In progress') === '2',
+    ['Started', 'Finished', 'In progress'].map(seriesTile).join());
+ok('series with no total never counts as finished', [...document.querySelectorAll('.stats-series-row')].some(r => r.textContent.startsWith('Loose') && r.textContent.endsWith('1 read')));
+ok('top author listed first', q('#stats-top-authors .stats-rank-name').textContent === 'Ann Author');
+ok('fiction split shown', q('#stats-fiction-split').textContent.includes('fiction'));
+const highlight = label => { const dt = [...document.querySelectorAll('#stats-highlights dt')].find(d => d.textContent === label); return dt && dt.nextElementSibling.textContent; };
+ok('longest read highlight', highlight('Longest read') === 'Trilogy 2 (500 pages)', highlight('Longest read'));
+ok('fastest read highlight', highlight('Fastest read') === 'Trilogy 2 (3 days)', highlight('Fastest read'));
+closeStats();
+statBooks.forEach(b => library.splice(library.indexOf(b), 1));
+
 // ---- custom genres can be removed, moving their books
 addCustomGenre('Spooky');
 library[0].genre = 'Spooky';

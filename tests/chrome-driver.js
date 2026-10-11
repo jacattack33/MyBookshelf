@@ -40,6 +40,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const evaluate = async expr => (await send('Runtime.evaluate', { expression: expr, returnByValue: true })).result.result.value;
 
     await send('Page.enable');
+    // tests call exportLibrary(); without this every run drops a backup
+    // file of test books into your real Downloads folder
+    await send('Page.setDownloadBehavior', { behavior: 'deny' });
     // headless pages never have real focus, so :focus styles wouldn't apply
     await send('Emulation.setFocusEmulationEnabled', { enabled: true });
     // headless windows can't go narrower than ~500px, so emulate a phone screen

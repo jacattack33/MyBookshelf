@@ -442,6 +442,121 @@
     font-variant-numeric: tabular-nums;
 }
 
+.stats-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stats-card .stats-chart-sub:empty {
+    display: none;
+}
+
+.stats-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.stats-empty {
+    font-size: 12px;
+    color: var(--y2k-dark);
+    opacity: 0.75;
+}
+
+/* one row per series: name, "2 of 5 read", a progress bar */
+.stats-series-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stats-series-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px 10px;
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.stats-series-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+.stats-series-count {
+    font-size: 12px;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+}
+
+.stats-series-row .reading-goal-bar {
+    grid-column: 1 / -1;
+}
+
+/* ranked horizontal bars (genres, authors) */
+.stats-rank {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stats-rank-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px 8px;
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.stats-rank-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stats-rank-value {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.stats-rank-track {
+    grid-column: 1 / -1;
+    height: 8px;
+}
+
+.stats-rank-bar {
+    height: 100%;
+    min-width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--chart-bar);
+}
+
+.stats-highlights {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px 14px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.stats-highlights .stats-empty {
+    grid-column: 1 / -1;
+}
+
+.stats-highlights dt {
+    opacity: 0.75;
+}
+
+.stats-highlights dd {
+    margin: 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
 .sticky-pile {
     position: fixed;
     left: 16px;

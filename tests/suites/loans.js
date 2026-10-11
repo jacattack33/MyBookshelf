@@ -129,7 +129,21 @@ ok('seal only on the Series shelf', !q('.book[data-id="so1"] .series-owned-seal'
 library = library.filter(b => !['so1', 'so2'].includes(b.id));
 renderBookshelf();
 
-// ---- backup reminder
+// ---- only the 3 placeholder books: no nagging, and export warns first
+localStorage.removeItem(LAST_BACKUP_KEY);
+localStorage.setItem(FIRST_SEEN_KEY, String(Date.now() - 8 * DAY));
+ok('placeholder shelf detected', onlyPlaceholderBooks());
+ok('no reminder for just the placeholders', !backupReminderDue());
+const realConfirm = window.confirm;
+let asked = '';
+window.confirm = msg => { asked = msg; return false; };
+exportLibrary();
+ok('export warns about placeholder-only shelf', asked.includes('3 placeholder books') && !readTimeKey(LAST_BACKUP_KEY));
+window.confirm = realConfirm;
+
+// ---- backup reminder (with a real book on the shelf)
+library.push({ id: 'bk1', title: 'My Own Book', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#345', width: 100, sortOrder: 65 });
+ok('a real book: not just placeholders', !onlyPlaceholderBooks());
 localStorage.removeItem(LAST_BACKUP_KEY);
 localStorage.setItem(FIRST_SEEN_KEY, String(Date.now() - 2 * DAY));
 ok('not due right after first opening', !backupReminderDue());
@@ -156,6 +170,7 @@ showBackupReminder();
 exportLibrary();
 ok('exporting hides it and records the backup', !q('#backup-reminder').classList.contains('visible') && Date.now() - readTimeKey(LAST_BACKUP_KEY) < 5000 && lastBackupText() === 'Last backup: today.');
 ok('just backed up: not due', !backupReminderDue());
+library = library.filter(b => b.id !== 'bk1');
 
 // ---- big page counts fit on the tiny goals card
 ok('compact numbers', compactNumber(999) === '999' && compactNumber(1250) === '1.2k' && compactNumber(1999) === '1.9k' && compactNumber(2000) === '2k' && compactNumber(12500) === '12k');

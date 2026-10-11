@@ -8,6 +8,7 @@ async function init() {
     initShelfCat();
     populateGenreSelects();
     db = await openDB();
+    requestPersistentStorage();
     library = await dbGetAll();
     let startedFresh = false;
     try { startedFresh = localStorage.getItem(STARTED_FRESH_KEY) === '1'; } catch (e) {}
