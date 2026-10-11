@@ -328,6 +328,36 @@
         visibility: hidden;
     }
 
+    /* a frosted panel behind the whole open column, so outline-only
+       critters (Blueprint) don't get lost over the books. It hangs off
+       the corner stack, so it slides with it and grows with the goals
+       card, and reaches down past the ledger and pile to the screen's
+       bottom edge (--dock-drop: the stack's distance from it). The
+       stack drops just under the ledger and pile so they sit on top. */
+    .corner-stack {
+        z-index: 899;
+        --dock-drop: 200px; /* bottom 150px + the 56px lift - 6px */
+    }
+
+    :root[data-theme="terminal"] .corner-stack { --dock-drop: 218px; }
+
+    .corner-stack::before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: -10px;
+        left: -6px;
+        width: 84px;
+        bottom: calc(-1 * var(--dock-drop));
+        border: 2px solid color-mix(in srgb, var(--outline) 35%, transparent);
+        border-radius: 16px;
+        background: color-mix(in srgb, var(--surface) 85%, transparent);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+        pointer-events: none;
+    }
+
     .corner-toggle {
         position: fixed;
         left: 12px;
@@ -351,6 +381,15 @@
 
     .corner-toggle:hover {
         background: var(--y2k-purple);
+    }
+
+    /* dark Blueprint's "purple" is a pale blue that washes out the
+       white symbol - go navy like its panels instead */
+    :root[data-mode="dark"][data-theme="blueprint"] .corner-toggle,
+    :root[data-mode="dark"][data-theme="blueprint"] .corner-toggle:hover {
+        background: var(--section-bg);
+        color: var(--y2k-dark);
+        box-shadow: var(--btn-shadow);
     }
 
     .corner-toggle[aria-expanded="true"] {

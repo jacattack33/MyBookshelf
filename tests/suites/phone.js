@@ -51,6 +51,10 @@ const ledger = box('#stats-ledger'), goals = box('#goals-card'), pet = box('#cri
 ok('ledger clear of the sticky pile', ledger.bottom + 3 <= pileTop, `${ledger.bottom} / ${pileTop}`);
 ok('goals card clear of the ledger', goals.bottom <= ledger.top && goals.left >= 0, `${goals.bottom} / ${ledger.top}`);
 ok('critter on top of the goals card', pet.bottom <= goals.top, `${pet.bottom} / ${goals.top}`);
+const panel = getComputedStyle(q('#corner-stack'), '::before');
+const stackBox = box('#corner-stack');
+ok('frosted panel behind the open column', panel.content !== 'none' && panel.backgroundColor !== 'rgba(0, 0, 0, 0)' && stackBox.bottom + parseFloat(panel.bottom) * -1 >= innerHeight - 10, panel.bottom);
+ok('ledger and pile drawn over the panel', +getComputedStyle(q('#stats-ledger')).zIndex > +getComputedStyle(q('#corner-stack')).zIndex);
 ok('goals card shows its numbers', goals.height > 20 && q('#goals-card').textContent.includes('/20'), goals.height);
 setTheme('terminal');
 ok('terminal: critter on top of the goals card', box('#critter-home').bottom <= box('#goals-card').top, `${box('#critter-home').bottom} / ${box('#goals-card').top}`);
