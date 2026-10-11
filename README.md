@@ -120,7 +120,7 @@ What this means in practice:
 
 ### Little delights in the edit window
 - Clicking a star sparkles (every star sparkles for 5 stars).
-- Marking a book **Read** pops confetti and fills in today as the Finished date, if it's empty.
+- Marking a book **Read** pops confetti. (It leaves the Finished date alone; use its **today** button if you want today.)
 - The preview book wiggles when you change its status or give it a new cover.
 - A "reading ♡" sticker appears on the preview while a book's status is Reading.
 - If a book has notes, a corner of notepad paper peeks out behind the preview. Hover and it slides up a little; click it and it pulls out and unfolds into the notepad. Closing the notepad tucks it back behind the book.

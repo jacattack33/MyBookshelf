@@ -189,7 +189,6 @@ function showBackupReminder() {
         : `You haven't backed up your shelf yet. Your ${count} book${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`;
     const box = document.getElementById('backup-reminder');
     box.classList.add('visible');
-    placeCat(); // the shelves just moved down
     if (!prefersReducedMotion()) {
         box.animate([
             { opacity: 0, transform: 'translateY(-10px) scale(0.97)' },
@@ -201,9 +200,7 @@ function showBackupReminder() {
 
 function hideBackupReminder() {
     const box = document.getElementById('backup-reminder');
-    if (!box.classList.contains('visible')) return;
     box.classList.remove('visible');
-    placeCat(); // ...and back up
 }
 
 function snoozeBackupReminder() {

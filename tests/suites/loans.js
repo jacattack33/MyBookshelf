@@ -20,6 +20,13 @@ ok('date: iso', parseLooseDate('2024-03-15') === '2024-03-15');
 ok('date: blank', parseLooseDate('  ') === '');
 ok('date: nonsense', parseLooseDate('soon') === null && parseLooseDate('Feb 30, 2024') === null && parseLooseDate('13/2024') === null);
 
+// ---- marking Read leaves the Finished date alone
+openModal('2');
+pickStatus('Read', q('.status-btn[data-status="Read"]'));
+ok('Read does not fill in today', readDateField('finished', 'finished').value === '');
+closeModal();
+await wait(350);
+
 // ---- page count saves with the book and shows on the card
 openModal('1');
 q('#book-pages').value = '412';
@@ -134,6 +141,10 @@ localStorage.setItem(LAST_BACKUP_KEY, String(Date.now() - 31 * DAY));
 ok('backed up a month ago: due', backupReminderDue());
 showBackupReminder();
 ok('reminder shows', q('#backup-reminder').classList.contains('visible') && q('#backup-reminder-text').textContent.includes('31 days'));
+scrollTo(0, document.body.scrollHeight);
+const reminderBox = q('#backup-reminder').getBoundingClientRect();
+ok('reminder pops up on screen, even scrolled down', getComputedStyle(q('#backup-reminder')).position === 'fixed' && reminderBox.top >= 0 && reminderBox.bottom <= innerHeight, `${reminderBox.top} / ${reminderBox.bottom}`);
+scrollTo(0, 0);
 ok('export glows with it', q('#export-btn').classList.contains('backup-glow'));
 snoozeBackupReminder();
 ok('later: hidden and snoozed', !q('#backup-reminder').classList.contains('visible') && !backupReminderDue());
@@ -167,4 +178,16 @@ ok('debug: glow export', q('#export-btn').classList.contains('backup-glow'));
 debugBtn('Backup reminder').click();
 ok('debug: backup reminder', q('#backup-reminder').classList.contains('visible'));
 hideBackupReminder();
+library.push({ id: 'fk1', title: 'A Story', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#345', width: 100, sortOrder: 70 });
+library.push({ id: 'fk2', title: 'A Fact', authors: ['A'], genre: 'History', status: 'Read', color: '#543', width: 100, sortOrder: 71 });
+const shownIds = () => [...document.querySelectorAll('#library-room .book')].map(el => el.dataset.id);
+q('[data-filter-kind="Fiction"]').click();
+ok('filter: fiction only', shownIds().includes('fk1') && !shownIds().includes('fk2'));
+ok('fiction filter counts on the badge', q('#filters-count').textContent.includes('1'));
+q('[data-filter-kind="Non-Fiction"]').click();
+ok('filter: non-fiction only', shownIds().includes('fk2') && !shownIds().includes('fk1'));
+q('[data-filter-kind="All"]').click();
+ok('filter: both', shownIds().includes('fk1') && shownIds().includes('fk2'));
+library = library.filter(b => !b.id.startsWith('fk'));
+renderBookshelf();
 setSetting('debug', false);

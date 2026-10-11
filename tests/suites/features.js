@@ -32,6 +32,11 @@ ok('click sticks it back up (without opening the book)', !note.classList.contain
 library = library.filter(b => b.id !== '2');
 openModal();
 q('#book-title').value = 'Brand New';
+ok('new book starts with no genre', q('#book-genre').value === '');
+const countBeforeNoGenre = library.length;
+await processBookForm();
+ok('can\'t save without a genre', library.length === countBeforeNoGenre && q('#book-modal').style.display === 'flex');
+q('#book-genre').value = 'Fantasy';
 await processBookForm();
 const nb = library.find(b => b.title === 'Brand New');
 ok('new book sorts after every other book', nb.sortOrder > Math.max(...library.filter(b => b !== nb).map(b => b.sortOrder)));

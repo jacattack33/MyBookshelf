@@ -186,6 +186,12 @@ h1 {
 
 .add-book-btn {
     margin-left: auto;
+    background-color: var(--y2k-pink); /* bubblegum, like the View toggle */
+}
+
+.add-book-btn:hover {
+    background-color: var(--y2k-pink);
+    filter: brightness(1.08);
 }
 
 /* Forces Filter Tag onto its own line, with Filter Genre and the
@@ -555,19 +561,27 @@ button.danger:hover {
     box-shadow: 2px 2px 0 var(--outline), 0 0 12px 3px rgba(var(--accent-rgb), 0.45);
 }
 
+/* pops up big in the middle of the screen until you answer it */
 .backup-reminder {
     display: none;
-    max-width: 520px;
-    margin: -18px auto 26px;
-    padding: 12px 16px;
+    position: fixed;
+    inset: 0;
+    z-index: 1050; /* over the shelves, under open windows */
+    width: calc(100% - 32px);
+    max-width: 680px;
+    height: fit-content;
+    max-height: calc(100% - 32px);
+    overflow-y: auto;
+    margin: auto;
+    padding: 32px 36px;
     box-sizing: border-box;
     background: var(--panel-bg);
     color: var(--y2k-text);
-    border: 2px solid var(--outline);
-    border-radius: 12px;
-    box-shadow: 3px 3px 0 var(--outline);
-    font-size: 13px;
-    line-height: 1.45;
+    border: 3px solid var(--outline);
+    border-radius: 18px;
+    box-shadow: 5px 5px 0 var(--outline), 0 0 0 100vmax rgba(0, 0, 0, 0.35), 0 16px 48px rgba(0, 0, 0, 0.4);
+    font-size: 21px;
+    line-height: 1.5;
     text-align: center;
 }
 
@@ -575,21 +589,40 @@ button.danger:hover {
     display: block;
 }
 
+/* the floppy disk sits big on its own line above the words */
 .backup-reminder-text::before {
-    content: "\1F4BE  ";
+    content: "\1F4BE";
+    display: block;
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 14px;
 }
 
 .backup-reminder-buttons {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 16px;
     flex-wrap: wrap;
-    margin-top: 10px;
+    margin-top: 24px;
 }
 
 .backup-reminder-buttons button {
-    font-size: 13px;
-    padding: 6px 12px;
+    font-size: 19px;
+    padding: 12px 26px;
+}
+
+@media (max-width: 600px) {
+    .backup-reminder {
+        padding: 24px 20px;
+        font-size: 18px;
+    }
+    .backup-reminder-text::before {
+        font-size: 48px;
+    }
+    .backup-reminder-buttons button {
+        font-size: 17px;
+        padding: 10px 18px;
+    }
 }
 
 .library-room {

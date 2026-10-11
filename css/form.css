@@ -546,6 +546,7 @@
 .toggle-blue .toggle-btn:not(.active) { background: var(--pastel-blue); }
 .toggle-lilac .toggle-btn:not(.active) { background: var(--pastel-lilac); }
 .toggle-peach .toggle-btn:not(.active) { background: var(--pastel-peach); }
+.toggle-pink .toggle-btn:not(.active) { background: var(--pastel-pink); }
 .status-btn:not(.active) { background: var(--pastel-pink); }
 
 .toggle-btn.active {
@@ -575,6 +576,10 @@
 
 .toggle-peach .toggle-btn.active {
     background: var(--y2k-peach);
+}
+
+.toggle-pink .toggle-btn.active {
+    background: var(--y2k-pink);
 }
 
 .star-rating {

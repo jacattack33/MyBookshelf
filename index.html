@@ -95,7 +95,7 @@
 
                 <div class="control-group">
                     <label>View: </label>
-                    <div class="toggle-group toggle-blue">
+                    <div class="toggle-group toggle-pink">
                         <button type="button" class="toggle-btn active" data-view-mode="cover" onclick="selectViewMode('cover')">Covers</button>
                         <button type="button" class="toggle-btn" data-view-mode="spine" onclick="selectViewMode('spine')">Spines</button>
                     </div>
@@ -124,7 +124,7 @@
                 </div>
 
                 <div class="control-group">
-                    <label>Sticky Notes: </label>
+                    <label>Stickies: </label>
                     <div class="toggle-group toggle-yellow">
                         <button type="button" class="toggle-btn active" data-filter-sticky="Show" onclick="selectFilterSticky('Show')" title="Show the to-get notes with your books">Show</button>
                         <button type="button" class="toggle-btn" data-filter-sticky="Hide" onclick="selectFilterSticky('Hide')" title="Only real books">Hide</button>
@@ -140,6 +140,20 @@
                         <option value="custom">Custom (Drag & Drop)</option>
                         <option value="author">Author Last Name (A-Z)</option>
                         <option value="rating">Rating (High to Low)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Fiction: </label>
+                    <div class="toggle-group toggle-blue">
+                        <button type="button" class="toggle-btn active" data-filter-kind="All" onclick="selectFilterKind('All')">All</button>
+                        <button type="button" class="toggle-btn" data-filter-kind="Fiction" onclick="selectFilterKind('Fiction')">Fiction</button>
+                        <button type="button" class="toggle-btn" data-filter-kind="Non-Fiction" onclick="selectFilterKind('Non-Fiction')">Non-Fiction</button>
+                    </div>
+                    <select id="filter-kind" style="display:none;">
+                        <option value="All">All</option>
+                        <option value="Fiction">Fiction</option>
+                        <option value="Non-Fiction">Non-Fiction</option>
                     </select>
                 </div>
             </div>
@@ -603,7 +617,6 @@
                     <label class="field-label">Bookshelf name
                         <input type="text" id="setting-name" maxlength="40" placeholder="My Bookshelf" oninput="setSetting('name', this.value)">
                     </label>
-                    <div class="field-hint">Your yearly books and pages goals live on the goals card, under the critter.</div>
                 </div>
 
                 <div class="field-section">
@@ -640,7 +653,6 @@
                         <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
                         <button type="button" class="toggle-btn" data-setting-switch="seriesSeal" onclick="toggleSetting('seriesSeal')" title="A gold seal on the books you own, on the Series shelf">Owned seal (Series)</button>
                     </div>
-                    <div class="field-hint">Pressed in = on.</div>
                 </div>
 
                 <div class="field-section">
@@ -656,7 +668,6 @@
                     <div class="toggle-group settings-choices">
                         <button type="button" class="toggle-btn" data-setting-switch="debug" onclick="toggleSetting('debug')">Debug panel</button>
                     </div>
-                    <div class="field-hint">A DEBUG tab on the right edge of the page with buttons that make things happen right away: critter hunger, growing up and running away, falling sticky notes, new and deleted books with each exit, dust, the cat, and the backup reminder and Export glow.</div>
                 </div>
 
                 <div class="field-section">

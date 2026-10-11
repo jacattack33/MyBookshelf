@@ -2055,6 +2055,18 @@
     background: rgba(255, 180, 140, 0.22);
 }
 
+/* pink follows each theme's own --y2k-pink, so it stays on-palette */
+:root[data-mode="dark"] .toggle-pink .toggle-btn:not(.active) {
+    background: color-mix(in srgb, var(--y2k-pink) 12%, transparent);
+    color: color-mix(in srgb, var(--y2k-pink) 55%, white);
+    border-color: color-mix(in srgb, var(--y2k-pink) 55%, transparent);
+    box-shadow: 3px 3px 0 color-mix(in srgb, var(--y2k-pink) 30%, transparent);
+}
+
+:root[data-mode="dark"] .toggle-pink .toggle-btn:not(.active):hover {
+    background: color-mix(in srgb, var(--y2k-pink) 22%, transparent);
+}
+
 :root[data-mode="dark"] .toggle-blue .toggle-btn:not(.active):hover {
     background: rgba(159, 220, 255, 0.22);
 }

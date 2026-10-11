@@ -63,7 +63,8 @@ function updateFiltersCount() {
         stickyFilter !== 'Show',
         v('sort-mode') !== 'custom',
         v('filter-tag') !== 'All',
-        v('filter-genre') !== 'All'
+        v('filter-genre') !== 'All',
+        v('filter-kind') !== 'All'
     ].filter(Boolean).length;
     document.getElementById('filters-count').textContent = active ? `\u2022 ${active}` : '';
 }
@@ -364,6 +365,7 @@ function renderShelves() {
     });
     room.innerHTML = '';
     const selectedGenre = document.getElementById('filter-genre').value;
+    const selectedKind = document.getElementById('filter-kind').value;
     const selectedStatus = document.getElementById('filter-status').value;
     const selectedOwned = document.getElementById('filter-owned').value;
     const selectedSticky = stickyFilter; // Show / Hide / Only (the to-get notes)
@@ -374,6 +376,7 @@ function renderShelves() {
     const spineMode = document.getElementById('view-mode').value === 'spine';
 
     let workingLibrary = visibleBooks().filter(b =>
+        (selectedKind === "All" || (selectedKind === "Fiction" ? FICTION_GENRES : NONFICTION_GENRES).includes(b.genre)) &&
         (selectedStatus === "All" || b.status === selectedStatus) &&
         (selectedGenre === "All" || b.genre === selectedGenre) &&
         (selectedOwned === "All" || (selectedOwned === "Lent" ? isLentOut(b) : selectedOwned === "Owned" ? !!b.owned : !b.owned)) &&
@@ -1302,6 +1305,15 @@ function selectFilterOwned(value) {
     document.getElementById('filter-owned').value = value;
     document.querySelectorAll('[data-filter-owned]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.filterOwned === value);
+    });
+    renderBookshelf();
+}
+
+// custom genres are neither, so they only show under All
+function selectFilterKind(value) {
+    document.getElementById('filter-kind').value = value;
+    document.querySelectorAll('[data-filter-kind]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filterKind === value);
     });
     renderBookshelf();
 }

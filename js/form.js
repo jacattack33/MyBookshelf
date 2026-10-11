@@ -78,25 +78,28 @@ function populateGenreSelects() {
 
     const modalSelect = document.getElementById('book-genre');
     const previousModalValue = modalSelect.value;
-    modalSelect.innerHTML = groupsHTML +
+    modalSelect.innerHTML = '<option value="" disabled hidden>Choose a genre...</option>' + groupsHTML +
         `<option value="${ADD_GENRE_VALUE}">+ Add new genre...</option>`;
-    if (allGenres.includes(previousModalValue)) {
-        modalSelect.value = previousModalValue;
-    }
+    modalSelect.value = allGenres.includes(previousModalValue) ? previousModalValue : '';
+    modalSelect.dataset.previous = modalSelect.value;
 }
 
 function handleGenreSelectChange() {
     const select = document.getElementById('book-genre');
-    if (select.value !== ADD_GENRE_VALUE) return;
+    if (select.value !== ADD_GENRE_VALUE) {
+        select.dataset.previous = select.value;
+        return;
+    }
 
     const name = prompt('New genre name:');
     if (!name || !name.trim()) {
-        select.value = getAllGenres()[0] || '';
+        select.value = select.dataset.previous || '';
         return;
     }
     const finalName = addCustomGenre(name);
     populateGenreSelects();
     select.value = finalName;
+    select.dataset.previous = finalName;
 }
 
 // ---------- Authors (autocomplete from existing library) ----------
@@ -340,6 +343,7 @@ function openModal(bookId = null) {
         document.getElementById('book-rating').value = normalizeRating(book.rating);
         updateRatingStarsUI(normalizeRating(book.rating));
         document.getElementById('book-genre').value = book.genre;
+        document.getElementById('book-genre').dataset.previous = book.genre;
         document.getElementById('book-color').value = book.color || "#1a334d";
         document.getElementById('book-width').value = book.width || 120;
         document.getElementById('book-ratio-preset').value = book.ratioPreset || "";
@@ -365,7 +369,8 @@ function openModal(bookId = null) {
         selectStatus(appSettings.defaultStatus);
         document.getElementById('book-rating').value = 0;
         updateRatingStarsUI(0);
-        document.getElementById('book-genre').value = "Sci-Fi";
+        document.getElementById('book-genre').value = "";
+        document.getElementById('book-genre').dataset.previous = "";
         document.getElementById('book-color').value = "#1a334d";
         document.getElementById('book-width').value = 120;
         document.getElementById('book-ratio-preset').value = "0.667";
@@ -1074,12 +1079,7 @@ function pickStatus(status, btn) {
     const previous = document.getElementById('book-status').value;
     selectStatus(status);
     wigglePreview();
-    if (status === 'Read' && previous !== 'Read') {
-        confettiFrom(btn);
-        if (!document.getElementById('finished-year').value.trim()) {
-            setDateFieldToday('finished');
-        }
-    }
+    if (status === 'Read' && previous !== 'Read') confettiFrom(btn);
 }
 
 function setOwned(owned) {
@@ -1555,6 +1555,12 @@ async function processBookForm() {
 
     if (!title) {
         alert('Please include a book title!');
+        return;
+    }
+
+    if (!genre || genre === ADD_GENRE_VALUE) {
+        alert('Please choose a genre!');
+        document.getElementById('book-genre').focus();
         return;
     }
 
