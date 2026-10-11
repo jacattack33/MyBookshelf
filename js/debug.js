@@ -63,6 +63,7 @@ async function debugAddBook() {
         series: "", seriesNumber: null, seriesTotal: null,
         status, rating: status === 'Read' ? 1 + Math.floor(Math.random() * 5) : 0, genre, color,
         width: 90 + Math.floor(Math.random() * 60),
+        pages: 120 + Math.floor(Math.random() * 480),
         tags: [], owned: true, notes: "", notesFont: getLastNoteFont(),
         startedDate: "", finishedDate: status === 'Read' ? String(new Date().getFullYear()) : "",
         statusSince: now, dustedAt: null, stickyNote: false,
@@ -237,6 +238,15 @@ function buildDebugPanel() {
         bookExit,
         ['Delete one', () => debugDeleteOnScreen('.book:not(.sticky-book)', bookExit.value, tossBook)],
         ['Dust one', debugDust]
+    ]);
+
+    group('Backups', [
+        ['Backup reminder', () => {
+            if (!library.length) return debugSay('No books, so nothing to back up.');
+            showBackupReminder();
+            debugSay(`Reminder up. ${lastBackupText()}`);
+        }],
+        ['Glow export', () => { glowExportButton(); debugSay('The Export button glows.'); }]
     ]);
 
     group('Other', [

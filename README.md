@@ -17,8 +17,8 @@ The longer, more technical version:
 
 All data lives **locally in your browser**, not on a server:
 
-- **IndexedDB** (`BookShelfDB`) stores the actual library — titles, authors, cover/spine images, status, ratings, start/finish dates, tags, notes, and when each book entered its current status or was last dusted off (`statusSince` / `dustedAt`, used for the dust effect).
-- **localStorage** stores a few small things: your custom genre list, recent colors, which shelves are expanded, your last-used notes font, the last genre picked on a sticky note, your Settings choices, and a few one-time migration flags.
+- **IndexedDB** (`BookShelfDB`) stores the actual library — titles, authors, page counts, cover/spine images, status, ratings, start/finish dates and any re-reads (`extraReads`), tags, notes, who a book is lent to and since when (`lentTo` / `lentAt`), and when each book entered its current status or was last dusted off (`statusSince` / `dustedAt`, used for the dust effect).
+- **localStorage** stores a few small things: your custom genre list, recent colors, which shelves are expanded, your last-used notes font, the last genre picked on a sticky note, your Settings choices, when you last exported a backup from this browser (for the backup reminder), and a few one-time migration flags.
 
 There is no backend and no account — the app makes no network calls of its own (the only external request is loading the Google Fonts used for styling).
 
@@ -29,11 +29,12 @@ What this means in practice:
 - **First visit:** on the hosted site, a new visitor starts with an example shelf (`starter-library.json`, a real shelf with notes, dates and ratings left out) so they can see how everything works; they can delete those books or use Settings > Start over. Opened straight from a file, the browser can't load that, so it starts with 3 placeholder books instead.
 - **Export Library (Backup)** / **Import Library** (buttons above the shelves) are the only way to move your library between devices, or to back it up. Backups include your Settings too (theme, mode, name, reading goal, fonts, extras), and importing one restores them. Since there's no cloud sync, it's worth exporting a backup periodically if this data matters to you long-term.
 - Import **replaces** your current library entirely with whatever's in the file you pick — there's a confirmation prompt since this can't be undone.
+- **Backup reminder:** if you haven't exported in 30 days (or a week after you first opened the app, if you never have), a note pops up under the Export button with **Back up now** and **Remind me later** (asks again in a week). While your last backup is over a week old, the Export button also glows softly every ten minutes or so. Exporting from either Export button counts. Turn both off with Settings > Backups, which also shows when you last backed up. The reminder is per browser and isn't saved in backups.
 
 ## Features
 
 ### Organizing your shelves
-- Organize by Genre, Reading Status, Author, Series, Tag, or Rating; filter by status, ownership, genre, or tag; search by title/author.
+- Organize by Genre, Reading Status, Author, Series, Tag, or Rating; filter by status, ownership (All / Owned / Not Owned / Lent Out), genre, or tag; search by title/author.
 - **Sticky Notes filter:** Show the to-get notes mixed in with your books, Hide them, or show Only them (a shopping list). Remembered between visits.
 - Sort by Custom (drag & drop), Author last name, or Rating (high to low).
 - Two view modes: **Covers** (front-cover art) and **Spines** (a shelf-accurate spine view — generated leather/gold look by default, or upload a real photo of the spine per book).
@@ -44,6 +45,7 @@ What this means in practice:
   - **Pull out to open:** clicking a book slides it out toward you before the edit window opens, and Cancel slides it back. Dragging still reorders like before, because a drag never counts as a click.
   - **Leaning books:** when a shelf has room left over, its last book leans over onto its neighbour. Adding or removing books makes it straighten up or tip over.
   - **Dust:** books that have sat in **Want to Read** for 3+ months gather a little dust, and more after 6 months. Hover over a dusty book (or tap it on a phone) to blow the dust off. That counts as dusting, so it stays clean and slowly builds up again.
+  - **Lent-out books:** a book you've lent keeps its spot, but as an empty dashed outline with a faint ghost of the cover and a tall cream gift tag like on a Christmas present (top corners clipped off, a punched hole) swinging on a plain twine string inside it; long names wrap onto more lines so the tag stays tall: "lent to Sam" (written sideways in Spines view). Hover for how long it's been gone. The empty spot gathers dust after a month away, and more after three; blowing it off counts as a nudge, so it builds up again from then. Lent books don't lean, and nothing leans on them.
   - **Shelf cat:** a little black pixel cat naps on top of a shelf. Hover over it (or tap it) and it wakes up, stretches, and hops over to another shelf.
   - **Deleting a book:** the book leaves the shelf in style (sticky notes have their own ways, below). If it was pulled out, it slides back into its spot first, then goes one of seven ways at random:
     - **Tip:** rocks back, tips forward off the ledge toward you and drops, with a puff of dust
@@ -62,7 +64,7 @@ What this means in practice:
     - **Deco:** a sweep of gold leaf, then it opens out like a fan, snaps shut into a thin gilt stick and sinks away in a glint
 
     The books next to it wait until it's gone, then slide over to fill the gap. With Calm mode (or your device's reduced-motion setting) on, the book simply disappears.
-- **Reading stats:** click the little ledger book in the bottom-left corner for your total number of books, counts by status, owned books, average rating, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). Books you finished with only a year set are counted separately.
+- **Reading stats:** click the little ledger book in the bottom-left corner for your total number of books, counts by status, owned and lent-out books, average rating, pages read, and a chart of books finished each month (pick any year; hover a column to see the titles, or switch to a table). The chart's subtitle also totals that year's pages. Books you finished with only a year set are counted separately. Re-reads written on a book's library card count as another book finished (and their pages count again), in the chart and toward the yearly goal.
 - **Sticky notes (books you want to get):**
   - **Quick add:** click the pile of sticky notes in the bottom-left corner, jot down a title, author and genre, and "Stick it ✓" puts the book straight onto your Want to Read list. The pile crumples the note and tosses it onto the shelf.
   - **On the shelf:** the book shows up as a yellow sticky note written in pencil (Nanum Pen Script), stuck on at a slightly crooked angle; some have a curled-up corner. Click it to open and edit it like any book.
@@ -85,7 +87,7 @@ What this means in practice:
     It heads off a random side of the screen each time. The books next to it wait until it's gone, then slide over to fill the gap.
   - **Filter:** use the Sticky Notes buttons (Show / Hide / Only) to mix them in with your books, hide them, or show just them (a shopping list).
   - **Settings:** Settings can hide the sticky-note pile. With Calm mode (or your device's reduced-motion setting) on, notes simply appear and disappear without the animations.
-- **Reading goals card:** a little card in the bottom-left stack, on top of the stats ledger, with the critter sitting on top of it. It shows your yearly books goal (if you've set one) and your pages goal for today, this week or this month, each with a progress bar. Click it to open the **Reading Goals** window:
+- **Reading goals card:** a little card in the bottom-left stack, on top of the stats ledger, with the critter sitting on top of it. It shows your yearly books goal (if you've set one) and your pages goal for today, this week or this month, each with a progress bar. Big numbers are shortened to fit (1,250 shows as 1.2k, rounded down so a goal never looks met early); hover for the exact numbers. Click it to open the **Reading Goals** window:
   - **Yearly reading goal:** counts books marked Read with a finish date this year (0 turns it off). The progress bar also shows in the Reading Stats window.
   - **Pages goal:** a number of pages **per day, per week or per month** (20 a day by default). Weeks start on Monday, and months on the 1st. Pages count toward it when you feed the critter, or when you type them in the window's **Log** box. The Log box also feeds the critter if it's around, so you never need to enter pages twice. Logging still works with the critter turned off. The last 40 days of pages are kept, and they're saved in backups.
 - **Reading critter:** a little pet you keep alive by reading, at the top of the bottom-left stack: it sits on the goals card, which sits on the stats ledger, which sits on the sticky-note pile. Click it to open its care window.
@@ -102,12 +104,14 @@ What this means in practice:
   - **Running away:** starve it for 7 days and it leaves a note, scrawled in blue crayon in a wobbly kid's hand (kid spelling, every letter tipped its own way, signed with a paw print). The warnings beforehand: a "!" bubble once it has under a day of food left, then "!!" once its belly is empty. While it's starving, its window and the corner widget's tooltip count down ("Starving! It might run away in 3 days."). There are no notifications outside the page. Hatch a new egg to start again; the old one goes in the **Scrapbook** with its name, stage, pages eaten and dates.
   - **Theme critters:** each theme has its own critter and home: a gummy blob in a candy jar (Candy), a hermit crab in a sea-glass bottle (Sea Glass), a little green alien in a holographic egg toy (Holo), a bookworm in a hollowed-out book (Library), a songbird in a brass birdcage (Deco), a moss sprout in a terrarium (Loft), a line-drawn pup in a drafted box (Blueprint; a collar and tag as a teen, a hard hat as an adult), and a pixel pet on a little LCD (Terminal). Give it a name (click the name in its window, type, and press Enter), or it goes by each theme's critter name.
   - **Settings:** Shelf extras can hide it; while it's off, it doesn't get hungry. It's saved in backups.
-- Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread-but-owned books versus ones marked Read.
+- Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread books versus ones marked Read. Books you own carry a small round polished-gold bookplate seal with an engraved ✓ in the top corner (at the foot of the spine in Spines view); on a faded unread book the seal fades to a soft silver along with it. Settings > Shelf extras > Owned seal (Series) turns it off.
 
 - **On phones:** Search stays at the top and everything else folds into a **Filters & sorting** button (it shows a count like "• 2" when filters are on); button groups wrap neatly onto new lines. Books are drawn a bit smaller so more fit per row, and the edit window shows a compact preview row at the top.
 
 ### Book details
 - **Ratings:** 1–5 stars per book (click the current star again to clear it).
+- **Pages:** how many pages the book has (under Details). Shows on the library card and adds up in Reading stats.
+- **Lending:** once **I Own This Book** is on, a **Lent to** box appears. Type who has it and save; the hint says how long ago it went out, and **it's back ✓** clears it. Changing the name starts the clock again. Unticking Owned clears it.
 - **Reading dates:** Started and Finished dates under Status. A full date, a month and year, or just a year all work, and each has a **today** button. The app catches impossible dates and a finish date before the start date. Dates are saved as `2024`, `2024-03`, or `2024-03-15`, ready for future per-month/per-year charts.
 - **Genre vs. tags:** a book's genre is what it's about (Fantasy, Mystery, History…). Audience and format are tags instead, the way libraries label them: Children's, Middle Grade, Young Adult, New Adult, Graphic Novel, Short Stories, Poetry, Audiobook and Series are always suggested in the tag dropdown.
 - **Tags:** pick from a dropdown of tags you've already used, or type a new one and press Enter. Tags show as removable badges that slowly drift through pastel colors.
@@ -121,7 +125,8 @@ What this means in practice:
 - A "reading ♡" sticker appears on the preview while a book's status is Reading.
 - If a book has notes, a corner of notepad paper peeks out behind the preview. Hover and it slides up a little; click it and it pulls out and unfolds into the notepad. Closing the notepad tucks it back behind the book.
 - New tags bounce in and removed ones shrink away; new books get a random cute example title and author as placeholders.
-- Hover over the preview book and its cover lifts a little; click it and the cover swings wide open, and its library checkout card slides out of a library pocket with the title, author, and start/finish dates handwritten in your notes font, plus a stamp for its status. Click to slide it back in.
+- Hover over the preview book and its cover lifts a little; click it and the cover swings wide open, and its library checkout card slides out of a library pocket with the title, author, page count and start/finish dates handwritten in your notes font, who it's on loan to (if anyone), plus a stamp for its status. Click to slide it back in.
+  - **Writing dates on the card:** click any line under Checked out / Returned and write a date, in pretty much any form: `today`, `2024`, `3/2024`, `3/15/2024`, `Mar 2024`, `March 15, 2024`, `15 March 2024` or `2024-03-15`. Press Enter (or click away) to write it, Escape to leave it. The first line is the book's Started / Finished dates, so writing there fills in the form too. The blank lines below are for **re-reads**: each one is another time you read it. Clear both dates on a line and it goes away. A date the card can't read, or a return before its checkout, gets a little shake and a note at the bottom instead of being written. After four lines, the lines scroll. Like the rest of the edit window, it's saved when you save the book.
 - All animations turn off if your device is set to reduce motion.
 
 ### Other
@@ -141,12 +146,13 @@ What this means in practice:
   - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.
   - **Custom genres:** see the genres you've added and remove any with its ×. If books still use it, you pick a genre to move them to first.
   - **Start new books as:** Want to Read, Reading, or Read.
-  - **Shelf extras:** turn the shelf cat, dust, leaning books, the sticky-note pile and the reading critter on or off.
+  - **Shelf extras:** turn the shelf cat, dust, leaning books, the sticky-note pile, the reading critter and the owned seal on the Series shelf on or off.
   - **Calm mode:** turns off all the animations.
   - **Debug panel:** adds a **DEBUG** tab on the right edge of the page. Click it for buttons that make things happen right away, instead of waiting or using the browser console:
     - **Critter:** Feed 50, Next stage (hatches an egg, then grows it a stage), +1 day / +1 week (moves its clock forward, so hunger and running away happen as if that time passed), Full / Hungry / Starving, 1 day from leaving, Run away now, New egg, and Favorite? (tells you its secret genre).
     - **Sticky notes:** New note (fills in the quick-add note with a random title and sticks it up), Make one fall, Stick all back up, and Delete one with a chosen exit (or a random one).
     - **Books:** Add a book (a random title, genre and status, scrolled into view), Remove debug books & notes (deletes only the ones the panel made), Delete one with a chosen exit (any theme's exit works in any theme), and Dust one (makes a Want to Read book heavily dusty).
+    - **Backups:** Backup reminder (shows the reminder note now, whenever you last backed up) and Glow export (makes the Export button glow).
     - **Other:** Wake the cat, Log 25 pages, Clear pages log, Confetti.
 
     **Deletes only touch books and notes the panel made** (with New note or Add a book), so your real library is safe. Tick **Deletes can hit real books** at the top to let them pick any book; those deletes are permanent, with no confirmation. Deletes and exits only play for books and notes you can see, so scroll to one first. A line at the bottom says what happened, or why nothing did. Critter changes are real and stick.

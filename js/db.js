@@ -135,6 +135,103 @@ function exportLibrary() {
     a.download = `bookshelf-backup-${stamp}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    try { localStorage.setItem(LAST_BACKUP_KEY, String(Date.now())); } catch (e) {}
+    hideBackupReminder();
+    const lastLine = document.getElementById('setting-last-backup');
+    if (lastLine) lastLine.textContent = lastBackupText();
+}
+
+// ---------- Backup reminder ----------
+// Kept per device (not in backups): when you last exported here, and when
+// this copy of the app was first opened (the clock for "never backed up").
+const LAST_BACKUP_KEY = 'bookShelfLastBackup';
+const FIRST_SEEN_KEY = 'bookShelfFirstSeen';
+const BACKUP_SNOOZE_KEY = 'bookShelfBackupSnooze';
+const BACKUP_REMIND_DAYS = 30;       // since the last backup...
+const BACKUP_FIRST_REMIND_DAYS = 7;  // ...or since first opened, if you never have
+const BACKUP_SNOOZE_DAYS = 7;        // "Remind me later"
+const BACKUP_GLOW_DAYS = 7;          // the Export button glows once a backup is this old
+const BACKUP_GLOW_EVERY_MS = 10 * 60 * 1000;
+
+function readTimeKey(key) {
+    try { return Number(localStorage.getItem(key)) || 0; } catch (e) { return 0; }
+}
+
+function daysSince(ms) {
+    return Math.floor((Date.now() - ms) / DAY_MS);
+}
+
+function lastBackupText() {
+    const last = readTimeKey(LAST_BACKUP_KEY);
+    if (!last) return 'Last backup: never (from this browser).';
+    const days = daysSince(last);
+    return `Last backup: ${days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`}.`;
+}
+
+// days since the last backup (or since first opened), and whether one was ever made
+function backupAge() {
+    const last = readTimeKey(LAST_BACKUP_KEY);
+    return { days: daysSince(last || readTimeKey(FIRST_SEEN_KEY) || Date.now()), ever: !!last };
+}
+
+function backupReminderDue() {
+    if (!appSettings.backupReminders || !library.length) return false;
+    if (readTimeKey(BACKUP_SNOOZE_KEY) > Date.now()) return false;
+    const { days, ever } = backupAge();
+    return days >= (ever ? BACKUP_REMIND_DAYS : BACKUP_FIRST_REMIND_DAYS);
+}
+
+function showBackupReminder() {
+    const { days, ever } = backupAge();
+    const count = library.length;
+    document.getElementById('backup-reminder-text').textContent = ever
+        ? `It's been ${days} day${days === 1 ? '' : 's'} since your last backup. Your ${count} book${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`
+        : `You haven't backed up your shelf yet. Your ${count} book${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`;
+    const box = document.getElementById('backup-reminder');
+    box.classList.add('visible');
+    placeCat(); // the shelves just moved down
+    if (!prefersReducedMotion()) {
+        box.animate([
+            { opacity: 0, transform: 'translateY(-10px) scale(0.97)' },
+            { opacity: 1, transform: 'none' }
+        ], { duration: 320, easing: 'ease-out' });
+    }
+    glowExportButton();
+}
+
+function hideBackupReminder() {
+    const box = document.getElementById('backup-reminder');
+    if (!box.classList.contains('visible')) return;
+    box.classList.remove('visible');
+    placeCat(); // ...and back up
+}
+
+function snoozeBackupReminder() {
+    try { localStorage.setItem(BACKUP_SNOOZE_KEY, String(Date.now() + BACKUP_SNOOZE_DAYS * DAY_MS)); } catch (e) {}
+    hideBackupReminder();
+}
+
+// a soft pulse around the Export button (calm mode: a steady highlight)
+function glowExportButton() {
+    const btn = document.getElementById('export-btn');
+    btn.classList.remove('backup-glow');
+    void btn.offsetWidth; // restart the animation if it's mid-glow
+    btn.classList.add('backup-glow');
+    clearTimeout(btn.glowTimer);
+    btn.glowTimer = setTimeout(() => btn.classList.remove('backup-glow'), 4000);
+}
+
+function initBackupReminder() {
+    try {
+        if (!localStorage.getItem(FIRST_SEEN_KEY)) localStorage.setItem(FIRST_SEEN_KEY, String(Date.now()));
+    } catch (e) {}
+    if (backupReminderDue()) setTimeout(() => { if (backupReminderDue()) showBackupReminder(); }, 2500);
+    // ...and the Export button glows every so often while a backup is getting old
+    const glowIfOld = () => {
+        if (appSettings.backupReminders && library.length && backupAge().days >= BACKUP_GLOW_DAYS) glowExportButton();
+    };
+    setTimeout(glowIfOld, 20 * 1000);
+    setInterval(glowIfOld, BACKUP_GLOW_EVERY_MS);
 }
 
 function importLibrary(event) {

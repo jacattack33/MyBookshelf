@@ -1,9 +1,22 @@
 // ---------- Reading stats ----------
 // Counts only books you can see (hidden ones stay out of it). "Finished"
-// means marked Read with a finish date, same as the reading goal.
+// means marked Read with a finish date, same as the reading goal, plus
+// any other reads with a Returned date on the book's library card.
 
-function finishedBooks() {
-    return visibleBooks().filter(b => b.status === 'Read' && /^\d{4}/.test(b.finishedDate || ''));
+// One { book, date } per time a book was finished.
+function finishedReads() {
+    const out = [];
+    visibleBooks().forEach(b => {
+        if (b.status === 'Read' && /^\d{4}/.test(b.finishedDate || '')) out.push({ book: b, date: b.finishedDate });
+        (b.extraReads || []).forEach(r => {
+            if (/^\d{4}/.test(r.finished || '')) out.push({ book: b, date: r.finished });
+        });
+    });
+    return out;
+}
+
+function pagesOf(reads) {
+    return reads.reduce((sum, r) => sum + (r.book.pages || 0), 0);
 }
 
 function updateStatsLedger() {
@@ -25,8 +38,10 @@ function openStats() {
         ['Want to Read', count('Want to Read')],
         ['DNF', count('DNF')],
         ['Owned', books.filter(b => b.owned).length],
+        ['Lent out', books.filter(isLentOut).length],
         ['With notes', books.filter(b => (b.notes || '').trim()).length],
-        ['Average rating', rated.length ? `${avg} \u2605` : avg]
+        ['Average rating', rated.length ? `${avg} \u2605` : avg],
+        ['Pages read', pagesOf(finishedReads()).toLocaleString()]
     ];
     const tileBox = document.getElementById('stats-tiles');
     tileBox.innerHTML = '';
@@ -45,7 +60,7 @@ function openStats() {
 
     // years with finished books, plus this year; newest first
     const thisYear = new Date().getFullYear();
-    const years = [...new Set([thisYear, ...finishedBooks().map(b => Number(b.finishedDate.slice(0, 4)))])].sort((a, b) => b - a);
+    const years = [...new Set([thisYear, ...finishedReads().map(r => Number(r.date.slice(0, 4)))])].sort((a, b) => b - a);
     const select = document.getElementById('stats-year');
     const keep = Number(select.value);
     select.innerHTML = '';
@@ -74,18 +89,20 @@ function toggleStatsTable() {
 // focusable for its count and titles, and a table view with the same data.
 function renderStatsChart() {
     const year = document.getElementById('stats-year').value;
-    const inYear = finishedBooks().filter(b => b.finishedDate.startsWith(year));
+    const inYear = finishedReads().filter(r => r.date.startsWith(year));
     const byMonth = Array.from({ length: 12 }, () => []);
     let noMonth = 0;
-    inYear.forEach(b => {
-        const m = parseInt(b.finishedDate.slice(5, 7), 10);
-        if (m >= 1 && m <= 12) byMonth[m - 1].push(b); else noMonth++;
+    inYear.forEach(r => {
+        const m = parseInt(r.date.slice(5, 7), 10);
+        if (m >= 1 && m <= 12) byMonth[m - 1].push(r.book); else noMonth++;
     });
     const counts = byMonth.map(list => list.length);
     const MONTH_SHORT = MONTH_NAMES.map(m => m.slice(0, 3));
 
+    const yearPages = pagesOf(inYear);
     document.getElementById('stats-chart-sub').textContent =
-        `${inYear.length} book${inYear.length === 1 ? '' : 's'} finished in ${year}`;
+        `${inYear.length} book${inYear.length === 1 ? '' : 's'} finished in ${year}` +
+        (yearPages ? ` · ${yearPages.toLocaleString()} pages` : '');
     document.getElementById('stats-chart-note').textContent = noMonth
         ? `Plus ${noMonth} finished in ${year} with no month set (not shown in the chart).`
         : '';

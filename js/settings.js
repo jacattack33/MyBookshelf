@@ -64,10 +64,12 @@ const DEFAULT_SETTINGS = {
     defaultStatus: 'Want to Read',
     cat: true, dust: true, lean: true, sticky: true,
     critter: true,              // the reading critter in the corner
+    seriesSeal: true,           // gold seal on owned books on the Series shelf
     pagesGoal: 20,              // pages per pagesPeriod; also how fast the critter gets hungry
     pagesPeriod: 'day',         // day, week or month
     noteFont: null,             // font new notes start in (null = last one used)
     cardFont: null,             // library card handwriting (null = the book's notes font)
+    backupReminders: true,      // nudge to export now and then
     calm: false,                // no animations
     debug: false                // the debug panel on the right edge
 };
@@ -255,6 +257,7 @@ function openSettings() {
     document.getElementById('setting-name').value = appSettings.name === DEFAULT_SETTINGS.name ? '' : appSettings.name;
     renderSettingsFontButtons();
     refreshSettingsButtons();
+    document.getElementById('setting-last-backup').textContent = lastBackupText();
     document.getElementById('settings-modal').style.display = 'flex';
 }
 
@@ -274,7 +277,8 @@ function setSetting(key, value) {
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); } catch (e) {}
     refreshSettingsButtons();
     // the name and goals are typed into, so don't redraw every shelf per keystroke
-    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug'].includes(key));
+    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders'].includes(key));
+    if (key === 'backupReminders' && !value) hideBackupReminder();
     if (key === 'goal') updateReadingGoal();
     if (['goal', 'pagesGoal', 'pagesPeriod', 'critter'].includes(key)) updateGoals();
     if (key === 'pagesGoal' || key === 'pagesPeriod') renderCritter();

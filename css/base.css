@@ -539,6 +539,59 @@ button.danger:hover {
     box-shadow: 2px 2px 0 var(--outline);
 }
 
+/* "it's been a while since your last backup": a soft pulse, three times */
+.backup-bar button.backup-glow {
+    animation: backup-glow 1.3s ease-in-out 3;
+}
+
+@keyframes backup-glow {
+    0%, 100% { box-shadow: 2px 2px 0 var(--outline), 0 0 0 0 rgba(var(--accent-rgb), 0); transform: none; filter: none; }
+    /* the swell and brighten also show on themes whose buttons clip their shadow */
+    50% { box-shadow: 2px 2px 0 var(--outline), 0 0 16px 5px rgba(var(--accent-rgb), 0.55); transform: scale(1.05); filter: brightness(1.12); }
+}
+
+/* calm mode: no pulse, just a steady glow while it lasts */
+:root[data-calm] .backup-bar button.backup-glow {
+    box-shadow: 2px 2px 0 var(--outline), 0 0 12px 3px rgba(var(--accent-rgb), 0.45);
+}
+
+.backup-reminder {
+    display: none;
+    max-width: 520px;
+    margin: -18px auto 26px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    background: var(--panel-bg);
+    color: var(--y2k-text);
+    border: 2px solid var(--outline);
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 var(--outline);
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.backup-reminder.visible {
+    display: block;
+}
+
+.backup-reminder-text::before {
+    content: "\1F4BE  ";
+}
+
+.backup-reminder-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.backup-reminder-buttons button {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
 .library-room {
     max-width: 1000px;
     margin: 0 auto;
@@ -951,6 +1004,55 @@ body.drag-active .book:not(.dragging) {
 
 .book.series-missing.spine-mode .series-missing-label {
     writing-mode: vertical-rl;
+}
+
+/* Series view: a round gold bookplate seal on books you own - polished
+   metal (a conic sweep of bright and dark golds catches the light like
+   foil), a hard rim, a stamped inner ring and an engraved check */
+.series-owned-seal {
+    position: absolute;
+    right: 6px;
+    top: 6px; /* the title sits at the bottom */
+    z-index: 3;
+    width: 22px;
+    height: 22px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #6e4a06;
+    background:
+        radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.95) 0 6%, rgba(255, 255, 255, 0) 22%),
+        conic-gradient(from 210deg, #fff3b0, #f2c94c, #b8860b, #7a5208, #d9a520, #fff1a8, #e0ac2a, #8f620a, #c9971c, #fff3b0);
+    box-shadow:
+        inset 0 0 0 1.5px #ffe58a,
+        inset 0 0 0 2.5px #9a6a0a,
+        0 1px 2px rgba(0, 0, 0, 0.45);
+    color: #4f3504;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1;
+    /* engraved: a light edge under the stroke, a dark one above */
+    text-shadow: 0 1px 0 rgba(255, 240, 170, 0.9), 0 -1px 0 rgba(90, 60, 5, 0.4);
+    pointer-events: auto;
+}
+
+/* Spines view: smaller, centred near the foot of the spine */
+.book.spine-mode .series-owned-seal {
+    right: auto;
+    top: auto;
+    left: 50%;
+    bottom: 5px;
+    width: 15px;
+    height: 15px;
+    margin-left: -7.5px;
+    font-size: 8px;
+    box-shadow:
+        inset 0 0 0 1px #ffe58a,
+        inset 0 0 0 1.5px #9a6a0a,
+        0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 /* Series view: owned-but-unread books are dimmed relative to ones

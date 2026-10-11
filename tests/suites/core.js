@@ -38,7 +38,7 @@
   ok('cover opens first', !q('#library-card-overlay').classList.contains('open') && !!q('#open-book-fx') && q('#preview-book').style.visibility === 'hidden');
   await wait(1900);
   ok('card out after cover', q('#library-card-overlay').classList.contains('open'));
-  const hands = [...document.querySelectorAll('#library-card .lc-hand')].map(h => h.textContent);
+  const hands = [...document.querySelectorAll('#library-card .lc-field .lc-hand, #library-card .lc-cell[data-row="main"]')].map(h => h.textContent);
   ok('card contents', hands.join('|') === 'Dune|Frank Herbert|Nov 2023|Mar 15, 2024', hands.join('|'));
   ok('card stamp', q('.lc-stamp').textContent.startsWith('RETURNED'));
   closeLibraryCard();

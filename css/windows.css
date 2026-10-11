@@ -850,7 +850,7 @@
 .library-pocket-wrap {
     position: relative;
     width: min(440px, 92%);
-    height: 432px;
+    height: 492px;
     overflow: hidden; /* the card hides below the pocket's bottom edge */
 }
 
@@ -859,7 +859,7 @@
     left: 6%;
     right: 6%;
     bottom: 22px;
-    height: 324px; /* tall enough that the stamp clears the pocket */
+    height: 384px; /* tall enough that the stamp clears the pocket */
     box-sizing: border-box;
     padding: 14px 16px;
     background: #fffaf0;
@@ -948,12 +948,109 @@
     padding-left: 8px;
 }
 
+.lc-field .lc-grow {
+    flex: 1;
+    min-width: 0;
+}
+
+.lc-pages {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* the checkout lines: room for four, then they scroll */
+.lc-rows {
+    max-height: 126px;
+    overflow-y: auto;
+    margin-top: 10px;
+    scrollbar-width: thin;
+}
+
+.lc-rows .lc-table {
+    margin-top: 0;
+}
+
+.lc-table td.lc-cell {
+    cursor: text;
+    max-width: 0; /* two equal columns, whatever's written in them */
+    width: 50%;
+}
+
+.lc-table td.lc-cell:hover,
+.lc-table td.lc-cell:focus-visible {
+    background: rgba(201, 79, 79, 0.07);
+    outline: none;
+}
+
+/* writing on the card: no box, just the line */
+.lc-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 20px;
+    color: #3d3d3d;
+    box-shadow: none;
+    outline: none;
+}
+
+.lc-input::placeholder {
+    color: rgba(61, 61, 61, 0.3);
+}
+
+.lc-input:focus {
+    background: rgba(255, 230, 102, 0.25);
+    box-shadow: none;
+}
+
+.lc-input.lc-bad {
+    color: #c94f4f;
+}
+
+.lc-foot {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.lc-foot-left {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.lc-lent {
+    font-size: 18px;
+    color: #3d3d3d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lc-lent:empty {
+    display: none;
+}
+
+.lc-note {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: #a0806a;
+}
+
 /* the stamp sits in its own space under the table, so it never runs
    through the writing */
 .lc-stamp {
     display: block;
+    flex-shrink: 0;
     width: max-content;
-    margin: 6px 4px 0 auto;
+    margin: 0 4px 0 auto;
     padding: 2px 7px;
     border: 2px solid currentColor;
     border-radius: 4px;

@@ -210,6 +210,39 @@
     font-family: var(--pixel-font);
 }
 
+/* Lent to: only shows once "I Own This Book" is on */
+.lend-row {
+    display: none;
+    margin-top: 10px;
+}
+
+.lend-row.visible {
+    display: block;
+}
+
+/* "Lent to" and its box on one line */
+.field-label.lend-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.lend-label input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.lend-hint-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+}
+
 .sr-only {
     position: absolute;
     width: 1px;

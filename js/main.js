@@ -24,6 +24,7 @@ async function init() {
     renderBookshelf();
     scheduleNoteFalls();
     initCritter();
+    initBackupReminder();
 }
 
 init();

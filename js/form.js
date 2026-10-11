@@ -348,6 +348,9 @@ function openModal(bookId = null) {
         setNotes(book.notes || "", book.notesFont);
         setDateField('started', book.startedDate);
         setDateField('finished', book.finishedDate);
+        formExtraReads = (book.extraReads || []).map(r => ({ ...r }));
+        document.getElementById('book-pages').value = book.pages || "";
+        setLentTo(book.lentTo || "", book.lentAt || null);
         existingImageNote.style.display = book.image ? 'block' : 'none';
         document.getElementById('existing-spine-image-note').style.display = book.spineImage ? 'block' : 'none';
         document.getElementById('clear-spine-image-btn').style.display = book.spineImage ? 'inline-block' : 'none';
@@ -371,6 +374,9 @@ function openModal(bookId = null) {
         setNotes("");
         setDateField('started', "");
         setDateField('finished', "");
+        formExtraReads = [];
+        document.getElementById('book-pages').value = "";
+        setLentTo("", null);
         existingImageNote.style.display = 'none';
         document.getElementById('existing-spine-image-note').style.display = 'none';
         document.getElementById('clear-spine-image-btn').style.display = 'none';
@@ -433,8 +439,6 @@ function openLibraryCard() {
     if (overlay.parentElement !== document.body) document.body.appendChild(overlay);
     const title = document.getElementById('book-title').value.trim() || 'Untitled';
     const author = document.getElementById('book-author').value.trim() || 'Unknown';
-    const started = readDateField('started', 'started').value || '';
-    const finished = readDateField('finished', 'finished').value || '';
     const status = document.getElementById('book-status').value;
     const stamps = {
         'Want to Read': ['ON HOLD', 'want'],
@@ -443,27 +447,32 @@ function openLibraryCard() {
         'DNF': ['DNF', 'dnf']
     };
     const [stampText, stampClass] = stamps[status] || ['', ''];
-    const cardFont = appSettings.cardFont || document.getElementById('book-notes-font').value;
-    const hand = `font-family: ${noteFontStack(getNoteFont(cardFont))};`;
+    const pages = parseInt(document.getElementById('book-pages').value, 10);
+    const lentTo = document.getElementById('book-owned').checked ? document.getElementById('book-lent-to').value.trim() : '';
+    const hand = libraryCardHandStyle();
 
     const card = document.getElementById('library-card');
     card.innerHTML = `
         <div class="lc-head">LIBRARY CARD</div>
         <div class="lc-field">Title <span class="lc-hand lc-title" style="${hand}"></span></div>
-        <div class="lc-field">Author <span class="lc-hand" style="${hand}"></span></div>
-        <table class="lc-table">
-            <tr><th>Checked out</th><th>Returned</th></tr>
-            <tr><td class="lc-hand" style="${hand}"></td><td class="lc-hand" style="${hand}"></td></tr>
-            <tr><td></td><td></td></tr>
-        </table>
-        <div class="lc-stamp ${stampClass}"></div>`;
+        <div class="lc-field">Author <span class="lc-hand lc-grow" style="${hand}"></span>${pages > 0 ? `<span class="lc-pages">Pages <span class="lc-hand" style="${hand}"></span></span>` : ''}</div>
+        <div class="lc-rows" id="lc-rows"></div>
+        <div class="lc-foot">
+            <div class="lc-foot-left">
+                <span class="lc-lent"></span>
+                <span class="lc-note" id="lc-note">Click a line to write a date.</span>
+            </div>
+            <span class="lc-stamp ${stampClass}"></span>
+        </div>`;
     // textContent (not innerHTML) for anything the user typed
     const hands = card.querySelectorAll('.lc-hand');
     hands[0].textContent = title;
     hands[1].textContent = author;
-    hands[2].textContent = formatPartialDate(started);
-    hands[3].textContent = formatPartialDate(finished);
+    if (pages > 0) hands[2].textContent = pages.toLocaleString();
     card.querySelector('.lc-stamp').textContent = stampText;
+    card.querySelector('.lc-lent').textContent = lentTo ? `On loan to ${lentTo}` : '';
+    card.querySelector('.lc-lent').style.cssText = lentTo ? hand : '';
+    renderLibraryCardRows();
 
     if (prefersReducedMotion()) {
         overlay.classList.add('open');
@@ -485,6 +494,197 @@ function openLibraryCard() {
         ], { duration: 520, easing: 'ease-out', fill: 'backwards' });
         libraryCardBusy = false;
     }, COVER_OPEN_MS * 0.6); // the cover looks open well before its easing finishes
+}
+
+function libraryCardHandStyle() {
+    const cardFont = appSettings.cardFont || document.getElementById('book-notes-font').value;
+    return `font-family: ${noteFontStack(getNoteFont(cardFont))};`;
+}
+
+// Other times you read it (re-reads), written on the library card; the
+// first line of the card is the Started / Finished dates in the form.
+let formExtraReads = [];
+const LC_MIN_ROWS = 3; // blank lines on the card, like a real one
+let lcBlurCommitAt = 0;
+
+// Compare only as precisely as both dates allow - "2024" vs
+// "2024-03-10" can't be ordered, but "2023" vs "2024-03" can.
+function finishedBeforeStarted(started, finished) {
+    if (!started || !finished) return false;
+    const len = Math.min(started.length, finished.length);
+    return finished.slice(0, len) < started.slice(0, len);
+}
+
+// What you write on the card -> a partial date ("2024", "2024-03",
+// "2024-03-15"), "" for blank, or null if it can't be read. Takes
+// "today", "2024", "3/2024", "3/15/2024", "Mar 2024", "March 15, 2024",
+// "15 March 2024" and "2024-03-15".
+function parseLooseDate(text) {
+    const s = String(text || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!s) return '';
+    const pad = n => String(n).padStart(2, '0');
+    const now = new Date();
+    if (s === 'today') return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    // "mar", "march", "sept"...
+    const monthOf = word => word.length >= 3 ? MONTH_NAMES.findIndex(m => m.toLowerCase().startsWith(word)) + 1 : 0;
+    let y = 0, m = 0, d = 0, match;
+    if ((match = /^(\d{4})$/.exec(s))) {
+        y = +match[1];
+    } else if ((match = /^(\d{4})-(\d{1,2})(?:-(\d{1,2}))?$/.exec(s))) {
+        [y, m, d] = [+match[1], +match[2], +(match[3] || 0)];
+    } else if ((match = /^(\d{1,2})\/(\d{4})$/.exec(s))) {
+        [m, y] = [+match[1], +match[2]];
+    } else if ((match = /^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/.exec(s))) {
+        [m, d, y] = [+match[1], +match[2], +match[3]];
+        if (y < 100) y += 2000;
+    } else if ((match = /^([a-z]+)\.? (?:(\d{1,2})(?:st|nd|rd|th)?,? )?(\d{4})$/.exec(s))) {
+        [m, d, y] = [monthOf(match[1]), +(match[2] || 0), +match[3]];
+        if (!m) return null;
+    } else if ((match = /^(\d{1,2})(?:st|nd|rd|th)? ([a-z]+)\.?,? (\d{4})$/.exec(s))) {
+        [d, m, y] = [+match[1], monthOf(match[2]), +match[3]];
+        if (!m) return null;
+    } else {
+        return null;
+    }
+    if (y < 1000 || y > 9999) return null;
+    if (!m) return String(y);
+    if (m < 1 || m > 12) return null;
+    if (!d) return `${y}-${pad(m)}`;
+    if (d < 1 || d > new Date(y, m, 0).getDate()) return null;
+    return `${y}-${pad(m)}-${pad(d)}`;
+}
+
+function libraryCardRows() {
+    return [
+        { row: 'main', started: readDateField('started', 'started').value || '', finished: readDateField('finished', 'finished').value || '' },
+        ...formExtraReads.map((r, i) => ({ row: String(i), started: r.started, finished: r.finished }))
+    ];
+}
+
+function renderLibraryCardRows() {
+    const box = document.getElementById('lc-rows');
+    if (!box) return;
+    const hand = libraryCardHandStyle();
+    const rows = libraryCardRows();
+    const table = document.createElement('table');
+    table.className = 'lc-table';
+    table.innerHTML = '<tr><th>Checked out</th><th>Returned</th></tr>';
+    // a blank line to write the next read on, and enough lines to look like a card
+    const blanks = Math.max(1, LC_MIN_ROWS - rows.length);
+    [...rows, ...Array.from({ length: blanks }, () => ({ row: 'new', started: '', finished: '' }))].forEach(r => {
+        const tr = table.insertRow();
+        ['started', 'finished'].forEach(field => {
+            const td = tr.insertCell();
+            td.className = 'lc-hand lc-cell';
+            td.style.cssText = hand;
+            td.dataset.row = r.row;
+            td.dataset.field = field;
+            td.tabIndex = 0;
+            td.title = field === 'started' ? 'Write when you started it' : 'Write when you finished it';
+            td.textContent = r[field] ? formatPartialDate(r[field]) : '';
+            td.addEventListener('click', e => { e.stopPropagation(); editCardCell(td); });
+            td.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); editCardCell(td); }
+            });
+        });
+    });
+    box.innerHTML = '';
+    box.appendChild(table);
+}
+
+function setCardNote(text) {
+    const note = document.getElementById('lc-note');
+    if (note) note.textContent = text;
+}
+
+function editCardCell(td) {
+    if (td.querySelector('.lc-input')) return;
+    let row = td.dataset.row;
+    const field = td.dataset.field;
+    if (row === 'new') {
+        // start a new line for another read
+        formExtraReads.push({ started: '', finished: '' });
+        row = String(formExtraReads.length - 1);
+        renderLibraryCardRows();
+        td = document.querySelector(`#lc-rows .lc-cell[data-row="${row}"][data-field="${field}"]`);
+    }
+    const valueOf = (r, f) => r === 'main'
+        ? (readDateField(f, f).value || '')
+        : (formExtraReads[+r] || {})[f] || '';
+    const current = valueOf(row, field);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'lc-input';
+    input.style.cssText = libraryCardHandStyle();
+    input.value = current ? formatPartialDate(current) : '';
+    input.placeholder = 'Mar 3, 2024';
+    input.setAttribute('aria-label', field === 'started' ? 'Checked out (started)' : 'Returned (finished)');
+    input.autocomplete = 'off';
+    input.spellcheck = false;
+    td.textContent = '';
+    td.appendChild(input);
+    input.focus();
+    input.select();
+
+    let done = false;
+    const finish = () => {
+        done = true;
+        // a line with nothing on it goes away...
+        const lines = formExtraReads.length;
+        formExtraReads = formExtraReads.filter(r => r.started || r.finished);
+        if (formExtraReads.length !== lines) return renderLibraryCardRows();
+        // ...otherwise just this cell changes (redrawing them all would
+        // swallow a click that's moving on to the next line)
+        const value = valueOf(row, field);
+        td.textContent = value ? formatPartialDate(value) : '';
+    };
+    // Enter on a bad date keeps you writing; clicking away puts the old one back
+    const reject = (msg, keepEditing) => {
+        setCardNote(msg);
+        if (!keepEditing) return finish();
+        input.classList.add('lc-bad');
+        if (!prefersReducedMotion()) {
+            input.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)' },
+                { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 240, iterations: 2 });
+        }
+        input.focus();
+    };
+    const commit = (fromKey) => {
+        if (done) return;
+        const value = parseLooseDate(input.value);
+        if (value === null) return reject(`Couldn't read "${input.value.trim()}". Try Mar 3, 2024, 3/2024 or 2024.`, fromKey);
+        const other = field === 'started' ? 'finished' : 'started';
+        const otherValue = valueOf(row, other);
+        const [s, f] = field === 'started' ? [value, otherValue] : [otherValue, value];
+        if (finishedBeforeStarted(s, f)) return reject('Returned before it was checked out? Check the dates.', fromKey);
+        if (row === 'main') {
+            setDateField(field, value);
+        } else if (formExtraReads[+row]) {
+            formExtraReads[+row][field] = value;
+        }
+        setCardNote('');
+        finish();
+    };
+    input.addEventListener('click', e => e.stopPropagation());
+    input.addEventListener('keydown', e => {
+        e.stopPropagation();
+        if (e.key === 'Enter') { e.preventDefault(); commit(true); }
+        if (e.key === 'Escape') { e.preventDefault(); setCardNote(''); finish(); }
+    });
+    input.addEventListener('input', () => input.classList.remove('lc-bad'));
+    input.addEventListener('blur', () => {
+        if (done) return;
+        lcBlurCommitAt = Date.now();
+        commit(false);
+    });
+}
+
+// Clicking the card slides it back in - unless you were just writing on it.
+function libraryCardClick(e) {
+    if (e.target.closest('.lc-cell, .lc-input')) return;
+    if (Date.now() - lcBlurCommitAt < 400) return;
+    closeLibraryCard();
 }
 
 const COVER_OPEN = 'rotateY(-165deg)';
@@ -885,10 +1085,47 @@ function pickStatus(status, btn) {
 function setOwned(owned) {
     document.getElementById('book-owned').checked = owned;
     document.getElementById('owned-toggle-btn').classList.toggle('active', owned);
+    // only a book you own can be lent out
+    document.getElementById('lend-row').classList.toggle('visible', owned);
 }
 
 function toggleOwned() {
     setOwned(!document.getElementById('book-owned').checked);
+}
+
+// ---------- Lending ----------
+// A lent book keeps its spot on the shelf as an empty outline with a
+// tag hanging in it. lentAt is when it went out (kept while the same
+// person has it).
+let formLentAt = null;
+
+function setLentTo(name, lentAt) {
+    document.getElementById('book-lent-to').value = name;
+    formLentAt = name ? lentAt : null;
+    updateLendHint();
+}
+
+function markBookReturned() {
+    setLentTo("", null);
+}
+
+function friendlyAge(ms) {
+    const days = Math.max(0, Math.floor((Date.now() - ms) / DAY_MS));
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 14) return `${days} days ago`;
+    if (days < 60) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 730) return `${Math.floor(days / 30)} months ago`;
+    return `${Math.floor(days / 365)} years ago`;
+}
+
+function updateLendHint() {
+    const name = document.getElementById('book-lent-to').value.trim();
+    const hint = document.getElementById('lend-hint');
+    document.getElementById('lend-back-btn').style.display = name ? '' : 'none';
+    const same = formLentAt && editingId && (library.find(b => b.id === editingId) || {}).lentTo === name;
+    hint.textContent = !name ? 'Lend it out and it leaves a tag in its spot on the shelf.'
+        : same ? `Lent ${friendlyAge(formLentAt)}.` : 'Lent from today.';
 }
 
 function updateRatingStarsUI(rating) {
@@ -1330,17 +1567,22 @@ async function processBookForm() {
     }
     const startedDate = started.value;
     const finishedDate = finished.value;
-    // Compare only as precisely as both dates allow - "2024" vs
-    // "2024-03-10" can't be ordered, but "2023" vs "2024-03" can.
-    if (startedDate && finishedDate) {
-        const len = Math.min(startedDate.length, finishedDate.length);
-        if (finishedDate.slice(0, len) < startedDate.slice(0, len)) {
-            alert('The finished date is before the started date.');
-            return;
-        }
+    if (finishedBeforeStarted(startedDate, finishedDate)) {
+        alert('The finished date is before the started date.');
+        return;
     }
 
+    const pagesRaw = parseInt(document.getElementById('book-pages').value, 10);
+    const pages = pagesRaw > 0 ? Math.min(pagesRaw, 99999) : null;
+    const extraReads = formExtraReads.filter(r => r.started || r.finished).map(r => ({ started: r.started || "", finished: r.finished || "" }));
+
     const existing = editingId ? library.find(b => b.id === editingId) : null;
+
+    const lentTo = owned ? document.getElementById('book-lent-to').value.trim() : "";
+    // same person still has it: keep when it went out
+    const lentAt = !lentTo ? null
+        : (existing && existing.lentTo === lentTo && existing.lentAt) ? existing.lentAt
+        : Date.now();
 
     let image = null, imageRatio = null;
     if (pendingCoverCrop) {
@@ -1407,7 +1649,7 @@ async function processBookForm() {
     const book = {
         id: editingId || Date.now().toString(),
         title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, startedDate, finishedDate,
-        statusSince, dustedAt, stickyNote,
+        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt,
         sortOrder: existing && Number.isFinite(existing.sortOrder)
             ? existing.sortOrder
             : library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,

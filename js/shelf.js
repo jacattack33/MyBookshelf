@@ -133,6 +133,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
         bookDiv.appendChild(spineTop);
     }
 
+    if (isLentOut(book)) addLentTag(bookDiv, book);
 
     const dustLevel = getDustLevel(book);
     if (dustLevel > 0) {
@@ -295,6 +296,14 @@ function buildBookElement(book, draggableEnabled, spineMode) {
 function decorateSeriesBookElement(book, draggableEnabled, spineMode) {
     const el = buildBookElement(book, draggableEnabled, spineMode);
     el.classList.add(book.status === 'Read' ? 'series-read' : 'series-unread');
+    // books you own carry a little gold bookplate seal (Settings can hide it)
+    if (appSettings.seriesSeal && book.owned && !isStickyPlaceholder(book)) {
+        const seal = document.createElement('span');
+        seal.className = 'series-owned-seal';
+        seal.textContent = '✓';
+        seal.title = 'You own this one';
+        el.appendChild(seal);
+    }
     return el;
 }
 
@@ -367,7 +376,7 @@ function renderShelves() {
     let workingLibrary = visibleBooks().filter(b =>
         (selectedStatus === "All" || b.status === selectedStatus) &&
         (selectedGenre === "All" || b.genre === selectedGenre) &&
-        (selectedOwned === "All" || (selectedOwned === "Owned" ? !!b.owned : !b.owned)) &&
+        (selectedOwned === "All" || (selectedOwned === "Lent" ? isLentOut(b) : selectedOwned === "Owned" ? !!b.owned : !b.owned)) &&
         (selectedSticky === "Show" || (selectedSticky === "Only" ? isStickyPlaceholder(b) : !isStickyPlaceholder(b))) &&
         (selectedTag === "All" || (b.tags && b.tags.includes(selectedTag))) &&
         (searchTerm === "" || b.title.toLowerCase().includes(searchTerm) || (b.authors || []).some(a => a.toLowerCase().includes(searchTerm)))
@@ -709,7 +718,8 @@ function computeShelfLean(section) {
     const last = children[children.length - 1];
     const prev = children[children.length - 2];
     const isRealBook = el => el.classList.contains('book') && !el.classList.contains('series-missing') && !el.classList.contains('sticky-book');
-    if (!isRealBook(last) || !prev.classList.contains('book')) return null;
+    // an empty spot (lent out) has nothing to lean, or lean on
+    if (!isRealBook(last) || !prev.classList.contains('book') || last.classList.contains('lent-out') || prev.classList.contains('lent-out')) return null;
 
     const style = getComputedStyle(row);
     const spine = row.classList.contains('spine-shelf');
@@ -954,11 +964,20 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const DUST_LIGHT_MS = 90 * DAY_MS;
 const DUST_HEAVY_MS = 180 * DAY_MS;
 
-// 0 = clean, 1 = light dust, 2 = heavy. Only Want to Read books gather
-// dust, counting from whenever they entered that status or were last
-// dusted off.
+const LENT_DUST_LIGHT_MS = 30 * DAY_MS;
+const LENT_DUST_HEAVY_MS = 90 * DAY_MS;
+
+// 0 = clean, 1 = light dust, 2 = heavy. Want to Read books gather dust,
+// counting from whenever they entered that status or were last dusted
+// off. So does the empty spot a lent book left, only faster: a month
+// gone, then three.
 function getDustLevel(book) {
-    if (!appSettings.dust || book.status !== 'Want to Read') return 0;
+    if (!appSettings.dust) return 0;
+    if (isLentOut(book)) {
+        const age = Date.now() - Math.max(book.lentAt || 0, book.dustedAt || 0);
+        return !book.lentAt ? 0 : age >= LENT_DUST_HEAVY_MS ? 2 : age >= LENT_DUST_LIGHT_MS ? 1 : 0;
+    }
+    if (book.status !== 'Want to Read') return 0;
     const since = Math.max(book.statusSince || 0, book.dustedAt || 0);
     if (!since) return 0;
     const age = Date.now() - since;
@@ -985,6 +1004,34 @@ async function blowDust(bookDiv, id) {
         book.dustedAt = Date.now();
         await dbPut(book);
     }
+}
+
+// ---------- Lent-out books ----------
+// The book's spot stays on the shelf as an empty outline, with a paper
+// tag on a string saying who has it.
+function isLentOut(book) {
+    return !!(book.lentTo && book.owned) && !isStickyPlaceholder(book);
+}
+
+function addLentTag(bookDiv, book) {
+    bookDiv.classList.add('lent-out');
+    const shade = document.createElement('span');
+    shade.className = 'lent-shade';
+    const tag = document.createElement('span');
+    tag.className = 'lent-tag';
+    tag.innerHTML = '<span class="lent-string"></span><span class="lent-card"><span class="lent-label">lent to</span><span class="lent-name"></span></span>';
+    const name = tag.querySelector('.lent-name');
+    name.textContent = book.lentTo;
+    // the tag is narrow: long words are written smaller so they don't split
+    const longest = Math.max(...book.lentTo.split(/\s+/).map(w => w.length));
+    if (longest > 10) name.classList.add('longer');
+    else if (longest > 7) name.classList.add('long');
+    // a little different swing for each book
+    tag.style.setProperty('--swing-delay', `${-(shelfHash(book.id) % 40) / 10}s`);
+    bookDiv.append(shade, tag);
+    bookDiv.title = book.lentAt
+        ? `"${book.title}" is lent to ${book.lentTo} (${friendlyAge(book.lentAt)})`
+        : `"${book.title}" is lent to ${book.lentTo}`;
 }
 
 // ---------- Shelf cat ----------

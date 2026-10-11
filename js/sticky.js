@@ -79,9 +79,9 @@ function maybeDropNote(chance) {
 
 function scheduleNoteFalls() {
     // a few seconds after the page opens, sometimes...
-    setTimeout(() => maybeDropNote(0.3), 5000 + Math.random() * 7000);
+    setTimeout(() => maybeDropNote(0.2), 5000 + Math.random() * 7000);
     // ...and once in a while as you browse
-    setInterval(() => maybeDropNote(0.2), 4 * 60 * 1000);
+    setInterval(() => maybeDropNote(0.15), 4 * 60 * 1000);
 }
 
 function buildStickyNoteFace(el, book) {

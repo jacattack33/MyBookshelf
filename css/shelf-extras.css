@@ -177,6 +177,149 @@ body.drag-active .book.leaning {
     word-break: break-word;
 }
 
+/* ---------- Lent-out books: an empty spot with a tag on a string ---------- */
+.book.lent-out {
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.book.lent-out .spine-top,
+.book.lent-out::after {
+    opacity: 0.18;
+}
+
+/* the cover fades to a ghost of itself behind a dashed outline */
+.lent-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    border: 2px dashed rgba(var(--ink-rgb), 0.35);
+    border-radius: 2px;
+}
+
+.lent-tag {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 4;
+    max-width: 92%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    transform-origin: top center;
+    transform: translateX(-50%) rotate(-3deg);
+    animation: lent-swing 4s ease-in-out infinite;
+    animation-delay: var(--swing-delay, 0s);
+    filter: drop-shadow(1px 2px 1.5px rgba(0, 0, 0, 0.25));
+}
+
+@keyframes lent-swing {
+    0%, 100% { transform: translateX(-50%) rotate(-4deg); }
+    50% { transform: translateX(-50%) rotate(4deg); }
+}
+
+/* a plain twine string, ending in the tag's hole */
+.lent-string {
+    position: relative;
+    z-index: 1;
+    width: 1.5px;
+    height: 20px;
+    border-radius: 1px;
+    background: #9b7b4a;
+}
+
+/* a tall cream gift tag, like on a Christmas present: top corners
+   clipped off, a punched hole, the writing hanging below it */
+.lent-card {
+    box-sizing: border-box;
+    max-width: min(100%, 84px);
+    min-width: 38px;
+    min-height: 72px;
+    margin-top: -5px;
+    padding: 9px 6px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: linear-gradient(#fffaf0, #f6ecd6);
+    color: #4a3a26;
+    clip-path: polygon(28% 0, 72% 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
+    line-height: 1;
+}
+
+.lent-card::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-bottom: 6px;
+    background: rgba(74, 58, 38, 0.35);
+    box-shadow: 0 0 0 2px #f0e3c8; /* the reinforcing ring */
+}
+
+.lent-label {
+    font-family: 'Courier New', monospace;
+    font-size: 7px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #8a6d45;
+}
+
+/* longer names wrap (up to three lines) so the tag stays tall, not wide */
+.lent-name {
+    max-width: 100%;
+    font-family: 'Caveat', cursive;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 0.95;
+    text-align: center;
+    overflow-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 1px 2px 0;
+}
+
+/* long words get smaller writing instead of breaking mid-word */
+.lent-name.long { font-size: 15px; }
+.lent-name.longer { font-size: 12.5px; }
+
+/* Spines view: the tag is only as wide as the spine, written sideways */
+.book.spine-mode .lent-card {
+    min-width: 0;
+    min-height: 0;
+    padding: 7px 1px 8px;
+    clip-path: polygon(0 5px, 50% 0, 100% 5px, 100% 100%, 0 100%);
+}
+
+.book.spine-mode .lent-card::before {
+    margin-bottom: 3px;
+}
+
+.book.spine-mode .lent-card::before {
+    width: 4px;
+    height: 4px;
+}
+
+.book.spine-mode .lent-label {
+    display: none;
+}
+
+.book.spine-mode .lent-name {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    writing-mode: vertical-rl;
+    font-size: 14px;
+    max-height: 110px;
+}
+
 /* ---------- Dust on long-waiting Want to Read books ---------- */
 .dust-layer {
     position: absolute;

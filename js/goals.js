@@ -48,7 +48,7 @@ function pagesReadThisPeriod() {
 
 function booksReadThisYear() {
     const year = String(new Date().getFullYear());
-    return visibleBooks().filter(b => b.status === 'Read' && (b.finishedDate || '').startsWith(year)).length;
+    return finishedReads().filter(r => r.date.startsWith(year)).length;
 }
 
 function goalRow(label, done, goal) {
@@ -57,9 +57,29 @@ function goalRow(label, done, goal) {
     const l = document.createElement('span');
     l.textContent = label;
     const n = document.createElement('span');
-    n.textContent = `${done}/${goal}`;
+    n.textContent = `${compactNumber(done)}/${compactNumber(goal)}`;
     row.append(l, n);
     return [row, goalBar(done, goal)];
+}
+
+// The corner card is tiny: 1250 -> "1.2k", 12500 -> "12k". Rounded down,
+// so 1990 of 2000 never looks like the goal's met. (The tooltip and the
+// Goals window show the exact numbers.)
+function compactNumber(n) {
+    if (n < 1000) return String(n);
+    const k = n < 10000 ? Math.floor(n / 100) / 10 : Math.floor(n / 1000);
+    return `${k}k`;
+}
+
+// ...and if a row still doesn't fit (a long period name), shrink its text
+function fitGoalRows(card) {
+    card.querySelectorAll('.goals-row').forEach(row => {
+        let size = parseFloat(getComputedStyle(row).fontSize) || 9;
+        while (row.scrollWidth > row.clientWidth && size > 6) {
+            size -= 0.5;
+            row.style.fontSize = size + 'px';
+        }
+    });
 }
 
 function goalBar(done, goal) {
@@ -84,6 +104,7 @@ function updateGoals() {
     card.innerHTML = '';
     if (books) card.append(...goalRow('Books', booksDone, books));
     card.append(...goalRow(period.short, pagesDone, pages));
+    fitGoalRows(card);
     const title = (books ? `${booksDone} of ${books} books this year · ` : '') +
         `${pagesDone} of ${pages} pages ${period.label}`;
     card.title = `Reading goals: ${title}`;
