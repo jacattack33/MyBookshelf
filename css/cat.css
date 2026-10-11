@@ -1,0 +1,69 @@
+/* ---------- Shelf cat ---------- */
+.shelf-cat {
+    position: absolute;
+    z-index: 400;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.shelf-cat svg {
+    display: block;
+    shape-rendering: crispEdges;
+    transform-origin: bottom center;
+}
+
+.shelf-cat.flipped svg {
+    scale: -1 1;
+}
+
+.shelf-cat.sleeping svg {
+    animation: cat-breathe 3s ease-in-out infinite;
+}
+
+@keyframes cat-breathe {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.06); }
+}
+
+.cat-z {
+    display: none;
+    position: absolute;
+    right: -4px;
+    top: -6px;
+    font-family: var(--pixel-font);
+    font-size: 8px;
+    color: var(--y2k-purple);
+    line-height: 1;
+    pointer-events: none;
+}
+
+.shelf-cat.sleeping .cat-z {
+    display: block;
+    animation: cat-z-float 3s ease-in infinite;
+}
+
+.shelf-cat.sleeping .cat-z.z2 {
+    animation-delay: 1.5s;
+}
+
+@keyframes cat-z-float {
+    0% { transform: translate(0, 4px) scale(0.6); opacity: 0; }
+    25% { opacity: 1; }
+    100% { transform: translate(10px, -16px) scale(1.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .shelf-cat.sleeping svg,
+    .shelf-cat.sleeping .cat-z { animation: none; }
+}
+
+@media (max-width: 600px) {
+    .sticky-stack {
+        width: 58px;
+        height: 58px;
+    }
+
+    .sticky-sheet.s1 {
+        font-size: calc(15px * var(--sticky-scale, 1));
+    }
+}

@@ -1,0 +1,815 @@
+/* A native color swatch isn't a text box - the generic rule above
+   (full width, text-input padding) squeezes the actual swatch down
+   to a near-invisible sliver inside a wide white field. */
+/* Cover Width slider, in the theme: a rounded pastel track that
+   fills with the accent gradient up to the thumb (--fill, set from
+   script), and a glossy round thumb that squishes when grabbed. */
+.field-label input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 14px;
+    margin: 10px 0;
+    padding: 0;
+    border: 2px solid var(--outline);
+    border-radius: 10px;
+    background:
+        linear-gradient(90deg, var(--y2k-pink), var(--y2k-purple)) 0 0 / var(--fill, 20%) 100% no-repeat,
+        var(--pastel-lavender);
+    box-shadow: 2px 2px 0 var(--outline);
+    cursor: pointer;
+}
+
+.field-label input[type="range"]:focus {
+    outline: none;
+    border-color: var(--outline);
+    box-shadow: 2px 2px 0 var(--outline), 0 0 10px 2px rgba(var(--accent-rgb), 0.4);
+}
+
+.field-label input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 3px solid white;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.75), rgba(255,255,255,0) 45%), var(--y2k-hot-pink);
+    box-shadow: 0 0 0 2px var(--outline), 2px 3px 0 2px var(--outline);
+    transition: transform 0.25s cubic-bezier(.3, 1.8, .5, 1);
+}
+
+.field-label input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid white;
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.75), rgba(255,255,255,0) 45%), var(--y2k-hot-pink);
+    box-shadow: 0 0 0 2px var(--outline), 2px 3px 0 2px var(--outline);
+    transition: transform 0.25s cubic-bezier(.3, 1.8, .5, 1);
+}
+
+.field-label input[type="range"]::-moz-range-track {
+    background: transparent;
+}
+
+.field-label input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.12); }
+.field-label input[type="range"]:hover::-moz-range-thumb { transform: scale(1.12); }
+
+/* squeezes evenly smaller while held, springs back on release */
+.field-label input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.8); transition-duration: 0.08s; }
+.field-label input[type="range"]:active::-moz-range-thumb { transform: scale(0.8); transition-duration: 0.08s; }
+
+.field-label input[type="color"] {
+    align-self: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 3px solid var(--y2k-hot-pink);
+    border-radius: 50%;
+    box-shadow: 3px 3px 0 var(--y2k-purple);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.1s;
+}
+
+.field-label input[type="color"]:hover {
+    transform: scale(1.08);
+}
+
+.field-label input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+}
+
+.field-label input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+.field-label input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+.recent-colors-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.recent-color-swatch {
+    width: 44px;
+    height: 44px;
+    clip-path: path("M22 39.14l-2.66 -2.42C9.9 28.16 3.67 22.51 3.67 15.58 3.67 9.94 8.1 5.5 13.75 5.5c3.19 0 6.25 1.49 8.25 3.83C23.99 6.99 27.06 5.5 30.25 5.5 35.9 5.5 40.33 9.94 40.33 15.58c0 6.93 -6.23 12.58 -15.68 21.16L22 39.14z");
+    border: 2px solid var(--outline);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.1s;
+}
+
+.recent-color-swatch:hover {
+    transform: scale(1.12);
+}
+
+.field-label select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: var(--caret-url);
+    background-repeat: no-repeat;
+    background-position: right 11px center;
+    background-size: 15px;
+    padding-right: 34px;
+    cursor: pointer;
+}
+
+.field-label input:focus,
+.field-label select:focus {
+    outline: none;
+    border-color: var(--y2k-hot-pink);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
+}
+
+/* Text boxes and dropdowns in the edit / settings windows get the
+   home page's focused look: flowing theme-coloured border (through a
+   transparent border, border-box layer), soft glow, pastel tint.
+   The colour picker, Cover Width slider and checkboxes keep their own. */
+.field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]):focus {
+    border-color: transparent;
+    background:
+        linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
+        linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    animation: search-border-flow 1.6s linear infinite;
+    box-shadow: var(--focus-glow);
+}
+
+.field-label select:focus {
+    border-color: transparent;
+    background:
+        var(--caret-url) right 11px center / 15px no-repeat padding-box,
+        linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
+        linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
+    background-size: 15px, 100% 100%, 300% 100%;
+    animation: select-border-flow 1.6s linear infinite;
+    box-shadow: var(--focus-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .field-label input:focus,
+    .field-label select:focus { animation: none; }
+}
+
+.field-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.field-hint {
+    font-size: 12px;
+    color: var(--y2k-purple);
+}
+
+.date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.date-field > .field-label {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-field input:disabled {
+    background-color: var(--disabled-bg);
+    cursor: not-allowed;
+}
+
+.date-today-btn {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-width: 1px;
+    box-shadow: 1px 1px 0 var(--outline);
+    background-color: var(--pastel-lavender);
+    color: var(--y2k-dark);
+}
+
+/* the classy themes: no candy gloss on the little "today" pills */
+:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .date-today-btn {
+    border-radius: 4px;
+    box-shadow: none;
+}
+
+:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .date-today-btn::before {
+    display: none;
+}
+
+:root[data-theme="terminal"] .date-today-btn {
+    font-family: var(--pixel-font);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.shelf.shelf-empty {
+    min-height: 120px;
+    align-items: center;
+    justify-content: center;
+}
+
+.shelf-empty-hint {
+    font-family: var(--pixel-font);
+    font-size: 10px;
+    color: rgba(var(--ink-rgb), 0.35);
+    pointer-events: none;
+}
+
+.info-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--y2k-lavender);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: help;
+    flex-shrink: 0;
+}
+
+.tag-suggestions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--surface);
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 8px;
+    margin-top: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+    box-shadow: 3px 3px 0 var(--y2k-lavender);
+}
+
+.tag-suggestions.visible {
+    display: block;
+}
+
+#tag-entry {
+    padding-right: 34px;
+}
+
+.tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag-chips:empty {
+    display: none;
+}
+
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 4px 3px 10px;
+    border-radius: 14px;
+    background: var(--pastel-lavender);
+    border: 2px solid var(--y2k-purple);
+    color: var(--y2k-dark);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Cycle chips through the site's pastels, each with a bolder
+   border in the same hue. */
+.tag-chip:nth-child(5n+1) { background: var(--pastel-pink); border-color: var(--y2k-pink); }
+.tag-chip:nth-child(5n+2) { background: var(--pastel-lavender); border-color: var(--y2k-purple); }
+.tag-chip:nth-child(5n+3) { background: var(--pastel-mint); border-color: var(--y2k-mint); }
+.tag-chip:nth-child(5n+4) { background: var(--pastel-yellow); border-color: #f2c94c; }
+.tag-chip:nth-child(5n+5) { background: var(--pastel-blue); border-color: #6cc4f5; }
+
+/* ...and slowly drift through all of them on their own. Each chip's
+   negative delay starts it at its own color above, so neighbours
+   stay different colors as they cycle. */
+@keyframes tag-chip-cycle {
+    0%, 100% { background-color: var(--pastel-pink); border-color: var(--y2k-pink); }
+    20% { background-color: var(--pastel-lavender); border-color: var(--y2k-purple); }
+    40% { background-color: var(--pastel-mint); border-color: var(--y2k-mint); }
+    60% { background-color: var(--pastel-yellow); border-color: #f2c94c; }
+    80% { background-color: var(--pastel-blue); border-color: #6cc4f5; }
+}
+
+.tag-chip { animation: tag-chip-cycle 20s linear var(--cycle-delay, 0s) infinite; }
+.tag-chip:nth-child(5n+2) { --cycle-delay: -4s; }
+.tag-chip:nth-child(5n+3) { --cycle-delay: -8s; }
+.tag-chip:nth-child(5n+4) { --cycle-delay: -12s; }
+.tag-chip:nth-child(5n+5) { --cycle-delay: -16s; }
+
+/* new chips bounce in; removed ones shrink away */
+.tag-chip.tag-chip-new {
+    animation: tag-chip-pop 0.35s cubic-bezier(.3,1.6,.5,1), tag-chip-cycle 20s linear var(--cycle-delay, 0s) infinite;
+}
+
+.tag-chip.tag-chip-leaving {
+    animation: tag-chip-shrink 0.2s ease-in forwards;
+    pointer-events: none;
+}
+
+@keyframes tag-chip-pop {
+    0% { transform: scale(0.3); }
+    100% { transform: scale(1); }
+}
+
+@keyframes tag-chip-shrink {
+    to { transform: scale(0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tag-chip, .tag-chip.tag-chip-new, .tag-chip.tag-chip-leaving { animation: none; }
+}
+
+.tag-chip-remove {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
+    background-color: transparent;
+    color: var(--y2k-dark);
+    font-size: 14px;
+    line-height: 1;
+}
+
+.tag-chip-remove::before {
+    display: none;
+}
+
+.tag-chip-remove:hover {
+    background-color: var(--y2k-hot-pink);
+    color: white;
+}
+
+.tag-chip-remove:active {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Same pink caret as the form's <select>s, so the tag box reads as
+   a dropdown too. */
+.tag-dropdown-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 34px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: var(--caret-url) center / 15px no-repeat;
+}
+
+.tag-dropdown-btn::before {
+    display: none;
+}
+
+.tag-dropdown-btn:hover,
+.tag-dropdown-btn:active {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+.tag-suggestion-item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--y2k-dark);
+    cursor: pointer;
+}
+
+.tag-suggestion-item:hover {
+    background: var(--pastel-pink);
+}
+
+.file-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.file-upload-btn {
+    background-color: var(--y2k-green);
+    color: var(--y2k-dark);
+    border: 2px solid var(--outline);
+    border-radius: 20px;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--outline);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.file-upload-btn:hover {
+    background-color: #b8f0c7;
+}
+
+/* (the newer themes' file buttons keep their own colour on hover) */
+:root:is([data-theme="holo"], [data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .file-upload-btn:hover {
+    background-color: var(--y2k-green);
+    filter: brightness(1.06);
+}
+
+.file-upload-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow:
+        1px 1px 0 var(--outline),
+        inset 2px 2px 5px rgba(0,0,0,0.4);
+}
+
+.status-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.status-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 9px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--y2k-purple);
+    box-shadow: 2px 2px 0 var(--y2k-lavender);
+    cursor: pointer;
+}
+
+.status-btn:hover {
+    background: var(--status-hover);
+}
+
+.status-btn.active {
+    background: var(--y2k-hot-pink);
+    border-color: var(--outline);
+    color: white;
+    transform: translate(2px, 2px);
+    box-shadow:
+        1px 1px 0 var(--outline),
+        inset 2px 2px 5px rgba(0,0,0,0.4),
+        inset -1px -1px 2px rgba(255,255,255,0.25);
+}
+
+.status-btn.active::before {
+    opacity: 0.15;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.toggle-btn {
+    background: var(--surface);
+    color: var(--y2k-dark);
+    border: 2px solid var(--outline);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--outline);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+}
+
+.toggle-btn:hover {
+    background: #e9fff8;
+}
+
+/* unselected buttons get the PASTEL version of whatever color their
+   own group turns into when active, instead of plain white (which
+   barely shows the glossy shine) or an unrelated alternating color.
+   :not(.active) keeps these from ever fighting the active color. */
+.toggle-btn:not(.active) { background: var(--pastel-mint); }
+.toggle-yellow .toggle-btn:not(.active) { background: var(--pastel-yellow); }
+.toggle-blue .toggle-btn:not(.active) { background: var(--pastel-blue); }
+.toggle-lilac .toggle-btn:not(.active) { background: var(--pastel-lilac); }
+.toggle-peach .toggle-btn:not(.active) { background: var(--pastel-peach); }
+.status-btn:not(.active) { background: var(--pastel-pink); }
+
+.toggle-btn.active {
+    background: var(--y2k-mint);
+    transform: translate(3px, 3px);
+    box-shadow:
+        1px 1px 0 var(--outline),
+        inset 3px 3px 6px rgba(0,0,0,0.5),
+        inset -2px -2px 3px rgba(255,255,255,0.3);
+}
+
+.toggle-btn.active::before {
+    opacity: 0.15;
+}
+
+.toggle-yellow .toggle-btn.active {
+    background: var(--y2k-yellow);
+}
+
+.toggle-blue .toggle-btn.active {
+    background: var(--y2k-blue);
+}
+
+.toggle-lilac .toggle-btn.active {
+    background: var(--y2k-lilac);
+}
+
+.toggle-peach .toggle-btn.active {
+    background: var(--y2k-peach);
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 32px;
+    line-height: 1;
+    margin-top: -6px;
+}
+
+.star-btn {
+    cursor: pointer;
+    color: var(--y2k-lavender);
+    transition: color 0.1s, transform 0.1s, text-shadow 0.1s;
+    user-select: none;
+}
+
+.star-btn:hover {
+    transform: scale(1.15);
+}
+
+.star-btn.filled {
+    color: var(--y2k-yellow);
+    text-shadow:
+        0 0 6px rgba(255, 224, 102, 0.9),
+        0 0 14px rgba(255, 224, 102, 0.65),
+        0 0 24px rgba(255, 193, 7, 0.45);
+}
+
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--y2k-purple);
+    font-size: 12px;
+    margin: 2px 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 2px dashed var(--y2k-lavender);
+}
+
+.or-divider span {
+    padding: 0 10px;
+}
+
+.field-section-divider {
+    border-top: 2px dashed var(--y2k-lavender);
+    margin: 4px 0;
+}
+
+#crop-stage {
+    position: relative;
+    max-width: 100%;
+    touch-action: none;
+    user-select: none;
+    line-height: 0;
+}
+
+#crop-image {
+    display: block;
+    max-width: 100%;
+    max-height: 55vh;
+}
+
+#crop-box {
+    position: absolute;
+    border: 2px dashed var(--y2k-hot-pink);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    cursor: move;
+    box-sizing: border-box;
+}
+
+.crop-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--y2k-hot-pink);
+    border: 2px solid white;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.width-value {
+    font-size: 13px;
+    color: var(--y2k-purple);
+    min-width: 42px;
+    text-align: right;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 28px 22px;
+    border-top: 2px dashed var(--y2k-lavender);
+    flex-shrink: 0;
+    background: var(--panel-bg);
+}
+
+#modal-delete-btn {
+    width: 100%;
+    font-size: 12px;
+    padding: 8px 10px;
+}
+
+#modal-notes-btn {
+    width: 100%;
+    font-size: 12px;
+    padding: 8px 10px;
+    margin-top: 4px;
+}
+
+/* Notepad: the paper scan is 1420x2000 with ruled lines at roughly
+   y = 142 + 101.4n (n = 0..17). Everything is sized in cqw (% of the
+   paper's width) so the text's line boxes stay locked onto the
+   printed lines at any size: line spacing = 101.4/2000 of the
+   height = 7.14cqw, and the textarea starts one spacing above the
+   first line so each line of text sits on a ruled line. */
+#notepad-modal {
+    z-index: 1200;
+}
+
+.notepad {
+    position: relative;
+    container-type: inline-size;
+    width: min(440px, 92vw, calc((92vh - 60px) * 0.71));
+    aspect-ratio: 1420 / 2000;
+    background: url('../assets/notepad-paper.png') center / 100% 100% no-repeat;
+    filter: drop-shadow(6px 8px 10px rgba(0,0,0,0.35));
+}
+
+#notepad-text {
+    position: absolute;
+    left: 6.5%;
+    right: 9%;
+    /* --np-shift / --np-size are set per font from NOTE_FONTS -
+       each handwriting font sits at a different height in its
+       line box, so each needs its own nudge onto the ruled lines. */
+    /* + one line spacing: writing starts on the 2nd ruled line */
+    top: calc(2.86cqw + 7.14cqw + var(--np-shift, 1.04cqw));
+    height: calc(7.14cqw * 17);
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    font-family: var(--np-font, 'Caveat'), cursive;
+    font-size: var(--np-size, 5.6cqw);
+    line-height: 7.14cqw;
+    color: #3d3d3d;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+#notepad-text::-webkit-scrollbar {
+    display: none;
+}
+
+#notepad-text::placeholder {
+    color: rgba(61, 61, 61, 0.4);
+}
+
+.notepad-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.notepad-fonts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    max-width: min(520px, 92vw);
+}
+
+.notepad-font-btn {
+    font-size: 15px;
+    font-weight: normal;
+    padding: 4px 12px;
+    background-color: var(--pastel-lavender);
+    color: var(--y2k-dark);
+}
+
+.notepad-font-btn.active {
+    background-color: var(--shelf-color);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--outline), inset 2px 2px 5px rgba(0,0,0,0.3);
+}
+
+.notepad-done {
+    position: absolute;
+    top: -14px;
+    right: -8px;
+    font-size: 12px;
+    padding: 6px 14px;
+    z-index: 1;
+}
+
+.empty-note {
+    text-align: center;
+    color: var(--y2k-purple);
+}
+
+/* Low-key panic control, not meant to read as a button - a faint
+   pixel heart in the corner. Three quick clicks toggles the private
+   set of books; see handleSecretHeartClick(). */
+.secret-heart {
+    position: fixed;
+    bottom: 14px;
+    right: 14px;
+    width: 14px;
+    height: 10px;
+    z-index: 500;
+    cursor: default;
+}
+
+.secret-heart::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    opacity: 0.35;
+    box-shadow:
+        2px 0 0 var(--y2k-hot-pink), 4px 0 0 var(--y2k-hot-pink), 8px 0 0 var(--y2k-hot-pink), 10px 0 0 var(--y2k-hot-pink),
+        0 2px 0 var(--y2k-hot-pink), 2px 2px 0 var(--y2k-hot-pink), 4px 2px 0 var(--y2k-hot-pink), 6px 2px 0 var(--y2k-hot-pink), 8px 2px 0 var(--y2k-hot-pink), 10px 2px 0 var(--y2k-hot-pink), 12px 2px 0 var(--y2k-hot-pink),
+        0 4px 0 var(--y2k-hot-pink), 2px 4px 0 var(--y2k-hot-pink), 4px 4px 0 var(--y2k-hot-pink), 6px 4px 0 var(--y2k-hot-pink), 8px 4px 0 var(--y2k-hot-pink), 10px 4px 0 var(--y2k-hot-pink), 12px 4px 0 var(--y2k-hot-pink),
+        2px 6px 0 var(--y2k-hot-pink), 4px 6px 0 var(--y2k-hot-pink), 6px 6px 0 var(--y2k-hot-pink), 8px 6px 0 var(--y2k-hot-pink), 10px 6px 0 var(--y2k-hot-pink),
+        4px 8px 0 var(--y2k-hot-pink), 6px 8px 0 var(--y2k-hot-pink), 8px 8px 0 var(--y2k-hot-pink),
+        6px 10px 0 var(--y2k-hot-pink);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.secret-heart.pulse::before {
+    animation: secretHeartPulse 0.4s ease;
+}
+
+@keyframes secretHeartPulse {
+    0% { transform: scale(1); opacity: 0.35; }
+    40% { transform: scale(1.8); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 0.35; }
+}
+
+@media (max-width: 600px) {
+    /* the -86px offset is what gives the tag its jaunty
+       hanging-off-the-shelf look on desktop, but there's no room
+       for it on a narrow viewport - it just runs off the left
+       edge of the screen. Pull it back in and shrink it to fit. */
+    .genre-title {
+        left: 0;
+        top: -22px;
+        font-size: 15px;
+        padding: 8px 14px;
+        max-width: calc(100vw - 40px);
+        box-sizing: border-box;
+        white-space: normal;
+    }
+
+    .genre-section {
+        margin-top: 50px;
+        margin-bottom: 70px;
+    }
+}

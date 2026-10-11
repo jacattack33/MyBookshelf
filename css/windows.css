@@ -1,0 +1,1001 @@
+/* ---------- Goals window ---------- */
+.modal-content.goals-content {
+    max-width: 420px;
+}
+
+.goals-body {
+    padding: 16px 22px 22px;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--y2k-dark);
+}
+
+.goals-body > * {
+    flex-shrink: 0;
+}
+
+.goals-progress {
+    font-size: 13px;
+}
+
+.goals-body .toggle-group {
+    margin-top: 0;
+}
+
+/* ---------- Critter window ---------- */
+.modal-content.critter-content {
+    max-width: 420px;
+}
+
+.critter-body {
+    padding: 16px 22px 22px;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--y2k-dark);
+}
+
+/* scroll when it's too tall rather than squashing things (buttons
+   hide their overflow, so they'd shrink to nothing) */
+.critter-body > * {
+    flex-shrink: 0;
+}
+
+.critter-view {
+    position: relative;
+    width: 190px;
+    height: 190px;
+    margin: 0 auto;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.critter-say {
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    translate: -50% 0;
+    max-width: 220px;
+    padding: 3px 10px;
+    border: 2px solid var(--outline);
+    border-radius: 12px;
+    background: var(--surface);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.critter-say.visible {
+    opacity: 1;
+}
+
+.critter-name {
+    display: block;
+    width: min(240px, 100%);
+    margin: 0 auto;
+    padding: 4px 10px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    border-color: transparent;
+    background: transparent;
+    color: var(--y2k-dark);
+    box-shadow: none;
+}
+
+.critter-name:hover,
+.critter-name:focus {
+    border-color: var(--y2k-lavender);
+    background: var(--surface);
+}
+
+.critter-sub,
+.critter-mood {
+    text-align: center;
+    font-size: 13px;
+}
+
+.critter-sub {
+    opacity: 0.75;
+    margin-top: -6px;
+}
+
+.critter-mood {
+    font-weight: 700;
+}
+
+.critter-meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+.critter-feed {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.critter-feed input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+}
+
+.critter-chips {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: -4px;
+}
+
+.critter-chips button,
+.critter-scrap-toggle {
+    padding: 3px 10px;
+    font-size: 12px;
+    background-color: var(--pastel-lavender);
+    color: var(--y2k-dark);
+    box-shadow: 2px 2px 0 var(--outline);
+}
+
+.critter-scrap-toggle {
+    align-self: flex-start;
+}
+
+.critter-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.critter-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+}
+
+.critter-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
+}
+
+.critter-list li span:last-child {
+    opacity: 0.75;
+    text-align: right;
+}
+
+.critter-empty {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.critter-scrapbook {
+    display: none;
+}
+
+.critter-scrapbook.visible {
+    display: block;
+}
+
+.critter-past {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
+    font-size: 12px;
+}
+
+.critter-past-pic {
+    flex: 0 0 48px;
+    height: 48px;
+}
+
+.critter-past-name {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* the note it leaves when it runs away */
+.critter-gone-note {
+    margin: 0 auto;
+    max-width: 280px;
+    padding: 12px 16px;
+    background: #fff6c2;
+    /* scrawled in crayon by a small creature: a kid's hand, every
+       letter at its own angle and size */
+    color: #2f4fb5;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 18px;
+    line-height: 1.55;
+    word-spacing: 2px;
+    box-shadow: 2px 3px 6px rgba(0,0,0,0.2);
+    rotate: -2deg;
+}
+
+.critter-gone-note .word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.critter-gone-note .ch {
+    display: inline-block;
+    transform: translateY(var(--y, 0)) rotate(var(--r, 0deg)) scale(var(--s, 1));
+    text-shadow: 0.4px 0.3px 0 currentColor; /* waxy, pressed-hard crayon */
+}
+
+.critter-gone-note .paw {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-left: 4px;
+    vertical-align: -4px;
+    rotate: 18deg;
+}
+
+.critter-hatch {
+    align-self: center;
+}
+
+/* ---------- Stats window ---------- */
+.modal-content.stats-content {
+    max-width: 620px;
+}
+
+.stats-body {
+    padding: 20px 22px 24px;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.stats-hero {
+    text-align: center;
+}
+
+.stats-hero-value {
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--y2k-dark);
+}
+
+.stats-hero-label {
+    font-size: 13px;
+    color: var(--y2k-dark);
+    opacity: 0.75;
+}
+
+.stats-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+}
+
+.stats-tile {
+    padding: 8px 10px;
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 10px;
+    background: var(--section-bg);
+}
+
+.stats-tile-label {
+    font-size: 11px;
+    color: var(--y2k-dark);
+    opacity: 0.75;
+}
+
+.stats-tile-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--y2k-dark);
+}
+
+.stats-chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.stats-chart-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--y2k-dark);
+}
+
+.stats-chart-sub,
+.stats-chart-note {
+    font-size: 12px;
+    color: var(--y2k-dark);
+    opacity: 0.75;
+}
+
+#stats-year {
+    padding: 5px 30px 5px 10px;
+    font-size: 13px;
+}
+
+.stats-chart {
+    position: relative;
+}
+
+.stats-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.stats-axis-text {
+    font-size: 11px;
+    fill: rgba(var(--ink-rgb), 0.7);
+    font-variant-numeric: tabular-nums;
+}
+
+.stats-value-text {
+    font-size: 11px;
+    font-weight: 700;
+    fill: var(--y2k-dark);
+}
+
+.stats-grid {
+    stroke: rgba(var(--ink-rgb), 0.12);
+    stroke-width: 1;
+}
+
+.stats-bar {
+    fill: var(--chart-bar);
+}
+
+.stats-hit {
+    fill: transparent;
+    cursor: default;
+}
+
+.stats-hit:hover + .stats-bar,
+.stats-hit:focus + .stats-bar {
+    fill: var(--chart-bar-hover);
+}
+
+.stats-hit:focus {
+    outline: none;
+}
+
+.stats-tooltip {
+    position: absolute;
+    display: none;
+    min-width: 120px;
+    max-width: 220px;
+    padding: 8px 10px;
+    border: 2px solid var(--outline);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 3px 3px 0 var(--outline);
+    font-size: 12px;
+    color: var(--y2k-dark);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.stats-tooltip.visible {
+    display: block;
+}
+
+.stats-tooltip-value {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.stats-tooltip-books {
+    margin-top: 4px;
+    padding-left: 14px;
+    opacity: 0.8;
+}
+
+.stats-table-toggle {
+    align-self: flex-start;
+    padding: 4px 10px;
+    font-size: 12px;
+    background-color: var(--pastel-lavender);
+    color: var(--y2k-dark);
+}
+
+.stats-table {
+    display: none;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.stats-table.visible {
+    display: table;
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
+    text-align: left;
+}
+
+.stats-table td:last-child,
+.stats-table th:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.sticky-pile {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 900;
+    /* always Nanum Pen Script (set from script with its size scale,
+       --sticky-scale, so it fits the note) */
+    font-family: var(--sticky-font, 'Caveat'), cursive;
+}
+
+.sticky-stack {
+    position: relative;
+    width: 78px;
+    height: 78px;
+    cursor: pointer;
+}
+
+.sticky-sheet {
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    box-shadow: 2px 3px 5px rgba(var(--ink-rgb), 0.25);
+}
+
+.sticky-sheet.s3 { background: #f6e9a6; transform: rotate(-7deg); }
+.sticky-sheet.s2 { background: #fbefb3; transform: rotate(5deg); }
+.sticky-sheet.s1 {
+    background: var(--paper-yellow);
+    transform: rotate(-2deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: calc(19px * var(--sticky-scale, 1));
+    line-height: 0.95;
+    color: var(--y2k-dark);
+    transform-origin: bottom left;
+    transition: transform 0.2s;
+}
+
+/* lift the top sheet's corner like it's about to be peeled */
+.sticky-stack:hover .sticky-sheet.s1 {
+    transform: rotate(-6deg) translate(-2px, -5px);
+}
+
+.sticky-note {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: min(250px, 80vw);
+    aspect-ratio: 1 / 1; /* a real sticky note is square */
+    box-sizing: border-box;
+    padding: 26px 18px 14px;
+    background: var(--paper-yellow);
+    border-radius: 2px;
+    box-shadow: 4px 6px 14px rgba(var(--ink-rgb), 0.3);
+    transform: rotate(-1.5deg);
+    transform-origin: bottom left;
+}
+
+.sticky-pile.open .sticky-note {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* spread the writing over the square */
+}
+
+.sticky-pile.open .sticky-stack {
+    visibility: hidden;
+}
+
+/* The quick-add note is paper, written in pencil: fixed graphite
+   colours (not theme colours, so it looks the same in every theme
+   and in dark mode), hand-drawn lines, no pink, no glossy buttons. */
+.sticky-heading {
+    display: inline-block;
+    font-size: calc(22px * var(--sticky-scale, 1));
+    font-weight: normal;
+    color: #4a4a4a;
+    margin-bottom: 6px;
+    rotate: -1.5deg;
+}
+
+.sticky-note input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 8px;
+    padding: 2px 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: calc(24px * var(--sticky-scale, 1));
+    font-weight: normal;
+    color: #3d3d3d;
+    box-shadow: none;
+}
+
+.sticky-note input::placeholder {
+    color: rgba(61, 61, 61, 0.4);
+}
+
+.sticky-note input:focus {
+    outline: none;
+}
+
+/* everything on the note is in the sticky-note handwriting */
+.sticky-note select,
+.sticky-submit {
+    font-family: inherit;
+}
+
+.sticky-note select {
+    width: 100%;
+    margin: 4px 0 12px;
+    padding: 2px 26px 2px 8px; /* off the paper's left edge */
+    font-size: calc(20px * var(--sticky-scale, 1));
+    font-weight: normal;
+    border: none;
+    border-radius: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 8 Q10 14 15 7' fill='none' stroke='%233d3d3d' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") right 2px center / 16px no-repeat transparent;
+    color: #3d3d3d;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.sticky-note select:focus {
+    outline: none;
+}
+
+.sticky-note select option {
+    padding-left: 8px;
+    color: #3d3d3d;
+    background: #fff6c2;
+}
+
+/* "stick it" circled by hand rather than a shiny button */
+.sticky-submit {
+    display: block;
+    margin: 2px auto 0;
+    width: auto;
+    font-size: calc(24px * var(--sticky-scale, 1));
+    font-weight: normal;
+    padding: 0 16px 2px;
+    background: transparent !important;
+    color: #3d3d3d;
+    border: 1.5px solid rgba(61, 61, 61, 0.75);
+    border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px; /* wobbly */
+    box-shadow: none;
+    rotate: -2deg;
+    transition: rotate 0.15s, transform 0.15s;
+}
+
+.sticky-submit::before {
+    display: none; /* no glossy shine on pencil */
+}
+
+.sticky-submit:hover {
+    rotate: 1deg;
+    border-color: #3d3d3d;
+}
+
+.sticky-submit:active {
+    transform: scale(0.95);
+    box-shadow: none;
+}
+
+.sticky-close {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    color: #555;
+    font-family: inherit;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.sticky-close::before {
+    display: none;
+}
+
+.sticky-close:hover {
+    background: transparent;
+    color: #3d3d3d;
+}
+
+.sticky-close:active {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ---------- Library checkout card ---------- */
+#book-modal .modal-content {
+    position: relative;
+}
+
+#preview-book {
+    --cover-lift: -38deg; /* enough tilt for the page to show past its edge */
+    user-select: none;
+    cursor: pointer;
+    transform-origin: left center;
+    transition: transform 0.25s ease-out, box-shadow 0.15s;
+}
+
+/* hover lifts the front cover a little, hinting it opens */
+#preview-book:hover {
+    transform: perspective(900px) rotateY(var(--cover-lift)); /* same perspective as .open-book-fx */
+}
+
+/* the page peeking out from under the lifted cover */
+.preview-under-page {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #e6dac0, #fffaf0 14%);
+    box-shadow: inset 0 0 0 1px rgba(90, 70, 48, 0.15);
+}
+
+/* On a real book the spine and the 3D page tops belong to the page
+   block, not the cover - so for the preview (hover lift) and the
+   opening copy, they're drawn on the page underneath and hidden on
+   the cover itself, and stay put while the cover swings. Same
+   shapes as .spine-top / .book::after; no z-index, so DOM order
+   keeps the cover painted in front of them. */
+.preview-under-page::before,
+.ob-page::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    bottom: 0;
+    left: -8px;
+    width: 8px;
+    pointer-events: none;
+    background: linear-gradient(to bottom,
+        var(--spine-top-a, #4a4a4a) 0%,
+        var(--spine-top-b, #3a3a3a) 35%,
+        var(--spine-bottom-a, #333333) 65%,
+        var(--spine-bottom-b, #232323) 100%);
+    clip-path: polygon(0% calc(100% - 8px), 0% 0%, 100% 8px, 100% 100%);
+    box-shadow: inset -1px 0 1px rgba(0,0,0,0.25);
+}
+
+.preview-under-page::after,
+.ob-page::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: -7px;
+    right: 0;
+    height: 7px;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+        #f6efdb 0px, #f6efdb 1px,
+        #dcc79a 1px, #dcc79a 1.5px);
+    box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3);
+    clip-path: polygon(6px 100%, 0px 0%, 92% 0%, 100% 100%);
+}
+
+#preview-book::after,
+#preview-book > .spine-top,
+.ob-front .book::after,
+.ob-front .book > .spine-top {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #preview-book:hover { transform: none; }
+}
+
+/* Opening book for the library card: a copy of the preview book
+   drawn on top of the whole page (the edit window clips anything
+   that pokes outside it), so its cover can swing all the way open
+   and hang off the window's edge. */
+.open-book-fx {
+    position: fixed;
+    z-index: 1150; /* above the edit window, under the card's dimmer */
+    perspective: 900px;
+    pointer-events: none;
+}
+
+/* the first page, revealed under the cover */
+.ob-page {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #e6dac0, #fffaf0 14%);
+    box-shadow: inset 0 0 0 1px rgba(90, 70, 48, 0.15), 5px 5px 10px rgba(0,0,0,0.3);
+}
+
+.ob-cover {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+}
+
+.ob-front,
+.ob-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.ob-front .book {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: auto !important;
+    /* keep the cover's own shading but drop its drop shadow - the
+       page underneath casts the one shadow (see .ob-page) */
+    box-shadow:
+        inset 3px 0 6px -2px rgba(255,255,255,0.35),
+        inset -8px 0 12px -6px rgba(0,0,0,0.55) !important;
+    transition: none !important;
+}
+
+/* inside of the front cover, seen once it swings past halfway */
+.ob-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(to left, #d9ccb0, #f6eedc 20%);
+    box-shadow: inset 0 0 0 1px rgba(90, 70, 48, 0.2);
+}
+
+/* the little library pocket glued inside the book: ::before is the
+   card sticking out of it, ::after the pocket's front, painted
+   second so it covers the card's lower half */
+.preview-inside-pocket {
+    position: absolute;
+    left: 16%;
+    right: 16%;
+    bottom: 12%;
+    height: 26%;
+}
+
+/* mini library card: header, red rule under it, blue ruled lines,
+   and the red column divider - same as the big card */
+.preview-inside-pocket::before {
+    content: "LIBRARY CARD";
+    position: absolute;
+    left: 9%;
+    right: 9%;
+    bottom: 30%;
+    height: 150%;
+    box-sizing: border-box;
+    padding-top: 2px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 5px;
+    letter-spacing: 1px;
+    color: #5a4630;
+    line-height: 1;
+    background:
+        linear-gradient(#c94f4f, #c94f4f) 50% 75% / 1px 45% no-repeat,
+        linear-gradient(#c94f4f, #c94f4f) center calc(2px + 1.6em) / 84% 1px no-repeat,
+        repeating-linear-gradient(to bottom, transparent 0 5px, #c9d8e8 5px 6px) center calc(4px + 1.6em) / 84% 100% no-repeat,
+        #fffaf0;
+    border-radius: 1px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* pocket front, with the stitched top edge and printed label */
+.preview-inside-pocket::after {
+    content: "LIBRARY";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 6px;
+    letter-spacing: 2px;
+    color: #7a5a30;
+    background:
+        repeating-linear-gradient(90deg, rgba(122, 90, 48, 0.6) 0 3px, transparent 3px 6px) center 3px / 86% 1px no-repeat,
+        linear-gradient(#d9b98a, #caa672);
+    border-radius: 2px 2px 3px 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.library-card-overlay {
+    display: none;
+    position: fixed; /* full screen, over the opened book copy */
+    inset: 0;
+    z-index: 1160;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--ink-rgb), 0.35);
+    cursor: pointer;
+}
+
+.library-card-overlay.open {
+    display: flex;
+}
+
+.library-pocket-wrap {
+    position: relative;
+    width: min(440px, 92%);
+    height: 432px;
+    overflow: hidden; /* the card hides below the pocket's bottom edge */
+}
+
+.library-card {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: 22px;
+    height: 324px; /* tall enough that the stamp clears the pocket */
+    box-sizing: border-box;
+    padding: 14px 16px;
+    background: #fffaf0;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    color: #5a4630;
+    z-index: 1;
+    font-family: 'Courier New', monospace;
+}
+
+.lc-head {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 3px;
+    font-weight: bold;
+    border-bottom: 2px solid #c94f4f;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.lc-field {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #c9d8e8;
+    min-height: 28px;
+}
+
+.lc-hand {
+    font-size: 20px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #3d3d3d; /* pencil charcoal, same as the notepad */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* handwriting swashes poke past the letter box - leave them room */
+    padding: 0 5px;
+}
+
+/* the dates are short: never cut them, let them overhang the cell */
+.lc-table td.lc-hand {
+    overflow: visible;
+    text-overflow: clip;
+    padding: 0 4px 0 2px;
+}
+
+/* the title gets up to two lines before it's cut off */
+.lc-field .lc-hand.lc-title {
+    white-space: normal;
+    line-height: 1.05;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    padding: 3px 0;
+}
+
+.lc-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.lc-table th {
+    font-weight: bold;
+    border-bottom: 1px solid #c94f4f;
+    padding: 3px 0;
+    text-align: left;
+}
+
+.lc-table td {
+    border-bottom: 1px solid #c9d8e8;
+    height: 26px;
+    vertical-align: bottom;
+}
+
+.lc-table th + th,
+.lc-table td + td {
+    border-left: 1px solid #c94f4f;
+    padding-left: 8px;
+}
+
+/* the stamp sits in its own space under the table, so it never runs
+   through the writing */
+.lc-stamp {
+    display: block;
+    width: max-content;
+    margin: 6px 4px 0 auto;
+    padding: 2px 7px;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 2px;
+    transform: rotate(-10deg);
+    opacity: 0.8;
+}
+
+.lc-stamp.read { color: #2e9e5b; }
+.lc-stamp.reading { color: #c94f4f; }
+.lc-stamp.want { color: #7a6bb0; }
+.lc-stamp.dnf { color: #8a8a8a; }
+
+.library-pocket {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 108px;
+    z-index: 2;
+    background: linear-gradient(#d9b98a, #caa672);
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: inset 0 3px 0 rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #7a5a30;
+}
+
+/* stitched top edge */
+.library-pocket::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 10px;
+    right: 10px;
+    border-top: 2px dashed rgba(122, 90, 48, 0.55);
+}

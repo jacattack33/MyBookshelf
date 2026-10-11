@@ -1,0 +1,395 @@
+/* ---------- Sticky-note pile (bottom-left quick add) ---------- */
+/* ---------- Stats ledger (bottom-left, on top of the sticky notes) ----------
+   a little hardcover account book; its cover shows your book total */
+.stats-ledger {
+    position: fixed;
+    left: 25px;
+    bottom: 114px; /* clear of the pile's crooked sheets */
+    z-index: 900;
+    width: 60px;
+    height: 78px;
+    padding: 6px 4px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    border: 2px solid var(--outline);
+    border-radius: 3px 7px 7px 3px;
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.25) 0 6px, rgba(255,255,255,0.18) 6px 8px, transparent 8px),
+        var(--y2k-purple);
+    box-shadow: 3px 3px 0 var(--outline);
+    color: white;
+    cursor: pointer;
+    transform: rotate(4deg);
+    transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+}
+
+.stats-ledger::before {
+    display: none;
+}
+
+.stats-ledger:hover {
+    background:
+        linear-gradient(90deg, rgba(0,0,0,0.25) 0 6px, rgba(255,255,255,0.18) 6px 8px, transparent 8px),
+        var(--y2k-purple);
+    transform: rotate(-3deg) translateY(-6px);
+}
+
+.stats-ledger:active {
+    transform: rotate(-3deg) translateY(-2px) scale(0.96);
+    box-shadow: 2px 2px 0 var(--outline);
+}
+
+/* blank cream paper label on the cover, with two faint ruled lines */
+.stats-ledger-label {
+    width: 30px;
+    height: 12px;
+    margin-top: 6px;
+    background:
+        linear-gradient(transparent 4px, rgba(201, 216, 232, 0.9) 4px 5px, transparent 5px 8px, rgba(201, 216, 232, 0.9) 8px 9px, transparent 9px) center / 22px 100% no-repeat,
+        #fffaf0;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18);
+}
+
+@media (max-width: 600px) {
+    .stats-ledger {
+        left: 20px;
+        bottom: 90px;
+        width: 50px;
+        height: 64px;
+    }
+
+}
+
+/* ---------- Reading critter (bottom-left, on top of the goals card) ----------
+   a little pet fed with pages read. The critter and its home are one
+   inline SVG per theme; mood and stage are classes on the SVG that
+   show or hide its face parts and grown-up extras. */
+.critter-home {
+    position: relative;
+    margin-left: 6px;
+    width: 68px;
+    height: 68px;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.critter-home:hover {
+    transform: translateY(-5px) rotate(-3deg);
+}
+
+.critter-home:focus-visible {
+    outline: 2px dashed var(--outline);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.critter-home svg,
+.critter-view svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* a speech bubble over the widget when it needs you */
+.critter-alert {
+    position: absolute;
+    top: -14px;
+    right: -6px;
+    display: none;
+    min-width: 18px;
+    padding: 0 5px;
+    border: 2px solid var(--outline);
+    border-radius: 10px 10px 10px 2px;
+    background: var(--surface);
+    color: var(--y2k-dark);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.critter-alert.visible {
+    display: block;
+    animation: critter-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes critter-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* the critter itself idles: a slow breathe, a hungry shiver, a
+   sleepy sway; a tap (or a meal) wiggles it */
+.cr-idle {
+    transform-box: fill-box;
+    transform-origin: 50% 100%; /* its feet */
+    animation: critter-breathe 3.2s ease-in-out infinite;
+}
+
+.cr.mood-hungry .cr-idle,
+.cr.mood-starving .cr-idle {
+    animation: critter-shiver 2.4s ease-in-out infinite;
+}
+
+.cr.mood-asleep .cr-idle {
+    animation: critter-breathe 5s ease-in-out infinite;
+}
+
+.cr.stage-egg .cr-idle {
+    animation: critter-rock 3s ease-in-out infinite;
+}
+
+.cr.wiggle .cr-idle {
+    animation: critter-wiggle 0.6s ease-in-out;
+}
+
+@keyframes critter-breathe {
+    0%, 100% { transform: scale(1, 1); }
+    50% { transform: scale(1.03, 0.97); }
+}
+
+@keyframes critter-shiver {
+    0%, 80%, 100% { transform: translateX(0); }
+    84% { transform: translateX(-1.5px); }
+    88% { transform: translateX(1.5px); }
+    92% { transform: translateX(-1px); }
+    96% { transform: translateX(1px); }
+}
+
+@keyframes critter-rock {
+    0%, 70%, 100% { transform: rotate(0); }
+    76% { transform: rotate(-6deg); }
+    84% { transform: rotate(5deg); }
+    92% { transform: rotate(-3deg); }
+}
+
+@keyframes critter-wiggle {
+    0%, 100% { transform: rotate(0) scale(1); }
+    20% { transform: rotate(-8deg) scale(1.06, 0.94); }
+    45% { transform: rotate(7deg) scale(0.96, 1.05); }
+    70% { transform: rotate(-4deg) scale(1.03, 0.97); }
+}
+
+/* face parts: hidden unless the mood calls for them */
+.cr .fe, .cr .fm, .cr .cr-zz, .cr .cr-teen, .cr .cr-adult, .cr .cr-egg {
+    display: none;
+}
+
+.cr.mood-full .fe-happy,
+.cr.mood-content .fe-open,
+.cr.mood-hungry .fe-open,
+.cr.mood-starving .fe-sad,
+.cr.mood-asleep .fe-sleep,
+.cr.eating .fe-happy,
+.cr.mood-full .fm-smile,
+.cr.mood-content .fm-smile,
+.cr.mood-hungry .fm-flat,
+.cr.mood-starving .fm-frown,
+.cr.mood-asleep .fm-flat,
+.cr.eating .fm-o,
+.cr.mood-asleep .cr-zz,
+.cr.stage-teen .cr-teen,
+.cr.stage-adult .cr-teen,
+.cr.stage-adult .cr-adult,
+.cr.stage-egg .cr-egg {
+    display: inline;
+}
+
+/* while eating, the meal face wins over the mood */
+.cr.eating .fe:not(.fe-happy),
+.cr.eating .fm:not(.fm-o) {
+    display: none;
+}
+
+.cr.stage-egg .cr-critter {
+    display: none;
+}
+
+.cr-zz {
+    font: 700 9px 'Quicksand', sans-serif;
+}
+
+.cr .cr-ln {
+    stroke: var(--outline);
+}
+
+@media (max-width: 600px) {
+    .critter-home {
+        width: 56px;
+        height: 56px;
+    }
+}
+
+/* ---------- Corner stack (bottom-left, on top of the ledger) ----------
+   the goals card, with the critter sitting on top of it; one column
+   so the critter follows the card's height (one row or two), and the
+   card moves up into place when the critter is switched off */
+.corner-stack {
+    position: fixed;
+    left: 15px;
+    bottom: 206px;  /* on top of the ledger */
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+:root[data-theme="terminal"] .corner-stack { left: 27px; bottom: 232px; }
+
+/* ---------- Goals card ----------
+   a little pinned card with the yearly books and pages goals */
+.goals-card {
+    width: 72px;
+    padding: 5px 6px 6px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border: 2px solid var(--outline);
+    border-radius: 6px;
+    background: var(--surface);
+    box-shadow: 2px 2px 0 var(--outline);
+    color: var(--y2k-dark);
+    cursor: pointer;
+    transform: rotate(-2deg);
+    transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.goals-card:hover {
+    transform: rotate(2deg) translateY(-4px);
+}
+
+.goals-card:focus-visible {
+    outline: 2px dashed var(--outline);
+    outline-offset: 2px;
+}
+
+.goals-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.goals-row span:first-child {
+    opacity: 0.75;
+}
+
+.goals-card .reading-goal-bar {
+    height: 5px;
+    margin: 0 0 2px;
+    border-width: 1.5px;
+}
+
+.goals-card .reading-goal-fill.done,
+.goals-content .reading-goal-fill.done {
+    background: linear-gradient(90deg, var(--y2k-purple), var(--y2k-pink), var(--y2k-purple));
+}
+
+/* ---------- Debug panel (Settings > Debug) ----------
+   a tab on the right edge that slides out a column of buttons */
+.debug-panel {
+    position: fixed;
+    right: 0;
+    top: 90px;
+    z-index: 2500;
+    display: flex;
+    align-items: flex-start;
+    font-family: monospace;
+}
+
+.debug-tab {
+    writing-mode: vertical-rl;
+    padding: 10px 4px;
+    border: 2px solid var(--outline);
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    background: var(--y2k-dark);
+    color: var(--surface);
+    font: 700 11px monospace;
+    letter-spacing: 2px;
+    box-shadow: none;
+}
+
+.debug-body {
+    display: none;
+    width: 230px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding: 8px 10px 10px;
+    box-sizing: border-box;
+    border: 2px solid var(--outline);
+    border-right: none;
+    background: var(--surface);
+    color: var(--y2k-dark);
+    box-shadow: -3px 3px 0 var(--outline);
+    font-size: 11px;
+}
+
+.debug-panel.open .debug-body {
+    display: block;
+}
+
+.debug-group {
+    margin: 8px 0 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+
+.debug-real {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.debug-real input {
+    width: auto;
+    margin: 0;
+}
+
+.debug-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.debug-buttons button,
+.debug-buttons select {
+    padding: 3px 7px;
+    border: 1.5px solid var(--outline);
+    border-radius: 4px;
+    background: var(--pastel-lavender);
+    color: var(--y2k-dark);
+    font: 11px monospace;
+    box-shadow: none;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.debug-buttons select {
+    background: var(--surface);
+    width: auto;
+}
+
+.debug-status {
+    margin-top: 8px;
+    min-height: 14px;
+    font-style: italic;
+    opacity: 0.85;
+}

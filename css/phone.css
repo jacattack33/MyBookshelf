@@ -1,0 +1,308 @@
+/* ---------- Phones (<= 600px) ---------- */
+/* desktop: these wrappers are invisible to layout */
+.filters-panel,
+.preview-actions {
+    display: contents;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 18px;
+        padding: 22px 0 14px;
+    }
+
+    /* --- controls: Search on top, the rest in a collapsible panel --- */
+    .controls-body {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .search-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+    }
+
+    /* iPhones zoom the page in when you tap a text box smaller than
+       16px - keep the everyday boxes at 16px so that doesn't happen */
+    #search-input,
+    .filters-panel select,
+    .field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]),
+    .field-label select {
+        font-size: 16px;
+    }
+
+    .mobile-only {
+        display: flex;
+    }
+
+    .mobile-controls-bar {
+        flex-basis: 100%;
+        gap: 8px;
+    }
+
+    .filters-toggle {
+        flex: 1;
+        padding: 8px 10px;
+        font-size: 13px;
+        background-color: var(--pastel-lavender);
+        color: var(--y2k-dark);
+    }
+
+    /* its own hover (phones keep the hover look after a tap, and
+       the general button hover is pink), and a pressed-in look
+       while the panel is open */
+    .filters-toggle:hover {
+        background-color: var(--secondary-hover);
+    }
+
+    .filters-toggle[aria-expanded="true"] {
+        background-color: var(--secondary-hover);
+        transform: translate(2px, 2px);
+        box-shadow:
+            1px 1px 0 var(--outline),
+            inset 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .filters-count {
+        color: var(--y2k-hot-pink);
+    }
+
+    .mobile-controls-bar .add-book-btn {
+        margin-left: 0;
+        padding: 8px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .filters-panel {
+        display: none;
+    }
+
+    .filters-panel.open {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex-basis: 100%;
+        padding-top: 4px;
+    }
+
+    .filters-panel .control-group,
+    .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+    .filters-panel label {
+        font-size: 13px;
+    }
+
+    /* button groups: each button its own natural width, wrapping
+       onto new lines inside the panel (never off the edge) */
+    .filters-panel .toggle-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        padding-right: 3px; /* room for the chunky shadows */
+    }
+
+    .filters-panel .toggle-btn {
+        padding: 6px 11px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .filters-panel select {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .filters-panel .control-group,
+    .controls-row {
+        min-width: 0;
+    }
+
+    .controls-row .add-book-btn {
+        display: none; /* the bar above has its own */
+    }
+
+    .backup-bar {
+        margin-bottom: 18px;
+        gap: 6px;
+    }
+
+    .backup-bar button {
+        font-size: 11px;
+        padding: 6px 9px;
+    }
+
+    /* --- edit window: compact preview row that scrolls with the form --- */
+    .modal-body {
+        padding: 16px 14px;
+        gap: 14px;
+    }
+
+    .modal-preview {
+        position: static;
+        flex: 1 1 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .preview-shelf {
+        width: auto;
+        min-height: 0;
+        padding: 12px 18px 6px 10px; /* room for the page tops / notes peek */
+        border-bottom-width: 6px;
+    }
+
+    .preview-notes-peek {
+        top: -10px;
+        right: -12px;
+        width: 40px;
+        height: 52px;
+    }
+
+    .preview-sticker {
+        top: 6px;
+        left: -16px;
+        width: 76px;
+        font-size: 14px;
+        padding: 2px 0;
+    }
+
+    .preview-label {
+        display: none;
+    }
+
+    .preview-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 150px;
+    }
+
+    .modal-fields {
+        min-width: 0;
+        flex: 1 1 100%;
+    }
+
+    /* --- thinner 3D page tops + spine, to match the smaller books --- */
+    .spine-top,
+    .preview-under-page::before,
+    .ob-page::before {
+        top: -5px;
+        left: -6px;
+        width: 6px;
+        clip-path: polygon(0% calc(100% - 6px), 0% 0%, 100% 6px, 100% 100%);
+    }
+
+    .book::after,
+    .preview-under-page::after,
+    .ob-page::after {
+        top: -5px;
+        left: -5px;
+        height: 5px;
+        clip-path: polygon(4px 100%, 0px 0%, 92% 0%, 100% 100%);
+    }
+
+    /* --- shelves: smaller books (shelfScale), tighter spacing --- */
+    .shelf {
+        gap: 14px;
+        padding: 22px 10px 30px; /* 20px of that bottom is the ledge */
+        min-height: 160px;
+    }
+
+    .shelf-count {
+        font-size: 22px;
+    }
+
+    .shelf-expand-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .book.sticky-book {
+        width: 84px !important;
+        height: 84px !important;
+    }
+
+    .book.sticky-book.fallen {
+        translate: 0 16px;
+    }
+
+    .shelf.scrolls {
+        padding-bottom: 10px;
+    }
+
+    .shelf.scrolls .book.sticky-book.fallen {
+        translate: 0 2px;
+    }
+
+    .sticky-book-face {
+        padding: 7px 6px 4px;
+        gap: 2px;
+    }
+
+    .sticky-book-title {
+        font-size: 15px;
+    }
+
+    .sticky-book-author {
+        font-size: 12px;
+    }
+
+    .curl-right .sticky-book-face,
+    .curl-left .sticky-book-face {
+        padding-bottom: 12px;
+    }
+
+    /* --- bottom-left pile and ledger: smaller, cover less --- */
+    .sticky-stack {
+        width: 50px;
+        height: 50px;
+    }
+
+    .stats-ledger {
+        left: 19px;
+        bottom: 82px;
+        width: 44px;
+        height: 56px;
+        padding-left: 8px;
+    }
+
+    .corner-stack {
+        left: 10px;
+        bottom: 150px;
+        gap: 6px;
+    }
+
+    :root[data-theme="terminal"] .corner-stack { left: 13px; bottom: 168px; }
+
+    .critter-home {
+        margin-left: 5px;
+        width: 52px;
+        height: 52px;
+    }
+
+    .goals-card {
+        width: 64px;
+        padding: 4px 5px 5px;
+    }
+
+    .sticky-sheet {
+        box-shadow: 1px 2px 3px rgba(74, 35, 120, 0.2);
+    }
+}

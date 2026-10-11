@@ -1,0 +1,440 @@
+/* Sparkles + confetti: short-lived absolutely-positioned bits in a
+   fixed overlay, each flying along its own --dx/--dy/--rot. */
+.fx-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2000;
+    overflow: hidden;
+}
+
+/* a deleted sticky note being crumpled up (or folded into a paper
+   airplane) and sent off the screen. The paper's outline is a
+   clip-path on the face, so the drop shadow follows the jagged ball. */
+.toss-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.book.sticky-book.tossed-note {
+    position: absolute;
+    margin: 0;
+    translate: none;
+    pointer-events: none;
+}
+
+.book.sticky-book.tossed-note::before {
+    display: none; /* the curl's shadow - the paper's no longer flat */
+}
+
+.tossed-note .sticky-book-title,
+.tossed-note .sticky-book-author {
+    transition: opacity 0.25s ease;
+}
+
+.tossed-note.crumpled .sticky-book-title,
+.tossed-note.crumpled .sticky-book-author,
+.tossed-note.folded .sticky-book-title,
+.tossed-note.folded .sticky-book-author {
+    opacity: 0.2;
+}
+
+/* creases: criss-crossing shadow and light folds */
+.tossed-note.crumpled .sticky-book-face {
+    background:
+        linear-gradient(115deg, transparent 30%, rgba(120,90,20,0.38) 31%, transparent 38%),
+        linear-gradient(60deg, transparent 50%, rgba(255,255,255,0.45) 51%, transparent 56%),
+        linear-gradient(160deg, transparent 58%, rgba(120,90,20,0.32) 59%, transparent 66%),
+        linear-gradient(20deg, transparent 22%, rgba(255,255,255,0.4) 23%, transparent 28%),
+        linear-gradient(80deg, transparent 70%, rgba(120,90,20,0.3) 71%, transparent 77%),
+        linear-gradient(140deg, transparent 12%, rgba(120,90,20,0.28) 13%, transparent 19%),
+        radial-gradient(circle at 38% 34%, rgba(255,255,255,0.2), transparent 30%, rgba(120,90,20,0.38) 72%),
+        var(--paper-yellow);
+}
+
+/* paper airplane: the centre fold, one wing a shade darker */
+.tossed-note.folded .sticky-book-face {
+    background:
+        linear-gradient(to bottom, transparent 48.5%, rgba(120,90,20,0.45) 50%, transparent 51.5%),
+        linear-gradient(to bottom, rgba(255,255,255,0.25) 50%, rgba(120,90,20,0.16) 50%),
+        var(--paper-yellow);
+}
+
+/* set on fire: smoulders like a cigarette - the burn edge (the
+   face's clip-path) creeps steadily up the note, a charred band just
+   above it, and a glowing ember rim hugging the ragged edge (two
+   clipped layers peeking out below the face, glowing through a
+   drop-shadow on their unclipped wrapper) */
+.burn-char {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 22%;
+    pointer-events: none;
+    background: linear-gradient(to bottom,
+        rgba(150, 100, 30, 0) 0%,
+        rgba(120, 70, 20, 0.3) 40%,
+        rgba(60, 30, 10, 0.75) 78%,
+        #2a1406 100%);
+}
+
+.burn-ember {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 0 3px rgba(255, 110, 20, 0.95)) drop-shadow(0 0 7px rgba(255, 80, 0, 0.55));
+}
+
+.burn-ember div {
+    position: absolute;
+    inset: 0;
+    animation: ember-glow 0.9s ease-in-out infinite alternate;
+}
+
+.burn-ember .ember-outer { background: #e8461a; }
+.burn-ember .ember-inner { background: linear-gradient(to right, #ffb347, #ffe08a, #ff9a3c, #ffd36b, #ffb347); }
+
+@keyframes ember-glow {
+    from { opacity: 0.82; }
+    to { opacity: 1; }
+}
+
+.fx-ember,
+.fx-ash,
+.fx-smoke {
+    position: absolute;
+    border-radius: 50%;
+    animation: fx-fly var(--dur, 1s) ease-out forwards;
+}
+
+.fx-ember {
+    width: 4px;
+    height: 4px;
+    background: #ffb43a;
+    box-shadow: 0 0 5px 1px rgba(255, 140, 30, 0.9);
+}
+
+.fx-ash {
+    width: 5px;
+    height: 3px;
+    border-radius: 1px;
+    background: #4a4038;
+}
+
+/* the cloud a got-it book poofs in with */
+.fx-puff {
+    position: absolute;
+    border-radius: 50%;
+    animation: fx-puff var(--puff-dur, 1.1s) cubic-bezier(.1,.8,.3,1) forwards;
+    background: radial-gradient(circle at 45% 40%, rgba(255, 255, 255, 0.95), var(--puff, #dcd9de) 50%, rgba(220, 217, 222, 0) 72%);
+    filter: blur(2px) drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+}
+
+.fx-poof-ring {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 14px 4px rgba(200, 196, 204, 0.8), inset 0 0 12px 2px rgba(230, 228, 232, 0.7);
+    animation: fx-poof-ring 0.45s ease-out forwards;
+}
+
+@keyframes fx-poof-ring {
+    from { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+    to { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+
+.fx-smoke {
+    width: 12px;
+    height: 18px;
+    background: rgba(150, 142, 138, 0.3);
+    filter: blur(4px);
+}
+
+.fx-sparkle,
+.fx-confetti {
+    position: absolute;
+    animation: fx-fly var(--dur, 0.8s) cubic-bezier(.2,.7,.4,1) forwards;
+}
+
+.fx-sparkle {
+    color: var(--y2k-yellow);
+    text-shadow: 0 0 6px rgba(255, 224, 102, 0.9);
+    line-height: 1;
+}
+
+.fx-confetti {
+    width: 8px;
+    height: 12px;
+}
+
+@keyframes fx-puff {
+    0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.95; }
+    55% { opacity: 0.9; }
+    100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.6); opacity: 0; }
+}
+
+@keyframes fx-fly {
+    0% { transform: translate(-50%, -50%) scale(0.4) rotate(0); opacity: 1; }
+    70% { opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--rot)); opacity: 0; }
+}
+
+/* ---------- A deleted book leaving the shelf (see tossBook) ---------- */
+.book.tossed-book {
+    position: absolute;
+    margin: 0;
+    translate: none;
+    rotate: none;
+    transition: none;
+    pointer-events: none;
+}
+
+/* cuts a leaving book off at the shelf's floor, so it can sink through it */
+.fx-clip {
+    position: absolute;
+    left: 0;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* burning like a match: charred just below the edge creeping down */
+.burn-char.from-top {
+    background: linear-gradient(to top,
+        rgba(150, 100, 30, 0) 0%,
+        rgba(120, 70, 20, 0.3) 40%,
+        rgba(60, 30, 10, 0.75) 78%,
+        #2a1406 100%);
+    z-index: 3;
+}
+
+.fx-ash-pile {
+    position: absolute;
+    height: 12px;
+    transform-origin: 50% 100%;
+    background: radial-gradient(ellipse 50% 100% at 50% 100%, #5e5650, #3c3631 60%, rgba(60, 54, 49, 0) 100%);
+}
+
+/* the shredder: a dark steel mouth across the ledge */
+.fx-shredder {
+    position: absolute;
+    height: 22px;
+    border-radius: 4px;
+    background:
+        linear-gradient(to bottom, transparent 9px, #050505 9px, #050505 12px, transparent 12px),
+        linear-gradient(to bottom, #6b6e75, #3b3e44 45%, #24262a);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.fx-page {
+    position: absolute;
+    border-radius: 1px 3px 3px 1px;
+    background:
+        repeating-linear-gradient(to bottom, transparent 0 5px, rgba(90, 80, 60, 0.28) 5px 6px) 3px 6px / calc(100% - 6px) calc(100% - 10px) no-repeat,
+        #f8f2e2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transform-origin: 0 50%;
+    animation: fx-page-flap 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes fx-page-flap {
+    from { transform: perspective(700px) rotateY(0deg); }
+    to { transform: perspective(700px) rotateY(68deg); }
+}
+
+.fx-hole {
+    position: absolute;
+    height: 16px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 45%, #000 45%, #1a1310 70%, rgba(26, 19, 16, 0) 100%);
+}
+
+/* Terminal: the rm command typed beside the book */
+.fx-term-line {
+    position: absolute;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    line-height: 1;
+    white-space: pre;
+    color: var(--phosphor, #33ff66);
+    text-shadow: 0 0 6px var(--glow, rgba(51, 255, 102, 0.6));
+}
+
+.fx-term-line .cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 0.8em;
+    vertical-align: -0.05em;
+    background: currentColor;
+    animation: term-blink 0.6s steps(1) infinite;
+}
+
+/* Holo: a rainbow scanline sweeping the book away */
+.fx-holo-scan {
+    position: absolute;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--holo, linear-gradient(90deg, #ff8fdc, #7ad9ff, #7dffc6, #ffe388));
+    box-shadow: 0 0 10px 2px rgba(180, 160, 255, 0.8);
+}
+
+/* Blueprint: the book left as a dashed drawing, then rubbed out */
+.fx-outline {
+    position: absolute;
+    box-sizing: border-box;
+    border: 2px dashed rgba(var(--ink-rgb), 0.85);
+    background:
+        linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(var(--ink-rgb), 0.45) 50%, transparent calc(50% + 0.6px)),
+        linear-gradient(to bottom right, transparent calc(50% - 0.6px), rgba(var(--ink-rgb), 0.45) 50%, transparent calc(50% + 0.6px));
+}
+
+.fx-outline .fx-dim {
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: calc(100% + 6px);
+    height: 0;
+    border-top: 1px solid rgba(var(--ink-rgb), 0.85);
+    font: 600 10px/1 'IBM Plex Mono', monospace;
+    color: rgb(var(--ink-rgb));
+    text-align: center;
+}
+
+.fx-outline .fx-dim::before,
+.fx-outline .fx-dim::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    height: 7px;
+    border-left: 1px solid rgba(var(--ink-rgb), 0.85);
+}
+
+.fx-outline .fx-dim::before { left: 0; }
+.fx-outline .fx-dim::after { right: 0; }
+
+.fx-outline .fx-dim span {
+    position: relative;
+    top: 3px;
+    padding: 0 4px;
+    background: var(--bg-color);
+}
+
+.fx-eraser {
+    position: absolute;
+    width: 34px;
+    height: 16px;
+    margin: -8px 0 0 -17px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #f2a2a8 0 55%, #3a6fc4 55%);
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.fx-crumb {
+    position: absolute;
+    width: 4px;
+    height: 3px;
+    border-radius: 1px;
+    background: #d98d94;
+    animation: fx-fly var(--dur, 0.8s) ease-in forwards;
+}
+
+/* Library: the WITHDRAWN stamp */
+.fx-stamp {
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    z-index: 4;
+    padding: 0.25em 0.45em;
+    border: 3px double #a8322a;
+    border-radius: 3px;
+    color: #a8322a;
+    font: 700 var(--stamp-size, 15px)/1 Georgia, 'Times New Roman', serif;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.35);
+    opacity: 0;
+}
+
+/* Deco: a gold-leaf shimmer across the cover */
+.fx-gold-sweep {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 236, 170, 0.15) 40%, rgba(255, 220, 120, 0.9) 50%, rgba(255, 236, 170, 0.15) 60%, transparent 70%) no-repeat;
+    background-size: 250% 100%;
+    mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .preview-book-wrap.wiggle,
+    .preview-sticker.visible { animation: none; }
+}
+
+.book.preview-only:hover {
+    transform: none;
+    box-shadow:
+        5px 5px 10px rgba(0,0,0,0.3),
+        inset 3px 0 6px -2px rgba(255,255,255,0.35),
+        inset -8px 0 12px -6px rgba(0,0,0,0.55);
+}
+
+.preview-label {
+    font-size: 11px;
+    font-family: var(--pixel-font);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--y2k-purple);
+}
+
+.modal-fields {
+    flex: 1;
+    min-width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.field-section {
+    background: var(--section-bg);
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.field-section-title {
+    font-size: 11px;
+    font-family: var(--pixel-font);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--y2k-purple);
+    margin-bottom: -2px;
+}
+
+.field-label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--y2k-dark);
+    font-weight: 600;
+    min-width: 0;
+}
+
+.field-label input,
+.field-label select {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 15px;
+    padding: 9px 11px;
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 8px;
+    font-family: inherit;
+    color: var(--y2k-dark);
+    background-color: var(--surface);
+}

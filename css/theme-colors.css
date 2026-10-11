@@ -1,0 +1,534 @@
+:root {
+    --shelf-color: #c9a6ff;
+    --bg-color: #ffe3f3;
+    --y2k-pink: #ff6fb0;
+    --y2k-hot-pink: #ff2e93;
+    --y2k-purple: #b57bff;
+    --y2k-lavender: #e4d6ff;
+    --y2k-blue: #9fdcff;
+    --y2k-yellow: #ffe066;
+    --y2k-dark: #4a2378;
+    --y2k-text: #4a2378;
+    --y2k-green: #a0eab5;
+    --y2k-coral: #ff9eb0;
+    --y2k-mint: #5fe8c4;
+    --pastel-mint: #d4f7e0;
+    --pastel-yellow: #fff6c2;
+    --pastel-blue: #cfeaff;
+    --pastel-pink: #ffdcee;
+    --pastel-lavender: #e8dcff;
+    --pastel-lilac: #efe3ff;   /* Filter Owned buttons */
+    --y2k-lilac: #c9a6ff;
+    --pastel-peach: #ffe6d6;   /* Sticky Notes buttons */
+    --y2k-peach: #ffb48c;
+    --pixel-font: 'Press Start 2P', monospace;
+    --spine-font: 'Cinzel', 'Quicksand', serif;
+    --spine-gold: #cda73a;
+    --spine-gold-bright: #f0d978;
+
+    /* colours that used to be written in directly */
+    --ink-rgb: 74, 35, 120;        /* --y2k-dark, for see-through uses */
+    --accent-rgb: 255, 46, 147;    /* --y2k-hot-pink, for focus rings */
+    --bg-a: #ffe3f3;
+    --bg-b: #ecdcff;
+    --bg-c: #d3ecff;
+    --panel-bg: #fdf7ff;
+    --section-bg: #fffbff;
+    --disabled-bg: #f3eefb;
+    --status-hover: #f6edff;
+    --secondary-hover: #d4c2ff;
+    --shelf-color-hover: #b48cf5;
+    --outline: var(--y2k-dark);  /* borders + chunky shadows (softer in dark mode) */
+    --surface: white;            /* panels, inputs, unpressed buttons */
+    --shelf-bg: rgba(255,255,255,0.45);
+    --on-bright: #4a2378;        /* text on bright fills (mint/yellow/gold) */
+    --paper-yellow: #fff6c2;     /* sticky notes stay paper-coloured */
+    --chart-bar: #8a4fe0;        /* chart columns (3:1+ on white) */
+    --chart-bar-hover: #a374ec;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff2e93' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");  /* dropdown arrow */
+    --focus-fill: var(--pastel-lavender); /* inside a clicked-in text box or dropdown */
+    --focus-glow: 0 0 12px 2px rgba(var(--accent-rgb), 0.45); /* ...and the glow around it */
+}
+
+/* ---------- Sea Glass theme: blues and greens ----------
+   Same variable names, so every pink/purple accent above becomes a
+   teal/blue one; the playful extras (mint, yellow, sky blue) stay. */
+:root[data-theme="seaglass"] {
+    --shelf-color: #9fc9c1;
+    --bg-color: #e1f1ee;
+    --y2k-pink: #5fb8ad;
+    --y2k-hot-pink: #2a8c96;
+    --y2k-purple: #5a8fd6;
+    --y2k-lavender: #cfe2f2;
+    --y2k-dark: #1f3b4d;
+    --y2k-text: #1f3b4d;
+    --y2k-coral: #f0a07a;
+    --pastel-pink: #dcefea;
+    --pastel-lavender: #dde9f6;
+    --ink-rgb: 31, 59, 77;
+    --accent-rgb: 42, 140, 150;
+    --bg-a: #def2ec;
+    --bg-b: #dbe9f7;
+    --bg-c: #e4f0dc;
+    --panel-bg: #f4fafa;
+    --section-bg: #fbfefd;
+    --disabled-bg: #eaf2f3;
+    --status-hover: #e4f2f0;
+    --secondary-hover: #b9d7ec;
+    --shelf-color-hover: #7fb3aa;
+}
+
+/* ---------- Holo theme: Y2K liquid silver with a rainbow shine ----------
+   Chrome and pearl instead of candy: silver surfaces, gunmetal ink,
+   a violet accent, and a holographic rainbow (--holo) on the title
+   bars, panel edges and shelf tags. Besides the shared colour
+   variables it has a few material rules of its own (below the dark
+   mode blocks), all scoped to :root[data-theme="holo"]. */
+:root[data-theme="holo"] {
+    --shelf-color: #b3bac8;
+    --bg-color: #eef0f5;
+    --y2k-pink: #6cc9f0;
+    --y2k-hot-pink: #8a5cff;
+    --y2k-purple: #7d6cf0;
+    --y2k-lavender: #dcdff0;
+    --y2k-dark: #2b2f4a;
+    --y2k-text: #2b2f4a;
+    --pastel-mint: #e3f6f0;
+    --pastel-yellow: #f8f4e2;
+    --pastel-blue: #e2eef8;
+    --pastel-pink: #f3e6f3;
+    --pastel-lavender: #e7e6f5;
+    --pastel-lilac: #ebe5f7;
+    --pastel-peach: #f8e6f1;
+    /* button-group colours, shifted from candy to holographic:
+       aqua glass, butter, ice blue, periwinkle, holo pink */
+    --y2k-mint: #7fe6d9;
+    --y2k-yellow: #ffe9a0;
+    --y2k-blue: #9cd6ff;
+    --y2k-lilac: #bfa8ff;
+    --y2k-peach: #ffb8de;
+    --y2k-green: #a8f0cf;
+    --y2k-coral: #ff9fc4;
+    --ink-rgb: 43, 47, 74;
+    --accent-rgb: 138, 92, 255;
+    --bg-a: #f1f2f7;
+    --bg-b: #dcdfe8;
+    --bg-c: #eef1f6;
+    --panel-bg: #f7f8fb;
+    --section-bg: #fbfbfd;
+    --disabled-bg: #eceef3;
+    --status-hover: #eef0f8;
+    --secondary-hover: #d9dcf0;
+    --shelf-color-hover: #a3abbe;
+    --outline: #3a3f5c;
+    --surface: #fbfbfd;
+    --shelf-bg: rgba(255, 255, 255, 0.4);
+    --on-bright: #2b2f4a;
+    --chart-bar: #7a5cf0;
+    --chart-bar-hover: #9479f3;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%238a5cff' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    /* the materials */
+    --holo: linear-gradient(115deg, #ffc9ef, #d4c4ff 18%, #b8ecff 36%, #c9ffe6 54%, #fff1b8 72%, #ffc9ef 90%);
+    /* the same rainbow twice over, for drifting (200% wide, slides one copy) */
+    --holo-loop: linear-gradient(90deg, #ffc9ef, #d4c4ff 10%, #b8ecff 20%, #c9ffe6 30%, #fff1b8 40%, #ffc9ef 50%, #d4c4ff 60%, #b8ecff 70%, #c9ffe6 80%, #fff1b8 90%, #ffc9ef);
+    --chrome: linear-gradient(180deg, #ffffff 0%, #e4e7ee 20%, #b3bac8 46%, #8f97a8 50%, #d7dbe4 55%, #f3f4f8 80%, #c9ced9 100%);
+    /* the ledge is only 20px tall, so its bands are bolder */
+    --chrome-ledge: linear-gradient(180deg, #ffffff 0%, #d5dae3 28%, #9aa2b4 48%, #7d869b 54%, #c4cad6 64%, #f0f2f6 86%, #a7aebd 100%);
+    --holo-glow: rgba(170, 140, 255, 0.28);
+    /* a sleek space-age font instead of the pixel one */
+    --pixel-font: 'Orbitron', 'Quicksand', sans-serif;
+    --body-glows:
+        radial-gradient(ellipse 60% 40% at 12% 8%, rgba(255, 190, 235, 0.5), transparent 70%),
+        radial-gradient(ellipse 50% 45% at 88% 22%, rgba(170, 230, 255, 0.5), transparent 70%),
+        radial-gradient(ellipse 55% 40% at 45% 88%, rgba(205, 190, 255, 0.45), transparent 70%),
+        radial-gradient(ellipse 40% 30% at 92% 92%, rgba(200, 255, 230, 0.4), transparent 70%);
+}
+
+/* ---------- Library, Deco, Loft: three classy themes ----------
+   Library is a gentleman's study (walnut, forest leather, brass);
+   Deco is midnight Art Deco (navy, gold, cream); Loft is an
+   industrial loft (slate, concrete, copper). Same variable names as
+   the other themes, plus a few material ones; their material
+   rules sit below the dark-mode blocks. */
+/* Library: walnut, oxblood leather, bottle green, brass, cream -
+   buttons in grey-green, ink blue, cognac, walnut tan and brass */
+:root[data-theme="library"] {
+    --shelf-color: #6b4630;
+    --bg-color: #f4ecdc;
+    --y2k-pink: #365753;
+    --y2k-hot-pink: #2b4744;
+    --y2k-purple: #5b3a29;
+    --y2k-lavender: #e6dcc6;
+    --y2k-dark: #2b1d14;
+    --y2k-text: #2b1d14;
+    --y2k-mint: #7f9a94;
+    --y2k-yellow: #c9a55a;
+    --y2k-blue: #8696a8;
+    --y2k-lilac: #b07a52;
+    --y2k-peach: #b48d6a;
+    --y2k-green: #97aea6;
+    --y2k-coral: #b0645c;
+    --pastel-mint: #e3eae8;
+    --pastel-yellow: #f2e8cf;
+    --pastel-blue: #e4e8ee;
+    --pastel-pink: #efe3da;
+    --pastel-lavender: #ece4d4;
+    --pastel-lilac: #efe0d6;
+    --pastel-peach: #efe4d8;
+    --ink-rgb: 43, 29, 20;
+    --accent-rgb: 43, 71, 68;
+    --bg-a: #f4ecdc;
+    --bg-b: #ece0c8;
+    --bg-c: #efe5d0;
+    --panel-bg: #faf5ea;
+    --section-bg: #fdf9f0;
+    --disabled-bg: #ece4d4;
+    --status-hover: #f1e8d6;
+    --secondary-hover: #dccfb3;
+    --shelf-color-hover: #7a5238;
+    --outline: #3b2a1e;
+    --surface: #fffaf0;
+    --shelf-bg: rgba(120, 80, 40, 0.07);
+    --on-bright: #2b1d14;
+    --chart-bar: #2b4744;
+    --chart-bar-hover: #3f625e;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%235b3a29' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'Cinzel', Georgia, serif;
+    --brass: linear-gradient(180deg, #f3dc94 0%, #d4ae55 35%, #a88232 62%, #e2c374 86%, #b8923a 100%);
+    --leather: linear-gradient(180deg, #6b2a2c, #4f1d20);
+    --page-glow: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255, 250, 235, 0.6), transparent 70%);
+    --stitch: rgba(236, 223, 198, 0.55);
+    --wood-side: #4a2f21;
+    --wood-back: 
+        linear-gradient(180deg, rgba(20, 10, 5, 0.32), rgba(20, 10, 5, 0) 30px),
+        linear-gradient(90deg, rgba(20, 10, 5, 0.12), rgba(20, 10, 5, 0) 12%, rgba(20, 10, 5, 0) 88%, rgba(20, 10, 5, 0.12)),
+        linear-gradient(180deg, #82593e, #6f4b34);
+    --wood-flat: #785239; /* the back's average, for tall expanded shelves */
+    --btn-shadow: 0 2px 0 rgba(var(--ink-rgb), 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35)  /* resting button shadow */;
+}
+
+/* Deco: navy, ink, gold, cream - buttons in sapphire blues, old gold,
+   bronze and champagne */
+:root[data-theme="deco"] {
+    --shelf-color: #1b1d24;
+    --bg-color: #f3ead7;
+    --y2k-pink: #2a4b78;
+    --y2k-hot-pink: #1f3a5f;
+    --y2k-purple: #a8873a;
+    --y2k-lavender: #e9e0c9;
+    --y2k-dark: #14213d;
+    --y2k-text: #14213d;
+    --y2k-mint: #8fa7cf;
+    --y2k-yellow: #e8d29a;
+    --y2k-blue: #a9bddc;
+    --y2k-lilac: #b9a27a;
+    --y2k-peach: #c9a96a;
+    --y2k-green: #a9c0b4;
+    --y2k-coral: #c98f86;
+    --pastel-mint: #e5ebf5;
+    --pastel-yellow: #f7f0dc;
+    --pastel-blue: #eaf0f8;
+    --pastel-pink: #f3ebde;
+    --pastel-lavender: #ece6d8;
+    --pastel-lilac: #f0e9dc;
+    --pastel-peach: #f3ebd9;
+    --ink-rgb: 20, 33, 61;
+    --accent-rgb: 176, 141, 60;
+    --bg-a: #f3ead7;
+    --bg-b: #ece1c9;
+    --bg-c: #efe6d2;
+    --panel-bg: #fbf7ee;
+    --section-bg: #fffdf7;
+    --disabled-bg: #ece5d3;
+    --status-hover: #f3ecdc;
+    --secondary-hover: #e0d4b6;
+    --shelf-color-hover: #2a2d36;
+    --outline: #14213d;
+    --surface: #fffdf7;
+    --shelf-bg: rgba(20, 33, 61, 0.06);
+    --on-bright: #14213d;
+    --chart-bar: #1f3a5f;
+    --chart-bar-hover: #2f5287;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23a8873a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'Limelight', Georgia, serif;
+    --gold: #c9a54a;
+    --gold-sheen: linear-gradient(180deg, #f6e3a4 0%, #d9b65e 40%, #a8873a 65%, #e8cf86 100%);
+    --deco-navy: #14213d;
+    --deco-rays: rgba(176, 141, 60, 0.07);
+    --btn-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45), inset 0 0 0 3px rgba(176, 141, 60, 0.75), 2px 2px 0 rgba(var(--ink-rgb), 0.35)  /* resting button shadow */;
+}
+
+/* Loft: charcoal, slate, concrete, copper, blackened steel - buttons
+   in steel greys, copper, bronze and brass */
+:root[data-theme="loft"] {
+    --shelf-color: #3a3e44;
+    --bg-color: #e6e4df;
+    --y2k-pink: #c8845a;
+    --y2k-hot-pink: #b8734a;
+    --y2k-purple: #4a5059;
+    --y2k-lavender: #dddad4;
+    --y2k-dark: #24272b;
+    --y2k-text: #24272b;
+    --y2k-mint: #8e9aa6;
+    --y2k-yellow: #c4a46a;
+    --y2k-blue: #a3adb7;
+    --y2k-lilac: #a8896b;
+    --y2k-peach: #c58a62;
+    --y2k-green: #a5ae9c;
+    --y2k-coral: #c07a62;
+    --pastel-mint: #e6e9ec;
+    --pastel-yellow: #f1ebdc;
+    --pastel-blue: #ebeef1;
+    --pastel-pink: #efe6df;
+    --pastel-lavender: #e7e5e1;
+    --pastel-lilac: #ece6df;
+    --pastel-peach: #f1e6dd;
+    --ink-rgb: 36, 39, 43;
+    --accent-rgb: 184, 115, 74;
+    --bg-a: #e9e7e2;
+    --bg-b: #d9d7d2;
+    --bg-c: #e2e0db;
+    --panel-bg: #f5f4f1;
+    --section-bg: #faf9f7;
+    --disabled-bg: #e5e3de;
+    --status-hover: #eeece8;
+    --secondary-hover: #cfccc5;
+    --shelf-color-hover: #4a4f56;
+    --outline: #1d1f22;
+    --surface: #fbfaf8;
+    --shelf-bg: rgba(36, 39, 43, 0.05);
+    --on-bright: #1d1f22;
+    --chart-bar: #b8734a;
+    --chart-bar-hover: #c8845a;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23b8734a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'Oswald', 'Arial Narrow', sans-serif;
+    --copper: linear-gradient(180deg, #e7ad84 0%, #c07a55 40%, #9a5a37 70%, #d39370 100%);
+    --steel: linear-gradient(180deg, #6b717a 0 2px, #3a3e44 2px, #33373c 60%, #2a2d31);
+    --steel-bar: repeating-linear-gradient(180deg, #a3a9b1 0 1px, #b3b8bf 1px 2px, #959ba3 2px 3px);
+    --loft-title: #2b2e33;
+    --speck-dark: rgba(0, 0, 0, 0.035);   /* concrete speckle */
+    --speck-light: rgba(255, 255, 255, 0.25);
+    --loft-glow: linear-gradient(transparent, transparent); /* (must be an image - it's a background layer) */
+    --btn-shadow: 0 3px 0 var(--outline), inset 0 1px 0 rgba(255, 255, 255, 0.4)  /* resting button shadow */;
+}
+
+/* Blueprint: an engineer's drafting table - blueprint grid, crisp navy
+   linework, cobalt and sky tones, pops of signal orange */
+:root[data-theme="blueprint"] {
+    --shelf-color: #1d3d6e;
+    --bg-color: #e9eff6;
+    --y2k-pink: #e8762c;
+    --y2k-hot-pink: #d9621a;
+    --y2k-purple: #2f5fa8;
+    --y2k-lavender: #d6e1ef;
+    --y2k-dark: #13294b;
+    --y2k-text: #13294b;
+    --y2k-mint: #8fb3e0;
+    --y2k-peach: #f4a261;
+    --y2k-blue: #b3cdea;
+    --y2k-lilac: #7f9fca;
+    --y2k-yellow: #f7c58f;
+    --y2k-green: #8fc4c4;
+    --y2k-coral: #e8735a;
+    --pastel-mint: #e6eef8;
+    --pastel-peach: #fcebdc;
+    --pastel-blue: #edf3fa;
+    --pastel-lilac: #e3eaf4;
+    --pastel-yellow: #fdf0e0;
+    --pastel-pink: #fbe9e1;
+    --pastel-lavender: #e8eef6;
+    --ink-rgb: 19, 41, 75;
+    --accent-rgb: 217, 98, 26;
+    --bg-a: #edf2f8;
+    --bg-b: #e3ebf5;
+    --bg-c: #eaf0f7;
+    --panel-bg: #f7f9fc;
+    --section-bg: #fbfcfe;
+    --disabled-bg: #e6ecf4;
+    --status-hover: #eaf1f9;
+    --secondary-hover: #c9d7ea;
+    --shelf-color-hover: #2a4f86;
+    --outline: #1d3d6e;
+    --surface: #fbfcfe;
+    --shelf-bg: rgba(47, 95, 168, 0.05);
+    --on-bright: #13294b;
+    --chart-bar: #2f5fa8;
+    --chart-bar-hover: #4a78c0;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23d9621a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --grid-line: rgba(47, 95, 168, 0.09);
+    --grid-major: rgba(47, 95, 168, 0.16);
+    --btn-shadow: 2px 2px 0 rgba(19, 41, 75, 0.22);
+    --panel-shadow: 5px 5px 0 rgba(19, 41, 75, 0.14);
+    --signal-orange: #f07c2a;
+    --sketch: rgba(47, 95, 168, 0.2); /* compass circles + construction lines */
+}
+
+/* Terminal: a retro computer in a beige monitor - by day a paper-white
+   CRT with dark phosphor text, after dark a green phosphor CRT */
+:root[data-theme="terminal"] {
+    --shelf-color: #1d4a24;
+    --bg-color: #e9eee3;
+    --y2k-pink: #3a7d45;
+    --y2k-hot-pink: #2e6b38;
+    --y2k-purple: #2f7a3c;
+    --y2k-lavender: #e1efdc;
+    --y2k-dark: #1c2b1c;
+    --y2k-text: #1c2b1c;
+    --y2k-mint: #7fd88f;
+    --y2k-peach: #b5e07a;
+    --y2k-blue: #a9e8b4;
+    --y2k-lilac: #9fd4a5;
+    --y2k-yellow: #8fd16f;
+    --y2k-green: #7fd88f;
+    --y2k-coral: #e8836b;
+    --pastel-mint: #eaf6e8;
+    --pastel-peach: #f1f7e3;
+    --pastel-blue: #ecf6ea;
+    --pastel-lilac: #ecf5ec;
+    --pastel-yellow: #eef6e4;
+    --pastel-pink: #f2f7ee;
+    --pastel-lavender: #eef5ea;
+    --ink-rgb: 28, 43, 28;
+    --accent-rgb: 31, 122, 53;
+    --bg-a: #e9eee3;
+    --bg-b: #e9eee3;
+    --bg-c: #e9eee3;
+    --panel-bg: #f1f5ec;
+    --section-bg: #f5f8f1;
+    --disabled-bg: #eaf1e4;
+    --status-hover: #eef6ea;
+    --secondary-hover: #d8e9d2;
+    --shelf-color-hover: #2a8f44;
+    --outline: #2f6b3a;
+    --surface: #f5f8f1;
+    --shelf-bg: rgba(31, 122, 53, 0.03);
+    --on-bright: #102410;
+    --chart-bar: #1f7a35;
+    --chart-bar-hover: #2a8f44;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%231f7a35' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'VT323', 'Courier New', monospace;
+    --phosphor: #1d4a24;
+    --phosphor-dim: #5f7a5f;
+    --cursor: #1d4a24;
+    --on-accent: #eef3e6;
+    --tab-bg: #1d4a24;
+    --glow: rgba(29, 74, 36, 0.18);
+    --scan: rgba(0, 0, 0, 0.045);
+    --btn-shadow: none;
+    --panel-shadow: 0 2px 0 rgba(29, 59, 29, 0.15);
+    --page-bg: radial-gradient(ellipse 90% 85% at 50% 45%, #f2f6ec 0%, #e6ece0 65%, #cfd8c8 100%);
+    --bezel: #ddd4bb;
+    --bezel-edge: #b9ae90;
+    --bezel-ink: #6b6247;
+    --screen-shade: inset 0 0 70px rgba(60, 70, 50, 0.28), inset 0 0 0 2px rgba(0, 0, 0, 0.25);
+    --flicker-tint: rgba(0, 0, 0, 0.015);
+}
+
+/* ---------- Dark mode (Settings > Mode) ----------
+   Pastels turn into deep jewel tones, ink and outlines turn light,
+   bright accents stay bright (with dark text on them). Paper things
+   - notepad, library card, sticky notes - stay paper-coloured. */
+:root[data-mode="dark"] {
+    /* a soft, dusky dark: lifted backgrounds and slightly dimmed ink
+       so text sits at ~8-10:1 instead of a harsh near-white on black */
+    color-scheme: dark;
+    --y2k-dark: #ded0f2;
+    --y2k-text: #ded0f2;
+    --ink-rgb: 222, 208, 242;
+    --y2k-lavender: #5a4a80;
+    --pastel-mint: #2f5e50;
+    --pastel-yellow: #5c5230;
+    --pastel-blue: #2d4b66;
+    --pastel-pink: #5c3350;
+    --pastel-lavender: #4a3b6b;
+    --bg-a: #2e2540;
+    --bg-b: #322848;
+    --bg-c: #283246;
+    --panel-bg: #352a4a;
+    --section-bg: #3c3054;
+    --disabled-bg: #443760;
+    --status-hover: #4a3c68;
+    --secondary-hover: #57487c;
+    --surface: #3c3054;
+    --shelf-bg: rgba(255,255,255,0.08);
+    --shelf-color: #9575d8;
+    --shelf-color-hover: #a98be0;
+    --on-bright: #2a1d40;
+    --outline: #8c7aae;          /* dusty lavender, softer than the text */
+    /* a clicked-in box: a clear tint of the theme's accent (the dark
+       pastels sit too close to the normal fill to notice) */
+    --focus-fill: color-mix(in srgb, var(--surface) 72%, rgb(var(--accent-rgb)));
+    --focus-glow: 0 0 16px 4px rgba(var(--accent-rgb), 0.75), 0 0 4px 1px rgba(var(--accent-rgb), 0.6);
+    --chart-bar: #a070ee;        /* checked against the dark surface */
+    --chart-bar-hover: #b58cf3;
+}
+
+:root[data-mode="dark"][data-theme="seaglass"] {
+    --y2k-dark: #cfe3e8;
+    --y2k-text: #cfe3e8;
+    --ink-rgb: 207, 227, 232;
+    --y2k-lavender: #456476;
+    --pastel-pink: #2f5650;
+    --pastel-lavender: #34506a;
+    --bg-a: #203533;
+    --bg-b: #213042;
+    --bg-c: #28382c;
+    --panel-bg: #263c40;
+    --section-bg: #2c454a;
+    --disabled-bg: #335055;
+    --status-hover: #365a5e;
+    --secondary-hover: #3f6670;
+    --surface: #2c454a;
+    --shelf-color: #5c9c92;
+    --shelf-color-hover: #6fada3;
+    --on-bright: #15302f;
+    --outline: #7b9aa2;          /* dusty teal */
+    --chart-bar: #4f97d4;
+    --chart-bar-hover: #6aa8dc;
+}
+
+/* Holo in dark mode: mercury on black vinyl - gunmetal and smoked
+   glass, pale silver ink, an oil-slick rainbow */
+:root[data-mode="dark"][data-theme="holo"] {
+    --y2k-dark: #e3e6ef;
+    --y2k-text: #e3e6ef;
+    --ink-rgb: 227, 230, 239;
+    --y2k-pink: #6fd8ff;
+    --y2k-hot-pink: #a98bff;
+    --y2k-purple: #8f86f5;
+    --y2k-lavender: #3c4058;
+    --pastel-mint: #24413b;
+    --pastel-yellow: #45412a;
+    --pastel-blue: #243548;
+    --pastel-pink: #40283f;
+    --pastel-lavender: #33314a;
+    --pastel-lilac: #352e4a;
+    --pastel-peach: #46352c;
+    --bg-a: #15161c;
+    --bg-b: #1d1f28;
+    --bg-c: #171a22;
+    --panel-bg: #22242e;
+    --section-bg: #272a35;
+    --disabled-bg: #2f3240;
+    --status-hover: #30344a;
+    --secondary-hover: #3a3f58;
+    --surface: #272a35;
+    --shelf-bg: rgba(255, 255, 255, 0.06);
+    --shelf-color: #5d6478;
+    --shelf-color-hover: #6d7489;
+    --on-bright: #1a1b24;
+    --outline: #7c8299;
+    --chart-bar: #9b7cff;
+    --chart-bar-hover: #b096ff;
+    --holo: linear-gradient(115deg, #ff8fdc, #b29bff 18%, #7ad9ff 36%, #7dffc6 54%, #ffe388 72%, #ff8fdc 90%);
+    --holo-loop: linear-gradient(90deg, #ff8fdc, #b29bff 10%, #7ad9ff 20%, #7dffc6 30%, #ffe388 40%, #ff8fdc 50%, #b29bff 60%, #7ad9ff 70%, #7dffc6 80%, #ffe388 90%, #ff8fdc);
+    --chrome: linear-gradient(180deg, #9aa1b2 0%, #666d80 22%, #3a404e 47%, #222733 51%, #4e5566 56%, #767d90 82%, #444a5a 100%);
+    --chrome-ledge: var(--chrome);
+    --holo-glow: rgba(150, 120, 255, 0.35);
+    --body-glows:
+        radial-gradient(ellipse 60% 40% at 12% 8%, rgba(255, 110, 210, 0.16), transparent 70%),
+        radial-gradient(ellipse 50% 45% at 88% 22%, rgba(90, 200, 255, 0.16), transparent 70%),
+        radial-gradient(ellipse 55% 40% at 45% 88%, rgba(150, 120, 255, 0.18), transparent 70%),
+        radial-gradient(ellipse 40% 30% at 92% 92%, rgba(90, 255, 190, 0.12), transparent 70%);
+}

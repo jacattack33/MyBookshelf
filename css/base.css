@@ -1,0 +1,1206 @@
+/* Always keep room for the page scrollbar - otherwise filtering down
+   to a short page drops the scrollbar and everything jumps wider. */
+html {
+    scrollbar-gutter: stable;
+}
+
+body {
+    font-family: 'Quicksand', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 45%, var(--bg-c) 100%);
+    margin: 0;
+    padding: 20px;
+    color: var(--y2k-dark);
+    font-weight: 600;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+}
+
+h1 {
+    text-align: center;
+    font-family: var(--pixel-font);
+    font-size: 26px;
+    color: var(--y2k-hot-pink);
+    text-shadow: 3px 3px 0 var(--y2k-purple);
+    letter-spacing: 1px;
+    padding: 28px 0 20px; /* extra room on top for the float */
+    animation: title-float 3.2s ease-in-out infinite;
+}
+
+/* the title gently bobs up and down */
+@keyframes title-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    h1 { animation: none; }
+}
+
+.controls {
+    max-width: 950px;
+    margin: 0 auto 15px auto;
+    background: var(--surface);
+    border-radius: 14px;
+    border: 3px solid var(--y2k-hot-pink);
+    box-shadow: 5px 5px 0 var(--y2k-purple);
+    overflow: hidden;
+}
+
+.window-titlebar {
+    height: 10px;
+    background: linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple));
+}
+
+.controls-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.search-row {
+    flex-basis: 100%;
+}
+
+.search-row .search-wrap {
+    position: relative;
+    flex: 1;
+    display: flex;
+}
+
+.search-row input {
+    flex: 1;
+    padding-right: 44px; /* room for the clear button */
+}
+
+/* round x that empties the search box; only shown when there's text */
+.search-clear {
+    display: none;
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    translate: 0 -50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.search-clear::before {
+    display: none;
+}
+
+.search-clear.visible {
+    display: flex;
+}
+
+.search-clear:hover,
+.search-clear:active {
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+/* the visible circle - same fixed-hit-box trick as .modal-close-x */
+.search-clear .x-face {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 2px solid var(--outline);
+    border-radius: 50%;
+    background-color: var(--pastel-lavender);
+    color: var(--y2k-dark);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+    transition: transform 0.25s cubic-bezier(.3, 1.8, .5, 1), background-color 0.15s, color 0.15s;
+}
+
+.search-clear:hover .x-face {
+    background-color: var(--y2k-hot-pink);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.search-clear:active .x-face {
+    transform: rotate(90deg) scale(0.8);
+    transition-duration: 0.08s;
+}
+
+/* While the search box is clicked in, its border becomes a flowing band of
+   the theme's colours and the inside takes on a soft pastel tint.
+   Two background layers: the fill (padding-box) and the gradient
+   showing through the transparent border (border-box). */
+#search-input {
+    --search-fill: var(--surface);
+    border: 3px solid transparent;
+    padding: 9px 44px 9px 14px; /* same size with the thicker border; right side leaves room for the clear x */
+    outline: none;     /* the browser's focus ring would sit right on top of the border */
+    background:
+        linear-gradient(var(--search-fill), var(--search-fill)) padding-box,
+        linear-gradient(90deg, var(--search-edge, var(--y2k-purple)), var(--search-edge, var(--y2k-purple))) border-box;
+    transition: --search-fill 0.4s, box-shadow 0.4s;
+}
+
+/* resting border matches the dropdowns: theme purple, accent on hover */
+#search-input:hover:not(:focus) {
+    --search-edge: var(--y2k-hot-pink);
+}
+
+#search-input:focus {
+    --search-fill: var(--focus-fill);
+    background:
+        linear-gradient(var(--search-fill), var(--search-fill)) padding-box,
+        linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
+    background-size: 100% 100%, 300% 100%;
+    animation: search-border-flow 1.6s linear infinite;
+    box-shadow: var(--focus-glow);
+}
+
+@keyframes search-border-flow {
+    from { background-position: 0 0, 0% 0; }
+    to { background-position: 0 0, 150% 0; }
+}
+
+/* registered so the fill colour can fade instead of snapping */
+@property --search-fill {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #search-input:focus { animation: none; }
+}
+
+.add-book-btn {
+    margin-left: auto;
+}
+
+/* Forces Filter Tag onto its own line, with Filter Genre and the
+   Add button following it. */
+.controls-row {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+button, select, input {
+    padding: 10px 15px;
+    font-size: 15px;
+    font-family: inherit;
+    border-radius: 8px;
+    border: 2px solid var(--outline);
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--surface);
+    background-image: var(--caret-url);
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 34px;
+    border-color: var(--y2k-purple);
+    color: var(--y2k-dark);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+select:hover {
+    border-color: var(--y2k-hot-pink);
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--y2k-hot-pink);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
+}
+
+/* Toolbar dropdowns (Sort, Filter Tag/Genre) match the search box
+   when clicked: flowing theme-coloured border, soft glow, pastel
+   tint. Layers: arrow, fill (padding-box), gradient (border-box). */
+.controls select:focus {
+    border-color: transparent;
+    background:
+        var(--caret-url) right 11px center / 15px no-repeat padding-box,
+        linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
+        linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple), var(--y2k-mint), var(--y2k-blue), var(--y2k-hot-pink)) border-box;
+    background-size: 15px, 100% 100%, 300% 100%;
+    animation: select-border-flow 1.6s linear infinite;
+    box-shadow: var(--focus-glow);
+}
+
+@keyframes select-border-flow {
+    from { background-position: right 11px center, 0 0, 0% 0; }
+    to { background-position: right 11px center, 0 0, 150% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .controls select:focus { animation: none; }
+}
+
+button {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--y2k-hot-pink);
+    color: white;
+    border: 2px solid var(--outline);
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--outline);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+/* glossy plastic/glass shine - a pseudo-element so it layers over
+   every button variant's own background color without needing to
+   fight each one's `background` shorthand declaration. */
+button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.65) 0%,
+        rgba(255,255,255,0.25) 40%,
+        rgba(255,255,255,0.05) 55%,
+        rgba(255,255,255,0) 70%);
+    pointer-events: none;
+    transition: opacity 0.1s;
+}
+
+button:hover {
+    background-color: var(--y2k-pink);
+}
+
+button:active::before {
+    opacity: 0.15;
+}
+
+button:active {
+    transform: translate(2px, 2px);
+    box-shadow:
+        1px 1px 0 var(--outline),
+        inset 2px 2px 5px rgba(0,0,0,0.4);
+}
+
+button.secondary {
+    background-color: var(--y2k-lavender);
+    color: var(--y2k-dark);
+}
+
+button.secondary:hover {
+    background-color: var(--secondary-hover);
+}
+
+button.danger {
+    background-color: var(--y2k-coral);
+    color: var(--y2k-dark);
+}
+
+button.danger:hover {
+    background-color: #ff7f99;
+}
+
+.backup-bar {
+    max-width: 950px;
+    margin: 0 auto 30px auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.modal-content.settings-content {
+    max-width: 380px;
+}
+
+.settings-body {
+    padding: 20px 22px 24px;
+    overflow-y: auto;
+    min-height: 0; /* lets it scroll inside the window's max height */
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.settings-choices {
+    justify-content: center;
+}
+
+.custom-genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.custom-genre-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 4px 3px 10px;
+    border-radius: 14px;
+    background: var(--pastel-lavender);
+    border: 2px solid var(--y2k-purple);
+    color: var(--y2k-dark);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.custom-genre-chip .x-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: none;
+    color: var(--y2k-dark);
+    font-size: 15px;
+    line-height: 1;
+}
+
+.custom-genre-chip .x-btn::before {
+    display: none;
+}
+
+.custom-genre-chip .x-btn:hover {
+    background-color: var(--y2k-hot-pink);
+    color: white;
+}
+
+.custom-genre-chip .x-btn:active {
+    transform: none;
+    box-shadow: none;
+}
+
+.genre-move {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--pastel-pink);
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.genre-move.visible {
+    display: flex;
+}
+
+.genre-move-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.genre-move-buttons button {
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.danger-section {
+    border-color: var(--y2k-coral);
+}
+
+.danger-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.danger-buttons button,
+.delete-confirm button {
+    font-size: 12px;
+    padding: 8px 12px;
+}
+
+.delete-confirm {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.delete-confirm.visible {
+    display: flex;
+}
+
+.delete-reset-settings {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.delete-confirm button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.settings-choices .toggle-btn {
+    font-size: 12px;
+}
+
+/* font buttons are written in their own font */
+.font-choices .toggle-btn {
+    font-size: 14px;
+    font-weight: normal;
+    padding: 4px 10px;
+}
+
+/* yearly reading goal, in the Reading Stats window */
+.reading-goal {
+    display: none;
+    width: min(340px, 90%);
+    margin: 0 auto;
+    text-align: center;
+    font-size: 13px;
+    color: var(--y2k-dark);
+}
+
+.reading-goal.visible {
+    display: block;
+}
+
+.reading-goal-set {
+    padding: 4px 12px;
+    font-size: 12px;
+    background-color: var(--pastel-lavender);
+    color: var(--y2k-dark);
+    box-shadow: 2px 2px 0 var(--outline);
+}
+
+.reading-goal-bar {
+    height: 10px;
+    margin-top: 5px;
+    border: 2px solid var(--outline);
+    border-radius: 8px;
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.reading-goal-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--y2k-pink), var(--y2k-purple));
+    transition: width 0.5s ease-out;
+}
+
+/* Calm mode: every CSS animation and transition off (the scripted
+   ones check prefersReducedMotion(), which honours it too) */
+:root[data-calm] *,
+:root[data-calm] *::before,
+:root[data-calm] *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+.theme-toggle {
+    justify-content: center;
+    margin: 6px 0 10px;
+}
+
+.backup-bar button {
+    font-size: 13px;
+    padding: 6px 12px;
+    box-shadow: 2px 2px 0 var(--outline);
+}
+
+.library-room {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.genre-section {
+    margin-bottom: 90px;
+    margin-top: 90px;
+    position: relative;
+}
+
+.genre-title {
+    position: absolute;
+    top: -28px;
+    left: -86px;
+    font-family: var(--pixel-font);
+    font-size: 26px;
+    font-weight: normal;
+    color: white;
+    background: var(--y2k-purple);
+    border: 3px solid var(--outline);
+    border-radius: 10px;
+    padding: 12px 26px;
+    box-shadow: 5px 5px 0 var(--outline);
+    transform: rotate(-3deg);
+    z-index: 5;
+}
+
+.genre-title.tag-status-want {
+    background: var(--y2k-yellow);
+    color: var(--on-bright); /* dark text on the bright tag, dark mode too */
+}
+
+.genre-title.tag-status-reading {
+    background: var(--y2k-blue);
+    color: var(--on-bright); /* dark text on the bright tag, dark mode too */
+}
+
+.genre-title.tag-status-read {
+    background: var(--y2k-green);
+    color: var(--on-bright); /* dark text on the bright tag, dark mode too */
+}
+
+.genre-title.tag-status-dnf {
+    background: var(--y2k-coral);
+    color: var(--on-bright); /* dark text on the bright tag, dark mode too */
+}
+
+.shelf-count {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    font-family: var(--pixel-font);
+    font-size: 33px;
+    color: rgba(var(--ink-rgb), 0.15); /* --y2k-dark, faint watermark */
+    z-index: 6;
+    /* big enough now to sit over the tallest books in the corner -
+       let clicks pass through to them */
+    pointer-events: none;
+}
+
+.shelf {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    border-radius: 4px;
+    /* The purple ledge is painted as the bottom 20px of the
+       background (inside the extra 20px of bottom padding) rather
+       than a border - so things inside the shelf, like a fallen
+       sticky note, can land in front of it. Looks the same. */
+    padding: 28px 15px 35px 15px;
+    gap: 24px;
+    min-height: 250px;
+    background:
+        linear-gradient(var(--shelf-color), var(--shelf-color)) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+    box-shadow: 0 10px 8px -6px rgba(0,0,0,0.4);
+    overflow-x: auto;
+    /* sideways scrolling only - a falling sticky note (or a pulled-out
+       book) dipping past the edge mustn't add a vertical scrollbar */
+    overflow-y: hidden;
+}
+
+.shelf.spine-shelf {
+    gap: 0;
+}
+
+/* Shelves that scroll sideways: the ledge goes back to being a real
+   bottom border, so the scrollbar sits just above it like it always
+   did. (Elsewhere the ledge is painted inside the shelf so a fallen
+   sticky note can lie in front of it.) */
+.shelf.scrolls {
+    background: var(--shelf-bg);
+    border-bottom: 20px solid var(--shelf-color);
+    padding-bottom: 15px;
+}
+
+.shelf.scrolls .book.sticky-book.fallen {
+    translate: 0 2px; /* rests above the scrollbar here */
+}
+
+/* Extra rows of an expanded shelf - each is its own .shelf (drag &
+   drop and leaning work per row), but they butt together into one
+   tall shelf: only the last row keeps its ledge and shadow. */
+.shelf.shelf-row {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.shelf.shelf-continues {
+    background: var(--shelf-bg);
+    box-shadow: none;
+    padding-bottom: 8px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.shelf.shelf-continues .book.sticky-book.fallen {
+    translate: 0 2px; /* no ledge to land on mid-shelf */
+}
+
+/* a little round chevron (no words): points down to show the whole
+   shelf, flips up to collapse it again */
+.shelf-expand-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin: 10px auto 0 auto;
+    padding: 0;
+    background: var(--pastel-lavender);
+    color: var(--y2k-purple);
+    /* soft, shelf-coloured edge instead of the dark outline */
+    border: 2px solid var(--shelf-color);
+    border-radius: 50%;
+    box-shadow: 1px 2px 3px rgba(var(--ink-rgb), 0.18);
+}
+
+.shelf-expand-btn::before {
+    display: none; /* no glossy shine */
+}
+
+.shelf-expand-btn:active {
+    transform: scale(0.92);
+    box-shadow: 0 1px 2px rgba(var(--ink-rgb), 0.18);
+}
+
+.shelf-expand-btn svg {
+    transition: transform 0.3s cubic-bezier(.3, 1.6, .5, 1);
+}
+
+.shelf-expand-btn.expanded svg {
+    transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+    .shelf-expand-btn:hover svg {
+        transform: translateY(2px);
+    }
+
+    .shelf-expand-btn.expanded:hover svg {
+        transform: rotate(180deg) translateY(2px);
+    }
+}
+
+.shelf-expand-btn:hover {
+    background: var(--pastel-lavender);
+    border-color: var(--y2k-purple);
+}
+
+/* Native shelf scrollbar, tinted to match the purple shelf ledge. Chrome/Safari/Edge use the
+   ::-webkit-scrollbar rules (rounded pill thumb); Firefox only
+   understands scrollbar-color, so it gets that as a fallback -
+   setting scrollbar-color in Chrome would override the pill shape. */
+.shelf::-webkit-scrollbar {
+    height: 12px;
+}
+
+.shelf::-webkit-scrollbar-track {
+    background: var(--pastel-lavender);
+    border-radius: 10px;
+}
+
+.shelf::-webkit-scrollbar-thumb {
+    background: var(--shelf-color);
+    border: 2px solid var(--pastel-lavender);
+    border-radius: 10px;
+}
+
+.shelf::-webkit-scrollbar-thumb:hover {
+    background: var(--shelf-color-hover);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    .shelf {
+        scrollbar-color: var(--shelf-color) var(--pastel-lavender);
+    }
+}
+
+.book {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow:
+        5px 5px 10px rgba(0,0,0,0.3),
+        inset 3px 0 6px -2px rgba(255,255,255,0.35),
+        inset -8px 0 12px -6px rgba(0,0,0,0.55);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+    aspect-ratio: 2 / 3;
+    flex-shrink: 0;
+    -webkit-touch-callout: none;
+}
+
+.spine-top {
+    /* left edge, full spine: one plane for the whole height, shaped
+       with clip-path into a gentle lens (flush with the book at the
+       very top/bottom corners, pushed out furthest at the vertical
+       middle) - same clip-path approach as .book::after's page tops,
+       instead of two separately rotateY'd planes. that two-plane
+       version left a seam at the midpoint and stacked darkening
+       twice toward the bottom, which read as flat black for most
+       cover colors - a single gradient across the full height avoids
+       both problems. */
+    content: "";
+    position: absolute;
+    top: -7px;
+    bottom: 0px;
+    left: -8px;
+    width: 8px;
+    pointer-events: none;
+    background: linear-gradient(to bottom,
+        var(--spine-top-a, #4a4a4a) 0%,
+        var(--spine-top-b, #3a3a3a) 35%,
+        var(--spine-bottom-a, #333333) 65%,
+        var(--spine-bottom-b, #232323) 100%);
+    clip-path: polygon(0% calc(100% - 8px), 0% 0%, 100% 8px, 100% 100%);
+    box-shadow: inset -1px 0 1px rgba(0,0,0,0.25);
+    z-index: 1;
+}
+
+.book::after {
+    /* top edge: page tops. rotateX() can never move a point
+       left-right (only vertically/in depth), so it can't actually
+       produce slanted left/right edges - shaped directly with
+       clip-path instead, same reasoning as the spine's fix.
+       z-index 2 (higher than the spine's 1) so the page block
+       sits in front of the spine at the corner again. */
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: -7px;
+    right: 0px;
+    height: 7px;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+        #f6efdb 0px, #f6efdb 1px,
+        #dcc79a 1px, #dcc79a 1.5px);
+    box-shadow: inset 0 -3px 5px rgba(0,0,0,0.3);
+    /* left edge shifted via px (points past the box's own bounds are
+       ignored by clip-path, not extended - so the box itself has to
+       be widened on the left to give this room to show). right edge
+       stays in % of book width, same as before. */
+    clip-path: polygon(6px 100%, 0px 0%, 92% 0%, 100% 100%);
+}
+
+@media (hover: hover) {
+    .book:hover {
+        transform: translateY(-25px);
+        box-shadow:
+            8px 12px 18px rgba(0,0,0,0.4),
+            inset 3px 0 6px -2px rgba(255,255,255,0.35),
+            inset -8px 0 12px -6px rgba(0,0,0,0.55);
+    }
+}
+
+/* Mid-drag, the cursor sweeps over neighbouring books and each one
+   would pop up on :hover. Let the pointer pass straight through them
+   to the shelf instead - its dragover handler does the positioning
+   from bounding boxes, so nothing needs the books themselves. */
+body.drag-active .book:not(.dragging) {
+    pointer-events: none;
+}
+
+/* Spine view: the whole face becomes what .spine-top used to render
+   as a thin sliver - the cover's edge color - since there's no cover
+   art to show from this angle on a real shelf. Styled like an old
+   leather binding: gilt rules top/bottom framing the title, gold
+   edges, foil-stamped lettering - two flat gradient layers (gold
+   rule lines, then the leather shading) rather than extra elements,
+   so it still works at any spine height. */
+.book.spine-mode {
+    justify-content: center;
+    /* Spines sit flush with zero gap now - anything that overflows
+       a spine's own box (long titles, the star ornaments) would
+       otherwise paint right onto the neighboring book. */
+    overflow: hidden;
+}
+
+.book.spine-mode .spine-top,
+.book.spine-mode::after {
+    display: none;
+}
+
+/* Gilt leather look is only for the generated spine (no uploaded
+   photo) - a real photo shouldn't get a fake gold frame drawn
+   over/around it. */
+.book.spine-mode-generated {
+    background-image:
+        linear-gradient(to bottom,
+            transparent 0%, transparent 8%,
+            var(--spine-gold) 8%, var(--spine-gold) 8.8%,
+            transparent 8.8%, transparent 11%,
+            var(--spine-gold) 11%, var(--spine-gold) 11.8%,
+            transparent 11.8%, transparent 86%,
+            var(--spine-gold) 86%, var(--spine-gold) 86.8%,
+            transparent 86.8%, transparent 89%,
+            var(--spine-gold) 89%, var(--spine-gold) 89.8%,
+            transparent 89.8%, transparent 100%),
+        linear-gradient(to bottom,
+            var(--spine-top-a, #4a4a4a) 0%,
+            var(--spine-top-b, #3a3a3a) 35%,
+            var(--spine-bottom-a, #333333) 65%,
+            var(--spine-bottom-b, #232323) 100%);
+    background-size: 100% 100%;
+    padding: 8px 2px;
+    box-shadow:
+        5px 5px 10px rgba(0,0,0,0.3),
+        inset 3px 0 6px -2px rgba(255,255,255,0.35),
+        inset -8px 0 12px -6px rgba(0,0,0,0.55),
+        inset 2px 0 0 var(--spine-gold),
+        inset -2px 0 0 var(--spine-gold);
+}
+
+.spine-label {
+    writing-mode: vertical-rl;
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--spine-font);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 76%;
+    color: var(--spine-gold-bright);
+    text-shadow:
+        1px 1px 1px rgba(0,0,0,0.65),
+        -0.5px -0.5px 0 rgba(255,255,255,0.2);
+}
+
+.spine-label::before,
+.spine-label::after {
+    content: "\2726";
+    display: block;
+    font-size: 9px;
+    margin: 10px 0;
+    color: var(--spine-gold);
+    text-shadow: none;
+}
+
+.book:active {
+    cursor: grabbing;
+}
+
+.book.dragging {
+    opacity: 0.2;
+}
+
+/* Series view: a dashed gray silhouette standing in for a book you
+   don't own yet, so gaps in a series are visible at a glance. */
+.book.series-missing {
+    background: #d2d2d2;
+    border: 2px dashed #9a9a9a;
+    box-shadow: none;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book.series-missing:hover {
+    opacity: 0.85;
+}
+
+.series-missing-label {
+    font-family: var(--pixel-font);
+    font-size: 11px;
+    color: #6b6b6b;
+    text-shadow: none;
+}
+
+.book.series-missing.spine-mode .series-missing-label {
+    writing-mode: vertical-rl;
+}
+
+/* Series view: owned-but-unread books are dimmed relative to ones
+   marked Read, so progress through the series reads at a glance. */
+.book.series-unread {
+    filter: grayscale(55%) opacity(0.7);
+}
+
+.book.series-unread:hover {
+    filter: grayscale(15%) opacity(0.95);
+}
+
+#drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.85;
+    box-shadow: 10px 15px 25px rgba(0,0,0,0.4);
+    transform: translate(-50%, -50%);
+    display: none;
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+/* While a window is open the page behind it stays put - otherwise on
+   phones a swipe on the dimmed backdrop, or one that runs past the end
+   of a window's own scroll, carries on into the shelves underneath.
+   (Windows are opened by setting display: flex inline.) */
+html:has(.modal[style*="flex"]) {
+    overflow: hidden;
+}
+
+.modal-body,
+.settings-body,
+.stats-body,
+#notepad-text {
+    overscroll-behavior: contain;
+}
+
+.modal-content {
+    background: var(--panel-bg);
+    padding: 0;
+    border-radius: 14px;
+    width: 92%;
+    max-width: 640px;
+    max-height: 92vh;
+    overflow: hidden;
+    border: 3px solid var(--y2k-hot-pink);
+    box-shadow: 8px 8px 0 var(--y2k-purple);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple));
+    flex-shrink: 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-family: var(--pixel-font);
+    font-size: 13px;
+    color: white;
+    font-weight: normal;
+}
+
+/* Round glossy close button. The button itself never moves or
+   changes size (so a click always lands); only the circle inside it,
+   .x-face, spins on hover and squishes when pressed. */
+.modal-close-x {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.modal-close-x::before {
+    display: none;
+}
+
+.modal-close-x:hover,
+.modal-close-x:active {
+    background: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+.modal-close-x .x-face {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.22);
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 0 rgba(var(--ink-rgb), 0.35);
+    pointer-events: none;
+    /* springy overshoot on release */
+    transition: background-color 0.15s, color 0.15s, transform 0.35s cubic-bezier(.3, 1.8, .5, 1);
+}
+
+/* the shared glossy shine, on the circle */
+.modal-close-x .x-face::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.25) 40%, rgba(255,255,255,0) 70%);
+}
+
+.modal-close-x:hover .x-face {
+    background-color: white;
+    color: var(--y2k-hot-pink);
+    transform: rotate(90deg);
+}
+
+/* squishes flat like a gummy when pressed */
+.modal-close-x:active .x-face {
+    transform: scale(1.3, 0.55) rotate(90deg); /* squash in screen space, after the spin */
+    box-shadow: 0 0 0 rgba(var(--ink-rgb), 0.35);
+    transition: transform 0.08s;
+}
+
+.modal-body {
+    display: flex;
+    gap: 28px;
+    padding: 24px 28px;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    align-items: flex-start;
+}
+
+.modal-preview {
+    flex: 0 0 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+}
+
+.preview-shelf {
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    border-bottom: 10px solid var(--shelf-color);
+}
+
+.book.preview-only {
+    cursor: default;
+}
+
+/* Wraps the preview book so it and the peeking notes paper wiggle
+   together, with the paper painted behind the book (DOM order). */
+.preview-book-wrap {
+    position: relative;
+}
+
+.preview-book-wrap.wiggle {
+    animation: preview-wiggle 0.5s ease-in-out;
+}
+
+@keyframes preview-wiggle {
+    0%, 100% { transform: rotate(0) translateY(0); }
+    20% { transform: rotate(-4deg) translateY(-6px); }
+    45% { transform: rotate(3deg) translateY(-3px); }
+    70% { transform: rotate(-1.5deg) translateY(-1px); }
+}
+
+.preview-notes-peek {
+    display: none;
+    position: absolute;
+    top: -16px;
+    right: -18px;
+    width: 62px;
+    height: 80px;
+    background: url('../assets/notepad-paper.png') center / cover no-repeat;
+    transform: rotate(10deg);
+    filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.3));
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.preview-notes-peek.visible {
+    display: block;
+}
+
+.preview-notes-peek:hover {
+    transform: rotate(14deg) translate(4px, -4px);
+}
+
+/* "reading" washi tape stuck across the cover's top-left corner:
+   see-through pastel blue, zigzag torn ends (clip-path) */
+.preview-sticker {
+    display: none;
+    position: absolute;
+    top: 12px;
+    left: -26px;
+    width: 104px;
+    padding: 3px 0;
+    text-align: center;
+    /* plain see-through blue washi with a faint paper grain */
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+        rgba(143, 205, 255, 0.82);
+    box-shadow: 0 1px 2px rgba(var(--ink-rgb), 0.25);
+    color: var(--y2k-dark);
+    font-family: 'Nanum Pen Script', cursive; /* same pen as the sticky notes */
+    font-size: 17px;
+    font-weight: normal;
+    line-height: 1;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    text-shadow: 0 0 3px white;
+    transform: rotate(-38deg);
+    z-index: 3;
+    clip-path: polygon(
+        0% 0%, 4% 20%, 0% 40%, 4% 60%, 0% 80%, 4% 100%,
+        96% 100%, 100% 80%, 96% 60%, 100% 40%, 96% 20%, 100% 0%);
+}
+
+.preview-sticker.visible {
+    display: block;
+    animation: sticker-slap 0.3s ease-out;
+}
+
+/* pressed on: drops in a little big, then sticks flat */
+@keyframes sticker-slap {
+    0% { transform: rotate(-30deg) scale(1.35); opacity: 0; }
+    100% { transform: rotate(-38deg) scale(1); opacity: 1; }
+}

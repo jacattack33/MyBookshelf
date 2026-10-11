@@ -1,0 +1,2064 @@
+/* ---------- Holo materials ---------- */
+:root[data-theme="holo"] body {
+    background: var(--body-glows), linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 45%, var(--bg-c) 100%);
+    background-attachment: fixed;
+}
+
+/* chrome-and-rainbow title with a dark edge (a drop-shadow, since a
+   text-shadow would show through the see-through letters) */
+:root[data-theme="holo"] h1 {
+    background:
+        linear-gradient(90deg, rgba(255, 170, 225, 0.4), rgba(150, 220, 255, 0.4), rgba(190, 255, 220, 0.35), rgba(255, 230, 150, 0.4)),
+        linear-gradient(180deg, #ffffff 0%, #dde2eb 34%, #8a93a9 49%, #565f7a 54%, #b4bccd 66%, #f3f4f9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(2px 2px 0 #2b2f4a) drop-shadow(0 0 10px rgba(190, 160, 255, 0.6));
+}
+
+/* Orbitron is narrower and lighter than the pixel font it replaces,
+   so headings go up a little in size and weight */
+:root[data-theme="holo"] h1 {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+:root[data-theme="holo"] .genre-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+:root[data-theme="holo"] .shelf-count {
+    font-size: 38px;
+    font-weight: 900;
+}
+
+:root[data-theme="holo"] .modal-header h3 {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+:root[data-theme="holo"] .field-section-title,
+:root[data-theme="holo"] .preview-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+:root[data-theme="holo"] .series-missing-label,
+:root[data-theme="holo"] .shelf-empty-hint {
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    :root[data-theme="holo"] h1 { font-size: 22px; letter-spacing: 2px; }
+    :root[data-theme="holo"] .genre-title { font-size: 17px; letter-spacing: 1px; }
+    :root[data-theme="holo"] .shelf-count { font-size: 24px; }
+}
+
+/* the pixel cat keeps its pixel z's */
+:root[data-theme="holo"] .cat-z {
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* panels: a rainbow rim (rounded corners kept) that slowly drifts */
+:root[data-theme="holo"] .controls,
+:root[data-theme="holo"] .modal-content {
+    border-color: transparent;
+    background:
+        linear-gradient(var(--surface), var(--surface)) padding-box,
+        var(--holo-loop) border-box;
+    background-size: auto, 200% 100%;
+    box-shadow: 5px 5px 0 rgba(var(--ink-rgb), 0.3), 0 0 22px var(--holo-glow);
+    animation: holo-drift 14s linear infinite;
+}
+
+:root[data-theme="holo"] .modal-content {
+    background:
+        linear-gradient(var(--panel-bg), var(--panel-bg)) padding-box,
+        var(--holo-loop) border-box;
+    background-size: auto, 200% 100%;
+}
+
+/* title bars: rainbow vinyl with a glossy top half */
+:root[data-theme="holo"] .window-titlebar,
+:root[data-theme="holo"] .modal-header {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 51%),
+        var(--holo-loop);
+    background-size: auto, 200% 100%;
+    animation: holo-drift 14s linear infinite;
+}
+
+:root[data-theme="holo"] .modal-header h3 {
+    color: var(--on-bright);
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+@keyframes holo-drift {
+    from { background-position: 0 0, 0% 0; }
+    to { background-position: 0 0, 100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root[data-theme="holo"] .controls,
+    :root[data-theme="holo"] .modal-content,
+    :root[data-theme="holo"] .window-titlebar,
+    :root[data-theme="holo"] .modal-header { animation: none; }
+}
+
+/* shelves: frosted glass on a chrome ledge with a rainbow sheen */
+:root[data-theme="holo"] .shelf {
+    background:
+        linear-gradient(90deg, rgba(255, 201, 239, 0.3), rgba(184, 236, 255, 0.3), rgba(201, 255, 230, 0.25), rgba(255, 241, 184, 0.25), rgba(255, 201, 239, 0.3)) bottom / 100% 20px no-repeat,
+        var(--chrome-ledge) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="holo"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-image: var(--chrome-ledge) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="holo"] .shelf::-webkit-scrollbar-track {
+    background: rgba(var(--ink-rgb), 0.08);
+}
+
+:root[data-theme="holo"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--chrome);
+    border-color: transparent;
+    background-clip: padding-box;
+}
+
+:root[data-theme="holo"] .shelf-expand-btn {
+    background: var(--chrome);
+    color: var(--on-bright);
+    border-color: var(--shelf-color);
+}
+
+/* shelf name tags: holographic vinyl stickers with a gloss streak
+   (status shelves keep their own colours, plus the gloss) */
+:root[data-theme="holo"] .genre-title {
+    overflow: hidden;
+}
+
+:root[data-theme="holo"] .genre-title:not([class*="tag-status-"]) {
+    background: var(--holo);
+    color: var(--on-bright);
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+:root[data-theme="holo"] .genre-title::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(105deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.75) 42%, rgba(255, 255, 255, 0) 52%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 50%);
+}
+
+/* buttons: a pearly rainbow sheen over each group's own colour, and
+   a glossy streak on the pressed one */
+:root[data-theme="holo"]:not([data-mode="dark"]) .toggle-btn:not(.active),
+:root[data-theme="holo"]:not([data-mode="dark"]) .status-btn:not(.active) {
+    background-image: var(--holo);
+    background-blend-mode: soft-light;
+}
+
+:root[data-theme="holo"] .toggle-btn.active,
+:root[data-theme="holo"] .status-btn.active {
+    background-image:
+        linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.5) 45%, rgba(255, 255, 255, 0) 60%),
+        var(--holo);
+    background-blend-mode: normal, soft-light;
+}
+
+/* Holo's dark-mode unpressed buttons: see-through tints of its own
+   holographic group colours */
+:root[data-mode="dark"][data-theme="holo"] .toggle-btn:not(.active) {
+    background-color: rgba(127, 230, 217, 0.12);
+    color: #a9f2e8;
+    border-color: rgba(127, 230, 217, 0.55);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-btn:not(.active):hover {
+    background-color: rgba(127, 230, 217, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-yellow .toggle-btn:not(.active) {
+    background-color: rgba(255, 233, 160, 0.12);
+    color: #fff0bf;
+    border-color: rgba(255, 233, 160, 0.55);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background-color: rgba(255, 233, 160, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-blue .toggle-btn:not(.active) {
+    background-color: rgba(156, 214, 255, 0.12);
+    color: #c4e6ff;
+    border-color: rgba(156, 214, 255, 0.55);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-blue .toggle-btn:not(.active):hover {
+    background-color: rgba(156, 214, 255, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-lilac .toggle-btn:not(.active) {
+    background-color: rgba(191, 168, 255, 0.12);
+    color: #dacdff;
+    border-color: rgba(191, 168, 255, 0.55);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background-color: rgba(191, 168, 255, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-peach .toggle-btn:not(.active) {
+    background-color: rgba(255, 184, 222, 0.12);
+    color: #ffd3eb;
+    border-color: rgba(255, 184, 222, 0.55);
+}
+
+:root[data-mode="dark"][data-theme="holo"] .toggle-peach .toggle-btn:not(.active):hover {
+    background-color: rgba(255, 184, 222, 0.22);
+}
+
+:root[data-theme="holo"] button.danger:hover {
+    background-color: #ff86b5;
+}
+
+/* ---------- Holo button shapes ----------
+   Pick-one buttons (organize, filters, view, status, Settings
+   choices) are glossy capsules, Y2K Aqua jelly; action buttons (add,
+   save, cancel, notes, delete, backup) are cut-corner sci-fi
+   panels. Each keeps its group's own colour. The extra `body` in
+   the selectors lifts them just above the dark-mode button rules
+   further down. */
+
+/* Capsule: a pill with a jelly gloss on top and a soft glow */
+:root[data-theme="holo"] body :is(.toggle-btn, .status-btn) {
+    border-radius: 999px;
+    border-color: rgba(var(--ink-rgb), 0.35);
+    box-shadow:
+        inset 0 0 0 1.5px rgba(255, 255, 255, 0.55),
+        inset 0 -3px 6px rgba(var(--ink-rgb), 0.12),
+        0 3px 8px rgba(var(--ink-rgb), 0.22),
+        0 0 12px var(--holo-glow);
+}
+
+:root[data-theme="holo"] body :is(.toggle-btn, .status-btn)::before {
+    inset: 2px 8px 50% 8px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.15));
+}
+
+/* (pale text on dark buttons needs a fainter gloss) */
+:root[data-mode="dark"][data-theme="holo"] body :is(.toggle-btn, .status-btn)::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.04));
+}
+
+:root[data-theme="holo"] body :is(.toggle-btn, .status-btn):is(.active, :active) {
+    transform: translateY(1px);
+    box-shadow:
+        inset 0 2px 6px rgba(var(--ink-rgb), 0.35),
+        0 1px 3px rgba(var(--ink-rgb), 0.2),
+        0 0 16px var(--holo-glow);
+}
+
+/* Cut corner: two corners sliced off like a spaceship control
+   panel, in the Orbitron font. (The cut also clips any outer
+   shadow, so depth comes from inside, and the two diagonal edges
+   get drawn-on outline strokes.) */
+:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 0;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    font-family: var(--pixel-font);
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow:
+        inset 0 -3px 0 rgba(var(--ink-rgb), 0.22),
+        inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(135deg, transparent calc(50% - 1.5px), var(--outline) calc(50% - 1.5px), var(--outline) calc(50% + 1.5px), transparent calc(50% + 1.5px)) top left / 10px 10px no-repeat,
+        linear-gradient(135deg, transparent calc(50% - 1.5px), var(--outline) calc(50% - 1.5px), var(--outline) calc(50% + 1.5px), transparent calc(50% + 1.5px)) bottom right / 10px 10px no-repeat;
+}
+
+:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+    transform: translateY(1px);
+    box-shadow:
+        inset 0 3px 5px rgba(var(--ink-rgb), 0.35),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Library after dark: a lamp-lit evening study */
+:root[data-mode="dark"][data-theme="library"] {
+    /* dark academia: near-black charcoal with a green undertone, aged
+       parchment ink, oxblood leather, deep royal blue, antique brass
+       (kept to the title and nameplates), ebony shelves */
+    --y2k-dark: #e2dacb;
+    --y2k-text: #e2dacb;
+    --ink-rgb: 226, 218, 203;
+    --accent-rgb: 93, 114, 184;
+    --y2k-pink: #3b52a0;
+    --y2k-hot-pink: #2f448a;
+    --y2k-purple: #5d72b8;
+    --y2k-lavender: #2c3230;
+    --y2k-mint: #8a9e98;
+    --y2k-yellow: #b39a5e;
+    --y2k-blue: #7d8fc4;
+    --y2k-lilac: #9c6b62;
+    --y2k-peach: #a89580;
+    --y2k-green: #8fa69d;
+    --y2k-coral: #a85a5a;
+    --pastel-mint: #232b29;
+    --pastel-yellow: #2e2b22;
+    --pastel-blue: #232830;
+    --pastel-pink: #2f2324;
+    --pastel-lavender: #262b29;
+    --pastel-lilac: #2c2426;
+    --pastel-peach: #2d2824;
+    --bg-a: #121514;
+    --bg-b: #161a19;
+    --bg-c: #111312;
+    --panel-bg: #1b1f1e;
+    --section-bg: #202524;
+    --disabled-bg: #2a302e;
+    --status-hover: #2a3230;
+    --secondary-hover: #343c3a;
+    --surface: #202524;
+    --shelf-bg: rgba(255, 255, 255, 0.03);
+    --shelf-color: #241c18;
+    --shelf-color-hover: #2f2520;
+    --on-bright: #141716;
+    --outline: #5f6662;
+    --chart-bar: #b39a5e;
+    --chart-bar-hover: #c7b07a;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%238f9fd6' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --page-glow: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(200, 210, 200, 0.05), transparent 70%);
+    --btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --brass: linear-gradient(180deg, #d9c48e 0%, #b39a5e 35%, #85703f 62%, #c2ab72 86%, #9c844c 100%);
+    --leather: linear-gradient(180deg, #4e1c21, #3a1418);
+    --stitch: rgba(226, 218, 203, 0.35);
+    --wood-side: #120e0c;
+    --wood-back:
+        linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 30px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 88%, rgba(0, 0, 0, 0.2)),
+        linear-gradient(180deg, #2a221e, #211b18);
+    --wood-flat: #261f1b; /* the back's average, for tall expanded shelves */
+}
+
+/* Deco after dark: a gold-on-black speakeasy */
+:root[data-mode="dark"][data-theme="deco"] {
+    --y2k-dark: #efe6d2;
+    --y2k-text: #efe6d2;
+    --ink-rgb: 239, 230, 210;
+    --accent-rgb: 212, 176, 90;
+    --y2k-pink: #3d64a0;
+    --y2k-hot-pink: #33558a;
+    --y2k-purple: #7f97c4;
+    --y2k-lavender: #26304a;
+    --y2k-mint: #8fa7cf;
+    --y2k-yellow: #e8d29a;
+    --y2k-blue: #a9bddc;
+    --y2k-lilac: #8f9bb5;
+    --y2k-peach: #c9a96a;
+    --y2k-green: #a9c0b4;
+    --y2k-coral: #c98f86;
+    --pastel-mint: #1d3a35;
+    --pastel-yellow: #3d3622;
+    --pastel-blue: #1f2d45;
+    --pastel-pink: #3d2626;
+    --pastel-lavender: #232b40;
+    --pastel-lilac: #2d2742;
+    --pastel-peach: #3d2a22;
+    --bg-a: #0b1020;
+    --bg-b: #111a30;
+    --bg-c: #0d1426;
+    --panel-bg: #141d33;
+    --section-bg: #18223b;
+    --disabled-bg: #212c47;
+    --status-hover: #222d4a;
+    --secondary-hover: #2c3a5c;
+    --surface: #18223b;
+    --shelf-bg: rgba(201, 165, 74, 0.05);
+    --shelf-color: #0e0f14;
+    --shelf-color-hover: #1b1d24;
+    --on-bright: #0b1020;
+    --outline: #5a6788;
+    --chart-bar: #d4b05a;
+    --chart-bar-hover: #e3c77a;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23d4b05a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --deco-navy: #0b1020;
+    --deco-rays: rgba(201, 165, 74, 0.06);
+    --btn-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06), inset 0 0 0 3px rgba(143, 167, 207, 0.35), 2px 2px 0 rgba(0, 0, 0, 0.5);
+    /* (fewer gold things up top: sapphire edges and headings; gold stays
+       on the title, panel border and shelf plaques) */
+}
+
+/* Loft after dark: a moody loft under Edison bulbs */
+:root[data-mode="dark"][data-theme="loft"] {
+    --y2k-dark: #dcd9d3;
+    --y2k-text: #dcd9d3;
+    --ink-rgb: 220, 217, 211;
+    --accent-rgb: 200, 132, 90;
+    --y2k-pink: #d6956b;
+    --y2k-hot-pink: #c8845a;
+    --y2k-purple: #9aa0a8;
+    --y2k-lavender: #3a3e44;
+    --y2k-mint: #8e9aa6;
+    --y2k-yellow: #c4a46a;
+    --y2k-blue: #a3adb7;
+    --y2k-lilac: #a8896b;
+    --y2k-peach: #c58a62;
+    --y2k-green: #a5ae9c;
+    --y2k-coral: #c07a62;
+    --pastel-mint: #2c332b;
+    --pastel-yellow: #3d3524;
+    --pastel-blue: #283139;
+    --pastel-pink: #3a2c28;
+    --pastel-lavender: #33363b;
+    --pastel-lilac: #33303a;
+    --pastel-peach: #3d2d24;
+    --bg-a: #1d1f22;
+    --bg-b: #24272b;
+    --bg-c: #1a1c1f;
+    --panel-bg: #2b2e33;
+    --section-bg: #30343a;
+    --disabled-bg: #3a3e44;
+    --status-hover: #3d4148;
+    --secondary-hover: #4a4f56;
+    --surface: #30343a;
+    --shelf-bg: rgba(255, 255, 255, 0.04);
+    --shelf-color: #2b2e33;
+    --shelf-color-hover: #3a3e44;
+    --on-bright: #1d1f22;
+    --outline: #6b717a;
+    --chart-bar: #c8845a;
+    --chart-bar-hover: #d6956b;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23c8845a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --steel: linear-gradient(180deg, #5a6068 0 2px, #2a2d31 2px, #222528 60%, #1a1c1f);
+    --steel-bar: repeating-linear-gradient(180deg, #5a6068 0 1px, #666c74 1px 2px, #4f555d 2px 3px);
+    --loft-title: #dcd9d3;
+    --speck-dark: rgba(0, 0, 0, 0.18);
+    --speck-light: rgba(255, 255, 255, 0.025);
+    --loft-glow: radial-gradient(ellipse 40% 35% at 20% 5%, rgba(255, 170, 80, 0.14), transparent 70%), radial-gradient(ellipse 35% 30% at 85% 15%, rgba(255, 170, 80, 0.1), transparent 70%);
+    --btn-shadow: 0 3px 0 #0e0f11, inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* dark-mode unpressed buttons: see-through tints of each theme's own group colours */
+:root[data-mode="dark"][data-theme="library"] .toggle-btn:not(.active) {
+    background-color: rgba(138, 158, 152, 0.12);
+    color: #bfcac6;
+    border-color: rgba(138, 158, 152, 0.5);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-btn:not(.active):hover {
+    background-color: rgba(138, 158, 152, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-yellow .toggle-btn:not(.active) {
+    background-color: rgba(179, 154, 94, 0.12);
+    color: #d5c7a6;
+    border-color: rgba(179, 154, 94, 0.5);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background-color: rgba(179, 154, 94, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-blue .toggle-btn:not(.active) {
+    background-color: rgba(125, 143, 196, 0.12);
+    color: #b6c0e0;
+    border-color: rgba(125, 143, 196, 0.5);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-blue .toggle-btn:not(.active):hover {
+    background-color: rgba(125, 143, 196, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-lilac .toggle-btn:not(.active) {
+    background-color: rgba(156, 107, 98, 0.12);
+    color: #c9aea9;
+    border-color: rgba(156, 107, 98, 0.5);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background-color: rgba(156, 107, 98, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-peach .toggle-btn:not(.active) {
+    background-color: rgba(168, 149, 128, 0.12);
+    color: #cfc5b9;
+    border-color: rgba(168, 149, 128, 0.5);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="library"] .toggle-peach .toggle-btn:not(.active):hover {
+    background-color: rgba(168, 149, 128, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-btn:not(.active) {
+    background-color: rgba(143, 167, 207, 0.12);
+    color: #c1cfe5;
+    border-color: rgba(143, 167, 207, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-btn:not(.active):hover {
+    background-color: rgba(143, 167, 207, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-yellow .toggle-btn:not(.active) {
+    background-color: rgba(232, 210, 154, 0.12);
+    color: #f2e6c7;
+    border-color: rgba(232, 210, 154, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background-color: rgba(232, 210, 154, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-blue .toggle-btn:not(.active) {
+    background-color: rgba(169, 189, 220, 0.12);
+    color: #d0dbec;
+    border-color: rgba(169, 189, 220, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-blue .toggle-btn:not(.active):hover {
+    background-color: rgba(169, 189, 220, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-lilac .toggle-btn:not(.active) {
+    background-color: rgba(143, 155, 181, 0.12);
+    color: #c3cad9;
+    border-color: rgba(143, 155, 181, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background-color: rgba(143, 155, 181, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-peach .toggle-btn:not(.active) {
+    background-color: rgba(201, 169, 106, 0.12);
+    color: #e1d0ad;
+    border-color: rgba(201, 169, 106, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="deco"] .toggle-peach .toggle-btn:not(.active):hover {
+    background-color: rgba(201, 169, 106, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-btn:not(.active) {
+    background-color: rgba(142, 154, 166, 0.12);
+    color: #c1c7ce;
+    border-color: rgba(142, 154, 166, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-btn:not(.active):hover {
+    background-color: rgba(142, 154, 166, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-yellow .toggle-btn:not(.active) {
+    background-color: rgba(196, 164, 106, 0.12);
+    color: #dfcdad;
+    border-color: rgba(196, 164, 106, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background-color: rgba(196, 164, 106, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-blue .toggle-btn:not(.active) {
+    background-color: rgba(163, 173, 183, 0.12);
+    color: #ccd2d7;
+    border-color: rgba(163, 173, 183, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-blue .toggle-btn:not(.active):hover {
+    background-color: rgba(163, 173, 183, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-lilac .toggle-btn:not(.active) {
+    background-color: rgba(168, 137, 107, 0.12);
+    color: #cfbeae;
+    border-color: rgba(168, 137, 107, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background-color: rgba(168, 137, 107, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-peach .toggle-btn:not(.active) {
+    background-color: rgba(197, 138, 98, 0.12);
+    color: #dfbfa9;
+    border-color: rgba(197, 138, 98, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .toggle-peach .toggle-btn:not(.active):hover {
+    background-color: rgba(197, 138, 98, 0.22);
+}
+
+
+/* ---------- Library materials ---------- */
+:root[data-theme="library"] body {
+    font-family: 'Lora', Georgia, serif;
+    background:
+        var(--page-glow),
+        repeating-linear-gradient(0deg, rgba(var(--ink-rgb), 0.025) 0 1px, transparent 1px 4px),
+        repeating-linear-gradient(90deg, rgba(var(--ink-rgb), 0.025) 0 1px, transparent 1px 4px),
+        linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 50%, var(--bg-c) 100%);
+    background-attachment: fixed;
+}
+
+/* brass lettering, slightly embossed */
+:root[data-theme="library"] h1 {
+    background: var(--brass);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(1px 2px 0 rgba(43, 29, 20, 0.55));
+}
+
+/* panels: a thin brass pinline inside a deep brown edge */
+:root[data-theme="library"] .controls,
+:root[data-theme="library"] .modal-content {
+    border: 2px solid var(--outline);
+    border-radius: 6px;
+    box-shadow:
+        inset 0 0 0 4px var(--surface),
+        inset 0 0 0 5px rgba(184, 146, 58, 0.65),
+        0 8px 22px rgba(43, 29, 20, 0.28);
+}
+
+:root[data-theme="library"] .modal-content {
+    box-shadow:
+        inset 0 0 0 4px var(--panel-bg),
+        inset 0 0 0 5px rgba(184, 146, 58, 0.65),
+        0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* title bars: oxblood leather with a faint grain and stitching */
+:root[data-theme="library"] .window-titlebar,
+:root[data-theme="library"] .modal-header {
+    position: relative;
+    background:
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px),
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px),
+        var(--leather);
+}
+
+:root[data-theme="library"] .window-titlebar {
+    height: 14px;
+}
+
+:root[data-theme="library"] .modal-header::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px dashed var(--stitch);
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+:root[data-theme="library"] .modal-header h3 {
+    color: #f1e6cc;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* shelves: a walnut ledge with wood grain */
+/* shelves: a whole walnut bookcase - a solid back, darker uprights
+   at the sides, a shadow under the shelf above, a grained ledge */
+:root[data-theme="library"] .shelf {
+    background:
+        linear-gradient(180deg, rgba(255, 228, 185, 0.35), rgba(255, 228, 185, 0) 4px) bottom / 100% 20px no-repeat,
+        repeating-linear-gradient(178deg, rgba(40, 20, 10, 0) 0 3px, rgba(40, 20, 10, 0.22) 3px 4px, rgba(40, 20, 10, 0) 4px 9px, rgba(255, 220, 170, 0.1) 9px 10px) bottom / 100% 20px no-repeat,
+        linear-gradient(180deg, #7a4f34, #5b3a29 60%, #45291c) bottom / 100% 20px no-repeat,
+        var(--wood-back);
+    box-shadow: inset 7px 0 0 var(--wood-side), inset -7px 0 0 var(--wood-side), 0 10px 8px -6px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-mode="dark"][data-theme="library"] .shelf {
+    background:
+        linear-gradient(180deg, rgba(200, 190, 175, 0.18), rgba(200, 190, 175, 0) 3px) bottom / 100% 20px no-repeat,
+        repeating-linear-gradient(178deg, rgba(0, 0, 0, 0) 0 3px, rgba(0, 0, 0, 0.3) 3px 4px, rgba(0, 0, 0, 0) 4px 9px, rgba(255, 240, 220, 0.04) 9px 10px) bottom / 100% 20px no-repeat,
+        linear-gradient(180deg, #3a2f29, #2a221e 60%, #1c1714) bottom / 100% 20px no-repeat,
+        var(--wood-back);
+}
+
+/* expanded rows above the last: plain back wall, side panels, no
+   ledge or shadow (applies to dark mode too, being later) */
+:root[data-theme="library"] .shelf.shelf-continues {
+    background: var(--wood-back);
+    box-shadow: inset 7px 0 0 var(--wood-side), inset -7px 0 0 var(--wood-side);
+}
+
+/* ...and so the rows read as one tall back wall, the top-to-bottom
+   wood gradient is swapped for its flat average (it would band at
+   each row), and only the top row keeps the shadow under the shelf
+   above. background-size per layer: [shadow, sides, gradient],
+   after the three ledge layers on the last row. */
+:root[data-theme="library"] .shelf.shelf-continues,
+:root[data-theme="library"] .shelf.shelf-row {
+    background-color: var(--wood-flat);
+}
+
+:root[data-theme="library"] .shelf.shelf-continues {
+    background-size: auto, auto, 100% 0;
+}
+
+:root[data-theme="library"] .shelf.shelf-row.shelf-continues {
+    background-size: 100% 0, auto, 100% 0;
+}
+
+:root[data-theme="library"] .shelf.shelf-row:not(.shelf-continues) {
+    background-size: 100% 20px, 100% 20px, 100% 20px, 100% 0, auto, 100% 0;
+}
+
+:root[data-theme="library"] .shelf.scrolls {
+    background: var(--wood-back);
+    border-image: repeating-linear-gradient(178deg, #6b4630 0 3px, #5b3a29 3px 5px, #74503a 5px 7px) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-mode="dark"][data-theme="library"] .shelf.scrolls {
+    background: var(--wood-back);
+    border-image: repeating-linear-gradient(178deg, #332923 0 3px, #2a221e 3px 5px, #3a2f29 5px 7px) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="library"] .shelf::-webkit-scrollbar-track {
+    background: rgba(20, 10, 5, 0.35); /* a groove in the wood */
+}
+
+:root[data-theme="library"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--brass);
+    border-color: transparent;
+    background-clip: padding-box;
+}
+
+:root[data-theme="library"] .shelf-count {
+    color: rgba(255, 236, 205, 0.22);
+}
+
+:root[data-theme="library"] .shelf-empty-hint {
+    color: rgba(255, 236, 205, 0.6);
+}
+
+/* shelf names: engraved brass nameplates with two screws */
+:root[data-theme="library"] .genre-title {
+    border: 2px solid #6b4e1e;
+    border-radius: 4px;
+    padding: 12px 34px;
+    transform: rotate(-1.5deg);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 0 0 3px rgba(107, 78, 30, 0.3),
+        3px 4px 0 rgba(43, 29, 20, 0.35);
+}
+
+:root[data-theme="library"] .genre-title:not([class*="tag-status-"]) {
+    background: var(--brass);
+    color: #2b1d14;
+    text-shadow: 0 1px 0 rgba(255, 240, 200, 0.6);
+}
+
+:root[data-theme="library"] .genre-title::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle, #6b4e1e 0 1.5px, #f3dc94 2px 3px, #8a6a2a 3.5px, transparent 4px) left 9px center / 9px 9px no-repeat,
+        radial-gradient(circle, #6b4e1e 0 1.5px, #f3dc94 2px 3px, #8a6a2a 3.5px, transparent 4px) right 9px center / 9px 9px no-repeat;
+}
+
+/* buttons: soft leather with a stitched edge */
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 6px;
+    border-width: 1.5px;
+    border-color: rgba(var(--ink-rgb), 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    opacity: 0.35;
+}
+
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px dashed rgba(var(--ink-rgb), 0.28);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- Deco materials ---------- */
+:root[data-theme="deco"] body {
+    font-family: 'Josefin Sans', 'Quicksand', sans-serif;
+    background:
+        repeating-conic-gradient(from 0deg at 50% -10%, var(--deco-rays) 0 3deg, transparent 3deg 9deg),
+        linear-gradient(180deg, var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="deco"] h1 {
+    background: var(--gold-sheen);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(1px 1px 0 var(--deco-navy)) drop-shadow(0 0 14px rgba(201, 165, 74, 0.35));
+}
+
+/* panels: a double gold border with stepped deco corners */
+:root[data-theme="deco"] .controls,
+:root[data-theme="deco"] .modal-content {
+    position: relative;
+    border: 2px solid var(--gold);
+    border-radius: 2px;
+    box-shadow:
+        inset 0 0 0 3px var(--surface),
+        inset 0 0 0 4px var(--gold),
+        0 10px 26px rgba(11, 16, 32, 0.25);
+}
+
+:root[data-theme="deco"] .modal-content {
+    box-shadow:
+        inset 0 0 0 3px var(--panel-bg),
+        inset 0 0 0 4px var(--gold),
+        0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="deco"] .controls::before,
+:root[data-theme="deco"] .controls::after,
+:root[data-theme="deco"] .modal-content::before,
+:root[data-theme="deco"] .modal-content::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+:root[data-theme="deco"] .controls::before,
+:root[data-theme="deco"] .modal-content::before {
+    left: 9px;
+    bottom: 9px;
+    border-left: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    box-shadow: -4px 4px 0 -2px var(--gold);
+}
+
+:root[data-theme="deco"] .controls::after,
+:root[data-theme="deco"] .modal-content::after {
+    right: 9px;
+    bottom: 9px;
+    border-right: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    box-shadow: 4px 4px 0 -2px var(--gold);
+}
+
+/* title bars: navy with a gold rule */
+:root[data-theme="deco"] .window-titlebar,
+:root[data-theme="deco"] .modal-header {
+    background:
+        repeating-linear-gradient(90deg, rgba(201, 165, 74, 0.12) 0 1px, transparent 1px 10px),
+        var(--deco-navy);
+    box-shadow: inset 0 -2px 0 var(--gold);
+}
+
+:root[data-theme="deco"] .modal-header h3 {
+    color: #e3c77a;
+}
+
+/* shelves: black lacquer ledge with a gold pinstripe */
+:root[data-theme="deco"] .shelf {
+    background:
+        linear-gradient(180deg, var(--gold) 0 2px, #3a3d48 2px, #1b1d24 45%, #0e0f14) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="deco"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-image: linear-gradient(180deg, #c9a54a 0 2px, #3a3d48 2px, #1b1d24 45%, #0e0f14) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="deco"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--gold-sheen);
+}
+
+/* shelf names: navy plaques, gold double border, gold lettering */
+:root[data-theme="deco"] .genre-title {
+    border: 2px solid var(--gold);
+    border-radius: 2px;
+    letter-spacing: 2px;
+    transform: rotate(-1deg);
+    box-shadow:
+        inset 0 0 0 3px var(--deco-navy),
+        inset 0 0 0 4px rgba(201, 165, 74, 0.75),
+        4px 4px 0 rgba(11, 16, 32, 0.3);
+}
+
+:root[data-theme="deco"] .genre-title:not([class*="tag-status-"]) {
+    background: var(--deco-navy);
+    color: #e3c77a;
+}
+
+:root[data-theme="deco"] .genre-title[class*="tag-status-"] {
+    box-shadow:
+        inset 0 0 0 3px rgba(255, 255, 255, 0.4),
+        inset 0 0 0 4px rgba(176, 141, 60, 0.8),
+        4px 4px 0 rgba(11, 16, 32, 0.3);
+}
+
+:root[data-theme="deco"] .genre-title::before,
+:root[data-theme="deco"] .genre-title::after {
+    content: "\25C6";
+    font-size: 0.5em;
+    vertical-align: middle;
+    opacity: 0.8;
+}
+
+:root[data-theme="deco"] .genre-title::before { margin-right: 12px; }
+:root[data-theme="deco"] .genre-title::after { margin-left: 12px; }
+
+/* buttons: sharp lacquer with a thin gold inner rule, uppercase */
+:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    box-shadow: var(--btn-shadow);
+}
+
+/* (gold on the pale unpressed status buttons is too faint - navy ink) */
+:root[data-theme="deco"] .status-btn:not(.active) {
+    color: var(--y2k-dark);
+}
+
+:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    display: none;
+}
+
+:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translate(1px, 1px);
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.3),
+        inset 0 0 0 3px rgba(176, 141, 60, 0.9),
+        inset 0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Loft materials ---------- */
+:root[data-theme="loft"] body {
+    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    background:
+        var(--loft-glow),
+        radial-gradient(var(--speck-dark) 0.8px, transparent 1.3px) 0 0 / 9px 9px,
+        radial-gradient(var(--speck-light) 0.8px, transparent 1.3px) 4px 5px / 13px 13px,
+        radial-gradient(var(--speck-dark) 1.2px, transparent 1.8px) 6px 2px / 23px 23px,
+        linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 55%, var(--bg-c) 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="loft"] h1 {
+    color: var(--loft-title);
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0 var(--y2k-hot-pink);
+}
+
+/* panels: blackened-steel edge, square-ish, hard shadow */
+:root[data-theme="loft"] .controls,
+:root[data-theme="loft"] .modal-content {
+    border: 2px solid var(--outline);
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 rgba(29, 31, 34, 0.85);
+}
+
+/* title bars: brushed steel with rivets */
+:root[data-theme="loft"] .window-titlebar,
+:root[data-theme="loft"] .modal-header {
+    background:
+        radial-gradient(circle, #e2e5e9 0 1.5px, #4a5059 2px 3px, transparent 3.5px) left 6px center / 8px 8px no-repeat,
+        radial-gradient(circle, #e2e5e9 0 1.5px, #4a5059 2px 3px, transparent 3.5px) right 6px center / 8px 8px no-repeat,
+        linear-gradient(90deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.15) 70%, rgba(255, 255, 255, 0)),
+        var(--steel-bar);
+    border-bottom: 2px solid var(--outline);
+}
+
+:root[data-theme="loft"] .window-titlebar {
+    height: 12px;
+}
+
+:root[data-theme="loft"] .modal-header {
+    padding-left: 22px;
+}
+
+:root[data-theme="loft"] .modal-header h3 {
+    color: #1d1f22;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+:root[data-mode="dark"][data-theme="loft"] .modal-header h3 {
+    color: #e6e3dd;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* shelves: a plain, solid blackened-steel plank */
+:root[data-theme="loft"] .shelf {
+    background:
+        var(--steel) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="loft"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-image: var(--steel) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="loft"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--copper);
+}
+
+/* shelf names: flat, straight blackened-steel signage plates with a
+   copper bar down the left edge (status shelves: their own colour) */
+:root[data-theme="loft"] .genre-title {
+    --sign-accent: #c8845a;
+    transform: none;
+    left: -10px; /* mounted on the shelf's corner, not hanging off it */
+    top: -24px;
+    border: none;
+    border-left: 6px solid var(--sign-accent);
+    border-radius: 2px;
+    padding: 10px 22px 10px 18px;
+    text-transform: uppercase;
+    background: #24272b;
+    color: #e6e3dd;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="loft"] .genre-title[class*="tag-status-"] {
+    background: #24272b;
+    color: var(--sign-accent);
+}
+
+:root[data-theme="loft"] .genre-title.tag-status-want { --sign-accent: var(--y2k-yellow); }
+:root[data-theme="loft"] .genre-title.tag-status-reading { --sign-accent: var(--y2k-blue); }
+:root[data-theme="loft"] .genre-title.tag-status-read { --sign-accent: var(--y2k-green); }
+:root[data-theme="loft"] .genre-title.tag-status-dnf { --sign-accent: var(--y2k-coral); }
+
+:root[data-mode="dark"][data-theme="loft"] .genre-title {
+    background: #3a3e44;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* buttons: flat industrial keys with a hard bottom edge */
+:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 3px;
+    font-family: var(--pixel-font);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    display: none;
+}
+
+:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--outline), inset 0 2px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* library: heading font sizes */
+:root[data-theme="library"] h1 { font-size: 34px; font-weight: 700; letter-spacing: 4px; }
+:root[data-theme="library"] .genre-title { font-size: 24px; font-weight: 700; letter-spacing: 2px; }
+:root[data-theme="library"] .shelf-count { font-size: 34px; font-weight: 700; }
+:root[data-theme="library"] .modal-header h3 { font-size: 17px; font-weight: 700; letter-spacing: 1px; }
+:root[data-theme="library"] .field-section-title,
+:root[data-theme="library"] .preview-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+:root[data-theme="library"] .series-missing-label,
+:root[data-theme="library"] .shelf-empty-hint { font-weight: 600; }
+:root[data-theme="library"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="library"] h1 { font-size: 22px; letter-spacing: 2px; }
+    :root[data-theme="library"] .genre-title { font-size: 15px; letter-spacing: 1px; }
+    :root[data-theme="library"] .shelf-count { font-size: 22px; }
+}
+
+/* deco: heading font sizes */
+:root[data-theme="deco"] h1 { font-size: 38px; letter-spacing: 4px; }
+:root[data-theme="deco"] .genre-title { font-size: 24px; }
+:root[data-theme="deco"] .shelf-count { font-size: 34px; }
+:root[data-theme="deco"] .modal-header h3 { font-size: 16px; letter-spacing: 2px; }
+:root[data-theme="deco"] .field-section-title,
+:root[data-theme="deco"] .preview-label { font-size: 12px; letter-spacing: 0.12em; }
+:root[data-theme="deco"] .series-missing-label,
+:root[data-theme="deco"] .shelf-empty-hint { font-weight: 600; }
+:root[data-theme="deco"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="deco"] h1 { font-size: 24px; letter-spacing: 2px; }
+    :root[data-theme="deco"] .genre-title { font-size: 15px; letter-spacing: 1px; }
+    :root[data-theme="deco"] .shelf-count { font-size: 22px; }
+}
+
+/* loft: heading font sizes */
+:root[data-theme="loft"] h1 { font-size: 40px; font-weight: 600; letter-spacing: 8px; }
+:root[data-theme="loft"] .genre-title { font-size: 22px; font-weight: 600; letter-spacing: 4px; }
+:root[data-theme="loft"] .shelf-count { font-size: 40px; font-weight: 600; }
+:root[data-theme="loft"] .modal-header h3 { font-size: 18px; font-weight: 600; letter-spacing: 2px; }
+:root[data-theme="loft"] .field-section-title,
+:root[data-theme="loft"] .preview-label { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; }
+:root[data-theme="loft"] .series-missing-label,
+:root[data-theme="loft"] .shelf-empty-hint { font-weight: 600; }
+:root[data-theme="loft"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="loft"] h1 { font-size: 26px; letter-spacing: 4px; }
+    :root[data-theme="loft"] .genre-title { font-size: 17px; letter-spacing: 1.5px; left: 0; padding: 8px 14px 8px 12px; }
+    :root[data-theme="loft"] .shelf-count { font-size: 24px; }
+}
+
+/* Blueprint after dark: the classic deep-blue blueprint, white lines */
+:root[data-mode="dark"][data-theme="blueprint"] {
+    --y2k-dark: #e6edf7;
+    --y2k-text: #e6edf7;
+    --ink-rgb: 230, 237, 247;
+    --accent-rgb: 242, 140, 58;
+    --y2k-pink: #f28c3a;
+    --y2k-hot-pink: #e8762c;
+    --y2k-purple: #8fb3e0;
+    --y2k-lavender: #2a4570;
+    --pastel-mint: #1f3354;
+    --pastel-peach: #3d2c22;
+    --pastel-blue: #22385a;
+    --pastel-lilac: #26395a;
+    --pastel-yellow: #3d3322;
+    --pastel-pink: #3a2a26;
+    --pastel-lavender: #22375a;
+    --bg-a: #12264a;
+    --bg-b: #0f2142;
+    --bg-c: #132a50;
+    --panel-bg: #17305a;
+    --section-bg: #1b3663;
+    --disabled-bg: #23406f;
+    --status-hover: #244373;
+    --secondary-hover: #2c4d80;
+    --surface: #1b3663;
+    --shelf-bg: rgba(255, 255, 255, 0.04);
+    --shelf-color: #2a4f86;
+    --shelf-color-hover: #12264a;
+    --on-bright: #0f2142;
+    --outline: #7f9cc6;
+    --chart-bar: #f28c3a;
+    --chart-bar-hover: #f5a35f;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23f28c3a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --grid-line: rgba(255, 255, 255, 0.05);
+    --grid-major: rgba(255, 255, 255, 0.1);
+    --btn-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+    --panel-shadow: 5px 5px 0 rgba(0, 0, 0, 0.35);
+    --sketch: rgba(255, 255, 255, 0.11); /* compass circles + construction lines */
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-btn:not(.active) {
+    background-color: rgba(143, 179, 224, 0.12);
+    color: #c1d5ee;
+    border-color: rgba(143, 179, 224, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-btn:not(.active):hover {
+    background-color: rgba(143, 179, 224, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-yellow .toggle-btn:not(.active) {
+    background-color: rgba(247, 197, 143, 0.12);
+    color: #fbdfc1;
+    border-color: rgba(247, 197, 143, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background-color: rgba(247, 197, 143, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-blue .toggle-btn:not(.active) {
+    background-color: rgba(179, 205, 234, 0.12);
+    color: #d5e4f3;
+    border-color: rgba(179, 205, 234, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-blue .toggle-btn:not(.active):hover {
+    background-color: rgba(179, 205, 234, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-lilac .toggle-btn:not(.active) {
+    background-color: rgba(127, 159, 202, 0.12);
+    color: #b9cae2;
+    border-color: rgba(127, 159, 202, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background-color: rgba(127, 159, 202, 0.22);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-peach .toggle-btn:not(.active) {
+    background-color: rgba(244, 162, 97, 0.12);
+    color: #f9cca8;
+    border-color: rgba(244, 162, 97, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] .toggle-peach .toggle-btn:not(.active):hover {
+    background-color: rgba(244, 162, 97, 0.22);
+}
+
+/* ---------- Blueprint materials ----------
+   Neat drafting-table order (grid, squared panels, condensed
+   buttons) with an artsy hand: architect's hand lettering, compass
+   circles sketched on the grid, taped-on labels */
+:root[data-theme="blueprint"] body {
+    font-family: 'Barlow', 'Segoe UI', sans-serif;
+    background:
+        radial-gradient(circle at 90% 16%, transparent 0 89px, var(--sketch) 90px 91px, transparent 92px 139px, var(--sketch) 140px 141px, transparent 142px),
+        radial-gradient(circle at 6% 62%, transparent 0 169px, var(--sketch) 170px 171px, transparent 172px),
+        radial-gradient(circle at 70% 96%, transparent 0 119px, var(--sketch) 120px 121px, transparent 122px),
+        linear-gradient(28deg, transparent calc(50% - 0.6px), var(--sketch) 50%, transparent calc(50% + 0.6px)),
+        linear-gradient(var(--grid-major) 1px, transparent 1px) 0 0 / 100px 100px,
+        linear-gradient(90deg, var(--grid-major) 1px, transparent 1px) 0 0 / 100px 100px,
+        linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 20px 20px,
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 20px 20px,
+        linear-gradient(180deg, var(--bg-a), var(--bg-b) 60%, var(--bg-c));
+    background-attachment: fixed;
+}
+
+/* the title: hand-lettered */
+:root[data-theme="blueprint"] h1 {
+    font-family: 'Architects Daughter', 'Barlow', cursive;
+    color: var(--y2k-dark);
+    text-shadow: none;
+}
+
+/* panels: square, crisp navy line, a flat offset shadow */
+:root[data-theme="blueprint"] .controls,
+:root[data-theme="blueprint"] .modal-content {
+    border: 2px solid var(--outline);
+    border-radius: 3px;
+    box-shadow: var(--panel-shadow);
+}
+
+/* title bars: navy drafting film with a fine grid and an orange tab */
+:root[data-theme="blueprint"] .window-titlebar,
+:root[data-theme="blueprint"] .modal-header {
+    background:
+        linear-gradient(90deg, var(--signal-orange) 0 40px, transparent 40px),
+        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+        #1d3d6e;
+}
+
+:root[data-theme="blueprint"] .modal-header {
+    padding-left: 56px;
+}
+
+/* no orange tab on the Settings header */
+:root[data-theme="blueprint"] #settings-modal .modal-header {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+        #1d3d6e;
+    padding-left: 18px;
+}
+
+:root[data-theme="blueprint"] .modal-header h3 {
+    font-family: 'Architects Daughter', 'Barlow', cursive;
+    color: #ffffff;
+}
+
+/* shelves: a clean cobalt beam */
+:root[data-theme="blueprint"] .shelf {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 2px, var(--shelf-color) 2px 80%, rgba(0, 0, 0, 0.18)) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="blueprint"] .shelf.scrolls {
+    background: var(--shelf-bg);
+}
+
+:root[data-theme="blueprint"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--signal-orange);
+}
+
+:root[data-theme="blueprint"] .shelf-count {
+    font-family: 'Architects Daughter', 'Barlow', cursive;
+}
+
+/* shelf names: hand-lettered grid-paper labels, squared up on the
+   shelf corner, with an orange edge */
+:root[data-theme="blueprint"] .genre-title {
+    font-family: 'Architects Daughter', 'Barlow', cursive;
+    transform: none;
+    left: -10px;
+    top: -24px;
+    border: 1.5px solid var(--outline);
+    border-left: 5px solid var(--signal-orange);
+    border-radius: 2px;
+    padding: 10px 24px;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="blueprint"] .genre-title:not([class*="tag-status-"]) {
+    background:
+        linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 10px 10px,
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 10px 10px,
+        var(--surface);
+    color: var(--y2k-dark);
+}
+
+/* buttons: flat, squared, condensed capitals */
+:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 3px;
+    border-width: 1.5px;
+    font-family: var(--pixel-font);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    display: none;
+}
+
+:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translate(1px, 1px);
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Blueprint: heading font sizes */
+:root[data-theme="blueprint"] h1 { font-size: 40px; font-weight: 400; letter-spacing: 2px; }
+:root[data-theme="blueprint"] .genre-title { font-size: 24px; font-weight: 400; letter-spacing: 1px; }
+:root[data-theme="blueprint"] .shelf-count { font-size: 40px; font-weight: 400; }
+:root[data-theme="blueprint"] .modal-header h3 { font-size: 19px; font-weight: 400; letter-spacing: 1px; }
+:root[data-theme="blueprint"] .field-section-title,
+:root[data-theme="blueprint"] .preview-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; }
+:root[data-theme="blueprint"] .series-missing-label,
+:root[data-theme="blueprint"] .shelf-empty-hint { font-weight: 600; }
+:root[data-theme="blueprint"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="blueprint"] h1 { font-size: 26px; letter-spacing: 1px; }
+    :root[data-theme="blueprint"] .genre-title { font-size: 17px; letter-spacing: 0.5px; left: 0; padding: 7px 14px; }
+    :root[data-theme="blueprint"] .shelf-count { font-size: 24px; }
+}
+
+/* Recent-colour swatches are hearts in the cute themes; the classy
+   ones get their own shape: wax seals, deco diamonds, paint chips */
+:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .recent-color-swatch {
+    width: 34px;
+    height: 34px;
+    margin: 0 3px;
+    clip-path: none;
+}
+
+:root[data-theme="library"] .recent-color-swatch {
+    border-radius: 50%;
+    border-color: #8a6a2a;
+    box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.3), inset 0 2px 3px rgba(255, 255, 255, 0.3);
+}
+
+:root[data-theme="deco"] .recent-color-swatch {
+    width: 28px;
+    height: 28px;
+    margin: 0 6px;
+    border: 2px solid var(--gold);
+    border-radius: 0;
+    transform: rotate(45deg);
+}
+
+:root[data-theme="deco"] .recent-color-swatch:hover {
+    transform: rotate(45deg) scale(1.12);
+}
+
+:root:is([data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .recent-color-swatch {
+    border-radius: 3px;
+    box-shadow: 2px 2px 0 rgba(var(--ink-rgb), 0.3);
+}
+
+/* Terminal after dark: a green phosphor CRT, all in shades of green */
+:root[data-mode="dark"][data-theme="terminal"] {
+    --shelf-color: #33ff66;
+    --bg-color: #030803;
+    --y2k-pink: #66ff8c;
+    --y2k-hot-pink: #33ff66;
+    --y2k-purple: #2bd96b;
+    --y2k-lavender: #0f2a14;
+    --y2k-dark: #33ff66;
+    --y2k-text: #33ff66;
+    --y2k-mint: #33ff66;
+    --y2k-peach: #9cff57;
+    --y2k-blue: #b8ffcb;
+    --y2k-lilac: #2bd96b;
+    --y2k-yellow: #5cff8f;
+    --y2k-green: #33ff66;
+    --y2k-coral: #ff6a3d;
+    --pastel-mint: #0b1f0f;
+    --pastel-peach: #13200b;
+    --pastel-blue: #0b1f10;
+    --pastel-lilac: #0a1c10;
+    --pastel-yellow: #0d200f;
+    --pastel-pink: #0b1a0e;
+    --pastel-lavender: #0b1a0e;
+    --ink-rgb: 51, 255, 102;
+    --accent-rgb: 51, 255, 102;
+    --bg-a: #030803;
+    --bg-b: #050c05;
+    --bg-c: #030803;
+    --panel-bg: #061007;
+    --section-bg: #081509;
+    --disabled-bg: #0c1f0f;
+    --status-hover: #0f2a14;
+    --secondary-hover: #143a1b;
+    --surface: #050c06;
+    --shelf-bg: rgba(51, 255, 102, 0.03);
+    --shelf-color-hover: #66ff8c;
+    --on-bright: #031004;
+    --outline: #1f9a3d;
+    --chart-bar: #33ff66;
+    --chart-bar-hover: #66ff8c;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%2333ff66' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --phosphor: #33ff66;
+    --phosphor-dim: #1f9a3d;
+    --cursor: #33ff66;
+    --on-accent: #031004;
+    --tab-bg: #33ff66;
+    --glow: rgba(51, 255, 102, 0.55);
+    --scan: rgba(0, 0, 0, 0.22);
+    --focus-fill: #0c2611;
+    --focus-glow: 0 0 12px 2px rgba(51, 255, 102, 0.55);
+    --btn-shadow: none;
+    --panel-shadow: 0 0 26px rgba(51, 255, 102, 0.14);
+    --page-bg: radial-gradient(ellipse 90% 80% at 50% 40%, #082008 0%, #030803 70%, #010301 100%);
+    --bezel: #c9bf9f;
+    --bezel-edge: #9c9274;
+    --bezel-ink: #5e5640;
+    --screen-shade: inset 0 0 90px rgba(0, 0, 0, 0.9), inset 0 0 0 2px rgba(0, 0, 0, 0.6);
+    --flicker-tint: rgba(51, 255, 102, 0.02);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-btn:not(.active) {
+    background-color: rgba(51, 255, 102, 0.06);
+    color: #33ff66;
+    border-color: rgba(51, 255, 102, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-btn:not(.active):hover {
+    background-color: rgba(51, 255, 102, 0.16);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-yellow .toggle-btn:not(.active) {
+    background-color: rgba(92, 255, 143, 0.06);
+    color: #5cff8f;
+    border-color: rgba(92, 255, 143, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background-color: rgba(92, 255, 143, 0.16);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-blue .toggle-btn:not(.active) {
+    background-color: rgba(184, 255, 203, 0.06);
+    color: #b8ffcb;
+    border-color: rgba(184, 255, 203, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-blue .toggle-btn:not(.active):hover {
+    background-color: rgba(184, 255, 203, 0.16);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-lilac .toggle-btn:not(.active) {
+    background-color: rgba(43, 217, 107, 0.06);
+    color: #2bd96b;
+    border-color: rgba(43, 217, 107, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background-color: rgba(43, 217, 107, 0.16);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-peach .toggle-btn:not(.active) {
+    background-color: rgba(156, 255, 87, 0.06);
+    color: #9cff57;
+    border-color: rgba(156, 255, 87, 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .toggle-peach .toggle-btn:not(.active):hover {
+    background-color: rgba(156, 255, 87, 0.16);
+}
+
+/* ---------- Terminal materials ---------- */
+:root[data-theme="terminal"] body {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    background: var(--page-bg);
+    background-attachment: scroll;
+}
+
+/* the CRT: scanlines over the whole screen - text included - but the
+   books are lifted above the sheet so their covers stay clean.
+   (The edit window sits above it, so it gets its own sheet, with the
+   preview book lifted above that one.) */
+:root[data-theme="terminal"] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+    background: repeating-linear-gradient(180deg, var(--scan) 0 1px, transparent 1px 3px), var(--flicker-tint);
+}
+
+:root[data-theme="terminal"] .book {
+    z-index: 41;
+}
+
+:root[data-theme="terminal"] .modal-content {
+    position: relative;
+}
+
+:root[data-theme="terminal"] .modal-content::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+    background: repeating-linear-gradient(180deg, var(--scan) 0 1px, transparent 1px 3px);
+}
+
+:root[data-theme="terminal"] .modal-preview {
+    position: relative;
+    z-index: 31;
+}
+
+/* every text box types in phosphor */
+:root[data-theme="terminal"] :is(input, select, textarea) {
+    color: var(--phosphor);
+}
+
+/* the monitor: a beige plastic bezel framing the window, rounded screen
+   corners with the glass shading darker at the edges, a power LED and
+   a badge. Content is padded in so nothing hides under the bezel. */
+:root[data-theme="terminal"] body {
+    padding: 32px 32px 48px;
+}
+
+:root[data-theme="terminal"] body::before {
+    content: "";
+    position: fixed;
+    inset: 12px 12px 30px 12px;
+    border-radius: 22px;
+    pointer-events: none;
+    z-index: 2999;
+    box-shadow:
+        var(--screen-shade),
+        0 0 0 3px var(--bezel-edge),
+        0 0 0 80px var(--bezel);
+}
+
+:root[data-theme="terminal"] body::after {
+    inset: 12px 12px 30px 12px;
+    border-radius: 22px;
+    animation: crt-flicker 7s steps(1) infinite;
+}
+
+@keyframes crt-flicker {
+    0%, 96%, 98%, 100% { opacity: 1; }
+    97% { opacity: 0.6; }
+    99% { opacity: 0.8; }
+}
+
+/* the badge, centred on the chin, and the power light beside it */
+:root[data-theme="terminal"]::after {
+    content: "BOOKSHELF  \00B7  2000";
+    position: fixed;
+    bottom: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3001;
+    pointer-events: none;
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    letter-spacing: 3px;
+    color: var(--bezel-ink);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+:root[data-theme="terminal"]::before {
+    content: "";
+    position: fixed;
+    bottom: 11px;
+    right: 34px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    z-index: 3001;
+    pointer-events: none;
+    background: #39ff6a;
+    box-shadow: 0 0 6px 2px rgba(57, 255, 106, 0.7), inset 0 -1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* corner widgets move in off the bezel */
+:root[data-theme="terminal"] .sticky-pile { left: 28px; bottom: 42px; }
+:root[data-theme="terminal"] .stats-ledger { left: 37px; bottom: 140px; }
+:root[data-theme="terminal"] .secret-heart { right: 26px; bottom: 40px; }
+
+@media (max-width: 600px) {
+    :root[data-theme="terminal"] body { padding: 22px 18px 40px; }
+    :root[data-theme="terminal"] body::before,
+    :root[data-theme="terminal"] body::after {
+        inset: 7px 7px 24px 7px;
+        border-radius: 16px;
+    }
+    :root[data-theme="terminal"]::after { bottom: 4px; font-size: 13px; }
+    :root[data-theme="terminal"]::before { bottom: 8px; right: 18px; }
+    :root[data-theme="terminal"] .sticky-pile { left: 18px; bottom: 34px; }
+    :root[data-theme="terminal"] .stats-ledger { left: 21px; bottom: 100px; }
+    :root[data-theme="terminal"] .secret-heart { right: 16px; bottom: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root[data-theme="terminal"] body::after { animation: none; }
+}
+
+/* a classic READY. prompt above the shelves */
+:root[data-theme="terminal"] #library-room::before {
+    content: "READY.";
+    display: block;
+    margin: 4px 0 -10px;
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    color: var(--phosphor);
+    letter-spacing: 2px;
+}
+
+:root[data-mode="dark"][data-theme="terminal"] #library-room::before {
+    text-shadow: 0 0 6px var(--glow);
+}
+
+/* glowing phosphor text */
+:root[data-mode="dark"][data-theme="terminal"] :is(h1, .controls, .modal-content, .backup-bar, .shelf-count, .shelf-empty-hint) {
+    text-shadow: 0 0 4px var(--glow);
+}
+
+/* the title is a prompt: "C:\> MY BOOKSHELF" and a blinking block cursor */
+:root[data-theme="terminal"] h1 {
+    animation: none; /* a monitor's text sits still */
+    font-family: var(--pixel-font);
+    color: var(--phosphor);
+    text-transform: uppercase;
+}
+
+:root[data-mode="dark"][data-theme="terminal"] h1 {
+    text-shadow: 0 0 10px var(--glow), 0 0 2px var(--glow);
+}
+
+:root[data-theme="terminal"] h1 .h1-spark,
+:root[data-theme="blueprint"] h1 .h1-spark,
+:root[data-theme="terminal"] .title-mark {
+    display: none;
+}
+
+:root[data-theme="terminal"] h1::before {
+    content: "C:\005C> ";
+}
+
+:root[data-theme="terminal"] h1::after {
+    content: "";
+    display: inline-block;
+    width: 0.5em;
+    height: 0.85em;
+    margin-left: 6px;
+    vertical-align: -0.08em;
+    background: var(--cursor);
+    box-shadow: 0 0 10px var(--glow);
+    animation: term-blink 1.05s steps(1) infinite;
+}
+
+@keyframes term-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root[data-theme="terminal"] h1::after { animation: none; }
+}
+
+/* panels: square boxes drawn in phosphor */
+:root[data-theme="terminal"] .controls,
+:root[data-theme="terminal"] .modal-content {
+    border: 2px solid var(--phosphor-dim);
+    border-radius: 0;
+    box-shadow: var(--panel-shadow);
+}
+
+/* title bars: old-computer stripes; window titles in inverse video */
+:root[data-theme="terminal"] .window-titlebar {
+    height: 12px;
+    background: repeating-linear-gradient(180deg, var(--phosphor) 0 2px, transparent 2px 4px);
+    opacity: 0.8;
+}
+
+:root[data-theme="terminal"] .modal-header {
+    background: var(--phosphor);
+}
+
+:root[data-theme="terminal"] .modal-header h3 {
+    font-family: var(--pixel-font);
+    color: var(--on-accent);
+    text-transform: uppercase;
+    text-shadow: none;
+}
+
+:root[data-theme="terminal"] .modal-header h3::before {
+    content: "C:\005C> ";
+}
+
+/* shelves: boxes with a double-line ledge, like box-drawing characters */
+:root[data-theme="terminal"] .shelf {
+    border-radius: 0;
+    background:
+        linear-gradient(var(--phosphor), var(--phosphor)) left bottom 13px / 100% 2px no-repeat,
+        linear-gradient(var(--phosphor), var(--phosphor)) left bottom 7px / 100% 2px no-repeat,
+        var(--shelf-bg);
+    box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.25);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .shelf {
+    box-shadow: inset 0 0 0 1px rgba(var(--ink-rgb), 0.25), 0 6px 14px -8px var(--glow);
+}
+
+:root[data-theme="terminal"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-bottom: 6px double var(--phosphor);
+}
+
+/* expanded rows above the last, in themes that paint their own ledge:
+   just the back of the shelf (their .scrolls border-image would
+   still draw a ledge, so it isn't shared) */
+:root[data-theme="holo"] .shelf.shelf-continues,
+:root[data-theme="deco"] .shelf.shelf-continues,
+:root[data-theme="loft"] .shelf.shelf-continues,
+:root[data-theme="blueprint"] .shelf.shelf-continues {
+    background: var(--shelf-bg);
+}
+
+/* expanded rows: one outline around the whole stack, no lines between */
+:root[data-theme="terminal"] .shelf.shelf-continues {
+    background: var(--shelf-bg);
+    box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25), inset 0 1px 0 rgba(var(--ink-rgb), 0.25);
+}
+
+:root[data-theme="terminal"] .shelf.shelf-row {
+    box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25), inset 0 -1px 0 rgba(var(--ink-rgb), 0.25);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .shelf.shelf-row {
+    box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25), inset 0 -1px 0 rgba(var(--ink-rgb), 0.25), 0 6px 14px -8px var(--glow);
+}
+
+:root[data-theme="terminal"] .shelf.shelf-row.shelf-continues,
+:root[data-mode="dark"][data-theme="terminal"] .shelf.shelf-row.shelf-continues {
+    box-shadow: inset 1px 0 0 rgba(var(--ink-rgb), 0.25), inset -1px 0 0 rgba(var(--ink-rgb), 0.25);
+}
+
+:root[data-theme="terminal"] .shelf::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+:root[data-theme="terminal"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--phosphor);
+    border-radius: 0;
+    border-color: transparent;
+    background-clip: padding-box;
+}
+
+:root[data-theme="terminal"] .shelf-expand-btn {
+    border-radius: 0;
+}
+
+/* shelf names: an inverse-video prompt, "> FANTASY" */
+:root[data-theme="terminal"] .genre-title {
+    transform: none;
+    left: -10px;
+    top: -22px;
+    border: none;
+    border-radius: 0;
+    padding: 4px 16px;
+    text-transform: uppercase;
+    box-shadow: none;
+}
+
+:root[data-theme="terminal"] .genre-title:not([class*="tag-status-"]) {
+    background: var(--tab-bg);
+    color: var(--on-accent);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] .genre-title {
+    box-shadow: 0 0 12px var(--glow);
+}
+
+:root[data-theme="terminal"] .genre-title::before {
+    content: "> ";
+}
+
+/* buttons: square, VT323 capitals; pressed ones go inverse video */
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 0;
+    border-width: 2px;
+    font-family: var(--pixel-font);
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1;
+    text-transform: uppercase;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    display: none;
+}
+
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+    transform: translateY(1px);
+}
+
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn).active {
+    transform: none;
+    box-shadow: none;
+}
+
+:root[data-mode="dark"][data-theme="terminal"] body :is(.toggle-btn, .status-btn).active,
+:root[data-mode="dark"][data-theme="terminal"] :is(.add-book-btn, #modal-save-btn, .sticky-submit) {
+    box-shadow: 0 0 10px var(--glow);
+}
+
+/* the run buttons: add / save / stick it, solid phosphor */
+:root[data-theme="terminal"] :is(.add-book-btn, #modal-save-btn, .sticky-submit),
+:root[data-theme="terminal"] .status-btn.active {
+    color: var(--on-accent);
+    text-shadow: none;
+}
+
+:root[data-theme="terminal"] button.danger:hover {
+    background-color: var(--y2k-coral);
+    filter: brightness(1.08);
+}
+
+/* (VT323 runs small - the edit window's notes/delete buttons need more) */
+:root[data-theme="terminal"] :is(#modal-notes-btn, #modal-delete-btn) {
+    font-size: 17px;
+}
+
+/* box-drawing sections, like a system-info readout:
+   ┌──── Details ────
+   │  ...
+   └─────────────── */
+:root[data-theme="terminal"] .field-section {
+    border: none;
+    border-left: 2px solid var(--phosphor-dim);
+    border-bottom: 2px solid var(--phosphor-dim);
+    border-radius: 0;
+    padding: 0 16px 16px 16px;
+}
+
+:root[data-theme="terminal"] .field-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 -16px 2px -16px;
+    color: var(--phosphor);
+}
+
+:root[data-theme="terminal"] .field-section-title::before,
+:root[data-theme="terminal"] .field-section-title::after {
+    content: "";
+    flex: 1;
+    height: 2px;
+    background: var(--phosphor-dim);
+}
+
+/* the main panel's labels hang off a tree: ├─ Organize by: */
+:root[data-theme="terminal"] .controls .control-group > label::before {
+    content: "\251C\2500\00A0";
+    color: var(--phosphor-dim);
+}
+
+:root[data-theme="terminal"] .controls .search-row > label::before {
+    content: "\250C\2500\00A0";
+}
+
+/* typing in a text box: a green block caret */
+:root[data-theme="terminal"] :is(input, select, textarea) {
+    caret-color: var(--phosphor);
+}
+
+:root[data-mode="dark"][data-theme="terminal"] ::placeholder {
+    color: rgba(51, 255, 102, 0.4);
+}
+
+/* the sticky note is still paper: pencil charcoal, not phosphor */
+:root[data-theme="terminal"] .sticky-note :is(input, select, .sticky-submit) {
+    color: #3d3d3d;
+    caret-color: #3d3d3d;
+    text-shadow: none;
+}
+
+:root[data-theme="terminal"] .sticky-note .sticky-submit {
+    box-shadow: none;
+}
+
+:root[data-theme="terminal"] .sticky-note input::placeholder {
+    color: rgba(61, 61, 61, 0.4);
+}
+
+/* Terminal: heading font sizes (VT323 runs small, so these are big) */
+:root[data-theme="terminal"] h1 { font-size: 64px; font-weight: 400; letter-spacing: 2px; }
+:root[data-theme="terminal"] .genre-title { font-size: 30px; font-weight: 400; letter-spacing: 1px; }
+:root[data-theme="terminal"] .shelf-count { font-size: 46px; font-weight: 400; }
+:root[data-theme="terminal"] .modal-header h3 { font-size: 24px; font-weight: 400; }
+:root[data-theme="terminal"] .field-section-title,
+:root[data-theme="terminal"] .preview-label { font-size: 18px; font-weight: 400; letter-spacing: 0.08em; }
+:root[data-theme="terminal"] .series-missing-label,
+:root[data-theme="terminal"] .shelf-empty-hint { font-size: 16px; font-weight: 400; }
+:root[data-theme="terminal"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="terminal"] h1 { font-size: 38px; }
+    :root[data-theme="terminal"] .genre-title { font-size: 22px; left: 0; padding: 3px 12px; }
+    :root[data-theme="terminal"] .shelf-count { font-size: 30px; }
+}
+
+/* bright fills keep dark text so it stays readable */
+:root[data-mode="dark"] .toggle-btn.active,
+:root[data-mode="dark"] button.danger,
+:root[data-mode="dark"] .file-upload-btn,
+:root[data-mode="dark"] .stats-ledger-label,
+:root[data-mode="dark"] .preview-sticker,
+:root[data-mode="dark"] .modal-close-x:hover .x-face {
+    color: var(--on-bright);
+}
+
+
+/* Unpressed toggle buttons in dark mode: instead of muddy dark
+   pastels, a clean see-through tint of the group's colour with
+   matching text and edge (mint / yellow / blue groups). */
+:root[data-mode="dark"] .toggle-btn:not(.active) {
+    background: rgba(95, 232, 196, 0.12);
+    color: #9cf0d6;
+    border-color: rgba(95, 232, 196, 0.55);
+    box-shadow: 3px 3px 0 rgba(95, 232, 196, 0.3);
+}
+
+:root[data-mode="dark"] .toggle-yellow .toggle-btn:not(.active) {
+    background: rgba(255, 224, 102, 0.12);
+    color: #ffe794;
+    border-color: rgba(255, 224, 102, 0.55);
+    box-shadow: 3px 3px 0 rgba(255, 224, 102, 0.3);
+}
+
+:root[data-mode="dark"] .toggle-blue .toggle-btn:not(.active) {
+    background: rgba(159, 220, 255, 0.12);
+    color: #bde6ff;
+    border-color: rgba(159, 220, 255, 0.55);
+    box-shadow: 3px 3px 0 rgba(159, 220, 255, 0.3);
+}
+
+:root[data-mode="dark"] .toggle-btn:not(.active):hover {
+    background: rgba(95, 232, 196, 0.22);
+}
+
+:root[data-mode="dark"] .toggle-yellow .toggle-btn:not(.active):hover {
+    background: rgba(255, 224, 102, 0.22);
+}
+
+:root[data-mode="dark"] .toggle-lilac .toggle-btn:not(.active) {
+    background: rgba(201, 166, 255, 0.12);
+    color: #e2d1ff;
+    border-color: rgba(201, 166, 255, 0.55);
+    box-shadow: 3px 3px 0 rgba(201, 166, 255, 0.3);
+}
+
+:root[data-mode="dark"] .toggle-peach .toggle-btn:not(.active) {
+    background: rgba(255, 180, 140, 0.12);
+    color: #ffd2b8;
+    border-color: rgba(255, 180, 140, 0.55);
+    box-shadow: 3px 3px 0 rgba(255, 180, 140, 0.3);
+}
+
+:root[data-mode="dark"] .toggle-lilac .toggle-btn:not(.active):hover {
+    background: rgba(201, 166, 255, 0.22);
+}
+
+:root[data-mode="dark"] .toggle-peach .toggle-btn:not(.active):hover {
+    background: rgba(255, 180, 140, 0.22);
+}
+
+:root[data-mode="dark"] .toggle-blue .toggle-btn:not(.active):hover {
+    background: rgba(159, 220, 255, 0.22);
+}
+
+/* the open list inside dropdowns follows dark mode too */
+:root[data-mode="dark"] option,
+:root[data-mode="dark"] optgroup {
+    background-color: var(--surface);
+    color: var(--y2k-dark);
+}
+
+/* dropdown arrows are little inline SVGs, which can't read colour
+   variables themselves - so the theme swaps in a teal copy */
+:root[data-theme="seaglass"] {
+    --chart-bar: #5a8fd6;
+    --chart-bar-hover: #7aa6e0;
+    --on-bright: #1f3b4d;
+    --outline: #1f3b4d;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%232a8c96' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}

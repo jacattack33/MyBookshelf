@@ -1,6 +1,13 @@
 # My Bookshelf
 
-A self-contained visual bookshelf app: `index.html` plus a small `assets/` folder (the notepad paper image). Open `index.html` in a browser — no build step, no server, no install. Keep `assets/` next to `index.html`; if you move or copy the app, move the whole folder. It also works hosted on GitHub Pages.
+A self-contained visual bookshelf app: `index.html` plus its `css/`, `js/` and `assets/` folders. Open `index.html` in a browser — no build step, no server, no install. Keep the folders next to `index.html`; if you move or copy the app, move the whole folder. It also works hosted on GitHub Pages.
+
+## Code layout
+
+Plain files, no build step. The scripts are classic `<script>` tags (not modules, which won't load from a file), so they share globals and **load in the order `index.html` lists them**, with `js/main.js` last since it starts the app. The stylesheets are also order-sensitive: later rules win ties, so keep them in the listed order.
+
+- `css/`: `theme-colors` (every theme's colours, light and dark) → `theme-styles` (each theme's panels, shelves, buttons, fonts) → `base` (page, shelves, books, windows) → `effects` (sparkles, exits) → `form` (edit window) → `shelf-extras` (leaning, sticky notes, dust) → `corner` (bottom-left stack, debug panel) → `windows` (goals, critter, stats, library card) → `cat` → `phone`
+- `js/`: `settings` (constants, Settings, genres, theme, mode) · `db` (IndexedDB, starter books, backups) · `migrations` (one-time data fixes) · `fx` (sparkles, confetti) · `shelf` (rendering, drag & drop, leaning, dust, cat, filters) · `sticky` (sticky notes) · `form` (edit window, tags, dates, notes, crop) · `critter` · `goals` · `stats` · `debug` · `exits` (deleted books and notes leaving) · `main` (`init()`)
 
 ## Data storage
 
@@ -126,7 +133,7 @@ What this means in practice:
     - **Library:** a gentleman's study. Cream linen, oxblood leather title bars with stitching, bottle-green accents, fully wooden walnut bookcase shelves (a solid walnut back, dark uprights, grained ledges), engraved brass nameplates, brass Cinzel lettering, and stitched leather buttons. After dark it turns dark academia: near-black charcoal, aged parchment text, oxblood leather, deep royal blue accents, antique brass and ebony shelves.
     - **Deco:** midnight Art Deco. Gold sunburst rays, double gold borders with stepped corners, black-lacquer shelves with a gold pinstripe, navy plaques with gold Limelight lettering, and sharp uppercase buttons. After dark it's a gold-on-navy speakeasy.
     - **Loft:** an industrial loft. Concrete, blackened-steel edges, brushed-steel title bars with rivets, solid blackened-steel shelf planks, flat blackened-steel shelf signs with a copper edge bar, bold Oswald lettering, and flat industrial-key buttons. After dark it's lit by warm Edison bulbs.
-    - **Blueprint:** an artsy drafting table. Blueprint grid paper with compass circles and construction lines sketched across it, hand lettering (Architects Daughter), hand-lettered grid-paper shelf labels with an orange edge, clean cobalt shelf beams, orange registration marks, and neat condensed buttons with pops of signal orange on add and save. After dark it's a classic deep-blue blueprint with white lines.
+    - **Blueprint:** an artsy drafting table. Blueprint grid paper with compass circles and construction lines sketched across it, hand lettering (Architects Daughter), hand-lettered grid-paper shelf labels with an orange edge, clean cobalt shelf beams, and neat condensed buttons with pops of signal orange on add and save. After dark it's a classic deep-blue blueprint with white lines.
     - **Terminal:** a classic retro computer. The whole page sits inside a beige monitor (rounded screen corners, a power light and a little badge), with VT323 terminal lettering, scanlines, a `C:\>` prompt with a blinking block cursor, a `READY.` prompt, inverse-video shelf names and pressed buttons, double-line shelves, and box-drawing lines like a system-info readout (`┌──── DETAILS ────` section boxes in the edit and Settings windows, and `├─` tree branches on the main panel's labels). After dark the screen is a glowing green phosphor CRT, everything in shades of green; by day it's a paper-white screen with dark phosphor text.
     - In Library, Deco, Loft, Blueprint and Terminal the recent-colour swatches in the edit window are wax seals, diamonds or paint chips instead of hearts.
   - **Mode:** Light, Dark, or Match device (follows your computer or phone's setting). Works with every theme; the notepad, library card and sticky notes stay paper-colored.
