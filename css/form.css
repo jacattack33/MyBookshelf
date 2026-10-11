@@ -131,8 +131,11 @@
 /* Text boxes and dropdowns in the edit / settings windows get the
    home page's focused look: flowing theme-coloured border (through a
    transparent border, border-box layer), soft glow, pastel tint.
-   The colour picker, Cover Width slider and checkboxes keep their own. */
-.field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]):focus {
+   The colour picker, Cover Width slider and checkboxes keep their own.
+   The two required fields (Title, Genre) wear it while they're still
+   empty too, so it's clear up front what has to be filled in. */
+.field-label input:not([type="color"]):not([type="range"]):not([type="checkbox"]):focus,
+#book-title:placeholder-shown {
     border-color: transparent;
     background:
         linear-gradient(var(--focus-fill), var(--focus-fill)) padding-box,
@@ -142,7 +145,8 @@
     box-shadow: var(--focus-glow);
 }
 
-.field-label select:focus {
+.field-label select:focus,
+#book-genre:invalid {
     border-color: transparent;
     background:
         var(--caret-url) right 11px center / 15px no-repeat padding-box,
@@ -155,7 +159,9 @@
 
 @media (prefers-reduced-motion: reduce) {
     .field-label input:focus,
-    .field-label select:focus { animation: none; }
+    .field-label select:focus,
+    #book-title:placeholder-shown,
+    #book-genre:invalid { animation: none; }
 }
 
 .field-row {
