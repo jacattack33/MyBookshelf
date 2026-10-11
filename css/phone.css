@@ -95,6 +95,11 @@
         padding-top: 4px;
     }
 
+    /* the panel stacks every control, so the lines fall away */
+    .controls-line {
+        display: contents;
+    }
+
     .filters-panel .control-group,
     .controls-row {
         flex-direction: column;

@@ -52,86 +52,94 @@
             <!-- on desktop this wrapper is display: contents (no effect); on
                  phones it's the collapsible Filters & sorting panel -->
             <div class="filters-panel" id="filters-panel">
-            <div class="control-group">
-                <label>Organize by: </label>
-                <div class="toggle-group">
-                    <button type="button" class="toggle-btn active" data-organize="genre" onclick="selectOrganizeBy('genre')">Genre</button>
-                    <button type="button" class="toggle-btn" data-organize="status" onclick="selectOrganizeBy('status')">Reading Status</button>
-                    <button type="button" class="toggle-btn" data-organize="author" onclick="selectOrganizeBy('author')">Author</button>
-                    <button type="button" class="toggle-btn" data-organize="series" onclick="selectOrganizeBy('series')">Series</button>
-                    <button type="button" class="toggle-btn" data-organize="tag" onclick="selectOrganizeBy('tag')">Tag</button>
-                    <button type="button" class="toggle-btn" data-organize="rating" onclick="selectOrganizeBy('rating')">Rating</button>
-                </div>
-                <select id="organize-by" style="display:none;">
-                    <option value="genre">Genre</option>
-                    <option value="status">Reading Status</option>
-                    <option value="author">Author</option>
-                    <option value="series">Series</option>
-                    <option value="tag">Tag</option>
-                    <option value="rating">Rating</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Filter Status: </label>
-                <div class="toggle-group toggle-peach">
-                    <button type="button" class="toggle-btn active" data-filter-status="All" onclick="selectFilterStatus('All')">All</button>
-                    <button type="button" class="toggle-btn" data-filter-status="Want to Read" onclick="selectFilterStatus('Want to Read')">Want to Read</button>
-                    <button type="button" class="toggle-btn" data-filter-status="Reading" onclick="selectFilterStatus('Reading')">Reading</button>
-                    <button type="button" class="toggle-btn" data-filter-status="Read" onclick="selectFilterStatus('Read')">Read</button>
-                    <button type="button" class="toggle-btn" data-filter-status="DNF" onclick="selectFilterStatus('DNF')">DNF</button>
-                </div>
-                <select id="filter-status" style="display:none;">
-                    <option value="All">All</option>
-                    <option value="Want to Read">Want to Read</option>
-                    <option value="Reading">Reading</option>
-                    <option value="Read">Read</option>
-                    <option value="DNF">DNF</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>View: </label>
-                <div class="toggle-group toggle-blue">
-                    <button type="button" class="toggle-btn active" data-view-mode="cover" onclick="selectViewMode('cover')">Covers</button>
-                    <button type="button" class="toggle-btn" data-view-mode="spine" onclick="selectViewMode('spine')">Spines</button>
-                </div>
-                <select id="view-mode" style="display:none;">
-                    <option value="cover">Covers</option>
-                    <option value="spine">Spines</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Filter Owned: </label>
-                <div class="toggle-group toggle-lilac">
-                    <button type="button" class="toggle-btn active" data-filter-owned="All" onclick="selectFilterOwned('All')">All</button>
-                    <button type="button" class="toggle-btn" data-filter-owned="Owned" onclick="selectFilterOwned('Owned')">Owned</button>
-                    <button type="button" class="toggle-btn" data-filter-owned="Not Owned" onclick="selectFilterOwned('Not Owned')">Not Owned</button>
-                </div>
-                <select id="filter-owned" style="display:none;">
-                    <option value="All">All</option>
-                    <option value="Owned">Owned</option>
-                    <option value="Not Owned">Not Owned</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Sticky Notes: </label>
-                <div class="toggle-group toggle-yellow">
-                    <button type="button" class="toggle-btn active" data-filter-sticky="Show" onclick="selectFilterSticky('Show')" title="Show the to-get notes with your books">Show</button>
-                    <button type="button" class="toggle-btn" data-filter-sticky="Hide" onclick="selectFilterSticky('Hide')" title="Only real books">Hide</button>
-                    <button type="button" class="toggle-btn" data-filter-sticky="Only" onclick="selectFilterSticky('Only')" title="Just your to-get list">Only</button>
+            <div class="controls-line">
+                <div class="control-group">
+                    <label>Organize by: </label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn active" data-organize="genre" onclick="selectOrganizeBy('genre')">Genre</button>
+                        <button type="button" class="toggle-btn" data-organize="status" onclick="selectOrganizeBy('status')">Reading Status</button>
+                        <button type="button" class="toggle-btn" data-organize="author" onclick="selectOrganizeBy('author')">Author</button>
+                        <button type="button" class="toggle-btn" data-organize="series" onclick="selectOrganizeBy('series')">Series</button>
+                        <button type="button" class="toggle-btn" data-organize="tag" onclick="selectOrganizeBy('tag')">Tag</button>
+                        <button type="button" class="toggle-btn" data-organize="rating" onclick="selectOrganizeBy('rating')">Rating</button>
+                    </div>
+                    <select id="organize-by" style="display:none;">
+                        <option value="genre">Genre</option>
+                        <option value="status">Reading Status</option>
+                        <option value="author">Author</option>
+                        <option value="series">Series</option>
+                        <option value="tag">Tag</option>
+                        <option value="rating">Rating</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label for="sort-mode">Sort: </label>
-                <select id="sort-mode" onchange="renderBookshelf()">
-                    <option value="custom">Custom (Drag & Drop)</option>
-                    <option value="author">Author Last Name (A-Z)</option>
-                    <option value="rating">Rating (High to Low)</option>
-                </select>
+            <div class="controls-line">
+                <div class="control-group">
+                    <label>Filter Status: </label>
+                    <div class="toggle-group toggle-peach">
+                        <button type="button" class="toggle-btn active" data-filter-status="All" onclick="selectFilterStatus('All')">All</button>
+                        <button type="button" class="toggle-btn" data-filter-status="Want to Read" onclick="selectFilterStatus('Want to Read')">Want to Read</button>
+                        <button type="button" class="toggle-btn" data-filter-status="Reading" onclick="selectFilterStatus('Reading')">Reading</button>
+                        <button type="button" class="toggle-btn" data-filter-status="Read" onclick="selectFilterStatus('Read')">Read</button>
+                        <button type="button" class="toggle-btn" data-filter-status="DNF" onclick="selectFilterStatus('DNF')">DNF</button>
+                    </div>
+                    <select id="filter-status" style="display:none;">
+                        <option value="All">All</option>
+                        <option value="Want to Read">Want to Read</option>
+                        <option value="Reading">Reading</option>
+                        <option value="Read">Read</option>
+                        <option value="DNF">DNF</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>View: </label>
+                    <div class="toggle-group toggle-blue">
+                        <button type="button" class="toggle-btn active" data-view-mode="cover" onclick="selectViewMode('cover')">Covers</button>
+                        <button type="button" class="toggle-btn" data-view-mode="spine" onclick="selectViewMode('spine')">Spines</button>
+                    </div>
+                    <select id="view-mode" style="display:none;">
+                        <option value="cover">Covers</option>
+                        <option value="spine">Spines</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="controls-line">
+                <div class="control-group">
+                    <label>Filter Owned: </label>
+                    <div class="toggle-group toggle-lilac">
+                        <button type="button" class="toggle-btn active" data-filter-owned="All" onclick="selectFilterOwned('All')">All</button>
+                        <button type="button" class="toggle-btn" data-filter-owned="Owned" onclick="selectFilterOwned('Owned')">Owned</button>
+                        <button type="button" class="toggle-btn" data-filter-owned="Not Owned" onclick="selectFilterOwned('Not Owned')">Not Owned</button>
+                    </div>
+                    <select id="filter-owned" style="display:none;">
+                        <option value="All">All</option>
+                        <option value="Owned">Owned</option>
+                        <option value="Not Owned">Not Owned</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Sticky Notes: </label>
+                    <div class="toggle-group toggle-yellow">
+                        <button type="button" class="toggle-btn active" data-filter-sticky="Show" onclick="selectFilterSticky('Show')" title="Show the to-get notes with your books">Show</button>
+                        <button type="button" class="toggle-btn" data-filter-sticky="Hide" onclick="selectFilterSticky('Hide')" title="Only real books">Hide</button>
+                        <button type="button" class="toggle-btn" data-filter-sticky="Only" onclick="selectFilterSticky('Only')" title="Just your to-get list">Only</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-line">
+                <div class="control-group">
+                    <label for="sort-mode">Sort: </label>
+                    <select id="sort-mode" onchange="renderBookshelf()">
+                        <option value="custom">Custom (Drag & Drop)</option>
+                        <option value="author">Author Last Name (A-Z)</option>
+                        <option value="rating">Rating (High to Low)</option>
+                    </select>
+                </div>
             </div>
 
             <div class="controls-row">

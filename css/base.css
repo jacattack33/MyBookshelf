@@ -198,6 +198,17 @@ h1 {
     gap: 15px;
 }
 
+/* One toolbar line, the same in every theme: Organize; Status + View;
+   Owned + Sticky Notes; Sort. A second control sits at the right end. */
+.controls-line {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
 .control-group {
     display: flex;
     align-items: center;
