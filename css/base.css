@@ -1039,7 +1039,7 @@ body.drag-active .book:not(.dragging) {
     writing-mode: vertical-rl;
 }
 
-/* Series view: a round gold bookplate seal on books you own - polished
+/* A round gold bookplate seal on books you own - polished
    metal (a conic sweep of bright and dark golds catches the light like
    foil), a hard rim, a stamped inner ring and an engraved check */
 .series-owned-seal {
@@ -1088,13 +1088,13 @@ body.drag-active .book:not(.dragging) {
         0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
-/* Series view: owned-but-unread books are dimmed relative to ones
-   marked Read, so progress through the series reads at a glance. */
-.book.series-unread {
+/* Books not marked Read are dimmed relative to ones
+   marked Read, so progress reads at a glance (Settings picks which shelves). */
+.book.faded-unread {
     filter: grayscale(55%) opacity(0.7);
 }
 
-.book.series-unread:hover {
+.book.faded-unread:hover {
     filter: grayscale(15%) opacity(0.95);
 }
 

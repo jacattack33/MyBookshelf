@@ -12,19 +12,19 @@ const ADD_GENRE_VALUE = '__add_new_genre__';
 // separate things libraries label on top of genre, so here they're
 // suggested tags instead - see SUGGESTED_TAGS.
 const FICTION_GENRES = [
-    "Action", "Adventure", "Classic Literature", "Contemporary Fiction", "Crime", "Drama",
-    "Dystopian", "Fairy Tales & Retellings", "Fantasy", "Fiction", "Gothic",
+    "Action", "Adventure", "Classic Literature", "Contemporary Fiction", "Crime",
+    "Dystopian", "Fairy Tales & Retellings", "Fantasy", "Gothic",
     "Historical Fiction", "Horror", "Humor", "Literary Fiction", "Magical Realism", "Mystery",
     "Mythology & Folklore", "Paranormal", "Romance", "Satire", "Sci-Fi",
     "Speculative Fiction", "Thriller", "War Fiction", "Western", "Women's Fiction"
 ];
 const NONFICTION_GENRES = [
-    "Art", "Biography", "Business", "Cooking", "Crafts & Hobbies", "Critical Thinking",
-    "Economics", "Education", "Essays", "Fashion & Beauty", "Film & TV", "Health & Wellness",
+    "Art", "Biography", "Business", "Cooking", "Crafts & Hobbies",
+    "Economics", "Education", "Fashion & Beauty", "Film & TV", "Health & Wellness",
     "History", "Home & Garden", "Humor (Non-Fiction)", "Journalism & Current Affairs",
     "Language & Writing", "Law", "Mathematics", "Medicine", "Memoir", "Music",
     "Nature & Environment", "Parenting", "Personal Finance", "Pets & Animals", "Philosophy",
-    "Politics", "Psychology", "Reference", "Religion & Spirituality", "Science", "Self-Help",
+    "Politics", "Psychology", "Religion & Spirituality", "Science", "Self-Help",
     "Sociology", "Sports", "Technology", "Travel", "True Crime"
 ];
 
@@ -35,7 +35,33 @@ const GENRES_NOW_TAGS = {
     "Young Adult": "Young Adult",
     "Graphic Novel & Comics": "Graphic Novel",
     "Short Stories": "Short Stories",
-    "Poetry": "Poetry"
+    "Poetry": "Poetry",
+    "Drama": "Drama",
+    "Essays": "Essays",
+    "Reference": "Reference",
+    "Critical Thinking": "Critical Thinking"
+};
+
+// Where a book lands when its old genre goes away. Fiction-ish ones are
+// refiled by author (FICTION_BY_AUTHOR) first, falling back to these.
+const RETIRED_GENRE_HOMES = {
+    "Fiction": "Contemporary Fiction",
+    "Children's": "Contemporary Fiction",
+    "Middle Grade": "Contemporary Fiction",
+    "Young Adult": "Contemporary Fiction",
+    "Graphic Novel & Comics": "Contemporary Fiction",
+    "Short Stories": "Literary Fiction",
+    "Poetry": "Literary Fiction",
+    "Drama": "Literary Fiction",
+    "Essays": "Language & Writing",
+    "Reference": "Education",
+    "Critical Thinking": "Philosophy"
+};
+const FICTION_BY_AUTHOR = {
+    "lemony snicket": "Mystery",
+    "stephenie meyer": "Paranormal",
+    "ellen hopkins": "Contemporary Fiction",
+    "neal shusterman": "Dystopian"
 };
 
 // Always offered in the tag dropdown, even before any book uses them.
@@ -64,7 +90,8 @@ const DEFAULT_SETTINGS = {
     defaultStatus: 'Want to Read',
     cat: true, dust: true, lean: true, sticky: true,
     critter: true,              // the reading critter in the corner
-    seriesSeal: true,           // gold seal on owned books on the Series shelf
+    ownedSeal: 'series',        // gold seal on owned books: 'off', 'series' (Series shelf only) or 'all'
+    unreadFade: 'series',       // fade books not marked Read: 'off', 'series' or 'all'
     pagesGoal: 20,              // pages per pagesPeriod; also how fast the critter gets hungry
     pagesPeriod: 'day',         // day, week or month
     noteFont: null,             // font new notes start in (null = last one used)
@@ -96,9 +123,10 @@ function loadCustomGenres() {
     } catch (e) {
         customGenres = [];
     }
-    // a custom genre that's now built in (e.g. "Humor") shouldn't show twice
-    const builtIn = GENRES.map(g => g.toLowerCase());
-    customGenres = customGenres.filter(g => !builtIn.includes(g.toLowerCase()));
+    // a custom genre that's now built in (e.g. "Humor") shouldn't show
+    // twice, and a retired one (e.g. "Fiction") shouldn't come back
+    const skip = [...GENRES, ...Object.keys(RETIRED_GENRE_HOMES)].map(g => g.toLowerCase());
+    customGenres = customGenres.filter(g => !skip.includes(g.toLowerCase()));
 }
 
 // ---------- Theme (Candy / Sea Glass / Holo / Library / Deco / Loft / Blueprint / Terminal) ----------
@@ -264,6 +292,11 @@ function openSettings() {
 function loadSettings() {
     try {
         appSettings = { ...DEFAULT_SETTINGS, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}) };
+        // the seal used to be an on/off switch for the Series shelf
+        if ('seriesSeal' in appSettings) {
+            appSettings.ownedSeal = appSettings.seriesSeal ? 'series' : 'off';
+            delete appSettings.seriesSeal;
+        }
     } catch (e) {
         appSettings = { ...DEFAULT_SETTINGS };
     }
@@ -328,6 +361,9 @@ function refreshSettingsButtons() {
     });
     document.querySelectorAll('[data-default-status]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.defaultStatus === appSettings.defaultStatus);
+    });
+    document.querySelectorAll('[data-setting-choice]').forEach(btn => {
+        btn.classList.toggle('active', appSettings[btn.dataset.settingChoice] === btn.dataset.choice);
     });
     document.querySelectorAll('[data-pages-period]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.pagesPeriod === appSettings.pagesPeriod);

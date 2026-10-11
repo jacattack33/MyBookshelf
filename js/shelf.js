@@ -294,11 +294,15 @@ function buildBookElement(book, draggableEnabled, spineMode) {
     return bookDiv;
 }
 
-function decorateSeriesBookElement(book, draggableEnabled, spineMode) {
+// Settings > Shelf extras pick where each shows: 'off', 'series' (only
+// the Series shelf) or 'all' (every Organize by option).
+function decoratedBookElement(book, draggableEnabled, spineMode, onSeriesShelf) {
     const el = buildBookElement(book, draggableEnabled, spineMode);
-    el.classList.add(book.status === 'Read' ? 'series-read' : 'series-unread');
-    // books you own carry a little gold bookplate seal (Settings can hide it)
-    if (appSettings.seriesSeal && book.owned && !isStickyPlaceholder(book)) {
+    const shows = setting => setting === 'all' || (setting === 'series' && onSeriesShelf);
+    // books not marked Read are dimmed, so progress reads at a glance
+    if (shows(appSettings.unreadFade) && book.status !== 'Read') el.classList.add('faded-unread');
+    // books you own carry a little gold bookplate seal
+    if (shows(appSettings.ownedSeal) && book.owned && !isStickyPlaceholder(book)) {
         const seal = document.createElement('span');
         seal.className = 'series-owned-seal';
         seal.textContent = '✓';
@@ -508,7 +512,7 @@ function renderShelves() {
 
             for (let slot = 1; slot <= seriesTotal; slot++) {
                 while (bi < booksInSection.length && booksInSection[bi].seriesNumber === slot) {
-                    shelf.appendChild(decorateSeriesBookElement(booksInSection[bi], draggableEnabled, spineMode));
+                    shelf.appendChild(decoratedBookElement(booksInSection[bi], draggableEnabled, spineMode, true));
                     bi++;
                 }
                 if (!ownedNumbers.has(slot)) {
@@ -518,12 +522,12 @@ function renderShelves() {
             // anything left over has no series number, or a number past
             // the declared total - still show it, just at the end.
             while (bi < booksInSection.length) {
-                shelf.appendChild(decorateSeriesBookElement(booksInSection[bi], draggableEnabled, spineMode));
+                shelf.appendChild(decoratedBookElement(booksInSection[bi], draggableEnabled, spineMode, true));
                 bi++;
             }
         } else {
             booksInSection.forEach(book => {
-                shelf.appendChild(buildBookElement(book, draggableEnabled, spineMode));
+                shelf.appendChild(decoratedBookElement(book, draggableEnabled, spineMode, false));
             });
         }
 

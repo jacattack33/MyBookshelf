@@ -1,5 +1,5 @@
 // @size 1100x850
-// The reading critter: hatching, feeding, growing, favorite genre, hunger,
+// The reading critter: hatching, feeding, growing, hunger,
 // running away, the scrapbook, theme critters, the switch and backups.
 const DAY = 864e5;
 const fresh = () => { critter = newCritterEgg(); saveCritter(); renderCritter(); };
@@ -36,14 +36,10 @@ ok('typing renames it, Enter finishes', critter.name === 'Nibs' && document.acti
 critter.name = '';
 renderCritter();
 
-// ---- favorite genre tastes like the latest Reading book
-const reading = { id: 'cr1', title: 'Now Reading', authors: ['A'], genre: 'Mystery', status: 'Reading', color: '#5fe8c4', width: 100, sortOrder: 50, statusSince: Date.now() };
-library.push(reading);
-critter.favoriteGenre = 'Mystery';
+// ---- no genres: meals are just pages
 feedCritter(5);
-ok('pages taste like the Reading book', critter.log[0].genre === 'Mystery');
-ok('favorite discovered', critter.favoriteFound && q('#critter-tiles').textContent.includes('Mystery'));
-library.splice(library.indexOf(reading), 1);
+ok('meal logs pages only', critter.log[0].pages === 5 && !('genre' in critter.log[0]));
+ok('no favorite-genre tile', !q('#critter-tiles').textContent.includes('Loves'));
 
 // ---- growing up
 feedCritter(200);

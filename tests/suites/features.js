@@ -240,3 +240,27 @@ for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 't
 }
 setTheme('candy');
 ok('Candy again clears the theme', !document.documentElement.dataset.theme);
+
+// ---- retired genres get a real genre; audience/format ones become tags
+const oldGenreBooks = [
+    { id: 'mig1', title: 'Twilight', authors: ['Stephenie Meyer'], genre: 'Fiction', tags: [] },
+    { id: 'mig2', title: 'Someone Unknown', authors: ['Nobody'], genre: 'Fiction', tags: [] },
+    { id: 'mig3', title: 'Hamlet', authors: ['William Shakespeare'], genre: 'Drama', tags: [] },
+    { id: 'mig4', title: 'The Bad Beginning', authors: ['Lemony Snicket'], genre: 'Young Adult', tags: [] },
+    { id: 'mig5', title: 'Logic Book', authors: ['Stephenie Meyer'], genre: 'Critical Thinking', tags: [] },
+    { id: 'mig6', title: 'The Ersatz Elevator', authors: ['Unknown'], series: 'Snicket Test Series', genre: 'Fiction', tags: [] },
+    { id: 'mig7', title: 'The Bad Beginning', authors: ['Lemony Snicket'], series: 'Snicket Test Series', genre: 'Mystery', tags: [] }
+];
+library.push(...oldGenreBooks);
+await migrateGenresToTags();
+const mig = id => library.find(b => b.id === id);
+ok('known author leaves Fiction for their genre', mig('mig1').genre === 'Paranormal', mig('mig1').genre);
+ok('unknown author leaves Fiction for Contemporary Fiction', mig('mig2').genre === 'Contemporary Fiction', mig('mig2').genre);
+ok('Drama becomes a tag on a Literary Fiction book', mig('mig3').genre === 'Literary Fiction' && mig('mig3').tags.includes('Drama'));
+ok('Young Adult becomes a tag, genre by author', mig('mig4').genre === 'Mystery' && mig('mig4').tags.includes('Young Adult'), mig('mig4').genre);
+ok('non-fiction topic ignores the fiction author map', mig('mig5').genre === 'Philosophy' && mig('mig5').tags.includes('Critical Thinking'), mig('mig5').genre);
+ok('unknown author takes a series-mate\'s genre', mig('mig6').genre === 'Mystery', mig('mig6').genre);
+const leftover = ['Fiction', 'Drama', 'Essays', 'Reference', 'Critical Thinking'].filter(g => GENRES.includes(g));
+ok('retired genres are gone from the list', leftover.length === 0, leftover.join(', '));
+for (const b of oldGenreBooks) await dbDelete(b.id);
+library = library.filter(b => !b.id.startsWith('mig'));

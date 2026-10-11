@@ -675,7 +675,18 @@
                         <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
                         <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky-note pile</button>
                         <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="seriesSeal" onclick="toggleSetting('seriesSeal')" title="A gold seal on the books you own, on the Series shelf">Owned seal (Series)</button>
+                    </div>
+                    <div class="field-hint">Owned seal: a gold seal on the books you own.</div>
+                    <div class="toggle-group settings-choices" role="group" aria-label="Owned seal">
+                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="off" onclick="setSetting('ownedSeal', 'off')">Off</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="series" onclick="setSetting('ownedSeal', 'series')">Series shelf</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="all" onclick="setSetting('ownedSeal', 'all')">Every shelf</button>
+                    </div>
+                    <div class="field-hint">Fade unread: dims books you haven't marked Read.</div>
+                    <div class="toggle-group settings-choices" role="group" aria-label="Fade unread books">
+                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="off" onclick="setSetting('unreadFade', 'off')">Off</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="series" onclick="setSetting('unreadFade', 'series')">Series shelf</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="all" onclick="setSetting('unreadFade', 'all')">Every shelf</button>
                     </div>
                 </div>
 

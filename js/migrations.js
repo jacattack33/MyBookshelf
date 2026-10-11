@@ -17,16 +17,24 @@ function normalizeRating(rating) {
 }
 
 async function migrateGenresToTags() {
-    // Children's / Middle Grade / Young Adult / Graphic Novel & Comics /
-    // Short Stories / Poetry used to be genres; they're tags now. Keep
-    // the label as a tag and file the book under Fiction.
-    const moved = library.filter(b => GENRES_NOW_TAGS[b.genre]);
+    // Audience/format labels (Young Adult, Poetry, Essays...) and topics
+    // (Critical Thinking) used to be genres; they're tags now. Keep the
+    // label as a tag. Those, plus the old catch-all "Fiction", get a real
+    // genre: by author when we know them (or a series-mate's author, for
+    // one saved as "Unknown"), else RETIRED_GENRE_HOMES.
+    const moved = library.filter(b => RETIRED_GENRE_HOMES[b.genre]);
     if (moved.length === 0) return;
+    const byAuthor = b => (b.authors || []).map(a => FICTION_BY_AUTHOR[a.toLowerCase()]).find(Boolean);
+    const bySeries = b => b.series && library
+        .filter(o => o !== b && o.series === b.series).map(byAuthor).find(Boolean);
     moved.forEach(b => {
         const tag = GENRES_NOW_TAGS[b.genre];
-        b.tags = b.tags || [];
-        if (!b.tags.some(t => t.toLowerCase() === tag.toLowerCase())) b.tags.push(tag);
-        b.genre = 'Fiction';
+        if (tag) {
+            b.tags = b.tags || [];
+            if (!b.tags.some(t => t.toLowerCase() === tag.toLowerCase())) b.tags.push(tag);
+        }
+        const fictionish = !NONFICTION_GENRES.includes(RETIRED_GENRE_HOMES[b.genre]);
+        b.genre = (fictionish && (byAuthor(b) || bySeries(b))) || RETIRED_GENRE_HOMES[b.genre];
     });
     await dbBulkPut(moved);
 }

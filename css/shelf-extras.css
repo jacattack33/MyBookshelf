@@ -188,14 +188,13 @@ body.drag-active .book.leaning {
     opacity: 0.18;
 }
 
-/* the cover fades to a ghost of itself behind a dashed outline */
+/* the cover fades to a ghost of itself */
 .lent-shade {
     position: absolute;
     inset: 0;
     z-index: 2;
     pointer-events: none;
     background: color-mix(in srgb, var(--surface) 80%, transparent);
-    border: 2px dashed rgba(var(--ink-rgb), 0.35);
     border-radius: 2px;
 }
 

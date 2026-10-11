@@ -218,8 +218,7 @@ function buildDebugPanel() {
             renderCritter();
             debugSay('It left a note.');
         })],
-        ['New egg', critterOff(() => { hatchNewEgg(); debugSay('A new egg.'); })],
-        ['Favorite?', () => debugSay(`It loves ${critter.favoriteGenre}.`)]
+        ['New egg', critterOff(() => { hatchNewEgg(); debugSay('A new egg.'); })]
     ]);
 
     const noteExit = debugExitSelect(NOTE_EXITS);

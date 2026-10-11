@@ -317,8 +317,6 @@ function newCritterEgg(past = []) {
         food: 0,                 // pages in its belly right now
         updatedAt: now,          // hunger worked out up to here
         emptySince: null,        // when its belly hit empty
-        favoriteGenre: GENRES[Math.floor(Math.random() * GENRES.length)],
-        favoriteFound: false,
         log: [],                 // recent meals, newest first
         gone: null,              // { at, note, theme } once it's run away
         past                     // the scrapbook: critters before this one
@@ -412,20 +410,11 @@ function hatchNewEgg() {
     critterSay('A new egg! Feed it pages to hatch it.');
 }
 
-// Pages "taste like" the book you most recently started reading.
-function tastedGenre() {
-    const reading = visibleBooks().filter(b => b.status === 'Reading');
-    if (!reading.length) return '';
-    reading.sort((a, b) => (b.statusSince || 0) - (a.statusSince || 0));
-    return reading[0].genre || '';
-}
-
 function feedCritter(pages) {
     settleCritter();
     const c = critter;
     if (c.gone) return;
     recordPages(pages);
-    const genre = tastedGenre();
     const hatching = !c.bornAt;
     const stageBefore = critterStage(c).id;
     // (left unnamed, it goes by each theme's critter name)
@@ -434,11 +423,8 @@ function feedCritter(pages) {
     c.food = Math.min(critterCap(), c.food + pages);
     if (hatching) c.food = Math.max(c.food, critterGoal()); // a newborn starts with a day's worth
     if (c.food > 0) c.emptySince = null;
-    c.log.unshift({ at: Date.now(), pages, genre });
+    c.log.unshift({ at: Date.now(), pages });
     c.log.length = Math.min(c.log.length, 100);
-    const loved = !!genre && genre === c.favoriteGenre;
-    const firstLove = loved && !c.favoriteFound;
-    if (loved) c.favoriteFound = true;
     saveCritter();
     renderCritter();
     // fed from the goals window: nothing to cheer in a closed window
@@ -452,26 +438,11 @@ function feedCritter(pages) {
     } else if (stageNow.id !== stageBefore) {
         confettiFrom(view);
         critterSay(`${critterName(c)} grew into ${stageNow.id === 'adult' ? 'an adult' : 'a ' + stageNow.id}!`);
-    } else if (loved) {
-        heartsFrom(view);
-        critterSay(firstLove ? `${genre}! That's my favorite!` : `Yum, ${genre}!`);
     } else {
         const lines = ['Nom nom nom.', 'Tasty pages!', 'Mmm, crunchy words.', 'More please!'];
-        if (genre) lines.push(`Mmm, ${genre}.`);
         critterSay(lines[Math.floor(Math.random() * lines.length)]);
     }
     critterAnimate('eating', 1400);
-}
-
-function heartsFrom(el) {
-    burstFrom(el, 9, 60, () => {
-        const h = document.createElement('span');
-        h.className = 'fx-sparkle';
-        h.textContent = '♥';
-        h.style.color = '#ff4f9a';
-        h.style.fontSize = (12 + Math.random() * 10) + 'px';
-        return h;
-    });
 }
 
 // a passing state (eating, wiggle) on every drawing of the critter
@@ -687,8 +658,7 @@ function renderCritterModal() {
         const next = CRITTER_STAGES.find(s => s.at > c.totalFed);
         const tiles = [
             ['Pages eaten', c.totalFed.toLocaleString()],
-            ['Next stage', next ? `${(next.at - c.totalFed).toLocaleString()} pages` : 'All grown'],
-            ['Loves', c.favoriteFound ? c.favoriteGenre : '???']
+            ['Next stage', next ? `${(next.at - c.totalFed).toLocaleString()} pages` : 'All grown']
         ];
         const box = document.getElementById('critter-tiles');
         box.innerHTML = '';
@@ -712,7 +682,7 @@ function renderCritterModal() {
     c.log.slice(0, 8).forEach(meal => {
         const li = document.createElement('li');
         const what = document.createElement('span');
-        what.textContent = `${meal.pages} page${meal.pages === 1 ? '' : 's'}${meal.genre ? ' · ' + meal.genre : ''}`;
+        what.textContent = `${meal.pages} page${meal.pages === 1 ? '' : 's'}`;
         const when = document.createElement('span');
         when.textContent = shortDate(meal.at);
         li.append(what, when);

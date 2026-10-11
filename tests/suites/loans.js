@@ -120,12 +120,30 @@ library.push({ id: 'so2', title: 'Wanted Two', authors: ['A'], genre: 'Fantasy',
 selectOrganizeBy('series');
 ok('series: owned book has a seal', !!q('.book[data-id="so1"] .series-owned-seal'));
 ok('series: not-owned book has none', !q('.book[data-id="so2"] .series-owned-seal'));
-setSetting('seriesSeal', false);
+ok('series: unread book faded, read one not', q('.book[data-id="so2"]').classList.contains('faded-unread') && !q('.book[data-id="so1"]').classList.contains('faded-unread'));
+setSetting('ownedSeal', 'off');
 ok('Settings can turn the seal off', !q('.book[data-id="so1"] .series-owned-seal'));
-setSetting('seriesSeal', true);
+setSetting('ownedSeal', 'series');
 ok('...and back on', !!q('.book[data-id="so1"] .series-owned-seal'));
 selectOrganizeBy('genre');
-ok('seal only on the Series shelf', !q('.book[data-id="so1"] .series-owned-seal'));
+ok('seal and fade only on the Series shelf by default', !q('.book[data-id="so1"] .series-owned-seal') && !q('.book[data-id="so2"]').classList.contains('faded-unread'));
+setSetting('ownedSeal', 'all');
+setSetting('unreadFade', 'all');
+ok('Every shelf: seal and fade on the Genre shelf', !!q('.book[data-id="so1"] .series-owned-seal') && q('.book[data-id="so2"]').classList.contains('faded-unread'));
+ok('Every shelf button shows as chosen', q('[data-setting-choice="ownedSeal"][data-choice="all"]').classList.contains('active') && !q('[data-setting-choice="ownedSeal"][data-choice="series"]').classList.contains('active'));
+selectOrganizeBy('status');
+ok('...and on the Status shelf', !!q('.book[data-id="so1"] .series-owned-seal') && q('.book[data-id="so2"]').classList.contains('faded-unread'));
+setSetting('unreadFade', 'off');
+selectOrganizeBy('series');
+ok('fade off: not even on the Series shelf', !q('.book[data-id="so2"]').classList.contains('faded-unread'));
+setSetting('ownedSeal', 'series');
+setSetting('unreadFade', 'series');
+selectOrganizeBy('genre');
+// the old on/off seal switch carries over
+localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...appSettings, ownedSeal: undefined, seriesSeal: false }));
+loadSettings();
+ok('old seal switch (off) carries over', appSettings.ownedSeal === 'off' && !('seriesSeal' in appSettings));
+setSetting('ownedSeal', 'series');
 library = library.filter(b => !['so1', 'so2'].includes(b.id));
 renderBookshelf();
 
