@@ -906,6 +906,20 @@ button.danger:hover {
     clip-path: polygon(6px 100%, 0px 0%, 92% 0%, 100% 100%);
 }
 
+/* Lifting a book on hover pulls its bottom edge out from under the
+   cursor, which drops it back down, which lifts it again - a jitter.
+   This invisible strip fills the gap below a lifted book so the
+   pointer stays "on" it. It only catches the pointer while hovered. */
+.book:not(.sticky-book)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 30px;
+    pointer-events: none;
+}
+
 @media (hover: hover) {
     .book:hover {
         transform: translateY(-25px);
@@ -913,6 +927,10 @@ button.danger:hover {
             8px 12px 18px rgba(0,0,0,0.4),
             inset 3px 0 6px -2px rgba(255,255,255,0.35),
             inset -8px 0 12px -6px rgba(0,0,0,0.55);
+    }
+
+    .book:not(.sticky-book):not(.preview-only):hover::before {
+        pointer-events: auto;
     }
 }
 
@@ -935,8 +953,10 @@ body.drag-active .book:not(.dragging) {
     justify-content: center;
     /* Spines sit flush with zero gap now - anything that overflows
        a spine's own box (long titles, the star ornaments) would
-       otherwise paint right onto the neighboring book. */
-    overflow: hidden;
+       otherwise paint right onto the neighboring book. Clipped only
+       at the sides (not overflow: hidden) so the hover strip below
+       the book still catches the pointer. */
+    clip-path: inset(-40px 0 -40px 0);
 }
 
 .book.spine-mode .spine-top,

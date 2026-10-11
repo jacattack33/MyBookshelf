@@ -142,3 +142,10 @@ closeGoals();
 setSetting('pagesGoal', 20);
 setSetting('pagesPeriod', 'day');
 setSetting('goal', 0);
+
+// ---- age counts calendar days, not 24-hour stretches
+const lateLastNight = new Date(); lateLastNight.setHours(0, 0, 0, 0); lateLastNight.setMinutes(-60); // 11pm yesterday
+ok('hatched 11pm yesterday reads "born yesterday"', critterAge({ bornAt: lateLastNight.getTime() }) === 'born yesterday', critterAge({ bornAt: lateLastNight.getTime() }));
+ok('hatched just now reads "born today"', critterAge({ bornAt: Date.now() }) === 'born today');
+const threeDays = new Date(); threeDays.setDate(threeDays.getDate() - 3);
+ok('three calendar days back reads "3 days old"', critterAge({ bornAt: threeDays.getTime() }) === '3 days old', critterAge({ bornAt: threeDays.getTime() }));

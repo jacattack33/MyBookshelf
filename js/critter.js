@@ -564,7 +564,7 @@ function renderGoneNote(box, text) {
 // ----- Critter rendering -----
 
 const CRITTER_MOOD_TEXT = {
-    full: 'Stuffed and happy.',
+    full: 'All full.',
     content: 'Content.',
     hungry: 'Getting hungry…',
     asleep: 'Fast asleep.'
@@ -580,9 +580,15 @@ function critterMoodText(c = critter) {
     return CRITTER_MOOD_TEXT[mood];
 }
 
+// Counted in calendar days, not 24-hour stretches: hatched at 11pm, it
+// was born yesterday by the next morning.
 function critterAge(c = critter) {
-    const days = Math.floor((Date.now() - c.bornAt) / DAY_MS);
-    return days < 1 ? 'born today' : `${days} day${days === 1 ? '' : 's'} old`;
+    const midnight = ms => { const d = new Date(ms); d.setHours(0, 0, 0, 0); return d; };
+    const born = midnight(c.bornAt), today = midnight(Date.now());
+    const days = Math.round((today - born) / DAY_MS); // round: DST days aren't 24h
+    if (days < 1) return 'born today';
+    if (days === 1) return 'born yesterday';
+    return `${days} days old`;
 }
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
