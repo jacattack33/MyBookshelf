@@ -33,3 +33,17 @@ ok('preview book scaled for phones', parseFloat(q('#preview-book').style.width) 
 closeModal();
 
 ok('pinch-zoom allowed', !q('meta[name=viewport]').content.includes('user-scalable=no'));
+
+// corner widgets: sticky pile at the bottom, ledger on it, goals card, critter on top
+const box = sel => q(sel).getBoundingClientRect();
+// (the sheets are drawn crooked, so measure their real corners)
+const pileTop = Math.min(...[...document.querySelectorAll('.sticky-sheet')].map(s => s.getBoundingClientRect().top));
+const ledger = box('#stats-ledger'), goals = box('#goals-card'), pet = box('#critter-home');
+ok('ledger clear of the sticky pile', ledger.bottom + 3 <= pileTop, `${ledger.bottom} / ${pileTop}`);
+ok('goals card clear of the ledger', goals.bottom <= ledger.top && goals.left >= 0, `${goals.bottom} / ${ledger.top}`);
+ok('critter on top of the goals card', pet.bottom <= goals.top, `${pet.bottom} / ${goals.top}`);
+ok('goals card shows its numbers', goals.height > 20 && q('#goals-card').textContent.includes('/20'), goals.height);
+setTheme('terminal');
+ok('terminal: critter on top of the goals card', box('#critter-home').bottom <= box('#goals-card').top, `${box('#critter-home').bottom} / ${box('#goals-card').top}`);
+ok('terminal: goals card clear of the ledger', box('#goals-card').bottom <= box('#stats-ledger').top, `${box('#goals-card').bottom} / ${box('#stats-ledger').top}`);
+setTheme('candy');

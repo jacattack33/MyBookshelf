@@ -78,6 +78,23 @@ What this means in practice:
     It heads off a random side of the screen each time. The books next to it wait until it's gone, then slide over to fill the gap.
   - **Filter:** use the Sticky Notes buttons (Show / Hide / Only) to mix them in with your books, hide them, or show just them (a shopping list).
   - **Settings:** Settings can hide the sticky-note pile. With Calm mode (or your device's reduced-motion setting) on, notes simply appear and disappear without the animations.
+- **Reading goals card:** a little card in the bottom-left stack, on top of the stats ledger, with the critter sitting on top of it. It shows your yearly books goal (if you've set one) and your pages goal for today, this week or this month, each with a progress bar. Click it to open the **Reading Goals** window:
+  - **Yearly reading goal:** counts books marked Read with a finish date this year (0 turns it off). The progress bar also shows in the Reading Stats window.
+  - **Pages goal:** a number of pages **per day, per week or per month** (20 a day by default). Weeks start on Monday, and months on the 1st. Pages count toward it when you feed the critter, or when you type them in the window's **Log** box. The Log box also feeds the critter if it's around, so you never need to enter pages twice. Logging still works with the critter turned off. The last 40 days of pages are kept, and they're saved in backups.
+- **Reading critter:** a little pet you keep alive by reading, at the top of the bottom-left stack: it sits on the goals card, which sits on the stats ledger, which sits on the sticky-note pile. Click it to open its care window.
+  - **Feeding:** type how many pages you read (or tap +10 / +25 / +50) and press Feed. Feeding works on the honor system: there's no check that you really read them.
+    - **Limits:** up to 2,000 pages per feed, with no limit on how many times you feed. Its belly holds up to **3 days of food**, at your pages goal's pace. A weekly or monthly goal is spread out per day: 70 a week is 10 pages a day, and a month counts as 30 days. Pages over the belly's limit don't fill it, but they still count toward growing up (and toward your pages goal).
+    - **Hunger:** the belly empties steadily at the pages goal's pace, in real time, even while the page is closed. It doesn't get hungry while it's an egg, after it has run away, or while it's switched off in Settings. Changing the pages goal changes the pace from then on.
+    - **A newborn** starts with at least a day's food, however small its first meal.
+  - **What feeding gets you:**
+    - **Hatching** the egg (on its first meal).
+    - **Growing up**, by pages eaten: baby, kid (150), teen (600, gets an extra like ears, claws or glasses) and adult (1,500, gets a crown piece like sprinkles, a starfish or a graduation cap). Each new stage is a little bigger, with confetti.
+    - **A happier critter:** stuffed (2+ days of food), content (1–2 days), hungry (under a day; a "!" bubble on the corner widget) and starving (empty; "!!"). Between 11pm and 7am it's asleep, unless it's hungry. Its face and what it says when you pet it (click it in the window) follow its mood.
+    - **Not running away**: see below.
+  - **Favorite food:** each critter secretly loves one genre. Pages taste like the book you most recently started reading; feed it its favorite and you get hearts, and the window reveals what it loves.
+  - **Running away:** starve it for 7 days and it leaves a note, scrawled in blue crayon in a wobbly kid's hand (kid spelling, every letter tipped its own way, signed with a paw print). The warnings beforehand: a "!" bubble once it has under a day of food left, then "!!" once its belly is empty. While it's starving, its window and the corner widget's tooltip count down ("Starving! It might run away in 3 days."). There are no notifications outside the page. Hatch a new egg to start again; the old one goes in the **Scrapbook** with its name, stage, pages eaten and dates.
+  - **Theme critters:** each theme has its own critter and home: a gummy blob in a candy jar (Candy), a hermit crab in a sea-glass bottle (Sea Glass), a little green alien in a holographic egg toy (Holo), a bookworm in a hollowed-out book (Library), a songbird in a brass birdcage (Deco), a moss sprout in a terrarium (Loft), a line-drawn pup in a drafted box (Blueprint; a collar and tag as a teen, a hard hat as an adult), and a pixel pet on a little LCD (Terminal). Give it a name (click the name in its window, type, and press Enter), or it goes by each theme's critter name.
+  - **Settings:** Shelf extras can hide it; while it's off, it doesn't get hungry. It's saved in backups.
 - Series tracking: set "Out of" (total books in a series) to show grayed-out placeholders for volumes you haven't added yet, and dim unread-but-owned books versus ones marked Read.
 
 - **On phones:** Search stays at the top and everything else folds into a **Filters & sorting** button (it shows a count like "• 2" when filters are on); button groups wrap neatly onto new lines. Books are drawn a bit smaller so more fit per row, and the edit window shows a compact preview row at the top.
@@ -114,12 +131,18 @@ What this means in practice:
     - In Library, Deco, Loft, Blueprint and Terminal the recent-colour swatches in the edit window are wax seals, diamonds or paint chips instead of hearts.
   - **Mode:** Light, Dark, or Match device (follows your computer or phone's setting). Works with every theme; the notepad, library card and sticky notes stay paper-colored.
   - **Bookshelf name:** rename the title at the top of the page.
-  - **Yearly reading goal:** shows a progress bar in the Reading Stats window, counting books marked Read with a finish date this year.
   - **Handwriting:** the font new notes start in, and the font for library cards (or match each book's notes). Sticky notes are always in Nanum Pen Script.
   - **Custom genres:** see the genres you've added and remove any with its ×. If books still use it, you pick a genre to move them to first.
   - **Start new books as:** Want to Read, Reading, or Read.
-  - **Shelf extras:** turn the shelf cat, dust, leaning books, and the sticky-note pile on or off.
+  - **Shelf extras:** turn the shelf cat, dust, leaning books, the sticky-note pile and the reading critter on or off.
   - **Calm mode:** turns off all the animations.
+  - **Debug panel:** adds a **DEBUG** tab on the right edge of the page. Click it for buttons that make things happen right away, instead of waiting or using the browser console:
+    - **Critter:** Feed 50, Next stage (hatches an egg, then grows it a stage), +1 day / +1 week (moves its clock forward, so hunger and running away happen as if that time passed), Full / Hungry / Starving, 1 day from leaving, Run away now, New egg, and Favorite? (tells you its secret genre).
+    - **Sticky notes:** New note (fills in the quick-add note with a random title and sticks it up), Make one fall, Stick all back up, and Delete one with a chosen exit (or a random one).
+    - **Books:** Add a book (a random title, genre and status, scrolled into view), Remove debug books & notes (deletes only the ones the panel made), Delete one with a chosen exit (any theme's exit works in any theme), and Dust one (makes a Want to Read book heavily dusty).
+    - **Other:** Wake the cat, Log 25 pages, Clear pages log, Confetti.
+
+    **Deletes only touch books and notes the panel made** (with New note or Add a book), so your real library is safe. Tick **Deletes can hit real books** at the top to let them pick any book; those deletes are permanent, with no confirmation. Deletes and exits only play for books and notes you can see, so scroll to one first. A line at the bottom says what happened, or why nothing did. Critter changes are real and stick.
   - **Start over:** delete the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings too. The 3 starter books don't come back afterwards.
 
 ## Tests

@@ -2228,7 +2228,7 @@
 
         /* corner widgets move in off the bezel */
         :root[data-theme="terminal"] .sticky-pile { left: 28px; bottom: 42px; }
-        :root[data-theme="terminal"] .stats-ledger { left: 122px; bottom: 40px; }
+        :root[data-theme="terminal"] .stats-ledger { left: 37px; bottom: 140px; }
         :root[data-theme="terminal"] .secret-heart { right: 26px; bottom: 40px; }
 
         @media (max-width: 600px) {
@@ -2241,7 +2241,7 @@
             :root[data-theme="terminal"]::after { bottom: 4px; font-size: 13px; }
             :root[data-theme="terminal"]::before { bottom: 8px; right: 18px; }
             :root[data-theme="terminal"] .sticky-pile { left: 18px; bottom: 34px; }
-            :root[data-theme="terminal"] .stats-ledger { left: 80px; bottom: 32px; }
+            :root[data-theme="terminal"] .stats-ledger { left: 21px; bottom: 100px; }
             :root[data-theme="terminal"] .secret-heart { right: 16px; bottom: 32px; }
         }
 
@@ -5326,12 +5326,12 @@
         }
 
         /* ---------- Sticky-note pile (bottom-left quick add) ---------- */
-        /* ---------- Stats ledger (bottom-left, beside the sticky notes) ----------
+        /* ---------- Stats ledger (bottom-left, on top of the sticky notes) ----------
            a little hardcover account book; its cover shows your book total */
         .stats-ledger {
             position: fixed;
-            left: 110px;
-            bottom: 14px;
+            left: 25px;
+            bottom: 114px; /* clear of the pile's crooked sheets */
             z-index: 900;
             width: 60px;
             height: 78px;
@@ -5382,11 +5382,596 @@
 
         @media (max-width: 600px) {
             .stats-ledger {
-                left: 86px;
+                left: 20px;
+                bottom: 90px;
                 width: 50px;
                 height: 64px;
             }
 
+        }
+
+        /* ---------- Reading critter (bottom-left, on top of the goals card) ----------
+           a little pet fed with pages read. The critter and its home are one
+           inline SVG per theme; mood and stage are classes on the SVG that
+           show or hide its face parts and grown-up extras. */
+        .critter-home {
+            position: relative;
+            margin-left: 6px;
+            width: 68px;
+            height: 68px;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .critter-home:hover {
+            transform: translateY(-5px) rotate(-3deg);
+        }
+
+        .critter-home:focus-visible {
+            outline: 2px dashed var(--outline);
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+
+        .critter-home svg,
+        .critter-view svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* a speech bubble over the widget when it needs you */
+        .critter-alert {
+            position: absolute;
+            top: -14px;
+            right: -6px;
+            display: none;
+            min-width: 18px;
+            padding: 0 5px;
+            border: 2px solid var(--outline);
+            border-radius: 10px 10px 10px 2px;
+            background: var(--surface);
+            color: var(--y2k-dark);
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 16px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .critter-alert.visible {
+            display: block;
+            animation: critter-bob 1.6s ease-in-out infinite;
+        }
+
+        @keyframes critter-bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* the critter itself idles: a slow breathe, a hungry shiver, a
+           sleepy sway; a tap (or a meal) wiggles it */
+        .cr-idle {
+            transform-box: fill-box;
+            transform-origin: 50% 100%; /* its feet */
+            animation: critter-breathe 3.2s ease-in-out infinite;
+        }
+
+        .cr.mood-hungry .cr-idle,
+        .cr.mood-starving .cr-idle {
+            animation: critter-shiver 2.4s ease-in-out infinite;
+        }
+
+        .cr.mood-asleep .cr-idle {
+            animation: critter-breathe 5s ease-in-out infinite;
+        }
+
+        .cr.stage-egg .cr-idle {
+            animation: critter-rock 3s ease-in-out infinite;
+        }
+
+        .cr.wiggle .cr-idle {
+            animation: critter-wiggle 0.6s ease-in-out;
+        }
+
+        @keyframes critter-breathe {
+            0%, 100% { transform: scale(1, 1); }
+            50% { transform: scale(1.03, 0.97); }
+        }
+
+        @keyframes critter-shiver {
+            0%, 80%, 100% { transform: translateX(0); }
+            84% { transform: translateX(-1.5px); }
+            88% { transform: translateX(1.5px); }
+            92% { transform: translateX(-1px); }
+            96% { transform: translateX(1px); }
+        }
+
+        @keyframes critter-rock {
+            0%, 70%, 100% { transform: rotate(0); }
+            76% { transform: rotate(-6deg); }
+            84% { transform: rotate(5deg); }
+            92% { transform: rotate(-3deg); }
+        }
+
+        @keyframes critter-wiggle {
+            0%, 100% { transform: rotate(0) scale(1); }
+            20% { transform: rotate(-8deg) scale(1.06, 0.94); }
+            45% { transform: rotate(7deg) scale(0.96, 1.05); }
+            70% { transform: rotate(-4deg) scale(1.03, 0.97); }
+        }
+
+        /* face parts: hidden unless the mood calls for them */
+        .cr .fe, .cr .fm, .cr .cr-zz, .cr .cr-teen, .cr .cr-adult, .cr .cr-egg {
+            display: none;
+        }
+
+        .cr.mood-full .fe-happy,
+        .cr.mood-content .fe-open,
+        .cr.mood-hungry .fe-open,
+        .cr.mood-starving .fe-sad,
+        .cr.mood-asleep .fe-sleep,
+        .cr.eating .fe-happy,
+        .cr.mood-full .fm-smile,
+        .cr.mood-content .fm-smile,
+        .cr.mood-hungry .fm-flat,
+        .cr.mood-starving .fm-frown,
+        .cr.mood-asleep .fm-flat,
+        .cr.eating .fm-o,
+        .cr.mood-asleep .cr-zz,
+        .cr.stage-teen .cr-teen,
+        .cr.stage-adult .cr-teen,
+        .cr.stage-adult .cr-adult,
+        .cr.stage-egg .cr-egg {
+            display: inline;
+        }
+
+        /* while eating, the meal face wins over the mood */
+        .cr.eating .fe:not(.fe-happy),
+        .cr.eating .fm:not(.fm-o) {
+            display: none;
+        }
+
+        .cr.stage-egg .cr-critter {
+            display: none;
+        }
+
+        .cr-zz {
+            font: 700 9px 'Quicksand', sans-serif;
+        }
+
+        .cr .cr-ln {
+            stroke: var(--outline);
+        }
+
+        @media (max-width: 600px) {
+            .critter-home {
+                width: 56px;
+                height: 56px;
+            }
+        }
+
+        /* ---------- Corner stack (bottom-left, on top of the ledger) ----------
+           the goals card, with the critter sitting on top of it; one column
+           so the critter follows the card's height (one row or two), and the
+           card moves up into place when the critter is switched off */
+        .corner-stack {
+            position: fixed;
+            left: 15px;
+            bottom: 206px;  /* on top of the ledger */
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        :root[data-theme="terminal"] .corner-stack { left: 27px; bottom: 232px; }
+
+        /* ---------- Goals card ----------
+           a little pinned card with the yearly books and pages goals */
+        .goals-card {
+            width: 72px;
+            padding: 5px 6px 6px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            border: 2px solid var(--outline);
+            border-radius: 6px;
+            background: var(--surface);
+            box-shadow: 2px 2px 0 var(--outline);
+            color: var(--y2k-dark);
+            cursor: pointer;
+            transform: rotate(-2deg);
+            transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .goals-card:hover {
+            transform: rotate(2deg) translateY(-4px);
+        }
+
+        .goals-card:focus-visible {
+            outline: 2px dashed var(--outline);
+            outline-offset: 2px;
+        }
+
+        .goals-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .goals-row span:first-child {
+            opacity: 0.75;
+        }
+
+        .goals-card .reading-goal-bar {
+            height: 5px;
+            margin: 0 0 2px;
+            border-width: 1.5px;
+        }
+
+        .goals-card .reading-goal-fill.done,
+        .goals-content .reading-goal-fill.done {
+            background: linear-gradient(90deg, var(--y2k-purple), var(--y2k-pink), var(--y2k-purple));
+        }
+
+        /* ---------- Debug panel (Settings > Debug) ----------
+           a tab on the right edge that slides out a column of buttons */
+        .debug-panel {
+            position: fixed;
+            right: 0;
+            top: 90px;
+            z-index: 2500;
+            display: flex;
+            align-items: flex-start;
+            font-family: monospace;
+        }
+
+        .debug-tab {
+            writing-mode: vertical-rl;
+            padding: 10px 4px;
+            border: 2px solid var(--outline);
+            border-right: none;
+            border-radius: 6px 0 0 6px;
+            background: var(--y2k-dark);
+            color: var(--surface);
+            font: 700 11px monospace;
+            letter-spacing: 2px;
+            box-shadow: none;
+        }
+
+        .debug-body {
+            display: none;
+            width: 230px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding: 8px 10px 10px;
+            box-sizing: border-box;
+            border: 2px solid var(--outline);
+            border-right: none;
+            background: var(--surface);
+            color: var(--y2k-dark);
+            box-shadow: -3px 3px 0 var(--outline);
+            font-size: 11px;
+        }
+
+        .debug-panel.open .debug-body {
+            display: block;
+        }
+
+        .debug-group {
+            margin: 8px 0 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .debug-real {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 4px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .debug-real input {
+            width: auto;
+            margin: 0;
+        }
+
+        .debug-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .debug-buttons button,
+        .debug-buttons select {
+            padding: 3px 7px;
+            border: 1.5px solid var(--outline);
+            border-radius: 4px;
+            background: var(--pastel-lavender);
+            color: var(--y2k-dark);
+            font: 11px monospace;
+            box-shadow: none;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .debug-buttons select {
+            background: var(--surface);
+            width: auto;
+        }
+
+        .debug-status {
+            margin-top: 8px;
+            min-height: 14px;
+            font-style: italic;
+            opacity: 0.85;
+        }
+
+        /* ---------- Goals window ---------- */
+        .modal-content.goals-content {
+            max-width: 420px;
+        }
+
+        .goals-body {
+            padding: 16px 22px 22px;
+            overflow-y: auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: var(--y2k-dark);
+        }
+
+        .goals-body > * {
+            flex-shrink: 0;
+        }
+
+        .goals-progress {
+            font-size: 13px;
+        }
+
+        .goals-body .toggle-group {
+            margin-top: 0;
+        }
+
+        /* ---------- Critter window ---------- */
+        .modal-content.critter-content {
+            max-width: 420px;
+        }
+
+        .critter-body {
+            padding: 16px 22px 22px;
+            overflow-y: auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            color: var(--y2k-dark);
+        }
+
+        /* scroll when it's too tall rather than squashing things (buttons
+           hide their overflow, so they'd shrink to nothing) */
+        .critter-body > * {
+            flex-shrink: 0;
+        }
+
+        .critter-view {
+            position: relative;
+            width: 190px;
+            height: 190px;
+            margin: 0 auto;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .critter-say {
+            position: absolute;
+            left: 50%;
+            top: -6px;
+            translate: -50% 0;
+            max-width: 220px;
+            padding: 3px 10px;
+            border: 2px solid var(--outline);
+            border-radius: 12px;
+            background: var(--surface);
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .critter-say.visible {
+            opacity: 1;
+        }
+
+        .critter-name {
+            display: block;
+            width: min(240px, 100%);
+            margin: 0 auto;
+            padding: 4px 10px;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            border-color: transparent;
+            background: transparent;
+            color: var(--y2k-dark);
+            box-shadow: none;
+        }
+
+        .critter-name:hover,
+        .critter-name:focus {
+            border-color: var(--y2k-lavender);
+            background: var(--surface);
+        }
+
+        .critter-sub,
+        .critter-mood {
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .critter-sub {
+            opacity: 0.75;
+            margin-top: -6px;
+        }
+
+        .critter-mood {
+            font-weight: 700;
+        }
+
+        .critter-meter-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .critter-feed {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .critter-feed input {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 10px;
+        }
+
+        .critter-chips {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: -4px;
+        }
+
+        .critter-chips button,
+        .critter-scrap-toggle {
+            padding: 3px 10px;
+            font-size: 12px;
+            background-color: var(--pastel-lavender);
+            color: var(--y2k-dark);
+            box-shadow: 2px 2px 0 var(--outline);
+        }
+
+        .critter-scrap-toggle {
+            align-self: flex-start;
+        }
+
+        .critter-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .critter-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 13px;
+        }
+
+        .critter-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
+        }
+
+        .critter-list li span:last-child {
+            opacity: 0.75;
+            text-align: right;
+        }
+
+        .critter-empty {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .critter-scrapbook {
+            display: none;
+        }
+
+        .critter-scrapbook.visible {
+            display: block;
+        }
+
+        .critter-past {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
+            font-size: 12px;
+        }
+
+        .critter-past-pic {
+            flex: 0 0 48px;
+            height: 48px;
+        }
+
+        .critter-past-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* the note it leaves when it runs away */
+        .critter-gone-note {
+            margin: 0 auto;
+            max-width: 280px;
+            padding: 12px 16px;
+            background: #fff6c2;
+            /* scrawled in crayon by a small creature: a kid's hand, every
+               letter at its own angle and size */
+            color: #2f4fb5;
+            font-family: 'Gloria Hallelujah', cursive;
+            font-size: 18px;
+            line-height: 1.55;
+            word-spacing: 2px;
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.2);
+            rotate: -2deg;
+        }
+
+        .critter-gone-note .word {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .critter-gone-note .ch {
+            display: inline-block;
+            transform: translateY(var(--y, 0)) rotate(var(--r, 0deg)) scale(var(--s, 1));
+            text-shadow: 0.4px 0.3px 0 currentColor; /* waxy, pressed-hard crayon */
+        }
+
+        .critter-gone-note .paw {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            margin-left: 4px;
+            vertical-align: -4px;
+            rotate: 18deg;
+        }
+
+        .critter-hatch {
+            align-self: center;
         }
 
         /* ---------- Stats window ---------- */
@@ -6486,10 +7071,30 @@
             }
 
             .stats-ledger {
-                left: 72px;
+                left: 19px;
+                bottom: 82px;
                 width: 44px;
                 height: 56px;
                 padding-left: 8px;
+            }
+
+            .corner-stack {
+                left: 10px;
+                bottom: 150px;
+                gap: 6px;
+            }
+
+            :root[data-theme="terminal"] .corner-stack { left: 13px; bottom: 168px; }
+
+            .critter-home {
+                margin-left: 5px;
+                width: 52px;
+                height: 52px;
+            }
+
+            .goals-card {
+                width: 64px;
+                padding: 4px 5px 5px;
             }
 
             .sticky-sheet {
@@ -6641,6 +7246,21 @@
     <button type="button" class="stats-ledger" id="stats-ledger" onclick="openStats()" title="Reading stats" aria-label="Reading stats">
         <span class="stats-ledger-label"></span>
     </button>
+
+    <!-- the critter sits on top of the goals card, which sits on the ledger -->
+    <div class="corner-stack" id="corner-stack">
+        <div class="critter-home" id="critter-home" role="button" tabindex="0" onclick="openCritter()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openCritter(); }" title="Your reading critter" aria-label="Your reading critter">
+            <div class="critter-art" id="critter-home-art"></div>
+            <span class="critter-alert" id="critter-alert"></span>
+        </div>
+        <div class="goals-card" id="goals-card" role="button" tabindex="0" onclick="openGoals()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openGoals(); }" title="Your reading goals" aria-label="Your reading goals"></div>
+    </div>
+
+    <!-- Settings > Debug panel: buttons that force things to happen -->
+    <div class="debug-panel" id="debug-panel" style="display:none;">
+        <button type="button" class="debug-tab" onclick="toggleDebugPanel()" aria-expanded="false">DEBUG</button>
+        <div class="debug-body" id="debug-body"></div>
+    </div>
 
     <div class="sticky-pile" id="sticky-pile">
         <div class="sticky-stack" onclick="openStickyNote()" title="Quick-add a book to Want to Read">
@@ -6910,6 +7530,86 @@
         </div>
     </div>
 
+    <div class="modal" id="critter-modal" onclick="if (event.target === this) closeCritter()">
+        <div class="modal-content critter-content">
+            <div class="modal-header">
+                <h3>Reading Critter</h3>
+                <button type="button" class="modal-close-x" onclick="closeCritter()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="critter-body">
+                <div class="critter-view" id="critter-view" onclick="petCritter()" title="Pet it">
+                    <div class="critter-art" id="critter-view-art"></div>
+                    <div class="critter-say" id="critter-say"></div>
+                </div>
+                <div id="critter-alive">
+                    <input type="text" class="critter-name" id="critter-name" maxlength="20" autocomplete="off" aria-label="Name" title="Click to rename" oninput="renameCritter(this.value)" onfocus="startRenameCritter(this)" onblur="endRenameCritter(this)" onkeydown="if (event.key === 'Enter' || event.key === 'Escape') this.blur();">
+                    <div class="critter-sub" id="critter-sub"></div>
+                </div>
+                <div class="critter-mood" id="critter-mood"></div>
+                <div id="critter-care">
+                    <div class="critter-meter-label"><span>Fullness</span><span id="critter-meter-text"></span></div>
+                    <div class="reading-goal-bar"><div class="reading-goal-fill" id="critter-meter-fill"></div></div>
+                </div>
+                <form class="critter-feed" id="critter-feed" onsubmit="event.preventDefault(); submitCritterFeed();">
+                    <input type="number" id="critter-pages" min="1" max="2000" step="1" inputmode="numeric" placeholder="Pages read" aria-label="Pages read">
+                    <button type="submit">Feed</button>
+                </form>
+                <div class="critter-chips" id="critter-chips">
+                    <button type="button" onclick="addCritterPages(10)">+10</button>
+                    <button type="button" onclick="addCritterPages(25)">+25</button>
+                    <button type="button" onclick="addCritterPages(50)">+50</button>
+                </div>
+                <div class="stats-tiles" id="critter-tiles"></div>
+                <div class="critter-gone-note" id="critter-gone-note" style="display:none;"></div>
+                <button type="button" class="critter-hatch" id="critter-hatch" style="display:none;" onclick="hatchNewEgg()">Hatch a new egg</button>
+                <div id="critter-meals">
+                    <div class="critter-section-title">Recent meals</div>
+                    <ul class="critter-list" id="critter-meal-list"></ul>
+                </div>
+                <button type="button" class="critter-scrap-toggle" id="critter-scrap-toggle" onclick="toggleCritterScrapbook()">Scrapbook</button>
+                <div class="critter-scrapbook" id="critter-scrapbook"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="goals-modal" onclick="if (event.target === this) closeGoals()">
+        <div class="modal-content goals-content">
+            <div class="modal-header">
+                <h3>&#9670; Reading Goals</h3>
+                <button type="button" class="modal-close-x" onclick="closeGoals()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="goals-body">
+                <div class="field-section">
+                    <div class="field-section-title">Books this year</div>
+                    <label class="field-label">Yearly reading goal
+                        <input type="number" id="goal-books" min="0" max="999" step="1" placeholder="0 = off" oninput="setSetting('goal', Math.max(0, parseInt(this.value) || 0))">
+                    </label>
+                    <div class="field-hint">Counts books marked Read with a finish date this year.</div>
+                    <div class="goals-progress" id="goal-books-progress"></div>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Pages</div>
+                    <label class="field-label">Pages goal
+                        <input type="number" id="goal-pages" min="1" max="9999" step="1" placeholder="20" oninput="setSetting('pagesGoal', Math.max(1, parseInt(this.value) || DEFAULT_SETTINGS.pagesGoal))">
+                    </label>
+                    <div class="toggle-group" role="group" aria-label="Pages goal period">
+                        <button type="button" class="toggle-btn" data-pages-period="day" onclick="setSetting('pagesPeriod', 'day')">Per day</button>
+                        <button type="button" class="toggle-btn" data-pages-period="week" onclick="setSetting('pagesPeriod', 'week')">Per week</button>
+                        <button type="button" class="toggle-btn" data-pages-period="month" onclick="setSetting('pagesPeriod', 'month')">Per month</button>
+                    </div>
+                    <div class="field-hint" id="goal-pages-hint"></div>
+                    <div class="goals-progress" id="goal-pages-progress"></div>
+                    <form class="critter-feed" onsubmit="event.preventDefault(); submitLoggedPages();">
+                        <input type="number" id="goal-log-pages" min="1" max="2000" step="1" inputmode="numeric" placeholder="Pages read" aria-label="Pages read">
+                        <button type="submit">Log</button>
+                    </form>
+                    <div class="field-hint" id="goal-log-note"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="settings-modal" onclick="if (event.target === this) closeSettings()">
         <div class="modal-content settings-content">
             <div class="modal-header">
@@ -6942,10 +7642,7 @@
                     <label class="field-label">Bookshelf name
                         <input type="text" id="setting-name" maxlength="40" placeholder="My Bookshelf" oninput="setSetting('name', this.value)">
                     </label>
-                    <label class="field-label">Yearly reading goal
-                        <input type="number" id="setting-goal" min="0" max="999" step="1" placeholder="0 = off" oninput="setSetting('goal', Math.max(0, parseInt(this.value) || 0))">
-                    </label>
-                    <div class="field-hint">Counts books marked Read with a finish date this year.</div>
+                    <div class="field-hint">Your yearly books and pages goals live on the goals card, under the critter.</div>
                 </div>
 
                 <div class="field-section">
@@ -6979,6 +7676,7 @@
                         <button type="button" class="toggle-btn" data-setting-switch="dust" onclick="toggleSetting('dust')">Dust on old books</button>
                         <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
                         <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky-note pile</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
                     </div>
                     <div class="field-hint">Pressed in = on.</div>
                 </div>
@@ -6989,6 +7687,14 @@
                         <button type="button" class="toggle-btn" data-setting-switch="calm" onclick="toggleSetting('calm')">Calm mode</button>
                     </div>
                     <div class="field-hint">Turns off the bouncing, wiggling, sparkles and other animations.</div>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Debug</div>
+                    <div class="toggle-group settings-choices">
+                        <button type="button" class="toggle-btn" data-setting-switch="debug" onclick="toggleSetting('debug')">Debug panel</button>
+                    </div>
+                    <div class="field-hint">A DEBUG tab on the right edge of the page with buttons that make things happen right away: critter hunger, growing up and running away, falling sticky notes, new and deleted books with each exit, dust and the cat.</div>
                 </div>
 
                 <div class="field-section danger-section">
@@ -7102,9 +7808,13 @@
         goal: 0,                    // yearly reading goal; 0 = off
         defaultStatus: 'Want to Read',
         cat: true, dust: true, lean: true, sticky: true,
+        critter: true,              // the reading critter in the corner
+        pagesGoal: 20,              // pages per pagesPeriod; also how fast the critter gets hungry
+        pagesPeriod: 'day',         // day, week or month
         noteFont: null,             // font new notes start in (null = last one used)
         cardFont: null,             // library card handwriting (null = the book's notes font)
-        calm: false                 // no animations
+        calm: false,                // no animations
+        debug: false                // the debug panel on the right edge
     };
     let appSettings = { ...DEFAULT_SETTINGS };
     let editingId = null;
@@ -7571,6 +8281,7 @@
         populateFilterTagSelect();
         renderBookshelf();
         scheduleNoteFalls();
+        initCritter();
     }
 
     // ---------- Rendering ----------
@@ -9329,6 +10040,7 @@
         document.querySelectorAll('[data-theme-choice]').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.themeChoice === theme);
         });
+        renderCritter(); // each theme has its own critter and home
     }
 
     // ---------- Custom genres (Settings) ----------
@@ -9467,7 +10179,6 @@
         hideDeleteLibraryConfirm();
         renderCustomGenreSettings();
         document.getElementById('setting-name').value = appSettings.name === DEFAULT_SETTINGS.name ? '' : appSettings.name;
-        document.getElementById('setting-goal').value = appSettings.goal || '';
         renderSettingsFontButtons();
         refreshSettingsButtons();
         document.getElementById('settings-modal').style.display = 'flex';
@@ -9483,12 +10194,16 @@
     }
 
     function setSetting(key, value) {
+        // the critter's hunger so far runs at the old pace (or not at all while it was off)
+        if (['critter', 'pagesGoal', 'pagesPeriod'].includes(key)) settleCritter();
         appSettings[key] = value;
         try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); } catch (e) {}
         refreshSettingsButtons();
-        // the name and goal are typed into, so don't redraw every shelf per keystroke
-        applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont'].includes(key));
+        // the name and goals are typed into, so don't redraw every shelf per keystroke
+        applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug'].includes(key));
         if (key === 'goal') updateReadingGoal();
+        if (['goal', 'pagesGoal', 'pagesPeriod', 'critter'].includes(key)) updateGoals();
+        if (key === 'pagesGoal' || key === 'pagesPeriod') renderCritter();
     }
 
     function toggleSetting(key) {
@@ -9536,6 +10251,9 @@
         document.querySelectorAll('[data-default-status]').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.defaultStatus === appSettings.defaultStatus);
         });
+        document.querySelectorAll('[data-pages-period]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.pagesPeriod === appSettings.pagesPeriod);
+        });
     }
 
     // Push the settings onto the page; `rerender` redraws the shelves (for
@@ -9550,6 +10268,8 @@
             delete document.documentElement.dataset.calm;
         }
         document.getElementById('sticky-pile').style.display = appSettings.sticky ? '' : 'none';
+        document.getElementById('critter-home').style.display = appSettings.critter ? '' : 'none';
+        document.getElementById('debug-panel').style.display = appSettings.debug ? '' : 'none';
         applyStickyFont();
         if (rerender) renderBookshelf();
     }
@@ -9561,6 +10281,1191 @@
         const pile = document.getElementById('sticky-pile');
         pile.style.setProperty('--sticky-font', `'${font.name}'`);
         pile.style.setProperty('--sticky-scale', (font.size / getNoteFont('Caveat').size).toFixed(3));
+    }
+
+    // ---------- Reading critter ----------
+    // A little pet fed with pages read. It gets hungry at your daily pages
+    // pace (Settings), grows up as it eats, and runs away after a week of
+    // starving. Each theme has its own critter and home; underneath it's the
+    // same pet with the same name, age and belly.
+
+    const CRITTER_KEY = 'bookShelfCritter';
+    const CRITTER_FOOD_DAYS = 3;      // a full belly holds this many days of pages
+    const CRITTER_RUNAWAY_DAYS = 7;   // starving this long and it leaves
+    const CRITTER_STAGES = [          // by pages ever eaten
+        { id: 'baby', at: 1, scale: 0.6 },
+        { id: 'kid', at: 150, scale: 0.74 },
+        { id: 'teen', at: 600, scale: 0.87 },
+        { id: 'adult', at: 1500, scale: 1 }
+    ];
+    let critter = null;
+    let critterUid = 0;     // keeps gradient ids unique across the SVG copies
+    let critterSayTimer = null;
+
+    // ----- Critter art -----
+    // Every critter is drawn standing on (50, 82) of a 100x100 box, adult
+    // size; each home says where to put it and how big. All the moods' face
+    // parts are drawn and CSS shows the right ones (see .cr in the styles).
+
+    function crFace(x, y, ink, mouth = true) {
+        const fill = `style="fill:${ink}"`;
+        const line = `fill="none" style="stroke:${ink}" stroke-linecap="round"`;
+        const eyes = `<circle cx="${x - 6}" cy="${y}" r="2.4" ${fill}/><circle cx="${x + 6}" cy="${y}" r="2.4" ${fill}/>`;
+        const shine = `<circle cx="${x - 5.2}" cy="${y - 0.9}" r="0.8" fill="#fff"/><circle cx="${x + 6.8}" cy="${y - 0.9}" r="0.8" fill="#fff"/>`;
+        return `
+            <g class="fe fe-open">${eyes}${shine}</g>
+            <g class="fe fe-happy" ${line} stroke-width="1.6"><path d="M${x - 8.5} ${y + 1} q2.5 -4 5 0"/><path d="M${x + 3.5} ${y + 1} q2.5 -4 5 0"/></g>
+            <g class="fe fe-sleep" ${line} stroke-width="1.6"><path d="M${x - 8.5} ${y} q2.5 2.5 5 0"/><path d="M${x + 3.5} ${y} q2.5 2.5 5 0"/></g>
+            <g class="fe fe-sad">${eyes}<g ${line} stroke-width="1.4"><path d="M${x - 9} ${y - 4} l5 -1.6"/><path d="M${x + 9} ${y - 4} l-5 -1.6"/></g></g>` + (mouth ? `
+            <g ${line} stroke-width="1.5">
+                <path class="fm fm-smile" d="M${x - 3} ${y + 5} q3 3 6 0"/>
+                <path class="fm fm-flat" d="M${x - 2.5} ${y + 6} h5"/>
+                <path class="fm fm-frown" d="M${x - 3} ${y + 7.5} q3 -3 6 0"/>
+            </g>
+            <ellipse class="fm fm-o" cx="${x}" cy="${y + 6}" rx="2" ry="2.4" ${fill}/>` : '');
+    }
+
+    const crCheeks = (x, y, gap, color) =>
+        `<ellipse cx="${x - gap}" cy="${y}" rx="3" ry="1.7" fill="${color}" opacity=".45"/><ellipse cx="${x + gap}" cy="${y}" rx="3" ry="1.7" fill="${color}" opacity=".45"/>`;
+
+    const crEgg = (shell, spots) => () =>
+        `<ellipse cx="50" cy="68" rx="11" ry="14" fill="${shell}" class="cr-ln" stroke-width="1.6"/>
+         <circle cx="46" cy="62" r="2.4" fill="${spots}"/><circle cx="54.5" cy="70" r="3" fill="${spots}"/><circle cx="46.5" cy="76" r="1.8" fill="${spots}"/>`;
+
+    // pixel art for the Terminal critter: '#' = one square
+    function crPixels(rows, x0, y0, size, fill) {
+        let out = '';
+        rows.forEach((row, r) => [...row].forEach((ch, c) => {
+            if (ch === '#') out += `<rect x="${x0 + c * size}" y="${y0 + r * size}" width="${size}" height="${size}"/>`;
+        }));
+        return `<g fill="${fill}" shape-rendering="crispEdges">${out}</g>`;
+    }
+
+    function crPixelFace() {
+        const r = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+        return `<g fill="#0d1f12" shape-rendering="crispEdges">
+            <g class="fe fe-open">${r(40, 58, 4, 4)}${r(56, 58, 4, 4)}</g>
+            <g class="fe fe-happy">${r(39, 60, 2, 2)}${r(41, 58, 2, 2)}${r(43, 60, 2, 2)}${r(55, 60, 2, 2)}${r(57, 58, 2, 2)}${r(59, 60, 2, 2)}</g>
+            <g class="fe fe-sleep">${r(40, 60, 4, 2)}${r(56, 60, 4, 2)}</g>
+            <g class="fe fe-sad">${r(40, 59, 4, 3)}${r(56, 59, 4, 3)}${r(42, 56, 2, 2)}${r(56, 56, 2, 2)}</g>
+            <g class="fm fm-smile">${r(44, 66, 2, 2)}${r(46, 68, 8, 2)}${r(54, 66, 2, 2)}</g>
+            <g class="fm fm-flat">${r(46, 67, 8, 2)}</g>
+            <g class="fm fm-frown">${r(46, 66, 8, 2)}${r(44, 68, 2, 2)}${r(54, 68, 2, 2)}</g>
+            <g class="fm fm-o">${r(48, 66, 4, 4)}</g>
+        </g>`;
+    }
+
+    // the songbird's cage bars, following the dome; a gap in the middle
+    // where the door's open (so they don't cross its face)
+    function crCageBars() {
+        return [18, 24.4, 30.8, 37.2, 62.8, 69.2, 75.6, 82].map(x => {
+            const top = 44 - Math.sqrt(Math.max(0, 32 * 32 - (x - 50) ** 2));
+            return `<path d="M${x} 86 V${top.toFixed(1)}"/>`;
+        }).join('');
+    }
+
+    const CRITTER_THEMES = {
+        candy: {
+            kind: 'gummy blob', name: 'Gummy', fit: [50, 86, 0.95], zz: [68, 46],
+            egg: crEgg('#ffd1e8', '#ff7ab8'),
+            art: () => `
+                <g class="cr-teen"><circle cx="37" cy="50" r="5.5" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/><circle cx="63" cy="50" r="5.5" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/></g>
+                <path d="M30 82 C27 62 34 46 50 46 C66 46 73 62 70 82 Z" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/>
+                <ellipse cx="40" cy="56" rx="5" ry="2.6" fill="#fff" opacity=".55" transform="rotate(-30 40 56)"/>
+                <g class="cr-adult">
+                    <rect x="42" y="49" width="4" height="1.6" rx=".8" fill="#ffe066" transform="rotate(-20 44 50)"/>
+                    <rect x="49" y="47.5" width="4" height="1.6" rx=".8" fill="#9fdcff" transform="rotate(15 51 48)"/>
+                    <rect x="56" y="49.5" width="4" height="1.6" rx=".8" fill="#5fe8c4" transform="rotate(-35 58 50)"/>
+                    <rect x="45" y="52.5" width="4" height="1.6" rx=".8" fill="#fff" transform="rotate(40 47 53)"/>
+                    <rect x="53" y="52" width="4" height="1.6" rx=".8" fill="#b57bff" transform="rotate(-10 55 53)"/>
+                </g>
+                ${crCheeks(50, 69, 10, '#ff2e7e')}
+                ${crFace(50, 64, '#5a1a3a')}`,
+            back: () => `<rect x="14" y="26" width="72" height="66" rx="14" fill="#fff" fill-opacity=".35" class="cr-ln" stroke-width="2"/>`,
+            front: () => `
+                <circle cx="24" cy="85" r="4.5" fill="#ffe066" class="cr-ln" stroke-width="1"/>
+                <circle cx="33" cy="88" r="4" fill="#9fdcff" class="cr-ln" stroke-width="1"/>
+                <circle cx="67" cy="88" r="4" fill="#5fe8c4" class="cr-ln" stroke-width="1"/>
+                <circle cx="76" cy="85" r="4.5" fill="#b57bff" class="cr-ln" stroke-width="1"/>
+                <path d="M22 38 V70" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+                <rect x="18" y="18" width="64" height="11" rx="4" fill="#ff9ecf" class="cr-ln" stroke-width="2"/>
+                <rect x="40" y="12" width="20" height="7" rx="3" fill="#ffd1e8" class="cr-ln" stroke-width="1.5"/>`
+        },
+        seaglass: {
+            kind: 'hermit crab', name: 'Shelly', fit: [50, 85, 0.82], zz: [68, 42],
+            egg: crEgg('#e9f6f1', '#8fd8c4'),
+            art: () => `
+                <g stroke="#e0603f" stroke-width="2" stroke-linecap="round"><path d="M38 78 l-5 5"/><path d="M43 80 l-3 4"/><path d="M62 78 l5 5"/><path d="M57 80 l3 4"/></g>
+                <circle cx="50" cy="58" r="16" fill="#f2c48d" class="cr-ln" stroke-width="1.5"/>
+                <path d="M50 58 m-3 0 a3 3 0 1 1 6 0 a6 6 0 1 1 -12 0 a9.5 9.5 0 1 1 19 0" fill="none" stroke="#c98f52" stroke-width="1.6"/>
+                <g class="cr-adult"><path d="M50 37 l1.8 3.8 4.2 .5 -3.1 2.9 .8 4.1 -3.7 -2 -3.7 2 .8 -4.1 -3.1 -2.9 4.2 -.5z" fill="#ffb35c" class="cr-ln" stroke-width="1"/></g>
+                <ellipse cx="50" cy="74" rx="15" ry="9" fill="#ff8a6b" class="cr-ln" stroke-width="1.5"/>
+                <circle cx="33" cy="73" r="3.4" fill="#ff6f4f" class="cr-ln" stroke-width="1.2"/><circle cx="67" cy="73" r="3.4" fill="#ff6f4f" class="cr-ln" stroke-width="1.2"/>
+                <g class="cr-teen"><path d="M28 72 a5.5 5.5 0 1 1 8 4 l-3 -3z" fill="#ff6f4f" class="cr-ln" stroke-width="1.2"/><path d="M72 72 a5.5 5.5 0 1 0 -8 4 l3 -3z" fill="#ff6f4f" class="cr-ln" stroke-width="1.2"/></g>
+                ${crFace(50, 72, '#5a2418')}`,
+            back: () => `
+                <path d="M41 10 h18 v12 q0 6 10 11 q15 8 15 23 v28 q0 8 -8 8 h-52 q-8 0 -8 -8 v-28 q0 -15 15 -23 q10 -5 10 -11 z" fill="#8fd8c4" fill-opacity=".38" class="cr-ln" stroke-width="2"/>
+                <path d="M16.5 80 q33 -7 67 0 v4 q0 8 -8 8 h-51 q-8 0 -8 -8 z" fill="#f1dfb0"/>`,
+            front: () => `
+                <rect x="40" y="4" width="20" height="9" rx="2" fill="#c99a63" class="cr-ln" stroke-width="1.5"/>
+                <path d="M24 52 q2 -8 9 -12" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/>
+                <circle cx="26" cy="87" r="2.5" fill="#fff" opacity=".8"/><path d="M70 89 l3 -5 3 5z" fill="#ff9eb0"/>`
+        },
+        holo: {
+            kind: 'alien critter', name: 'Zib', fit: [50, 70, 0.75], zz: [66, 36],
+            egg: crEgg('#f3e8ff', '#5fe8c4'),
+            art: () => `
+                <path d="M44 51 q-3 -7 -7 -9" fill="none" class="cr-ln" stroke-width="1.5"/><path d="M56 51 q3 -7 7 -9" fill="none" class="cr-ln" stroke-width="1.5"/>
+                <circle cx="37" cy="42" r="2.6" fill="#ff8ad8" class="cr-ln" stroke-width="1"/><circle cx="63" cy="42" r="2.6" fill="#b57bff" class="cr-ln" stroke-width="1"/>
+                <g class="cr-adult"><path d="M50 49 v-10" fill="none" class="cr-ln" stroke-width="1.5"/><circle cx="50" cy="38" r="2.8" fill="#ffe066" class="cr-ln" stroke-width="1"/></g>
+                <g class="cr-teen">
+                    <path d="M34 62 l-8 -6 l9 0z" fill="#7ee8b6" class="cr-ln" stroke-width="1.2" stroke-linejoin="round"/>
+                    <path d="M66 62 l8 -6 l-9 0z" fill="#7ee8b6" class="cr-ln" stroke-width="1.2" stroke-linejoin="round"/>
+                </g>
+                <path d="M32 79 C30 58 38 49 50 49 C62 49 70 58 68 79 q-3 5 -6 0 q-3 5 -6 0 q-3 5 -6 0 q-3 5 -6 0 q-3 5 -6 0 q-3 5 -6 0 Z" fill="#9ef0c8" class="cr-ln" stroke-width="1.5" stroke-linejoin="round"/>
+                <g fill="#6fd6a8"><circle cx="40" cy="56" r="1.6"/><circle cx="61" cy="55" r="1.2"/><circle cx="63" cy="72" r="1.5"/><circle cx="37" cy="73" r="1.2"/></g>
+                <ellipse cx="50" cy="73" rx="8" ry="4.5" fill="#fff" opacity=".45"/>
+                ${crCheeks(50, 67, 10, '#ff8ad8')}
+                ${crFace(50, 62, '#1f2a4a')}`,
+            back: uid => `
+                <defs><linearGradient id="${uid}h" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#ffd6f5"/><stop offset=".35" stop-color="#c9f3ff"/><stop offset=".7" stop-color="#e3d4ff"/><stop offset="1" stop-color="#fff3b8"/>
+                </linearGradient></defs>
+                <path d="M50 4 C76 4 92 38 92 60 C92 84 74 96 50 96 C26 96 8 84 8 60 C8 38 24 4 50 4 Z" fill="url(#${uid}h)" class="cr-ln" stroke-width="2"/>
+                <rect x="25" y="24" width="50" height="48" rx="9" fill="#f2fdff" class="cr-ln" stroke-width="1.8"/>`,
+            front: () => `
+                <circle cx="35" cy="82" r="4" fill="#ff8ad8" class="cr-ln" stroke-width="1.2"/>
+                <circle cx="50" cy="86" r="4" fill="#b57bff" class="cr-ln" stroke-width="1.2"/>
+                <circle cx="65" cy="82" r="4" fill="#5fe8c4" class="cr-ln" stroke-width="1.2"/>
+                <path d="M31 30 h9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>`
+        },
+        library: {
+            kind: 'bookworm', name: 'Wormsley', fit: [51, 66, 0.78], zz: [70, 30],
+            egg: crEgg('#f3e6c8', '#9ed97a'),
+            art: () => `
+                <path d="M52 86 C52 74 44 70 46 58" fill="none" class="cr-ln" stroke-width="17" stroke-linecap="round"/>
+                <path d="M52 86 C52 74 44 70 46 58" fill="none" stroke="#8fcf6b" stroke-width="14" stroke-linecap="round"/>
+                <path d="M44.5 74 q5 -2 9.5 0 M44 66 q4.5 -2 8.5 0" fill="none" stroke="#6aa94a" stroke-width="1.4"/>
+                <circle cx="46" cy="52" r="12" fill="#9ed97a" class="cr-ln" stroke-width="1.5"/>
+                ${crCheeks(46, 57, 8, '#ff7a8a')}
+                ${crFace(46, 52, '#24331a')}
+                <g class="cr-teen" fill="none" stroke="#3b2a1e" stroke-width="1.3"><circle cx="40" cy="52" r="4.2"/><circle cx="52" cy="52" r="4.2"/><path d="M44.2 52 h3.6"/></g>
+                <g class="cr-adult">
+                    <path d="M46 44 l-14 -5 14 -5 14 5z" fill="#2b2233"/><path d="M38 40 v3.5 q8 3 16 0 v-3.5" fill="#2b2233"/>
+                    <path d="M60 39 v7" stroke="#ffd84a" stroke-width="1.4"/><circle cx="60" cy="46.5" r="1.4" fill="#ffd84a"/>
+                </g>`,
+            back: () => `
+                <path d="M24 54 L30 12 H90 L88 54 Z" fill="#8b4a2b" class="cr-ln" stroke-width="2"/>
+                <path d="M44 24 h32 M48 30 h24" stroke="#e8c36a" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 64 L24 54 H88 L76 64 Z" fill="#f3e6c8" class="cr-ln" stroke-width="2"/>
+                <ellipse cx="50" cy="59" rx="17" ry="3.2" fill="#3b2418"/>`,
+            front: () => `
+                <rect x="12" y="64" width="64" height="24" fill="#f3e6c8" class="cr-ln" stroke-width="2"/>
+                <path d="M14 70 h60 M14 75 h60 M14 80 h60" stroke="#d9c49a" stroke-width="1"/>
+                <rect x="10" y="62" width="68" height="4" rx="1.5" fill="#8b4a2b" class="cr-ln" stroke-width="1.5"/>
+                <rect x="10" y="86" width="68" height="4" rx="1.5" fill="#8b4a2b" class="cr-ln" stroke-width="1.5"/>
+                <path d="M78 64 L88 54 V78 L78 88 Z" fill="#6b3520" class="cr-ln" stroke-width="2"/>`
+        },
+        deco: {
+            kind: 'songbird', name: 'Pip', fit: [50, 79, 0.7], zz: [64, 36],
+            egg: crEgg('#fff6dc', '#c9a24a'),
+            art: () => `
+                <g class="cr-teen"><path d="M60 74 l16 6 -14 3z" fill="#2f8f86" class="cr-ln" stroke-width="1.2"/></g>
+                <g class="cr-adult"><path d="M50 45 q-3 -10 4 -15 q-1 8 1 14z M49 45 q-7 -6 -6 -12 q3 6 7 11z" fill="#2f8f86" class="cr-ln" stroke-width="1"/></g>
+                <path d="M46 81 l-2 5 M54 81 l2 5" stroke="#ff8a3d" stroke-width="2" stroke-linecap="round"/>
+                <path d="M50 44 C61 44 64 54 62 60 C70 66 68 82 50 82 C33 82 31 66 38 60 C36 54 39 44 50 44 Z" fill="#ffd36b" class="cr-ln" stroke-width="1.5"/>
+                <path d="M57 64 q11 3 7 14 q-9 -2 -11 -10z" fill="#f2b33d" class="cr-ln" stroke-width="1"/>
+                ${crCheeks(50, 59, 8, '#ff7a5a')}
+                ${crFace(50, 54, '#2b2233', false)}
+                <path d="M47.5 57.5 h5 l-2.5 3.5z" fill="#ff8a3d" class="cr-ln" stroke-width=".8"/>`,
+            back: () => `
+                <circle cx="50" cy="7" r="4" fill="none" stroke="#c9a24a" stroke-width="2"/>
+                <path d="M18 86 V44 A32 32 0 0 1 82 44 V86 Z" fill="#c9a24a" fill-opacity=".12"/>
+                <line x1="24" y1="81" x2="76" y2="81" stroke="#8a6a2a" stroke-width="3" stroke-linecap="round"/>`,
+            front: () => `
+                <g stroke="#c9a24a" stroke-width="1.3" fill="none">${crCageBars()}<path d="M18 86 V44 A32 32 0 0 1 82 44 V86" stroke-width="2"/><path d="M18 50 H82"/></g>
+                <rect x="13" y="84" width="74" height="8" rx="2" fill="#c9a24a" class="cr-ln" stroke-width="1.5"/>
+                <path d="M44 89.5 l6 -3 6 3" fill="none" stroke="#fff6dc" stroke-width="1.2"/>`
+        },
+        loft: {
+            kind: 'moss sprout', name: 'Moss', fit: [52, 84, 0.78], zz: [70, 38],
+            egg: crEgg('#e6dccb', '#7fb069'),
+            art: () => `
+                <path d="M50 57 V44" stroke="#5f9a4c" stroke-width="2" stroke-linecap="round"/>
+                <path d="M50 48 q-10 -9 -15 -3 q6 7 15 3z" fill="#9bd17a" class="cr-ln" stroke-width="1.1"/>
+                <path d="M50 48 q10 -9 15 -3 q-6 7 -15 3z" fill="#9bd17a" class="cr-ln" stroke-width="1.1"/>
+                <g class="cr-adult">
+                    <g fill="#ff9eb0"><circle cx="50" cy="38" r="2.4"/><circle cx="53" cy="40.2" r="2.4"/><circle cx="51.8" cy="43.6" r="2.4"/><circle cx="48.2" cy="43.6" r="2.4"/><circle cx="47" cy="40.2" r="2.4"/></g>
+                    <circle cx="50" cy="41" r="1.8" fill="#ffe066"/>
+                </g>
+                <g class="cr-teen"><path d="M31 70 q-8 -4 -8 -10 q7 1 9 7z" fill="#9bd17a" class="cr-ln" stroke-width="1.1"/></g>
+                <path d="M30 82 C28 62 36 56 50 56 C64 56 72 62 70 82 Z" fill="#7fb069" class="cr-ln" stroke-width="1.5"/>
+                <g fill="#5f9a4c"><circle cx="38" cy="64" r="1.3"/><circle cx="63" cy="66" r="1.5"/><circle cx="58" cy="77" r="1.2"/><circle cx="37" cy="76" r="1.4"/></g>
+                ${crCheeks(50, 72, 10, '#ff7a8a')}
+                ${crFace(50, 67, '#24331a')}`,
+            back: () => `
+                <rect x="14" y="22" width="72" height="70" rx="12" fill="#dff3e6" fill-opacity=".4" class="cr-ln" stroke-width="2"/>
+                <path d="M15 80 Q50 74 85 80 V82 Q85 91 74 91 H26 Q15 91 15 82 Z" fill="#6b4a32"/>
+                <path d="M24 80 q-2 -14 -8 -20 M24 80 q2 -12 8 -16 M78 79 q0 -10 4 -14" fill="none" stroke="#5f9a4c" stroke-width="2" stroke-linecap="round"/>`,
+            front: () => `
+                <g fill="#b8b2a7" class="cr-ln" stroke-width=".8"><ellipse cx="30" cy="87" rx="4" ry="2.5"/><ellipse cx="70" cy="86" rx="3.5" ry="2.2"/><ellipse cx="62" cy="89" rx="2.5" ry="1.6"/></g>
+                <path d="M21 34 V64" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+                <rect x="22" y="14" width="56" height="10" rx="3" fill="#b88a5a" class="cr-ln" stroke-width="2"/>`
+        },
+        blueprint: {
+            kind: 'pup', name: 'Bolt', fit: [50, 84, 0.8], zz: [70, 36],
+            egg: () => `
+                <ellipse cx="50" cy="68" rx="11" ry="14" fill="none" class="cr-ln" stroke-width="1.4" stroke-dasharray="3 2"/>
+                <path d="M37 68 h26 M50 52 v32" fill="none" class="cr-ln" stroke-width=".6"/>`,
+            // a sitting pup, line-drawn like a drafted sketch
+            art: () => `
+                <g fill="none" class="cr-ln" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M63 78 q9 -1 8 -11"/>
+                    <path d="M41 61 q-5 10 -4 21 h26 q1 -11 -4 -21"/>
+                    <path d="M45 69 v13 M55 69 v13 M42 82 h6 M52 82 h6"/>
+                    <ellipse cx="50" cy="52" rx="12" ry="11"/>
+                    <path d="M40 45 q-8 1 -7 14 q4 2 6 -4"/>
+                    <path d="M60 45 q8 1 7 14 q-4 2 -6 -4"/>
+                    <g class="cr-teen"><path d="M41 62 q9 4 18 0"/><circle cx="50" cy="66" r="1.8" stroke-dasharray="1.5 1"/></g>
+                    <g class="cr-adult"><path d="M41 42 q9 -12 18 0 Z M37 42 h26 M50 31 v4"/></g>
+                </g>
+                <ellipse cx="50" cy="53.4" rx="1.9" ry="1.3" style="fill:var(--outline)"/>
+                ${crFace(50, 49.5, 'var(--outline)')}`,
+            back: () => `
+                <g fill="none" class="cr-ln">
+                    <rect x="12" y="14" width="76" height="72" stroke-width="1.4" stroke-dasharray="4 3"/>
+                    <path d="M12 30 h76 M12 46 h76 M12 62 h76 M12 78 h76 M28 14 v72 M44 14 v72 M60 14 v72 M76 14 v72" stroke-width=".4" opacity=".35"/>
+                </g>`,
+            front: () => `
+                <g fill="none" class="cr-ln" stroke-width=".9"><path d="M12 92 h76 M12 89 v6 M88 89 v6 M93 14 v72 M90 14 h6 M90 86 h6"/></g>
+                <text x="50" y="99" text-anchor="middle" font-size="5" font-family="monospace" style="fill:var(--outline)">W 76</text>`
+        },
+        terminal: {
+            kind: 'pixel pet', name: 'Bit', fit: [50, 74, 0.82], zz: [64, 38], zzInk: '#39ff6a',
+            egg: () => crPixels(['..##..', '.####.', '######', '##.###', '######', '.####.'], 38, 58, 4, '#39ff6a'),
+            art: () => `
+                ${crPixels(['...........', '...........', '..#######..', '.#########.', '.#########.', '.#########.', '.#########.', '..#######..', '..##...##..', '..##...##..'], 28, 42, 4, '#39ff6a')}
+                <g class="cr-teen">${crPixels(['..#.....#..', '..##...##..'], 28, 42, 4, '#39ff6a')}</g>
+                <g class="cr-adult">${crPixels(['...........#', '..........#.', '..........#.'], 28, 58, 4, '#39ff6a')}</g>
+                ${crPixelFace()}`,
+            back: () => `
+                <rect x="8" y="12" width="84" height="80" rx="9" fill="#d8cfb4" stroke="#7a705a" stroke-width="2"/>
+                <rect x="15" y="18" width="70" height="60" rx="3" fill="#0d1f12" stroke="#7a705a" stroke-width="1.5"/>`,
+            front: () => {
+                let lines = '';
+                for (let y = 20; y < 78; y += 2.5) lines += `<path d="M16 ${y} h68"/>`;
+                return `<g stroke="#000" stroke-width=".6" opacity=".25">${lines}</g>
+                    <circle cx="80" cy="85" r="2" fill="#39ff6a"/>
+                    <text x="17" y="88" font-size="6" font-weight="700" font-family="monospace" fill="#7a705a">BOOK-8</text>`;
+            }
+        }
+    };
+
+    function currentTheme() {
+        return document.documentElement.dataset.theme || 'candy';
+    }
+
+    function critterArt(theme = currentTheme()) {
+        return CRITTER_THEMES[theme] || CRITTER_THEMES.candy;
+    }
+
+    // The critter in its home as an SVG string. `empty` draws just the home
+    // (it ran away).
+    function critterSvg(theme, { stage = 'baby', mood = 'content', empty = false } = {}) {
+        const t = critterArt(theme);
+        const uid = 'cr' + (++critterUid);
+        const scale = stage === 'egg' ? 1 : (CRITTER_STAGES.find(s => s.id === stage) || CRITTER_STAGES[0]).scale;
+        const [fx, fy, fs] = t.fit;
+        const body = empty ? '' : `
+            <g transform="translate(${fx} ${fy}) scale(${fs}) translate(-50 -82)">
+                <g transform="translate(50 82) scale(${scale}) translate(-50 -82)">
+                    <g class="cr-idle"><g class="cr-egg">${t.egg()}</g><g class="cr-critter">${t.art()}</g></g>
+                </g>
+            </g>
+            <text class="cr-zz" x="${t.zz[0]}" y="${t.zz[1]}" style="fill:${t.zzInk || 'var(--outline)'}">z<tspan dx="1" dy="-4" font-size="7">z</tspan></text>`;
+        return `<svg class="cr stage-${stage} mood-${mood}" viewBox="0 0 100 100" aria-hidden="true">${t.back(uid)}${body}${t.front(uid)}</svg>`;
+    }
+
+    // ----- Critter state -----
+
+    // pages a day it eats: the pages goal spread over its period
+    const critterGoal = () => pagesGoalAmount() / PAGES_PERIODS[pagesPeriod()].days;
+    const critterCap = () => critterGoal() * CRITTER_FOOD_DAYS;
+
+    function newCritterEgg(past = []) {
+        const now = Date.now();
+        return {
+            name: '',
+            laidAt: now,
+            bornAt: null,            // set when it hatches (its first meal)
+            totalFed: 0,
+            food: 0,                 // pages in its belly right now
+            updatedAt: now,          // hunger worked out up to here
+            emptySince: null,        // when its belly hit empty
+            favoriteGenre: GENRES[Math.floor(Math.random() * GENRES.length)],
+            favoriteFound: false,
+            log: [],                 // recent meals, newest first
+            gone: null,              // { at, note, theme } once it's run away
+            past                     // the scrapbook: critters before this one
+        };
+    }
+
+    function loadCritter() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(CRITTER_KEY));
+            if (saved && typeof saved === 'object') return { ...newCritterEgg(), ...saved };
+        } catch (e) {}
+        return newCritterEgg();
+    }
+
+    function saveCritter() {
+        try { localStorage.setItem(CRITTER_KEY, JSON.stringify(critter)); } catch (e) {}
+    }
+
+    // Work out how hungry it's got since we last looked. Eggs and an empty
+    // home don't get hungry, and neither does a switched-off critter (its
+    // hunger clock is held where it was).
+    function settleCritter(now = Date.now()) {
+        const c = critter;
+        if (!c) return;
+        const elapsed = Math.max(0, now - c.updatedAt);
+        if (c.gone || !c.bornAt || !appSettings.critter) {
+            if (c.emptySince) c.emptySince += elapsed;
+            c.updatedAt = now;
+            saveCritter();
+            return;
+        }
+        const goal = critterGoal();
+        c.food = Math.min(c.food, critterCap());
+        if (c.food > 0) {
+            const left = c.food - goal * elapsed / DAY_MS;
+            if (left <= 0) {
+                c.emptySince = c.updatedAt + c.food / goal * DAY_MS;
+                c.food = 0;
+            } else {
+                c.food = left;
+            }
+        }
+        if (c.food === 0 && !c.emptySince) c.emptySince = now;
+        c.updatedAt = now;
+        if (c.emptySince && now - c.emptySince >= CRITTER_RUNAWAY_DAYS * DAY_MS) {
+            critterRunsAway(c.emptySince + CRITTER_RUNAWAY_DAYS * DAY_MS);
+        }
+        saveCritter();
+    }
+
+    function critterName(c = critter) {
+        return (c.name || '').trim() || critterArt().name;
+    }
+
+    function critterStage(c = critter) {
+        if (!c.bornAt) return { id: 'egg', at: 0 };
+        let stage = CRITTER_STAGES[0];
+        CRITTER_STAGES.forEach(s => { if (c.totalFed >= s.at) stage = s; });
+        return stage;
+    }
+
+    function critterMood(c = critter) {
+        if (!c.bornAt) return 'content';
+        const days = c.food / critterGoal();
+        if (days <= 0) return 'starving';
+        if (days < 1) return 'hungry';
+        const hour = new Date().getHours();
+        if (hour >= 23 || hour < 7) return 'asleep';
+        return days >= 2 ? 'full' : 'content';
+    }
+
+    function critterRunsAway(at) {
+        const c = critter;
+        const theme = currentTheme();
+        c.past.unshift({
+            name: critterName(c), theme, stage: critterStage(c).id,
+            totalFed: c.totalFed, bornAt: c.bornAt, endedAt: at, fate: 'Ran away'
+        });
+        c.gone = {
+            at, theme,
+            note: `i went lookin for sumone who reeds to me mor. thank u for the ${c.totalFed.toLocaleString()} pages!! love, ${critterName(c)}`
+        };
+        c.food = 0;
+        c.emptySince = null;
+    }
+
+    function hatchNewEgg() {
+        critter = newCritterEgg(critter ? critter.past : []);
+        saveCritter();
+        renderCritter();
+        critterSay('A new egg! Feed it pages to hatch it.');
+    }
+
+    // Pages "taste like" the book you most recently started reading.
+    function tastedGenre() {
+        const reading = visibleBooks().filter(b => b.status === 'Reading');
+        if (!reading.length) return '';
+        reading.sort((a, b) => (b.statusSince || 0) - (a.statusSince || 0));
+        return reading[0].genre || '';
+    }
+
+    function feedCritter(pages) {
+        settleCritter();
+        const c = critter;
+        if (c.gone) return;
+        recordPages(pages);
+        const genre = tastedGenre();
+        const hatching = !c.bornAt;
+        const stageBefore = critterStage(c).id;
+        // (left unnamed, it goes by each theme's critter name)
+        if (hatching) c.bornAt = Date.now();
+        c.totalFed += pages;
+        c.food = Math.min(critterCap(), c.food + pages);
+        if (hatching) c.food = Math.max(c.food, critterGoal()); // a newborn starts with a day's worth
+        if (c.food > 0) c.emptySince = null;
+        c.log.unshift({ at: Date.now(), pages, genre });
+        c.log.length = Math.min(c.log.length, 100);
+        const loved = !!genre && genre === c.favoriteGenre;
+        const firstLove = loved && !c.favoriteFound;
+        if (loved) c.favoriteFound = true;
+        saveCritter();
+        renderCritter();
+        // fed from the goals window: nothing to cheer in a closed window
+        if (document.getElementById('critter-modal').style.display !== 'flex') return;
+
+        const view = document.getElementById('critter-view');
+        const stageNow = critterStage(c);
+        if (hatching) {
+            confettiFrom(view);
+            critterSay(`It hatched! Hi, I'm ${critterName(c)}!`);
+        } else if (stageNow.id !== stageBefore) {
+            confettiFrom(view);
+            critterSay(`${critterName(c)} grew into ${stageNow.id === 'adult' ? 'an adult' : 'a ' + stageNow.id}!`);
+        } else if (loved) {
+            heartsFrom(view);
+            critterSay(firstLove ? `${genre}! That's my favorite!` : `Yum, ${genre}!`);
+        } else {
+            const lines = ['Nom nom nom.', 'Tasty pages!', 'Mmm, crunchy words.', 'More please!'];
+            if (genre) lines.push(`Mmm, ${genre}.`);
+            critterSay(lines[Math.floor(Math.random() * lines.length)]);
+        }
+        critterAnimate('eating', 1400);
+    }
+
+    function heartsFrom(el) {
+        burstFrom(el, 9, 60, () => {
+            const h = document.createElement('span');
+            h.className = 'fx-sparkle';
+            h.textContent = '♥';
+            h.style.color = '#ff4f9a';
+            h.style.fontSize = (12 + Math.random() * 10) + 'px';
+            return h;
+        });
+    }
+
+    // a passing state (eating, wiggle) on every drawing of the critter
+    function critterAnimate(cls, ms) {
+        document.querySelectorAll('#critter-home-art .cr, #critter-view-art .cr').forEach(svg => {
+            svg.classList.remove(cls);
+            void svg.getBoundingClientRect();
+            svg.classList.add(cls);
+            setTimeout(() => svg.classList.remove(cls), ms);
+        });
+    }
+
+    function critterSay(text) {
+        const say = document.getElementById('critter-say');
+        say.textContent = text;
+        say.classList.add('visible');
+        clearTimeout(critterSayTimer);
+        critterSayTimer = setTimeout(() => say.classList.remove('visible'), 2600);
+    }
+
+    function petCritter() {
+        const c = critter;
+        if (c.gone) return;
+        if (!c.bornAt) {
+            critterAnimate('wiggle', 650);
+            critterSay('The egg wobbles.');
+            return;
+        }
+        const mood = critterMood(c);
+        let lines;
+        if (mood === 'asleep') lines = ['zzz…', '*rolls over*', '*sleepy mumble*'];
+        else if (mood === 'starving') lines = ['Too hungry to play…', 'Pages… please…'];
+        else if (mood === 'hungry') lines = ['Pets are nice. Pages are nicer.', '*tummy rumbles*'];
+        else lines = ['Hee hee!', '♥', '*happy wiggle*', 'That tickles!', `${critterName(c)} loves you.`];
+        critterSay(lines[Math.floor(Math.random() * lines.length)]);
+        if (mood !== 'asleep') {
+            critterAnimate('wiggle', 650);
+            sparkleFrom(document.getElementById('critter-view'));
+        }
+    }
+
+    function addCritterPages(n) {
+        const input = document.getElementById('critter-pages');
+        input.value = (parseInt(input.value) || 0) + n;
+    }
+
+    function submitCritterFeed() {
+        const input = document.getElementById('critter-pages');
+        const pages = Math.min(2000, parseInt(input.value) || 0);
+        if (pages < 1) {
+            critterSay('How many pages did you read?');
+            return;
+        }
+        input.value = '';
+        feedCritter(pages);
+    }
+
+    function renameCritter(value) {
+        critter.name = value.slice(0, 20);
+        saveCritter();
+        updateCritterWidget();
+    }
+
+    // An unnamed critter shows its theme name as the box's placeholder,
+    // which can't be selected or backspaced; clicking in swaps in the real
+    // text, all selected, so it reads (and edits) like a name.
+    function startRenameCritter(input) {
+        if (!input.value && critter.bornAt) input.value = critterName();
+        input.select();
+    }
+
+    // left untouched (or emptied): back to the theme's name
+    function endRenameCritter(input) {
+        if (!critter.name.trim()) {
+            critter.name = '';
+            saveCritter();
+            input.value = '';
+        }
+    }
+
+    // The run-away note, written letter by letter in a wobbly kid's hand.
+    // The wobble comes from the note's own text, so it looks the same every
+    // time it's opened.
+    const GONE_NOTE_PAW = `<svg class="paw" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+        <ellipse cx="12" cy="16" rx="5.2" ry="4.4"/>
+        <ellipse cx="5" cy="10" rx="2.1" ry="2.7" transform="rotate(-20 5 10)"/>
+        <ellipse cx="9.3" cy="5.6" rx="2.1" ry="2.8" transform="rotate(-8 9.3 5.6)"/>
+        <ellipse cx="14.7" cy="5.6" rx="2.1" ry="2.8" transform="rotate(8 14.7 5.6)"/>
+        <ellipse cx="19" cy="10" rx="2.1" ry="2.7" transform="rotate(20 19 10)"/>
+    </svg>`;
+
+    function renderGoneNote(box, text) {
+        box.innerHTML = '';
+        if (!text) return;
+        let seed = 0;
+        for (const ch of text) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+        const rand = () => {
+            seed = (seed * 1664525 + 1013904223) >>> 0;
+            return seed / 4294967296;
+        };
+        text.split(' ').forEach((word, i) => {
+            if (i) box.append(' ');
+            const w = document.createElement('span');
+            w.className = 'word';
+            [...word].forEach(ch => {
+                const s = document.createElement('span');
+                s.className = 'ch';
+                s.textContent = ch;
+                s.style.setProperty('--r', ((rand() - 0.5) * 26).toFixed(1) + 'deg');
+                s.style.setProperty('--y', ((rand() - 0.5) * 7).toFixed(1) + 'px');
+                s.style.setProperty('--s', (0.85 + rand() * 0.35).toFixed(2));
+                w.appendChild(s);
+            });
+            box.appendChild(w);
+        });
+        box.insertAdjacentHTML('beforeend', GONE_NOTE_PAW);
+    }
+
+    // ----- Critter rendering -----
+
+    const CRITTER_MOOD_TEXT = {
+        full: 'Stuffed and happy.',
+        content: 'Content.',
+        hungry: 'Getting hungry…',
+        asleep: 'Fast asleep.'
+    };
+
+    function critterMoodText(c = critter) {
+        if (!c.bornAt) return 'Something’s wiggling inside. Feed it pages to hatch it.';
+        const mood = critterMood(c);
+        if (mood === 'starving') {
+            const daysLeft = Math.max(1, Math.ceil(CRITTER_RUNAWAY_DAYS - (Date.now() - c.emptySince) / DAY_MS));
+            return `Starving! It might run away in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.`;
+        }
+        return CRITTER_MOOD_TEXT[mood];
+    }
+
+    function critterAge(c = critter) {
+        const days = Math.floor((Date.now() - c.bornAt) / DAY_MS);
+        return days < 1 ? 'born today' : `${days} day${days === 1 ? '' : 's'} old`;
+    }
+
+    const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
+    const shortDate = ms => new Date(ms).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+
+    function updateCritterWidget() {
+        const c = critter;
+        const alert = document.getElementById('critter-alert');
+        const home = document.getElementById('critter-home');
+        let badge = '';
+        let title;
+        if (c.gone) {
+            badge = '✉';
+            title = 'Your critter left a note';
+        } else if (!c.bornAt) {
+            title = 'An egg — feed it pages to hatch it';
+        } else {
+            const mood = critterMood(c);
+            if (mood === 'hungry') badge = '!';
+            if (mood === 'starving') badge = '!!';
+            title = `${critterName(c)}: ${critterMoodText(c)}`;
+        }
+        alert.textContent = badge;
+        alert.classList.toggle('visible', !!badge);
+        home.title = title;
+        home.setAttribute('aria-label', title);
+    }
+
+    function renderCritter() {
+        if (!critter) return;
+        const c = critter;
+        const theme = currentTheme();
+        const opts = { stage: critterStage(c).id, mood: critterMood(c), empty: !!c.gone };
+        document.getElementById('critter-home-art').innerHTML = critterSvg(theme, opts);
+        updateCritterWidget();
+        if (document.getElementById('critter-modal').style.display === 'flex') {
+            document.getElementById('critter-view-art').innerHTML = critterSvg(theme, opts);
+            renderCritterModal();
+        }
+    }
+
+    function renderCritterModal() {
+        const c = critter;
+        const show = (id, on) => { document.getElementById(id).style.display = on ? '' : 'none'; };
+        const gone = !!c.gone;
+        const hatched = !!c.bornAt && !gone;
+        show('critter-alive', !gone);
+        show('critter-care', hatched);
+        show('critter-feed', !gone);
+        show('critter-chips', !gone);
+        show('critter-tiles', hatched);
+        show('critter-meals', !gone);
+        show('critter-gone-note', gone);
+        show('critter-hatch', gone);
+
+        const nameInput = document.getElementById('critter-name');
+        nameInput.placeholder = c.bornAt ? critterArt().name : 'Name your egg';
+        if (document.activeElement !== nameInput) nameInput.value = c.name || '';
+
+        const art = critterArt();
+        document.getElementById('critter-sub').textContent = c.bornAt
+            ? `${capitalize(critterStage(c).id)} ${art.kind} · ${critterAge(c)}`
+            : `A ${art.kind} egg`;
+        document.getElementById('critter-mood').textContent = gone ? 'The home is empty.' : critterMoodText(c);
+        renderGoneNote(document.getElementById('critter-gone-note'), gone ? c.gone.note : '');
+
+        if (hatched) {
+            const days = c.food / critterGoal();
+            document.getElementById('critter-meter-text').textContent =
+                `${days.toFixed(1)} of ${CRITTER_FOOD_DAYS} days of food (${pagesGoalText()})`;
+            document.getElementById('critter-meter-fill').style.width = Math.min(100, c.food / critterCap() * 100) + '%';
+
+            const next = CRITTER_STAGES.find(s => s.at > c.totalFed);
+            const tiles = [
+                ['Pages eaten', c.totalFed.toLocaleString()],
+                ['Next stage', next ? `${(next.at - c.totalFed).toLocaleString()} pages` : 'All grown'],
+                ['Loves', c.favoriteFound ? c.favoriteGenre : '???']
+            ];
+            const box = document.getElementById('critter-tiles');
+            box.innerHTML = '';
+            tiles.forEach(([label, value]) => {
+                const tile = document.createElement('div');
+                tile.className = 'stats-tile';
+                const l = document.createElement('div');
+                l.className = 'stats-tile-label';
+                l.textContent = label;
+                const v = document.createElement('div');
+                v.className = 'stats-tile-value';
+                v.style.fontSize = '17px';
+                v.textContent = value;
+                tile.append(l, v);
+                box.appendChild(tile);
+            });
+        }
+
+        const list = document.getElementById('critter-meal-list');
+        list.innerHTML = '';
+        c.log.slice(0, 8).forEach(meal => {
+            const li = document.createElement('li');
+            const what = document.createElement('span');
+            what.textContent = `${meal.pages} page${meal.pages === 1 ? '' : 's'}${meal.genre ? ' · ' + meal.genre : ''}`;
+            const when = document.createElement('span');
+            when.textContent = shortDate(meal.at);
+            li.append(what, when);
+            list.appendChild(li);
+        });
+        if (!c.log.length) {
+            const li = document.createElement('li');
+            li.className = 'critter-empty';
+            li.textContent = 'No meals yet. Pages taste like the book you started reading most recently.';
+            list.appendChild(li);
+        }
+
+        renderCritterScrapbook();
+    }
+
+    function renderCritterScrapbook() {
+        const box = document.getElementById('critter-scrapbook');
+        box.innerHTML = '';
+        if (!critter.past.length) {
+            const empty = document.createElement('div');
+            empty.className = 'critter-empty';
+            empty.textContent = 'No past critters yet.';
+            box.appendChild(empty);
+            return;
+        }
+        critter.past.forEach(p => {
+            const row = document.createElement('div');
+            row.className = 'critter-past';
+            const pic = document.createElement('div');
+            pic.className = 'critter-past-pic';
+            pic.innerHTML = critterSvg(p.theme, { stage: p.stage, mood: 'content' });
+            const info = document.createElement('div');
+            const name = document.createElement('div');
+            name.className = 'critter-past-name';
+            name.textContent = p.name;
+            const kind = document.createElement('div');
+            kind.textContent = `${capitalize(p.stage)} ${critterArt(p.theme).kind} · ${p.totalFed.toLocaleString()} pages eaten`;
+            const dates = document.createElement('div');
+            dates.textContent = `${p.bornAt ? shortDate(p.bornAt) : '?'} – ${shortDate(p.endedAt)} · ${p.fate}`;
+            info.append(name, kind, dates);
+            row.append(pic, info);
+            box.appendChild(row);
+        });
+    }
+
+    function toggleCritterScrapbook() {
+        const box = document.getElementById('critter-scrapbook');
+        const showing = box.classList.toggle('visible');
+        document.getElementById('critter-scrap-toggle').textContent = showing ? 'Hide scrapbook' : 'Scrapbook';
+    }
+
+    function openCritter() {
+        settleCritter();
+        document.getElementById('critter-scrapbook').classList.remove('visible');
+        document.getElementById('critter-scrap-toggle').textContent = 'Scrapbook';
+        document.getElementById('critter-say').classList.remove('visible');
+        document.getElementById('critter-modal').style.display = 'flex';
+        renderCritter();
+    }
+
+    function closeCritter() {
+        document.getElementById('critter-modal').style.display = 'none';
+    }
+
+    function initCritter() {
+        critter = loadCritter();
+        settleCritter();
+        renderCritter();
+        // hunger keeps ticking while the page is open
+        // (and the goals card rolls over to a new day, week or month)
+        setInterval(() => { settleCritter(); renderCritter(); updateGoals(); }, 5 * 60 * 1000);
+    }
+
+    // ---------- Reading goals ----------
+    // A card under the critter with the yearly books goal and a pages goal
+    // per day, week or month. Pages come from a log of pages read, filled
+    // by feeding the critter or by the Log box in the goals window. The
+    // critter eats at the pages goal's pace.
+
+    const PAGES_LOG_KEY = 'bookShelfPagesLog';
+    const PAGES_LOG_DAYS = 40;   // enough for this month
+    const PAGES_PERIODS = {
+        day: { days: 1, label: 'today', unit: 'a day', short: 'Today' },
+        week: { days: 7, label: 'this week', unit: 'a week', short: 'Week' },
+        month: { days: 30, label: 'this month', unit: 'a month', short: 'Month' }
+    };
+
+    const pagesPeriod = () => PAGES_PERIODS[appSettings.pagesPeriod] ? appSettings.pagesPeriod : 'day';
+    const pagesGoalAmount = () => Math.max(1, parseInt(appSettings.pagesGoal) || DEFAULT_SETTINGS.pagesGoal);
+    const pagesGoalText = () => `${pagesGoalAmount().toLocaleString()} pages ${PAGES_PERIODS[pagesPeriod()].unit}`;
+
+    function loadPagesLog() {
+        try {
+            const log = JSON.parse(localStorage.getItem(PAGES_LOG_KEY));
+            if (Array.isArray(log)) return log;
+        } catch (e) {}
+        return [];
+    }
+
+    function recordPages(pages) {
+        const cutoff = Date.now() - PAGES_LOG_DAYS * DAY_MS;
+        const log = loadPagesLog().filter(e => e.at >= cutoff);
+        log.push({ at: Date.now(), pages });
+        try { localStorage.setItem(PAGES_LOG_KEY, JSON.stringify(log)); } catch (e) {}
+        updateGoals();
+    }
+
+    // when the current day / week (from Monday) / month began
+    function pagesPeriodStart(period = pagesPeriod()) {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        if (period === 'week') d.setDate(d.getDate() - (d.getDay() + 6) % 7);
+        if (period === 'month') d.setDate(1);
+        return d.getTime();
+    }
+
+    function pagesReadThisPeriod() {
+        const start = pagesPeriodStart();
+        return loadPagesLog().reduce((sum, e) => sum + (e.at >= start ? e.pages : 0), 0);
+    }
+
+    function booksReadThisYear() {
+        const year = String(new Date().getFullYear());
+        return visibleBooks().filter(b => b.status === 'Read' && (b.finishedDate || '').startsWith(year)).length;
+    }
+
+    function goalRow(label, done, goal) {
+        const row = document.createElement('div');
+        row.className = 'goals-row';
+        const l = document.createElement('span');
+        l.textContent = label;
+        const n = document.createElement('span');
+        n.textContent = `${done}/${goal}`;
+        row.append(l, n);
+        return [row, goalBar(done, goal)];
+    }
+
+    function goalBar(done, goal) {
+        const bar = document.createElement('div');
+        bar.className = 'reading-goal-bar';
+        const fill = document.createElement('div');
+        fill.className = 'reading-goal-fill' + (done >= goal ? ' done' : '');
+        fill.style.width = Math.min(100, done / goal * 100) + '%';
+        bar.appendChild(fill);
+        return bar;
+    }
+
+    function updateGoals() {
+        const card = document.getElementById('goals-card');
+        if (!card) return;
+        const books = appSettings.goal;
+        const booksDone = booksReadThisYear();
+        const pages = pagesGoalAmount();
+        const pagesDone = pagesReadThisPeriod();
+        const period = PAGES_PERIODS[pagesPeriod()];
+
+        card.innerHTML = '';
+        if (books) card.append(...goalRow('Books', booksDone, books));
+        card.append(...goalRow(period.short, pagesDone, pages));
+        const title = (books ? `${booksDone} of ${books} books this year · ` : '') +
+            `${pagesDone} of ${pages} pages ${period.label}`;
+        card.title = `Reading goals: ${title}`;
+        card.setAttribute('aria-label', card.title);
+
+        if (document.getElementById('goals-modal').style.display !== 'flex') return;
+        const booksBox = document.getElementById('goal-books-progress');
+        booksBox.innerHTML = '';
+        if (books) {
+            const text = document.createElement('div');
+            text.textContent = `${booksDone} / ${books} books${booksDone >= books ? ' — you did it! ✦' : ''}`;
+            booksBox.append(text, goalBar(booksDone, books));
+        }
+        const pagesBox = document.getElementById('goal-pages-progress');
+        pagesBox.innerHTML = '';
+        const text = document.createElement('div');
+        text.textContent = `${pagesDone.toLocaleString()} / ${pages.toLocaleString()} pages ${period.label}${pagesDone >= pages ? ' — goal met! ✦' : ''}`;
+        pagesBox.append(text, goalBar(pagesDone, pages));
+        const perDay = critterGoal();
+        document.getElementById('goal-pages-hint').textContent = appSettings.critter
+            ? `Your reading critter gets hungry at this pace (${perDay % 1 ? perDay.toFixed(1) : perDay} pages a day).`
+            : 'Log pages here, or by feeding your reading critter.';
+    }
+
+    function submitLoggedPages() {
+        const input = document.getElementById('goal-log-pages');
+        const note = document.getElementById('goal-log-note');
+        const pages = Math.min(2000, parseInt(input.value) || 0);
+        if (pages < 1) {
+            note.textContent = 'How many pages did you read?';
+            return;
+        }
+        input.value = '';
+        // the critter eats them too, if it's around to
+        if (appSettings.critter && critter && !critter.gone) {
+            feedCritter(pages);
+            note.textContent = `Logged ${pages} page${pages === 1 ? '' : 's'}, and fed them to ${critterName()}.`;
+        } else {
+            recordPages(pages);
+            note.textContent = `Logged ${pages} page${pages === 1 ? '' : 's'}.`;
+        }
+    }
+
+    function openGoals() {
+        document.getElementById('goal-books').value = appSettings.goal || '';
+        document.getElementById('goal-pages').value = appSettings.pagesGoal === DEFAULT_SETTINGS.pagesGoal ? '' : appSettings.pagesGoal;
+        document.getElementById('goal-log-pages').value = '';
+        document.getElementById('goal-log-note').textContent = '';
+        refreshSettingsButtons();
+        document.getElementById('goals-modal').style.display = 'flex';
+        updateGoals();
+    }
+
+    function closeGoals() {
+        document.getElementById('goals-modal').style.display = 'none';
+    }
+
+    // ---------- Debug panel ----------
+    // Settings > Debug panel: buttons that make the slow or random things
+    // happen right now, instead of waiting days or poking at the console.
+
+    function debugSay(text) {
+        const status = document.getElementById('debug-status');
+        if (status) status.textContent = text;
+    }
+
+    function toggleDebugPanel() {
+        const panel = document.getElementById('debug-panel');
+        if (!document.getElementById('debug-body').childElementCount) buildDebugPanel();
+        const open = panel.classList.toggle('open');
+        panel.querySelector('.debug-tab').setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    // books / sticky notes drawn on screen right now (exits only play for
+    // those). With `deleting`, only ones the panel made, unless "Deletes can
+    // hit real books" is ticked.
+    function debugOnScreen(selector, deleting = false) {
+        const real = document.getElementById('debug-real-books');
+        const anyBook = !deleting || (real && real.checked);
+        return [...document.querySelectorAll(`#library-room ${selector}`)].filter(el => {
+            const book = library.find(b => b.id === el.dataset.id);
+            if (!book || (!anyBook && !book.debug)) return false;
+            const r = el.getBoundingClientRect();
+            return r.width && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+        });
+    }
+
+    const debugPick = list => list[Math.floor(Math.random() * list.length)];
+
+    // move the critter's clock back, as if `days` had gone by
+    function debugPassDays(days) {
+        const c = critter;
+        const ms = days * DAY_MS;
+        ['updatedAt', 'bornAt', 'laidAt', 'emptySince'].forEach(k => { if (c[k]) c[k] -= ms; });
+        if (c.gone) c.gone.at -= ms;
+        settleCritter();
+        renderCritter();
+        debugSay(c.gone ? `${days} day(s) later… it ran away.` : `${days} day(s) later: ${c.bornAt ? critterMoodText() : 'still an egg'}`);
+    }
+
+    function debugSetBelly(days, emptyFor = 0) {
+        settleCritter();
+        const c = critter;
+        if (c.gone || !c.bornAt) return debugSay(c.gone ? 'It ran away. Hatch a new egg first.' : 'Still an egg. Feed it first.');
+        c.food = critterGoal() * days;
+        c.emptySince = days > 0 ? null : Date.now() - emptyFor * DAY_MS;
+        saveCritter();
+        renderCritter();
+        debugSay(critterMoodText());
+    }
+
+    async function debugAddBook() {
+        const [title, author] = debugPick(PLACEHOLDER_BOOKS);
+        const genre = debugPick(getAllGenres());
+        const status = debugPick(['Want to Read', 'Reading', 'Read', 'DNF']);
+        const color = debugPick(CONFETTI_COLORS);
+        const now = Date.now();
+        const book = {
+            id: now.toString(), title, authors: [author],
+            series: "", seriesNumber: null, seriesTotal: null,
+            status, rating: status === 'Read' ? 1 + Math.floor(Math.random() * 5) : 0, genre, color,
+            width: 90 + Math.floor(Math.random() * 60),
+            tags: [], owned: true, notes: "", notesFont: getLastNoteFont(),
+            startedDate: "", finishedDate: status === 'Read' ? String(new Date().getFullYear()) : "",
+            statusSince: now, dustedAt: null, stickyNote: false,
+            sortOrder: library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,
+            image: "", imageRatio: null, ratioPreset: null,
+            spineColor: color, spineImage: "", spineImageRatio: null,
+            debug: true // so "Remove debug books" can find it
+        };
+        await dbPut(book);
+        library.push(book);
+        populateAuthorOptions();
+        populateSeriesOptions();
+        populateFilterTagSelect();
+        animateLeans = true;
+        renderBookshelf();
+        // bring it into view, ready for a debug delete
+        const el = document.querySelector(`#library-room .book[data-id="${book.id}"]`);
+        if (el) el.scrollIntoView({ block: 'center' });
+        debugSay(`Added "${title}" (${status}) to ${genre}.`);
+    }
+
+    async function debugDeleteOnScreen(selector, exit, toss) {
+        const el = debugPick(debugOnScreen(selector, true));
+        if (!el) {
+            return debugSay(document.getElementById('debug-real-books').checked
+                ? 'Nothing like that on screen. Scroll to one first.'
+                : 'No debug-made one on screen. Make one first (or scroll to it), or tick "Deletes can hit real books".');
+        }
+        const id = el.dataset.id;
+        const title = (library.find(b => b.id === id) || {}).title;
+        const holdMs = (exit ? toss(id, exit) : toss(id)) || 0;
+        library = library.filter(b => b.id !== id);
+        await dbDelete(id);
+        debugSay(`Deleted "${title}"${exit ? ` (${exit})` : ''}.`);
+        if (holdMs) await closeGapAfter(id, holdMs);
+        animateLeans = true;
+        renderBookshelf();
+    }
+
+    async function debugRemoveDebugBooks() {
+        const added = library.filter(b => b.debug);
+        if (!added.length) return debugSay('No debug books or notes on the shelf.');
+        library = library.filter(b => !b.debug);
+        for (const b of added) await dbDelete(b.id);
+        populateAuthorOptions();
+        populateSeriesOptions();
+        populateFilterTagSelect();
+        renderBookshelf();
+        debugSay(`Removed ${added.length} debug book(s) and note(s).`);
+    }
+
+    async function debugDust() {
+        if (!appSettings.dust) return debugSay('Dust is off in Settings > Shelf extras.');
+        const clean = library.filter(b => b.status === 'Want to Read' && getDustLevel(b) < 2 && !isStickyPlaceholder(b));
+        const book = debugPick(clean);
+        if (!book) return debugSay('No clean Want to Read books to dust up.');
+        book.statusSince = Date.now() - 200 * DAY_MS;
+        book.dustedAt = null;
+        await dbPut(book);
+        renderBookshelf();
+        debugSay(`"${book.title}" is covered in dust.`);
+    }
+
+    function debugNewSticky() {
+        if (!appSettings.sticky) return debugSay('The sticky-note pile is off in Settings > Shelf extras.');
+        const [title, author] = debugPick(PLACEHOLDER_BOOKS);
+        openStickyNote();
+        document.getElementById('sticky-title').value = title;
+        document.getElementById('sticky-author').value = author;
+        const before = new Set(library.map(b => b.id));
+        setTimeout(async () => {
+            await submitStickyNote();
+            // flag it so the debug deletes (and "Remove debug books") can find it
+            const added = library.find(b => !before.has(b.id));
+            if (added) {
+                added.debug = true;
+                await dbPut(added);
+            }
+        }, 600);
+        debugSay(`Sticking up "${title}".`);
+    }
+
+    function debugDropNote() {
+        const el = debugPick(debugOnScreen('.book.sticky-book:not(.fallen)'));
+        if (!el) return debugSay('No stuck-up sticky note on screen. Scroll to one, or make one.');
+        dropNote(el);
+        debugSay('Whoops, one fell.');
+    }
+
+    function debugStickNotesBack() {
+        const down = [...document.querySelectorAll('#library-room .book.sticky-book.fallen')];
+        down.forEach(el => stickNoteBackUp(el, el.dataset.id));
+        fallenNotes.clear();
+        saveFallenNotes();
+        debugSay(`Stuck ${down.length} note(s) back up.`);
+    }
+
+    function debugExitSelect(exits) {
+        const select = document.createElement('select');
+        select.add(new Option('random exit', ''));
+        exits.forEach(e => select.add(new Option(e, e)));
+        return select;
+    }
+
+    function buildDebugPanel() {
+        const body = document.getElementById('debug-body');
+        const group = (title, items) => {
+            const head = document.createElement('div');
+            head.className = 'debug-group';
+            head.textContent = title;
+            const row = document.createElement('div');
+            row.className = 'debug-buttons';
+            items.forEach(item => {
+                if (item instanceof Node) return row.appendChild(item);
+                const [label, fn] = item;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = label;
+                btn.addEventListener('click', fn);
+                row.appendChild(btn);
+            });
+            body.append(head, row);
+        };
+
+        // deletes stick to books and notes the panel made, unless this is ticked
+        const real = document.createElement('label');
+        real.className = 'debug-real';
+        real.innerHTML = '<input type="checkbox" id="debug-real-books"> Deletes can hit real books';
+        body.appendChild(real);
+
+        const critterOff = fn => () => appSettings.critter ? fn() : debugSay('The critter is off in Settings > Shelf extras.');
+        group('Critter', [
+            ['Feed 50', critterOff(() => { feedCritter(50); debugSay(critter.gone ? 'It ran away. Hatch a new egg first.' : `Fed 50. ${critterMoodText()}`); })],
+            ['Next stage', critterOff(() => {
+                if (critter.gone) return debugSay('It ran away. Hatch a new egg first.');
+                const next = critter.bornAt ? CRITTER_STAGES.find(s => s.at > critter.totalFed) : CRITTER_STAGES[0];
+                if (!next) return debugSay('Already all grown.');
+                feedCritter(Math.max(1, next.at - critter.totalFed));
+                debugSay(`Now ${critterStage().id === 'adult' ? 'an adult' : 'a ' + critterStage().id}.`);
+            })],
+            ['+1 day', critterOff(() => debugPassDays(1))],
+            ['+1 week', critterOff(() => debugPassDays(7))],
+            ['Full', critterOff(() => debugSetBelly(CRITTER_FOOD_DAYS))],
+            ['Hungry', critterOff(() => debugSetBelly(0.5))],
+            ['Starving', critterOff(() => debugSetBelly(0))],
+            ['1 day from leaving', critterOff(() => debugSetBelly(0, CRITTER_RUNAWAY_DAYS - 0.9))],
+            ['Run away now', critterOff(() => {
+                settleCritter();
+                if (critter.gone) return debugSay('Already gone.');
+                critterRunsAway(Date.now());
+                saveCritter();
+                renderCritter();
+                debugSay('It left a note.');
+            })],
+            ['New egg', critterOff(() => { hatchNewEgg(); debugSay('A new egg.'); })],
+            ['Favorite?', () => debugSay(`It loves ${critter.favoriteGenre}.`)]
+        ]);
+
+        const noteExit = debugExitSelect(NOTE_EXITS);
+        group('Sticky notes', [
+            ['New note', debugNewSticky],
+            ['Make one fall', debugDropNote],
+            ['Stick all back up', debugStickNotesBack],
+            noteExit,
+            ['Delete one', () => debugDeleteOnScreen('.book.sticky-book', noteExit.value, tossStickyNote)]
+        ]);
+
+        const bookExit = debugExitSelect([...BOOK_EXITS, ...Object.values(THEME_BOOK_EXITS)]);
+        group('Books', [
+            ['Add a book', debugAddBook],
+            ['Remove debug books & notes', debugRemoveDebugBooks],
+            bookExit,
+            ['Delete one', () => debugDeleteOnScreen('.book:not(.sticky-book)', bookExit.value, tossBook)],
+            ['Dust one', debugDust]
+        ]);
+
+        group('Other', [
+            ['Wake the cat', () => appSettings.cat ? (wakeCat(), debugSay('The cat moves shelves.')) : debugSay('The cat is off in Settings > Shelf extras.')],
+            ['Log 25 pages', () => { recordPages(25); debugSay('Logged 25 pages.'); }],
+            ['Clear pages log', () => { try { localStorage.removeItem(PAGES_LOG_KEY); } catch (e) {} updateGoals(); debugSay('Pages log cleared.'); }],
+            ['Confetti', () => confettiFrom(document.getElementById('debug-body'))]
+        ]);
+
+        const status = document.createElement('div');
+        status.className = 'debug-status';
+        status.id = 'debug-status';
+        body.appendChild(status);
     }
 
     // ---------- Reading stats ----------
@@ -9791,6 +11696,7 @@
     }
 
     function updateReadingGoal() {
+        updateGoals();
         const box = document.getElementById('reading-goal');
         const goal = appSettings.goal;
         if (!goal) {
@@ -9802,17 +11708,15 @@
             link.textContent = '＋ Set a yearly reading goal';
             link.addEventListener('click', () => {
                 closeStats();
-                openSettings();
-                const input = document.getElementById('setting-goal');
-                input.scrollIntoView({ block: 'center' });
-                input.focus();
+                openGoals();
+                document.getElementById('goal-books').focus();
             });
             box.appendChild(link);
             box.classList.add('visible');
             return;
         }
         const year = String(new Date().getFullYear());
-        const done = visibleBooks().filter(b => b.status === 'Read' && (b.finishedDate || '').startsWith(year)).length;
+        const done = booksReadThisYear();
         box.innerHTML = `<span></span><div class="reading-goal-bar"><div class="reading-goal-fill"></div></div>`;
         box.querySelector('span').textContent = done >= goal
             ? `${year} goal: ${done} / ${goal} books \u2014 you did it! \u2726`
@@ -11928,7 +13832,8 @@
     // things like a currently-fallen sticky note).
     const SETTINGS_BACKUP_KEYS = [
         'bookShelfSettings', 'bookShelfTheme', 'bookShelfMode', 'bookShelfStickyFilter',
-        'bookShelfQuickAddGenre', 'bookShelfLastNoteFont', 'bookShelfExpandedShelves', 'bookShelfRecentColors'
+        'bookShelfQuickAddGenre', 'bookShelfLastNoteFont', 'bookShelfExpandedShelves', 'bookShelfRecentColors',
+        'bookShelfCritter', 'bookShelfPagesLog'
     ];
 
     function collectSettingsForBackup() {
