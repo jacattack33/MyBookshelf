@@ -42,6 +42,16 @@ function toggleFiltersPanel() {
     placeCat(); // the shelves just moved down/up - keep the cat on its shelf
 }
 
+// phones: the bottom-left widgets (sticky pile, ledger, goals, critter)
+// tuck away behind one button so they don't crowd the shelves
+function toggleCornerDock() {
+    const open = document.body.classList.toggle('corner-open');
+    const btn = document.getElementById('corner-toggle');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.querySelector('.corner-toggle-icon').innerHTML = open ? '&times;' : '&#10022;';
+    if (!open) closeStickyNote();
+}
+
 // how many filters/sorts differ from the defaults, shown on the closed
 // panel's button so it's clear something is narrowing the shelf
 function updateFiltersCount() {

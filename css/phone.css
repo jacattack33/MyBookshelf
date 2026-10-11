@@ -310,4 +310,65 @@
     .sticky-sheet {
         box-shadow: 1px 2px 3px rgba(74, 35, 120, 0.2);
     }
+
+    /* --- the corner widgets hide behind one round button; open, they
+       stand above it (lifted by its height), closed, they slide off
+       the left edge --- */
+    .sticky-pile,
+    .stats-ledger,
+    .corner-stack {
+        translate: 0 -56px;
+        transition: translate 0.3s cubic-bezier(.3, 1.3, .5, 1), visibility 0.3s;
+    }
+
+    body:not(.corner-open) .sticky-pile,
+    body:not(.corner-open) .stats-ledger,
+    body:not(.corner-open) .corner-stack {
+        translate: -130px -56px;
+        visibility: hidden;
+    }
+
+    .corner-toggle {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 901;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        overflow: visible; /* for the alert dot */
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--outline);
+        border-radius: 50%;
+        background: var(--y2k-purple);
+        box-shadow: 2px 2px 0 var(--outline);
+        color: white;
+        font-size: 20px;
+        line-height: 1;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .corner-toggle:hover {
+        background: var(--y2k-purple);
+    }
+
+    .corner-toggle[aria-expanded="true"] {
+        transform: translate(1px, 1px);
+        box-shadow: 1px 1px 0 var(--outline);
+        font-size: 26px;
+    }
+
+    /* closed, a dot on the button says the critter wants you */
+    body:not(.corner-open):has(.critter-home:not([style*="none"]) .critter-alert.visible) .corner-toggle::after {
+        content: '';
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--outline);
+        border-radius: 50%;
+        background: var(--y2k-hot-pink);
+    }
 }

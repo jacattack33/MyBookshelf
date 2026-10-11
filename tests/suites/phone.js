@@ -34,8 +34,17 @@ closeModal();
 
 ok('pinch-zoom allowed', !q('meta[name=viewport]').content.includes('user-scalable=no'));
 
-// corner widgets: sticky pile at the bottom, ledger on it, goals card, critter on top
+// corner widgets: tucked away behind the round button until it's tapped
 const box = sel => q(sel).getBoundingClientRect();
+const hidden = sel => getComputedStyle(q(sel)).visibility === 'hidden';
+ok('corner widgets start tucked away', vis(q('#corner-toggle')) && ['#sticky-pile', '#stats-ledger', '#corner-stack'].every(hidden));
+toggleCornerDock();
+await wait(400);
+ok('toggle shows the corner widgets', !['#sticky-pile', '#stats-ledger', '#corner-stack'].some(hidden) && q('#corner-toggle').getAttribute('aria-expanded') === 'true');
+const toggleTop = box('#corner-toggle').top;
+ok('sticky pile stands above the toggle', Math.max(...[...document.querySelectorAll('.sticky-sheet')].map(s => s.getBoundingClientRect().bottom)) <= toggleTop + 2, toggleTop);
+
+// sticky pile at the bottom, ledger on it, goals card, critter on top
 // (the sheets are drawn crooked, so measure their real corners)
 const pileTop = Math.min(...[...document.querySelectorAll('.sticky-sheet')].map(s => s.getBoundingClientRect().top));
 const ledger = box('#stats-ledger'), goals = box('#goals-card'), pet = box('#critter-home');
@@ -47,3 +56,7 @@ setTheme('terminal');
 ok('terminal: critter on top of the goals card', box('#critter-home').bottom <= box('#goals-card').top, `${box('#critter-home').bottom} / ${box('#goals-card').top}`);
 ok('terminal: goals card clear of the ledger', box('#goals-card').bottom <= box('#stats-ledger').top, `${box('#goals-card').bottom} / ${box('#stats-ledger').top}`);
 setTheme('candy');
+openStickyNote();
+toggleCornerDock();
+await wait(400);
+ok('toggle hides them again (and drops an open note)', ['#sticky-pile', '#stats-ledger', '#corner-stack'].every(hidden) && !q('#sticky-pile').classList.contains('open'));
