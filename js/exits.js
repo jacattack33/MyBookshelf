@@ -397,11 +397,12 @@ function tossStickyNote(id, exit = NOTE_EXITS[Math.floor(Math.random() * NOTE_EX
 // the time: Terminal glitches it out like a CRT switching off, Holo
 // de-rezzes it into rainbow slices, Blueprint leaves a dashed drawing
 // and rubs it out, Library stamps it WITHDRAWN, Deco gilds it and folds
-// it up like a fan.
+// it up like a fan, Typewriter X's it out and carriage-returns it away,
+// Sunset sinks it below a glowing horizon.
 // As with sticky notes, a copy in the fx layer does the moving (inside
 // x and y wrappers); a pulled-out book first settles back into its spot.
 const BOOK_EXITS = ['tip', 'domino', 'fling', 'shred', 'burn', 'pages', 'trapdoor'];
-const THEME_BOOK_EXITS = { terminal: 'glitch', holo: 'derez', blueprint: 'erase', library: 'withdrawn', deco: 'fan' };
+const THEME_BOOK_EXITS = { terminal: 'glitch', holo: 'derez', blueprint: 'erase', library: 'withdrawn', deco: 'fan', typewriter: 'typed', sunset: 'sunset' };
 
 function pickBookExit() {
     const own = THEME_BOOK_EXITS[document.documentElement.dataset.theme];
@@ -905,6 +906,85 @@ const BOOK_EXIT_FX = {
         const total = SHINE + 1400;
         const clear = SHINE + 1000;
         return { total, clear };
+    },
+
+    typed(c) {
+        const { w, h, cx, top, dir, away, scene, xWrap, book, S, go, at, tx } = c;
+        // typed over with X's in red ribbon ink, a row at a time (the
+        // book jolts with each key), then ding! - and the carriage
+        // return sends it sliding off the side
+        const size = Math.max(9, Math.min(w / 5, 18));
+        const rows = Math.max(2, Math.min(6, Math.floor(h / (size * 2.2))));
+        const cols = Math.max(3, Math.floor(w * 0.8 / (size * 0.62)));
+        const keys = rows * cols;
+        const KEY = Math.min(40, 1300 / keys), TYPE = keys * KEY;
+        const over = document.createElement('div');
+        over.className = 'fx-typed';
+        over.style.setProperty('--typed-size', size + 'px');
+        book.appendChild(over);
+        const text = Array.from({ length: rows }, () => 'X'.repeat(cols)).join('\n');
+        let i = 0;
+        at(0, () => {
+            const typing = setInterval(() => {
+                if (!scene.isConnected || i >= text.length) return clearInterval(typing);
+                if (text[i] === '\n') i++;
+                over.textContent = text.slice(0, ++i);
+            }, KEY);
+        });
+        book.animate([{ translate: '0 0' }, { translate: '0 1px' }, { translate: '0 0' }],
+            { duration: KEY * 2, iterations: Math.ceil(keys / 2), delay: S });
+        at(TYPE + 60, () => {
+            const ding = document.createElement('div');
+            ding.className = 'fx-ding';
+            ding.textContent = 'ding!';
+            ding.style.left = cx + 'px';
+            ding.style.top = Math.max(8, top - 34) + 'px';
+            scene.appendChild(ding);
+            ding.animate([
+                { transform: 'translate(-50%, 6px) scale(0.6)', opacity: 0 },
+                { transform: 'translate(-50%, 0) scale(1.1)', opacity: 1, offset: 0.25 },
+                { transform: 'translate(-50%, -14px) scale(1)', opacity: 0 }
+            ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
+        });
+        const total = go(xWrap, [
+            [0, 0], [TYPE + 260, 0, 'ease-out'], [TYPE + 400, -dir * 10, 'cubic-bezier(.5,0,.9,.5)'], [TYPE + 1000, dir * away(dir)]
+        ], 'transform', tx);
+        const clear = TYPE + 650;
+        return { total, clear };
+    },
+
+    sunset(c) {
+        const { w, h, cx, floor, left, scene, xWrap, yWrap, book, S, go, at, ty, clipAt } = c;
+        // it glows gold, then sinks below a glowing horizon like the sun
+        // going down, reddening to plum as it goes, with embers rising
+        const GLOW = 450, SINK = 1500;
+        const line = document.createElement('div');
+        line.className = 'fx-horizon';
+        line.style.left = left - 24 + 'px';
+        line.style.width = w + 48 + 'px';
+        line.style.top = floor - 2 + 'px';
+        scene.appendChild(line);
+        line.animate([
+            { opacity: 0, transform: 'scaleX(0.3)' }, { opacity: 1, transform: 'scaleX(1)', offset: 0.15 },
+            { opacity: 1, transform: 'scaleX(1)', offset: 0.85 }, { opacity: 0, transform: 'scaleX(0.6)' }
+        ], { duration: GLOW + SINK + 300, delay: S, fill: 'both' });
+        clipAt(floor).appendChild(xWrap);
+        book.animate([
+            { filter: 'sepia(0) saturate(1) brightness(1) drop-shadow(0 0 0 transparent)' },
+            { filter: 'sepia(0.8) saturate(2.2) brightness(1.15) drop-shadow(0 0 10px rgba(252, 194, 27, 0.85))', offset: 0.25 },
+            { filter: 'sepia(1) saturate(3.5) brightness(0.9) drop-shadow(0 0 12px rgba(240, 40, 42, 0.75))', offset: 0.6 },
+            { filter: 'sepia(1) saturate(2.5) brightness(0.5) drop-shadow(0 0 8px rgba(156, 10, 85, 0.6))' }
+        ], { duration: GLOW + SINK, delay: S, fill: 'forwards' });
+        const total = go(yWrap, [[0, 0], [GLOW, 0, 'cubic-bezier(.4,0,.7,1)'], [GLOW + SINK, h + 10]], 'transform', ty);
+        at(GLOW, () => {
+            const embers = setInterval(() => {
+                if (!scene.isConnected) return clearInterval(embers);
+                flyBit('fx-ember', cx + (Math.random() - 0.5) * w, floor - 4, (Math.random() - 0.5) * 30, -40 - Math.random() * 60, 0.8 + Math.random() * 0.5);
+            }, 90);
+            setTimeout(() => clearInterval(embers), SINK);
+        });
+        const clear = GLOW + SINK * 0.7;
+        return { total: total + 300, clear };
     },
 };
 

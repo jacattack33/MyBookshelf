@@ -174,6 +174,8 @@ ok('pages flutter out', document.querySelectorAll('#fx-layer .fx-page').length >
 ok('Library stamps it WITHDRAWN', !!bookLook('withdrawn') && bookLook('withdrawn').querySelector('.fx-stamp').textContent === 'WITHDRAWN');
 ok('Terminal types the rm command', /rm "Again"/.test((q('#fx-layer .fx-term-line') || {}).textContent || ''));
 ok('Blueprint leaves an outline to rub out', !!q('#fx-layer .fx-outline') && !!q('#fx-layer .fx-eraser'));
+ok('Typewriter types X\'s over it', /X{3}/.test((bookLook('typed') && bookLook('typed').querySelector('.fx-typed') || {}).textContent || ''));
+ok('Sunset sinks it behind a horizon', !!q('#fx-layer .fx-horizon'));
 ok('Holo and Deco split it into visible pieces', [...document.querySelectorAll('#fx-layer .tossed-book')].filter(b => getComputedStyle(b).visibility === 'visible').length > 20);
 await wait(5000);
 ok('every leaving book cleaned up', !q('#fx-layer .tossed-book'));
@@ -234,12 +236,25 @@ setTheme('candy');
 ok('other themes keep their usual buttons', getComputedStyle(q('.toggle-btn')).borderRadius === '8px' && getComputedStyle(q('.add-book-btn')).clipPath === 'none');
 
 // ---- every theme applies, shows as chosen, and travels with backups
-for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal']) {
+for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal', 'typewriter', 'sunset', 'plain', 'plainbold']) {
     setTheme(th);
     ok(`${th} theme applies`, document.documentElement.dataset.theme === th && q(`[data-theme-choice="${th}"]`).classList.contains('active') && collectSettingsForBackup().bookShelfTheme === th);
 }
 setTheme('candy');
 ok('Candy again clears the theme', !document.documentElement.dataset.theme);
+
+// ---- the plain themes come in six colours, chosen only while one is on
+ok('colour choice hidden in other themes', getComputedStyle(q('.tint-row')).display === 'none' && !document.documentElement.dataset.tint);
+setTheme('plain');
+ok('colour choice shows for Plain, Paper by default', getComputedStyle(q('.tint-row')).display !== 'none' && document.documentElement.dataset.tint === 'paper');
+setTint('sage');
+ok('picking a colour applies it and travels with backups', document.documentElement.dataset.tint === 'sage' && q('[data-tint-choice="sage"]').classList.contains('active') && collectSettingsForBackup().bookShelfTint === 'sage');
+const sageBg = getComputedStyle(document.body).backgroundColor;
+setTheme('plainbold');
+ok('Plain Bold keeps the colour', document.documentElement.dataset.tint === 'sage' && getComputedStyle(document.body).backgroundColor === sageBg);
+setTheme('candy');
+ok('leaving the plain themes drops the colour', !document.documentElement.dataset.tint);
+setTint('paper');
 
 // ---- retired genres get a real genre; audience/format ones become tags
 const oldGenreBooks = [

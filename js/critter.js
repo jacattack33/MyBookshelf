@@ -273,8 +273,70 @@ const CRITTER_THEMES = {
                 <circle cx="80" cy="85" r="2" fill="#39ff6a"/>
                 <text x="17" y="88" font-size="6" font-weight="700" font-family="monospace" fill="#7a705a">BOOK-8</text>`;
         }
+    },
+    typewriter: {
+        kind: 'ink drop', name: 'Inky', fit: [48, 86, 0.9], zz: [64, 38],
+        egg: crEgg('#e9eef5', '#2b3a67'),
+        art: () => `
+            <g class="cr-teen"><path d="M50 41 q7 -6 3 -11 q-4 -3 -6 1" fill="none" stroke="#2b3a67" stroke-width="2.2" stroke-linecap="round"/></g>
+            <path d="M50 40 C52 48 66 58 66 69 C66 78 59 83 50 83 C41 83 34 78 34 69 C34 58 48 48 50 40 Z" fill="#2b3a67" class="cr-ln" stroke-width="1.5"/>
+            <ellipse cx="41" cy="65" rx="2.4" ry="5.5" fill="#fff" opacity=".35" transform="rotate(18 41 65)"/>
+            <g class="cr-adult">
+                <path d="M42 55 q-9 -17 -23 -25 q4 13 21 26z" fill="#f4eedd" class="cr-ln" stroke-width="1"/>
+                <path d="M42 55 l-20 -22" stroke="#b3261e" stroke-width="1"/>
+            </g>
+            ${crCheeks(50, 74, 9, '#ff8a9a')}
+            ${crFace(50, 69, '#f4eedd')}`,
+        // an inkwell with a little pool of ink in the bottom
+        back: () => `
+            <path d="M38 10 h24 v12 q0 4 6 7 q18 8 18 26 v29 q0 8 -8 8 h-56 q-8 0 -8 -8 v-29 q0 -18 18 -26 q6 -3 6 -7 z" fill="#d9e4ec" fill-opacity=".35" class="cr-ln" stroke-width="2"/>
+            <path d="M14.5 80 q35 -5 71 0 v4 q0 7.5 -7.5 7.5 h-56 q-7.5 0 -7.5 -7.5 z" fill="#1c2a4a"/>`,
+        front: () => `
+            <rect x="35" y="7" width="30" height="6" rx="2" fill="#c9c4bb" class="cr-ln" stroke-width="1.5"/>
+            <path d="M21 52 q2 -9 9 -14" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/>
+            <rect x="65" y="56" width="17" height="12" rx="1.5" fill="#f4eedd" class="cr-ln" stroke-width="1"/>
+            <text x="73.5" y="64.5" text-anchor="middle" font-size="6" font-family="'Special Elite', monospace" fill="#b3261e">INK</text>`
+    },
+    sunset: {
+        kind: 'little sun', name: 'Sol', fit: [50, 79, 0.95], zz: [70, 38],
+        egg: crEgg('#ffe9b0', '#f7821e'),
+        art: () => {
+            const ray = a => {
+                const p = (r, d) => `${(50 + r * Math.cos((a + d) * Math.PI / 180)).toFixed(1)} ${(66 + r * Math.sin((a + d) * Math.PI / 180)).toFixed(1)}`;
+                return `<path d="M${p(16, -9)} L${p(24, 0)} L${p(16, 9)}z"/>`;
+            };
+            const heart = x => `<path d="M${x} 54.5 l-3.4 -3.4 a1.9 1.9 0 0 1 3.4 -2.4 a1.9 1.9 0 0 1 3.4 2.4 z"/>`;
+            return `
+            <circle cx="50" cy="66" r="20" fill="#ffd56b" opacity=".35"/>
+            <g class="cr-teen cr-ln" fill="#f7821e" stroke-width="1" stroke-linejoin="round">${[-160, -125, -90, -55, -20].map(ray).join('')}</g>
+            <circle cx="50" cy="66" r="15" fill="#fcc21b" class="cr-ln" stroke-width="1.5"/>
+            <ellipse cx="43" cy="60" rx="4" ry="2.2" fill="#fff" opacity=".5" transform="rotate(-30 43 60)"/>
+            <g class="cr-adult cr-ln" fill="#d40848" stroke-width=".8">${heart(45)}${heart(55)}<path d="M48.4 51.6 h3.2" fill="none" stroke="#6a0048" stroke-width="1"/></g>
+            ${crCheeks(50, 70, 9, '#f0282a')}
+            ${crFace(50, 65, '#6a0048')}`;
+        },
+        // a round porthole onto the sky at sunset
+        back: uid => `
+            <defs><linearGradient id="${uid}s" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#3a1a7a"/><stop offset=".35" stop-color="#9c0a55"/><stop offset=".6" stop-color="#f0282a"/><stop offset=".8" stop-color="#f7821e"/><stop offset="1" stop-color="#fcc21b"/>
+            </linearGradient></defs>
+            <circle cx="50" cy="52" r="40" fill="url(#${uid}s)"/>
+            <g fill="#fff3e0"><circle cx="34" cy="24" r=".9"/><circle cx="62" cy="19" r="1.1"/><circle cx="72" cy="30" r=".8"/><circle cx="25" cy="36" r=".7"/></g>`,
+        front: uid => `
+            <defs><clipPath id="${uid}c"><circle cx="50" cy="52" r="40"/></clipPath></defs>
+            <g clip-path="url(#${uid}c)">
+                <path d="M8 80 q20 -10 42 -2 q22 8 42 -4 V96 H8z" fill="#d40848"/>
+                <path d="M8 88 q26 -8 50 0 q18 5 34 -2 V96 H8z" fill="#9c0a55"/>
+            </g>
+            <circle cx="50" cy="52" r="40" fill="none" stroke="#f7c35c" stroke-width="4"/>
+            <circle cx="50" cy="52" r="42" fill="none" class="cr-ln" stroke-width="1.5"/>
+            <circle cx="50" cy="52" r="38" fill="none" class="cr-ln" stroke-width="1"/>`
     }
 };
+
+// the plain themes borrow the critters of the themes they're plain versions of
+CRITTER_THEMES.plain = CRITTER_THEMES.blueprint;
+CRITTER_THEMES.plainbold = CRITTER_THEMES.loft;
 
 function currentTheme() {
     return document.documentElement.dataset.theme || 'candy';

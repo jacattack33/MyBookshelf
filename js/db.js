@@ -105,7 +105,7 @@ async function runMigrations() {
 // Preferences that travel with a backup (not one-time migration flags or
 // things like a currently-fallen sticky note).
 const SETTINGS_BACKUP_KEYS = [
-    'bookShelfSettings', 'bookShelfTheme', 'bookShelfMode', 'bookShelfStickyFilter',
+    'bookShelfSettings', 'bookShelfTheme', 'bookShelfTint', 'bookShelfMode', 'bookShelfStickyFilter',
     'bookShelfQuickAddGenre', 'bookShelfLastNoteFont', 'bookShelfExpandedShelves', 'bookShelfRecentColors',
     'bookShelfCritter', 'bookShelfPagesLog'
 ];

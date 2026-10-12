@@ -129,9 +129,9 @@ function loadCustomGenres() {
     customGenres = customGenres.filter(g => !skip.includes(g.toLowerCase()));
 }
 
-// ---------- Theme (Candy / Sea Glass / Holo / Library / Deco / Loft / Blueprint / Terminal) ----------
+// ---------- Theme (Candy / Sea Glass / Holo / Library / Deco / Loft / Blueprint / Terminal / Typewriter / Sunset / Plain / Plain Bold) ----------
 const THEME_KEY = 'bookShelfTheme';
-const THEMES = ['candy', 'seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal'];
+const THEMES = ['candy', 'seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal', 'typewriter', 'sunset', 'plain', 'plainbold'];
 
 function setTheme(theme) {
     if (!THEMES.includes(theme)) theme = 'candy';
@@ -144,7 +144,38 @@ function setTheme(theme) {
     document.querySelectorAll('[data-theme-choice]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.themeChoice === theme);
     });
+    applyTint();
     renderCritter(); // each theme has its own critter and home
+}
+
+// The two plain themes come in six colours (Settings shows the choice
+// only while one of them is on). Kept separately from the theme, so
+// switching away and back keeps your colour.
+const TINT_KEY = 'bookShelfTint';
+const TINTS = ['paper', 'slate', 'sage', 'clay', 'lilac', 'navy'];
+const PLAIN_THEMES = ['plain', 'plainbold'];
+
+function currentTint() {
+    try {
+        const tint = localStorage.getItem(TINT_KEY);
+        return TINTS.includes(tint) ? tint : 'paper';
+    } catch (e) { return 'paper'; }
+}
+
+function applyTint() {
+    const root = document.documentElement;
+    const tint = currentTint();
+    if (PLAIN_THEMES.includes(root.dataset.theme)) root.dataset.tint = tint;
+    else delete root.dataset.tint;
+    document.querySelectorAll('[data-tint-choice]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tintChoice === tint);
+    });
+}
+
+function setTint(tint) {
+    if (!TINTS.includes(tint)) tint = 'paper';
+    try { localStorage.setItem(TINT_KEY, tint); } catch (e) {}
+    applyTint();
 }
 
 // ---------- Custom genres (Settings) ----------

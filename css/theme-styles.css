@@ -1405,7 +1405,7 @@
 
 /* Recent-colour swatches are hearts in the cute themes; the classy
    ones get their own shape: wax seals, deco diamonds, paint chips */
-:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .recent-color-swatch {
+:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"], [data-theme="typewriter"], [data-theme="sunset"], [data-theme="plain"], [data-theme="plainbold"]) .recent-color-swatch {
     width: 34px;
     height: 34px;
     margin: 0 3px;
@@ -1431,9 +1431,21 @@
     transform: rotate(45deg) scale(1.12);
 }
 
-:root:is([data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .recent-color-swatch {
+:root:is([data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"], [data-theme="plain"], [data-theme="plainbold"]) .recent-color-swatch {
     border-radius: 3px;
     box-shadow: 2px 2px 0 rgba(var(--ink-rgb), 0.3);
+}
+
+/* typewriter key tops, chrome-rimmed */
+:root[data-theme="typewriter"] .recent-color-swatch {
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--key-rim), 0 3px 0 2px var(--key-depth);
+}
+
+/* little suns setting: rounded on top, flat along the horizon */
+:root[data-theme="sunset"] .recent-color-swatch {
+    border-radius: 17px 17px 4px 4px;
+    box-shadow: 0 3px 8px rgba(212, 8, 72, 0.3);
 }
 
 /* Terminal after dark: a green phosphor CRT, all in shades of green */
@@ -2086,4 +2098,724 @@
     --on-bright: #1f3b4d;
     --outline: #1f3b4d;
     --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%232a8c96' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+/* ---------- Sunset: unpressed buttons after dark ----------
+   The same see-through tints as the other themes, from each group's
+   own colour (--tint, as r, g, b) */
+:root[data-theme="sunset"] .toggle-btn { --tint: 252, 194, 27; }
+:root[data-theme="sunset"] .toggle-yellow .toggle-btn { --tint: 255, 213, 107; }
+:root[data-theme="sunset"] .toggle-blue .toggle-btn { --tint: 247, 130, 30; }
+:root[data-theme="sunset"] .toggle-lilac .toggle-btn { --tint: 255, 143, 163; }
+:root[data-theme="sunset"] .toggle-peach .toggle-btn { --tint: 249, 162, 108; }
+:root[data-theme="sunset"] .toggle-pink .toggle-btn { --tint: 255, 106, 80; }
+
+:root[data-mode="dark"][data-theme="sunset"] .toggle-btn:not(.active) {
+    background: rgba(var(--tint), 0.12);
+    color: color-mix(in srgb, rgb(var(--tint)) 65%, white);
+    border-color: rgba(var(--tint), 0.55);
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-mode="dark"][data-theme="sunset"] .toggle-btn:not(.active):hover {
+    background: rgba(var(--tint), 0.22);
+}
+
+/* ---------- Typewriter materials ---------- */
+:root[data-theme="typewriter"] body {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-weight: 500;
+    background:
+        var(--desk-glow),
+        repeating-linear-gradient(180deg, transparent 0 31px, var(--paper-rule) 31px 32px),
+        linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 50%, var(--bg-c) 100%);
+    background-attachment: fixed;
+}
+
+/* the title, typed, with a touch of ink bleed. Typed letters sit still. */
+:root[data-theme="typewriter"] h1 {
+    animation: none;
+    color: var(--y2k-dark);
+    text-shadow: 0.6px 0.2px 0 rgba(var(--ink-rgb), 0.55), -0.4px 0.5px 0 rgba(var(--ink-rgb), 0.3);
+}
+
+:root[data-theme="typewriter"] h1 .h1-spark {
+    display: none;
+}
+
+/* panels: sheets of typing paper, with a faint double margin line down the left */
+:root[data-theme="typewriter"] .controls,
+:root[data-theme="typewriter"] .modal-content {
+    border: 1px solid rgba(var(--ink-rgb), 0.22);
+    border-radius: 2px;
+    box-shadow: var(--paper-shadow);
+}
+
+/* the typed lettering runs wide, so the panel is wider than the shelves,
+   and (on desktop) Filter Tag, Filter Genre and Add New Book always
+   share one line - the dropdowns give up width before anything wraps */
+:root[data-theme="typewriter"] .controls {
+    max-width: 1100px;
+}
+
+@media (min-width: 601px) {
+    :root[data-theme="typewriter"] .controls-row {
+        flex-wrap: nowrap;
+    }
+    /* the two filters split the free space; a long option name is cut
+       off in the closed dropdown (it's all there in the open list) */
+    :root[data-theme="typewriter"] .controls-row .control-group {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    :root[data-theme="typewriter"] .controls-row label {
+        white-space: nowrap;
+    }
+    :root[data-theme="typewriter"] .controls-row select {
+        flex: 1 1 0;
+        width: 0;
+        min-width: 0;
+        max-width: 340px;
+        text-overflow: ellipsis;
+    }
+    :root[data-theme="typewriter"] .controls-row .add-book-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+}
+
+:root[data-theme="typewriter"] .controls {
+    background:
+        linear-gradient(90deg, transparent 6px, var(--margin-line) 6px 7px, transparent 7px 9px, var(--margin-line) 9px 10px, transparent 10px),
+        var(--surface);
+}
+
+/* title bars: black enamel with a chrome rule */
+:root[data-theme="typewriter"] .window-titlebar {
+    height: 10px;
+    background: var(--title-bar);
+    border-bottom: 2px solid var(--key-rim);
+}
+
+:root[data-theme="typewriter"] .modal-header {
+    background: var(--title-bar);
+    border-bottom: 2px solid var(--key-rim);
+}
+
+:root[data-theme="typewriter"] .modal-header h3 {
+    color: #f4eedd;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* shelves: the black rubber platen, with chrome knobs at each end */
+:root[data-theme="typewriter"] .shelf {
+    border-radius: 2px;
+    background:
+        linear-gradient(90deg, #8d877c, #e4dfd5 45%, #8d877c) left bottom / 12px 20px no-repeat,
+        linear-gradient(90deg, #8d877c, #e4dfd5 55%, #8d877c) right bottom / 12px 20px no-repeat,
+        var(--platen) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="typewriter"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-image: var(--platen) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="typewriter"] .shelf.shelf-continues {
+    background: var(--shelf-bg);
+    border-image: none;
+}
+
+:root[data-theme="typewriter"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--key-cap);
+}
+
+/* shelf names: a slip of paper fed in a little crooked, typed on */
+:root[data-theme="typewriter"] .genre-title {
+    transform: rotate(-1.5deg);
+    left: -12px;
+    top: -26px;
+    border: none;
+    border-radius: 1px;
+    padding: 10px 24px 8px;
+    box-shadow: var(--paper-shadow);
+}
+
+:root[data-theme="typewriter"] .genre-title:not([class*="tag-status-"]) {
+    background: #fffdf8;
+    color: #111111;
+}
+
+/* buttons: round typewriter keys in chrome rims; a press pushes
+   the key down */
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 999px;
+    border: 2px solid var(--outline);
+    font-family: var(--pixel-font);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    box-shadow: var(--btn-shadow);
+    margin-bottom: 4px;
+}
+
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    display: none;
+}
+
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translateY(3px);
+    box-shadow: var(--btn-shadow-down), inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* every key is a black cap with cream letters (no group colours, in
+   either mode); a pressed key flips to cream with black letters */
+:root[data-theme="typewriter"] body .toggle-group .toggle-btn:not(.active),
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):not(.active) {
+    background: var(--key-cap);
+    color: var(--key-letter);
+    border-color: #000;
+    text-shadow: none;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="typewriter"] body .toggle-group .toggle-btn:not(.active):hover,
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):not(.active):hover {
+    background: var(--key-cap-hover);
+    filter: none;
+}
+
+:root[data-theme="typewriter"] body .toggle-group .toggle-btn.active,
+:root[data-theme="typewriter"] body .status-btn.active,
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+    background: var(--key-down);
+    color: var(--key-down-letter);
+    border-color: #000;
+    text-shadow: none;
+    box-shadow: var(--btn-shadow-down), inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* typed section labels with a dotted leader: DETAILS . . . . . */
+:root[data-theme="typewriter"] .field-section {
+    border-radius: 2px;
+}
+
+:root[data-theme="typewriter"] .field-section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--y2k-dark);
+}
+
+:root[data-theme="typewriter"] .field-section-title::after {
+    content: "";
+    flex: 1;
+    border-bottom: 2px dotted rgba(var(--ink-rgb), 0.35);
+}
+
+:root[data-theme="typewriter"] :is(input, select, textarea) {
+    caret-color: var(--y2k-hot-pink);
+}
+
+/* Typewriter: heading font sizes */
+:root[data-theme="typewriter"] h1 { font-size: 44px; font-weight: 400; letter-spacing: 2px; }
+:root[data-theme="typewriter"] .genre-title { font-size: 24px; font-weight: 400; letter-spacing: 1px; }
+:root[data-theme="typewriter"] .shelf-count { font-size: 40px; font-weight: 400; }
+:root[data-theme="typewriter"] .modal-header h3 { font-size: 18px; font-weight: 400; }
+:root[data-theme="typewriter"] .field-section-title,
+:root[data-theme="typewriter"] .preview-label { font-size: 14px; font-weight: 400; letter-spacing: 0.1em; }
+:root[data-theme="typewriter"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="typewriter"] h1 { font-size: 28px; letter-spacing: 1px; }
+    :root[data-theme="typewriter"] .genre-title { font-size: 18px; left: 0; padding: 8px 16px 6px; }
+    :root[data-theme="typewriter"] .shelf-count { font-size: 26px; }
+}
+
+/* ---------- Sunset materials ---------- */
+:root[data-theme="sunset"] body {
+    background:
+        var(--sun-sky),
+        linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 50%, var(--bg-c) 100%);
+    background-attachment: fixed;
+}
+
+/* dunes rolling along the bottom of the page, behind everything */
+:root[data-theme="sunset"] body::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 260px;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--dune-opacity);
+    background:
+        radial-gradient(ellipse 85% 42% at 62% 118%, var(--dune-c) 97%, transparent 100%),
+        radial-gradient(ellipse 60% 62% at 12% 112%, var(--dune-b) 97%, transparent 100%),
+        radial-gradient(ellipse 55% 85% at 84% 108%, var(--dune-a) 97%, transparent 100%);
+}
+
+/* the title: slanted 80s chrome script, like the shelf names, with a
+   swash underneath */
+:root[data-theme="sunset"] h1 {
+    position: relative;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 28px 30px 26px;
+    rotate: -4deg;
+    font-family: 'Kaushan Script', 'Fredoka', cursive;
+    /* the gradient runs past the right edge, where the script's last
+       letter swings out */
+    background: var(--script-ink) 0 0 / calc(100% + 30px) 100% no-repeat content-box;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(3px 3px 0 #3d0a33);
+}
+
+/* after dark: a crisp hard shadow, then only a faint glow behind it */
+:root[data-mode="dark"][data-theme="sunset"] h1 {
+    filter: drop-shadow(3px 3px 0 #12061f) drop-shadow(0 0 18px rgba(255, 79, 109, 0.3));
+}
+
+:root[data-theme="sunset"] h1 .h1-spark {
+    display: none;
+}
+
+:root[data-theme="sunset"] h1::after {
+    content: "";
+    position: absolute;
+    left: 40px;
+    right: -20px;
+    bottom: 16px;
+    height: 6px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #ff4f6d, #f7821e, transparent);
+}
+
+/* panels: soft and rounded with a sunset rim */
+:root[data-theme="sunset"] .controls,
+:root[data-theme="sunset"] .modal-content {
+    border: 3px solid transparent;
+    border-radius: 18px;
+    box-shadow: var(--panel-shadow);
+}
+
+:root[data-theme="sunset"] .controls {
+    background: linear-gradient(var(--surface), var(--surface)) padding-box, var(--sunset) border-box;
+}
+
+:root[data-theme="sunset"] .modal-content {
+    background: linear-gradient(var(--panel-bg), var(--panel-bg)) padding-box, var(--sunset) border-box;
+}
+
+/* title bars: the whole sky, plum to gold (so the title sits on the dark end) */
+:root[data-theme="sunset"] .window-titlebar {
+    height: 10px;
+    background: var(--sunset);
+}
+
+:root[data-theme="sunset"] .modal-header {
+    background: linear-gradient(90deg, #9c0a55, #d40848 35%, #f0282a 60%, #f7821e 82%, #fcc21b);
+}
+
+:root[data-theme="sunset"] .modal-header h3 {
+    color: var(--title-ink);
+    text-shadow: 0 1px 2px rgba(61, 10, 51, 0.5);
+}
+
+/* shelves: a glowing horizon */
+:root[data-theme="sunset"] .shelf {
+    border-radius: 14px 14px 6px 6px;
+    background:
+        var(--horizon) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+    box-shadow: 0 12px 16px -10px rgba(212, 8, 72, 0.5);
+}
+
+:root[data-theme="sunset"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-image: var(--horizon) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="sunset"] .shelf.shelf-continues {
+    background: var(--shelf-bg);
+    border-image: none;
+    box-shadow: none;
+}
+
+:root[data-theme="sunset"] .shelf::-webkit-scrollbar-thumb {
+    background: var(--sunset);
+}
+
+/* shelf names: slanted 80s chrome script, white-hot on top melting
+   into the sunset, with a swash underneath (status shelves colour
+   the swash) */
+:root[data-theme="sunset"] .genre-title {
+    --swash: #ff4f6d;
+    transform: rotate(-5deg);
+    left: -6px;
+    top: -42px;
+    border: none;
+    border-radius: 0;
+    padding: 0 12px 7px;
+    font-family: 'Kaushan Script', 'Fredoka', cursive;
+    background: var(--script-ink);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    box-shadow: none;
+    filter: drop-shadow(2px 2px 0 #3d0a33);
+}
+
+:root[data-mode="dark"][data-theme="sunset"] .genre-title {
+    filter: drop-shadow(2px 2px 0 #12061f) drop-shadow(0 0 12px rgba(255, 79, 109, 0.3));
+}
+
+:root[data-theme="sunset"] .genre-title::after {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: -12px;
+    bottom: 0;
+    height: 4px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--swash), #f7821e, transparent);
+    pointer-events: none;
+}
+
+:root[data-theme="sunset"] .genre-title.tag-status-want { --swash: var(--y2k-yellow); }
+:root[data-theme="sunset"] .genre-title.tag-status-reading { --swash: var(--y2k-blue); }
+:root[data-theme="sunset"] .genre-title.tag-status-read { --swash: var(--y2k-green); }
+:root[data-theme="sunset"] .genre-title.tag-status-dnf { --swash: var(--y2k-coral); }
+
+/* buttons: soft pills; pressed ones glow */
+:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 999px;
+    font-family: var(--pixel-font);
+    font-weight: 600;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translateY(2px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.22), 0 0 14px rgba(247, 130, 30, 0.55);
+}
+
+/* add / save / stick it: the sky at its reddest */
+:root[data-theme="sunset"] :is(.add-book-btn, #modal-save-btn, .sticky-submit) {
+    background-image: linear-gradient(135deg, #f7821e, #f0282a 40%, #d40848 75%, #9c0a55);
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(61, 10, 51, 0.45);
+}
+
+/* Sunset: heading font sizes */
+:root[data-theme="sunset"] h1 { font-size: 56px; font-weight: 400; letter-spacing: 0; }
+:root[data-theme="sunset"] .genre-title { font-size: 34px; font-weight: 400; letter-spacing: 0; }
+:root[data-theme="sunset"] .shelf-count { font-size: 40px; font-weight: 600; }
+:root[data-theme="sunset"] .modal-header h3 { font-size: 18px; font-weight: 600; }
+:root[data-theme="sunset"] .field-section-title,
+:root[data-theme="sunset"] .preview-label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; }
+:root[data-theme="sunset"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="sunset"] h1 { font-size: 38px; }
+    :root[data-theme="sunset"] h1::after { left: 24px; right: -10px; bottom: 18px; height: 4px; }
+    :root[data-theme="sunset"] .genre-title { font-size: 26px; left: 0; top: -36px; padding: 0 10px 6px; }
+    :root[data-theme="sunset"] .shelf-count { font-size: 26px; }
+    :root[data-theme="sunset"] body::before { height: 160px; }
+}
+
+/* ---------- Plain and Plain Bold: shared ----------
+   Flat, no props, everything in shades of the chosen colour: a soft
+   wash on the page, tinted sections, and each button group its own
+   pair of shades (a tint unpressed, a deeper shade pressed) */
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body {
+    background: linear-gradient(160deg, var(--p-bg) 0%, var(--p-bg) 35%, var(--p-t1) 100%);
+    background-attachment: fixed;
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .field-section {
+    background: var(--p-t1);
+    border-color: var(--p-t2);
+}
+
+/* each button group has its own colour from the family (--grp-hue),
+   walking through it in the order the groups sit in the panel:
+   Organize, Filter Status, View, Filter Owned, Stickies, Fiction.
+   Unpressed is always a pale version of it, pressed the full colour
+   (after dark: a dark tint unpressed, a light version pressed) */
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-group { --grp-hue: var(--p-g1); }
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-peach { --grp-hue: var(--p-g2); }
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-pink { --grp-hue: var(--p-g3); }
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-lilac { --grp-hue: var(--p-g4); }
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-yellow { --grp-hue: var(--p-g5); }
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-blue { --grp-hue: var(--p-g6); }
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-group {
+    --grp-up: color-mix(in srgb, var(--grp-hue) 22%, #ffffff);
+    --grp-down: var(--grp-hue);
+}
+
+:root[data-mode="dark"]:is([data-theme="plain"], [data-theme="plainbold"]) .toggle-group {
+    --grp-up: color-mix(in srgb, var(--grp-hue) 26%, var(--p-surface));
+    --grp-down: color-mix(in srgb, var(--grp-hue) 50%, #ffffff);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) h1 {
+    animation: none;
+    color: var(--p-ink);
+    text-shadow: none;
+    text-transform: uppercase;
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) h1 .h1-spark {
+    display: none;
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .modal-header h3 {
+    color: #f4f4f2;
+    text-transform: uppercase;
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .shelf::-webkit-scrollbar-thumb {
+    background: var(--p-accent);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .toggle-group .toggle-btn:not(.active) {
+    background: var(--grp-up);
+    color: var(--p-ink);
+    border-color: var(--outline);
+    box-shadow: var(--btn-shadow);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .status-btn:not(.active),
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body button.secondary {
+    background: var(--p-t2);
+    color: var(--p-ink);
+    border-color: var(--outline);
+    box-shadow: var(--btn-shadow);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .toggle-group .toggle-btn:not(.active):hover {
+    background: color-mix(in srgb, var(--grp-up) 82%, var(--grp-down));
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .status-btn:not(.active):hover,
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body button.secondary:hover {
+    background: var(--p-t3);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .toggle-group .toggle-btn.active {
+    background: var(--grp-down);
+    color: var(--p-on-accent);
+    text-shadow: none;
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .status-btn.active,
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.add-book-btn, #modal-save-btn, .sticky-submit) {
+    background: var(--p-s2);
+    color: var(--p-on-accent);
+    text-shadow: none;
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.add-book-btn, #modal-save-btn, .sticky-submit):hover {
+    filter: brightness(1.1);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+    display: none;
+}
+
+/* ---------- Plain: a plain Blueprint ----------
+   Squared panels with a crisp line and a soft offset shadow, condensed
+   capitals, a clean beam for a shelf, squared paper labels */
+:root[data-theme="plain"] body {
+    font-family: 'Barlow', 'Segoe UI', sans-serif;
+}
+
+:root[data-theme="plain"] h1 {
+    font-family: var(--pixel-font);
+}
+
+:root[data-theme="plain"] .controls,
+:root[data-theme="plain"] .modal-content {
+    border: 2px solid var(--p-frame);
+    border-radius: 3px;
+    box-shadow: var(--panel-shadow);
+}
+
+:root[data-theme="plain"] .window-titlebar {
+    height: 10px;
+    background: var(--p-frame);
+}
+
+:root[data-theme="plain"] .modal-header {
+    background: var(--p-frame);
+}
+
+:root[data-theme="plain"] .shelf {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 2px, var(--p-frame) 2px 80%, rgba(0, 0, 0, 0.18)) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="plain"] .shelf.scrolls,
+:root[data-theme="plain"] .shelf.shelf-continues {
+    background: var(--shelf-bg);
+}
+
+:root[data-theme="plain"] .genre-title {
+    transform: none;
+    left: -10px;
+    top: -24px;
+    border: none;
+    border-radius: 2px;
+    padding: 10px 24px;
+    text-transform: uppercase;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="plain"] .genre-title:not([class*="tag-status-"]) {
+    background: var(--p-t2);
+    color: var(--p-ink);
+}
+
+:root[data-mode="dark"][data-theme="plain"] .genre-title {
+    border: 1.5px solid var(--p-frame-line);
+}
+
+:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 3px;
+    border: 1.5px solid var(--p-frame);
+    font-family: var(--pixel-font);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translate(1px, 1px);
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Plain: heading font sizes */
+:root[data-theme="plain"] h1 { font-size: 40px; font-weight: 600; letter-spacing: 3px; }
+:root[data-theme="plain"] .genre-title { font-size: 22px; font-weight: 600; letter-spacing: 1px; }
+:root[data-theme="plain"] .shelf-count { font-size: 40px; font-weight: 600; }
+:root[data-theme="plain"] .modal-header h3 { font-size: 19px; font-weight: 600; letter-spacing: 1px; }
+:root[data-theme="plain"] .field-section-title,
+:root[data-theme="plain"] .preview-label { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; }
+:root[data-theme="plain"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="plain"] h1 { font-size: 28px; letter-spacing: 2px; }
+    :root[data-theme="plain"] .genre-title { font-size: 17px; left: 0; padding: 7px 14px; }
+    :root[data-theme="plain"] .shelf-count { font-size: 24px; }
+}
+
+/* ---------- Plain Bold: a plain Loft ----------
+   Hard dark offset shadows, Oswald capitals, keys with a hard bottom
+   edge, a solid plank for a shelf, flat sign plates with a coloured edge */
+:root[data-theme="plainbold"] body {
+    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+}
+
+:root[data-theme="plainbold"] h1 {
+    font-family: var(--pixel-font);
+}
+
+:root[data-theme="plainbold"] .controls,
+:root[data-theme="plainbold"] .modal-content {
+    border: 2px solid var(--p-outline);
+    border-radius: 4px;
+    box-shadow: var(--panel-shadow);
+}
+
+:root[data-theme="plainbold"] .window-titlebar {
+    height: 12px;
+    background: var(--p-frame);
+    border-bottom: 2px solid var(--p-outline);
+}
+
+:root[data-theme="plainbold"] .modal-header {
+    background: var(--p-frame);
+    border-bottom: 2px solid var(--p-outline);
+}
+
+:root[data-theme="plainbold"] .shelf {
+    background:
+        linear-gradient(180deg, var(--p-plank-top) 0 2px, var(--p-plank) 2px 70%, var(--p-plank-dark)) bottom / 100% 20px no-repeat,
+        var(--shelf-bg);
+}
+
+:root[data-theme="plainbold"] .shelf.scrolls {
+    background: var(--shelf-bg);
+    border-image: linear-gradient(180deg, var(--p-plank-top) 0 2px, var(--p-plank) 2px 70%, var(--p-plank-dark)) 0 0 100% 0 / 0 0 20px 0 stretch;
+}
+
+:root[data-theme="plainbold"] .shelf.shelf-continues {
+    background: var(--shelf-bg);
+    border-image: none;
+}
+
+/* shelf names: flat sign plates, coloured down the left edge (status
+   shelves: their own colour) */
+:root[data-theme="plainbold"] .genre-title {
+    --sign-accent: var(--p-accent);
+    transform: none;
+    left: -10px;
+    top: -24px;
+    border: none;
+    border-left: 6px solid var(--sign-accent);
+    border-radius: 2px;
+    padding: 10px 22px 10px 18px;
+    text-transform: uppercase;
+    background: var(--p-plank);
+    color: #f1efea;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="plainbold"] .genre-title[class*="tag-status-"] {
+    background: var(--p-plank);
+    color: var(--sign-accent);
+}
+
+:root[data-theme="plainbold"] .genre-title.tag-status-want { --sign-accent: var(--y2k-yellow); }
+:root[data-theme="plainbold"] .genre-title.tag-status-reading { --sign-accent: var(--y2k-blue); }
+:root[data-theme="plainbold"] .genre-title.tag-status-read { --sign-accent: var(--y2k-green); }
+:root[data-theme="plainbold"] .genre-title.tag-status-dnf { --sign-accent: var(--y2k-coral); }
+
+:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+    border-radius: 3px;
+    border: 2px solid var(--p-outline);
+    font-family: var(--pixel-font);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    box-shadow: var(--btn-shadow);
+}
+
+:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--p-outline), inset 0 2px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Plain Bold: heading font sizes */
+:root[data-theme="plainbold"] h1 { font-size: 34px; font-weight: 600; letter-spacing: 6px; }
+:root[data-theme="plainbold"] .genre-title { font-size: 21px; font-weight: 500; letter-spacing: 2px; }
+:root[data-theme="plainbold"] .shelf-count { font-size: 36px; font-weight: 500; }
+:root[data-theme="plainbold"] .modal-header h3 { font-size: 17px; font-weight: 500; letter-spacing: 1.5px; }
+:root[data-theme="plainbold"] .field-section-title,
+:root[data-theme="plainbold"] .preview-label { font-size: 13px; font-weight: 500; letter-spacing: 0.12em; }
+:root[data-theme="plainbold"] .cat-z { font-family: 'Press Start 2P', monospace; }
+@media (max-width: 600px) {
+    :root[data-theme="plainbold"] h1 { font-size: 26px; letter-spacing: 4px; }
+    :root[data-theme="plainbold"] .genre-title { font-size: 17px; letter-spacing: 1.5px; left: 0; padding: 8px 14px 8px 12px; }
+    :root[data-theme="plainbold"] .shelf-count { font-size: 24px; }
 }

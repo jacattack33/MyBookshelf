@@ -368,6 +368,39 @@
     mix-blend-mode: screen;
 }
 
+/* Typewriter: X'd out in red ribbon ink, then a ding */
+.fx-typed {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    white-space: pre;
+    text-align: center;
+    font: var(--typed-size, 15px)/1.9 'Special Elite', 'Courier New', monospace;
+    color: #b3261e;
+    text-shadow: 0 0 1px rgba(255, 250, 240, 0.6);
+}
+
+.fx-ding {
+    position: absolute;
+    font: 22px/1 'Special Elite', 'Courier New', monospace;
+    color: #b3261e;
+    text-shadow: 0 0 3px rgba(255, 250, 240, 0.9);
+    white-space: nowrap;
+}
+
+/* Sunset: the glowing horizon it sinks behind */
+.fx-horizon {
+    position: absolute;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, #fcc21b 15%, #f7821e 40%, #f0282a 60%, #d40848 85%, transparent);
+    box-shadow: 0 0 14px 4px rgba(247, 130, 30, 0.6);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .preview-book-wrap.wiggle,
     .preview-sticker.visible { animation: none; }

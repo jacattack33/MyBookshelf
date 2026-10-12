@@ -203,17 +203,21 @@
 }
 
 /* the classy themes: no candy gloss on the little "today" pills */
-:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .date-today-btn {
+:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"], [data-theme="typewriter"], [data-theme="plain"], [data-theme="plainbold"]) .date-today-btn {
     border-radius: 4px;
     box-shadow: none;
 }
 
-:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .date-today-btn::before {
+:root:is([data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"], [data-theme="typewriter"], [data-theme="plain"], [data-theme="plainbold"]) .date-today-btn::before {
     display: none;
 }
 
-:root[data-theme="terminal"] .date-today-btn {
+:root:is([data-theme="terminal"], [data-theme="typewriter"]) .date-today-btn {
     font-family: var(--pixel-font);
+}
+
+:root[data-theme="typewriter"] .date-today-btn {
+    border-radius: 999px;
 }
 
 /* Lent to: only shows once "I Own This Book" is on */
@@ -469,7 +473,7 @@
 }
 
 /* (the newer themes' file buttons keep their own colour on hover) */
-:root:is([data-theme="holo"], [data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"]) .file-upload-btn:hover {
+:root:is([data-theme="holo"], [data-theme="library"], [data-theme="deco"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="terminal"], [data-theme="typewriter"], [data-theme="sunset"], [data-theme="plain"], [data-theme="plainbold"]) .file-upload-btn:hover {
     background-color: var(--y2k-green);
     filter: brightness(1.06);
 }

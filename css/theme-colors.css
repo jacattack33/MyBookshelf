@@ -425,6 +425,129 @@
     --flicker-tint: rgba(0, 0, 0, 0.015);
 }
 
+/* Typewriter: a crisp typed manuscript - bright white paper, true
+   black ribbon ink, cool greys; every button a black typewriter key
+   with a chrome rim, and a black platen for a shelf */
+:root[data-theme="typewriter"] {
+    --shelf-color: #1a1a1a;
+    --bg-color: #f7f6f2;
+    --y2k-pink: #1a1a1a;
+    --y2k-hot-pink: #2b2b2b;
+    --y2k-purple: #3a3a3a;
+    --y2k-lavender: #e6e5e0;
+    --y2k-dark: #111111;
+    --y2k-text: #111111;
+    --y2k-mint: #d4d3ce;
+    --y2k-yellow: #e4d9b4;    /* status shelves: soft paper tints */
+    --y2k-blue: #cdd6de;
+    --y2k-lilac: #d4d3ce;
+    --y2k-peach: #e2d2c8;
+    --y2k-green: #d2dbcc;
+    --y2k-coral: #e3c4bd;
+    --pastel-mint: #efeee9;
+    --pastel-yellow: #f2efe6;
+    --pastel-blue: #eceef0;
+    --pastel-pink: #f1eeea;
+    --pastel-lavender: #eeede8;
+    --pastel-lilac: #efeee9;
+    --pastel-peach: #f1eeea;
+    --ink-rgb: 17, 17, 17;
+    --accent-rgb: 85, 85, 85;
+    --bg-a: #f7f6f2;
+    --bg-b: #f4f3ee;
+    --bg-c: #f6f5f1;
+    --panel-bg: #fbfbf9;
+    --section-bg: #ffffff;
+    --disabled-bg: #ecebe7;
+    --status-hover: #f2f1ed;
+    --secondary-hover: #e0dfda;
+    --shelf-color-hover: #333333;
+    --outline: #2b2b2b;
+    --surface: #ffffff;
+    --shelf-bg: rgba(0, 0, 0, 0.035);
+    --on-bright: #111111;
+    --chart-bar: #2b2b2b;
+    --chart-bar-hover: #666666;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23111111' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'Special Elite', 'Courier New', monospace;
+    --key-cap: #1e1b18;
+    --key-cap-hover: #3a3733;
+    --key-letter: #f4eedd;
+    --key-down: #f4eedd;     /* a pressed key flips to cream... */
+    --key-down-letter: #111111; /* ...with black letters */
+    --key-rim: #c9c9c9;      /* the chrome ring round each key */
+    --key-depth: #7a7a7a;    /* ...and its side, under the key */
+    --btn-shadow: 0 0 0 2px var(--key-rim), 0 4px 0 2px var(--key-depth);
+    --btn-shadow-down: 0 0 0 2px var(--key-rim), 0 1px 0 2px var(--key-depth);
+    --platen: linear-gradient(180deg, #5a5a5a 0%, #222222 30%, #151515 62%, #0a0a0a 100%);
+    --paper-rule: rgba(0, 0, 0, 0.035);
+    --margin-line: rgba(0, 0, 0, 0.1);
+    --paper-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 10px 24px -8px rgba(0, 0, 0, 0.28);
+    --desk-glow: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 255, 255, 0.9), transparent 70%);
+    --title-bar: #111111;
+}
+
+/* Sunset: from gold through orange, red and crimson to plum and deep
+   indigo, with soft dunes rolling along the bottom of the page.
+   Buttons in gold, sunshine, orange, rose and apricot */
+:root[data-theme="sunset"] {
+    --shelf-color: #d40848;
+    --bg-color: #fff1e3;
+    --y2k-pink: #d4301a;
+    --y2k-hot-pink: #c4093f;
+    --y2k-purple: #9c0a55;
+    --y2k-lavender: #fbdccd;
+    --y2k-dark: #3d0a33;
+    --y2k-text: #3d0a33;
+    --y2k-mint: #fcc21b;
+    --y2k-yellow: #ffd56b;
+    --y2k-blue: #f7821e;
+    --y2k-lilac: #ff8fa3;
+    --y2k-peach: #f9a26c;
+    --y2k-green: #ffc25c;
+    --y2k-coral: #f0503a;
+    --pastel-mint: #fff1cc;
+    --pastel-yellow: #fff5d8;
+    --pastel-blue: #ffe4cc;
+    --pastel-pink: #ffe0e4;
+    --pastel-lavender: #fde3e3;
+    --pastel-lilac: #ffe2ea;
+    --pastel-peach: #ffe7d8;
+    --ink-rgb: 61, 10, 51;
+    --accent-rgb: 196, 9, 63;
+    --bg-a: #ffd36e;
+    --bg-b: #ffa47a;
+    --bg-c: #f58fb8;
+    --panel-bg: #fff8f2;
+    --section-bg: #fffbf7;
+    --disabled-bg: #f7e4da;
+    --status-hover: #ffede1;
+    --secondary-hover: #f6c9b4;
+    --shelf-color-hover: #b0063c;
+    --outline: #6a0048;
+    --surface: #fffaf5;
+    --shelf-bg: rgba(255, 255, 255, 0.35);
+    --on-bright: #3d0a33;
+    --chart-bar: #d40848;
+    --chart-bar-hover: #f0282a;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23c4093f' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --pixel-font: 'Fredoka', 'Quicksand', sans-serif;
+    --sunset: linear-gradient(90deg, #fcc21b, #f7821e 22%, #f0282a 45%, #d40848 66%, #9c0a55 86%, #3a1a7a);
+    --sunset-down: linear-gradient(180deg, #fcc21b, #f7821e 30%, #f0282a 55%, #d40848 78%, #9c0a55);
+    --horizon: linear-gradient(180deg, #ffe08a 0 2px, #f7821e 2px, #f0282a 45%, #d40848 75%, #9c0a55);
+    --sun-sky:
+        radial-gradient(circle at 86% 10%, rgba(255, 236, 140, 0.9) 0 70px, rgba(255, 196, 60, 0.45) 150px, transparent 360px);
+    --dune-a: #f0282a;
+    --dune-b: #d40848;
+    --dune-c: #9c0a55;
+    --dune-opacity: 0.3;
+    --btn-shadow: 0 3px 0 rgba(106, 0, 72, 0.45), 0 4px 10px rgba(212, 8, 72, 0.18);
+    --panel-shadow: 0 10px 28px -10px rgba(156, 10, 85, 0.45);
+    --title-ink: #fff8ec;
+    /* the script lettering (title, shelf names): sunset all the way down */
+    --script-ink: linear-gradient(180deg, #fcc21b 0%, #f7821e 32%, #f0282a 52%, #d40848 72%, #9c0a55 100%);
+}
+
 /* ---------- Dark mode (Settings > Mode) ----------
    Pastels turn into deep jewel tones, ink and outlines turn light,
    bright accents stay bright (with dark text on them). Paper things
@@ -531,4 +654,337 @@
         radial-gradient(ellipse 50% 45% at 88% 22%, rgba(90, 200, 255, 0.16), transparent 70%),
         radial-gradient(ellipse 55% 40% at 45% 88%, rgba(150, 120, 255, 0.18), transparent 70%),
         radial-gradient(ellipse 40% 30% at 92% 92%, rgba(90, 255, 190, 0.12), transparent 70%);
+}
+
+/* Typewriter after dark: a black enamel typewriter on a desk by
+   lamplight - warm cream ink, chrome glinting on the keys */
+:root[data-mode="dark"][data-theme="typewriter"] {
+    --y2k-dark: #ece3cf;
+    --y2k-text: #ece3cf;
+    --ink-rgb: 236, 227, 207;
+    --accent-rgb: 224, 87, 76;
+    --y2k-pink: #c23a2e;
+    --y2k-hot-pink: #e0574c;
+    --y2k-purple: #b8ad96;
+    --y2k-lavender: #3a342b;
+    --pastel-mint: #2c322b;
+    --pastel-yellow: #3b3424;
+    --pastel-blue: #2a3038;
+    --pastel-pink: #3b2622;
+    --pastel-lavender: #332d25;
+    --pastel-lilac: #382e25;
+    --pastel-peach: #3b2a24;
+    --bg-a: #16130f;
+    --bg-b: #1b1813;
+    --bg-c: #14110e;
+    --panel-bg: #211d18;
+    --section-bg: #26211b;
+    --disabled-bg: #2e2820;
+    --status-hover: #332c23;
+    --secondary-hover: #463d31;
+    --surface: #24201a;
+    --shelf-bg: rgba(255, 240, 210, 0.04);
+    --shelf-color: #0b0a08;
+    --shelf-color-hover: #1e1b18;
+    --on-bright: #1a1612;
+    --outline: #8a7f6c;
+    --chart-bar: #e0574c;
+    --chart-bar-hover: #ea786f;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23e0574c' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --key-cap: #0f0d0b;
+    --key-cap-hover: #2a2620;
+    --key-letter: #ece3cf;
+    --key-down: #ece3cf;
+    --key-down-letter: #0f0d0b;
+    --key-rim: #8d877c;
+    --key-depth: #050403;
+    --paper-rule: rgba(255, 240, 210, 0.025);
+    --margin-line: rgba(236, 227, 207, 0.14);
+    --paper-shadow: 0 1px 1px rgba(0, 0, 0, 0.4), 0 12px 28px -8px rgba(0, 0, 0, 0.7);
+    --desk-glow: radial-gradient(ellipse 60% 55% at 12% 0%, rgba(255, 196, 120, 0.16), transparent 70%);
+    --title-bar: #0b0a08;
+}
+
+/* Sunset after dark: dusk into night - deep indigo and plum, the last
+   of the sun glowing low behind the dunes, a few early stars */
+:root[data-mode="dark"][data-theme="sunset"] {
+    --y2k-dark: #ffe6d0;
+    --y2k-text: #ffe6d0;
+    --ink-rgb: 255, 230, 208;
+    --accent-rgb: 255, 79, 109;
+    --y2k-pink: #e8452a;
+    --y2k-hot-pink: #e83a5c;
+    --y2k-purple: #c94f9a;
+    --y2k-lavender: #4a1f4f;
+    --pastel-mint: #4a3518;
+    --pastel-yellow: #4a3d1a;
+    --pastel-blue: #4f2a17;
+    --pastel-pink: #4f1a2c;
+    --pastel-lavender: #3d1a45;
+    --pastel-lilac: #4a1a38;
+    --pastel-peach: #4f2a22;
+    --bg-a: #26105e;
+    --bg-b: #470a5c;
+    --bg-c: #6a0a4e;
+    --panel-bg: #261238;
+    --section-bg: #2d1640;
+    --disabled-bg: #3a1d4d;
+    --status-hover: #40204f;
+    --secondary-hover: #55285e;
+    --surface: #2d1638;
+    --shelf-bg: rgba(255, 200, 170, 0.05);
+    --shelf-color: #9c0a55;
+    --shelf-color-hover: #b80d63;
+    --on-bright: #2a0a24;
+    --outline: #b56a9a;
+    --chart-bar: #ff7a3d;
+    --chart-bar-hover: #ff9a5f;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23ff6f88' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+    --horizon: linear-gradient(180deg, #ffb35c 0 2px, #e8452a 2px, #b80d4a 45%, #6a0048 80%, #3a1a7a);
+    --sun-sky:
+        radial-gradient(1.5px 1.5px at 12% 8%, rgba(255, 240, 220, 0.8), transparent),
+        radial-gradient(1px 1px at 28% 16%, rgba(255, 240, 220, 0.7), transparent),
+        radial-gradient(1.5px 1.5px at 47% 6%, rgba(255, 240, 220, 0.75), transparent),
+        radial-gradient(1px 1px at 63% 19%, rgba(255, 240, 220, 0.6), transparent),
+        radial-gradient(1.5px 1.5px at 78% 9%, rgba(255, 240, 220, 0.8), transparent),
+        radial-gradient(1px 1px at 92% 22%, rgba(255, 240, 220, 0.6), transparent),
+        radial-gradient(1px 1px at 6% 27%, rgba(255, 240, 220, 0.5), transparent),
+        radial-gradient(1px 1px at 38% 30%, rgba(255, 240, 220, 0.45), transparent),
+        radial-gradient(ellipse 60% 34% at 50% 100%, rgba(255, 130, 50, 0.6), rgba(230, 20, 80, 0.3) 45%, transparent 75%);
+    --dune-a: #6a0048;
+    --dune-b: #3a1a7a;
+    --dune-c: #1f0f45;
+    --dune-opacity: 0.85;
+    /* after dark the script goes chrome: white-hot on top, melting into the sunset */
+    --script-ink: linear-gradient(180deg, #fff 0%, #ffe6c8 38%, #c4093f 50%, #f7821e 64%, #fcc21b 100%);
+    --btn-shadow: 0 3px 0 rgba(0, 0, 0, 0.45), 0 4px 12px rgba(255, 79, 109, 0.15);
+    --panel-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 120, 90, 0.08);
+}
+
+/* ---------- Plain and Plain Bold: two quiet themes in six colours ----------
+   Plain is a plain Blueprint, Plain Bold a plain Loft. Each colour
+   (data-tint, picked in Settings) is a small palette of --p-* values;
+   the block at the bottom turns them into the usual variables. It sits
+   last in this file so it applies in light and dark mode alike. */
+:root:is([data-theme="plain"], [data-theme="plainbold"]) {
+    /* Paper (the default): neutral greys and black */
+    --p-bg: #f2f2f0;
+    --p-surface: #ffffff;
+    --p-panel: #fafaf8;
+    --p-ink: #1f1f1f;
+    --p-ink-rgb: 31, 31, 31;
+    --p-shadow-rgb: 31, 31, 31;
+    --p-soft: #ececea;
+    --p-line: #dcdcd8;
+    /* six colours from the family, one per button group in the order they sit in the panel (pale unpressed, full pressed) */
+    --p-g1: #3c4450;
+    --p-g2: #4f5862;
+    --p-g3: #3a3a3a;
+    --p-g4: #5e5850;
+    --p-g5: #6b665a;
+    --p-g6: #6a5a50;
+    /* shades: three tints for washes and sections, three deeper ones */
+    --p-t1: #ebebe8;
+    --p-t2: #e1e1dd;
+    --p-t3: #d2d2cd;
+    --p-s1: #6b6b6b;
+    --p-s2: #4a4a4a;
+    --p-s3: #2b2b2b;
+    --p-accent: #3a3a3a;
+    --p-accent-rgb: 58, 58, 58;
+    --p-on-accent: #ffffff;
+    --p-frame: #3a3a3a;
+    --p-frame-line: #8a8a8a;
+    --p-outline: #1f1f1f;
+    --p-hard-shadow: rgba(31, 31, 31, 0.85);
+    --p-shelf-back: rgba(0, 0, 0, 0.04);
+    --p-plank: #2e2e2e;
+    --p-plank-top: #5a5a5a;
+    --p-plank-dark: #1c1c1c;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%233a3a3a' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-tint="slate"] {
+    --p-g1: #4f4f9a; --p-g2: #3f5a9a; --p-g3: #3d6a96; --p-g4: #2f7590; --p-g5: #2f7a7a; --p-g6: #3c7a5c;
+    --p-t1: #e3eaf1; --p-t2: #d5e0ea; --p-t3: #c0d0df; --p-s1: #56809f; --p-s2: #3d6a96; --p-s3: #2a4a6b;
+    --p-bg: #eaeef2; --p-surface: #fbfcfd; --p-panel: #f6f8fa;
+    --p-ink: #1e2a36; --p-ink-rgb: 30, 42, 54; --p-shadow-rgb: 30, 42, 54;
+    --p-soft: #e3e9ef; --p-line: #d3dbe3;
+    --p-accent: #3d6a96; --p-accent-rgb: 61, 106, 150; --p-on-accent: #ffffff;
+    --p-frame: #34495e; --p-frame-line: #7f93a8; --p-outline: #1e2a36; --p-hard-shadow: rgba(30, 42, 54, 0.85);
+    --p-shelf-back: rgba(61, 106, 150, 0.05); --p-plank: #34495e; --p-plank-top: #5d7389; --p-plank-dark: #24323f;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%233d6a96' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-tint="sage"] {
+    --p-g1: #3f7a6e; --p-g2: #5b7d63; --p-g3: #3e7a4c; --p-g4: #4f7a3e; --p-g5: #6e7340; --p-g6: #7a6a3e;
+    --p-t1: #e3eadf; --p-t2: #d6e1d1; --p-t3: #c1d3bb; --p-s1: #6b8c72; --p-s2: #5b7d63; --p-s3: #3f5a46;
+    --p-bg: #ebefe8; --p-surface: #fbfcfa; --p-panel: #f6f8f4;
+    --p-ink: #23302a; --p-ink-rgb: 35, 48, 42; --p-shadow-rgb: 35, 48, 42;
+    --p-soft: #e2e9df; --p-line: #d4ddd0;
+    --p-accent: #5b7d63; --p-accent-rgb: 91, 125, 99; --p-on-accent: #ffffff;
+    --p-frame: #3f5446; --p-frame-line: #879a8b; --p-outline: #23302a; --p-hard-shadow: rgba(35, 48, 42, 0.85);
+    --p-shelf-back: rgba(91, 125, 99, 0.06); --p-plank: #3f5446; --p-plank-top: #66806c; --p-plank-dark: #2c3b31;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%235b7d63' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-tint="clay"] {
+    --p-g1: #a8564f; --p-g2: #b34a3a; --p-g3: #9c4a2a; --p-g4: #b4643f; --p-g5: #8a5a3a; --p-g6: #a87a2c;
+    --p-t1: #f1e6dc; --p-t2: #ead9ca; --p-t3: #e0c4ae; --p-s1: #c27a56; --p-s2: #b4643f; --p-s3: #8a4528;
+    --p-bg: #f2ebe3; --p-surface: #fffcf8; --p-panel: #faf6f1;
+    --p-ink: #33251c; --p-ink-rgb: 51, 37, 28; --p-shadow-rgb: 51, 37, 28;
+    --p-soft: #efe5da; --p-line: #e2d5c7;
+    --p-accent: #b4643f; --p-accent-rgb: 180, 100, 63; --p-on-accent: #ffffff;
+    --p-frame: #5e4232; --p-frame-line: #a88f7e; --p-outline: #33251c; --p-hard-shadow: rgba(51, 37, 28, 0.85);
+    --p-shelf-back: rgba(180, 100, 63, 0.05); --p-plank: #5e4232; --p-plank-top: #86644f; --p-plank-dark: #432f23;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23b4643f' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-tint="lilac"] {
+    --p-g1: #5a6bb0; --p-g2: #5c4fb0; --p-g3: #7564a8; --p-g4: #9a5c9e; --p-g5: #84497f; --p-g6: #a85a75;
+    --p-t1: #e9e4f2; --p-t2: #ddd5ec; --p-t3: #cbbfe3; --p-s1: #8573b8; --p-s2: #6a5a9e; --p-s3: #4e4378;
+    --p-bg: #eeebf3; --p-surface: #fdfcff; --p-panel: #f8f6fb;
+    --p-ink: #2a2536; --p-ink-rgb: 42, 37, 54; --p-shadow-rgb: 42, 37, 54;
+    --p-soft: #e8e4f0; --p-line: #dcd7e6;
+    --p-accent: #7564a8; --p-accent-rgb: 117, 100, 168; --p-on-accent: #ffffff;
+    --p-frame: #4b4363; --p-frame-line: #948caf; --p-outline: #2a2536; --p-hard-shadow: rgba(42, 37, 54, 0.85);
+    --p-shelf-back: rgba(117, 100, 168, 0.05); --p-plank: #4b4363; --p-plank-top: #70678c; --p-plank-dark: #352f47;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%237564a8' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-tint="navy"] {
+    --p-g1: #3b3a8a; --p-g2: #1f3a6e; --p-g3: #2f56a8; --p-g4: #36668a; --p-g5: #1f5f73; --p-g6: #4a5a6e;
+    --p-t1: #e3e8f1; --p-t2: #d6deeb; --p-t3: #bfcbe0; --p-s1: #3f5f97; --p-s2: #1f3a6e; --p-s3: #13264d;
+    --p-bg: #eceef3; --p-surface: #ffffff; --p-panel: #f8f9fb;
+    --p-ink: #18213a; --p-ink-rgb: 24, 33, 58; --p-shadow-rgb: 24, 33, 58;
+    --p-soft: #e5e8ef; --p-line: #d6dbe5;
+    --p-accent: #1f3a6e; --p-accent-rgb: 31, 58, 110; --p-on-accent: #ffffff;
+    --p-frame: #1f3a6e; --p-frame-line: #7d8fb5; --p-outline: #18213a; --p-hard-shadow: rgba(24, 33, 58, 0.85);
+    --p-shelf-back: rgba(31, 58, 110, 0.05); --p-plank: #1f3a6e; --p-plank-top: #4a6396; --p-plank-dark: #152a52;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%231f3a6e' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+/* after dark */
+:root[data-mode="dark"]:is([data-theme="plain"], [data-theme="plainbold"]) {
+    --p-bg: #181818; --p-surface: #222222; --p-panel: #1e1e1e;
+    --p-ink: #e6e6e6; --p-ink-rgb: 230, 230, 230; --p-shadow-rgb: 0, 0, 0;
+    --p-soft: #2c2c2c; --p-line: #333333;
+    --p-t1: #262626; --p-t2: #2f2f2f; --p-t3: #3a3a3a; --p-s1: #bdbdbd; --p-s2: #dcdcdc; --p-s3: #9e9e9e;
+    --p-accent: #dcdcdc; --p-accent-rgb: 220, 220, 220; --p-on-accent: #181818;
+    --p-frame: #505050; --p-frame-line: #6a6a6a; --p-outline: #6a6a6a; --p-hard-shadow: rgba(0, 0, 0, 0.6);
+    --p-shelf-back: rgba(255, 255, 255, 0.04); --p-plank: #3a3a3a; --p-plank-top: #5e5e5e; --p-plank-dark: #262626;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23dcdcdc' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-mode="dark"][data-tint="slate"] {
+    --p-t1: #1f2a35; --p-t2: #26333f; --p-t3: #2f3f4e; --p-s1: #8fb6dc; --p-s2: #6f9ccb; --p-s3: #a9c6e4;
+    --p-bg: #141b22; --p-surface: #1d262f; --p-panel: #19212a;
+    --p-ink: #dfe6ec; --p-ink-rgb: 223, 230, 236;
+    --p-soft: #25303a; --p-line: #2c3742;
+    --p-accent: #6f9ccb; --p-accent-rgb: 111, 156, 203; --p-on-accent: #0f1820;
+    --p-frame: #3b4d5f; --p-frame-line: #56697c; --p-outline: #56697c;
+    --p-shelf-back: rgba(255, 255, 255, 0.035); --p-plank: #34495e; --p-plank-top: #56697c; --p-plank-dark: #24323f;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%236f9ccb' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-mode="dark"][data-tint="sage"] {
+    --p-t1: #202822; --p-t2: #273129; --p-t3: #2f3b32; --p-s1: #a8c7ae; --p-s2: #8fb397; --p-s3: #769c7f;
+    --p-bg: #141a16; --p-surface: #1d241f; --p-panel: #19201b;
+    --p-ink: #dde6df; --p-ink-rgb: 221, 230, 223;
+    --p-soft: #252e28; --p-line: #2d3830;
+    --p-accent: #8fb397; --p-accent-rgb: 143, 179, 151; --p-on-accent: #121814;
+    --p-frame: #3c4f42; --p-frame-line: #5a6e60; --p-outline: #5a6e60;
+    --p-shelf-back: rgba(255, 255, 255, 0.035); --p-plank: #3f5446; --p-plank-top: #5f7766; --p-plank-dark: #2c3b31;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%238fb397' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-mode="dark"][data-tint="clay"] {
+    --p-t1: #2a211b; --p-t2: #33281f; --p-t3: #3e3026; --p-s1: #eba886; --p-s2: #e08f68; --p-s3: #c9774f;
+    --p-bg: #1a1411; --p-surface: #241c17; --p-panel: #1f1814;
+    --p-ink: #ece2d8; --p-ink-rgb: 236, 226, 216;
+    --p-soft: #2e251f; --p-line: #3a2e26;
+    --p-accent: #e08f68; --p-accent-rgb: 224, 143, 104; --p-on-accent: #1c1612;
+    --p-frame: #5a4234; --p-frame-line: #7a604f; --p-outline: #7a604f;
+    --p-shelf-back: rgba(255, 255, 255, 0.035); --p-plank: #5e4232; --p-plank-top: #806250; --p-plank-dark: #432f23;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23e08f68' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-mode="dark"][data-tint="lilac"] {
+    --p-t1: #252131; --p-t2: #2d283c; --p-t3: #372f4a; --p-s1: #c2b6ea; --p-s2: #a99bdb; --p-s3: #8f80c9;
+    --p-bg: #16141c; --p-surface: #201d28; --p-panel: #1b1923;
+    --p-ink: #e4e0ee; --p-ink-rgb: 228, 224, 238;
+    --p-soft: #282432; --p-line: #322e3d;
+    --p-accent: #a99bdb; --p-accent-rgb: 169, 155, 219; --p-on-accent: #16131d;
+    --p-frame: #48405e; --p-frame-line: #655d7e; --p-outline: #655d7e;
+    --p-shelf-back: rgba(255, 255, 255, 0.035); --p-plank: #4b4363; --p-plank-top: #6c6388; --p-plank-dark: #352f47;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23a99bdb' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+:root[data-mode="dark"][data-tint="navy"] {
+    --p-t1: #18223a; --p-t2: #1e2945; --p-t3: #253252; --p-s1: #f0c873; --p-s2: #e3b04b; --p-s3: #c99634;
+    --p-bg: #0d1322; --p-surface: #151d31; --p-panel: #11192b;
+    --p-ink: #dfe5f2; --p-ink-rgb: 223, 229, 242;
+    --p-soft: #1b2540; --p-line: #253050;
+    --p-accent: #e3b04b; --p-accent-rgb: 227, 176, 75; --p-on-accent: #0e1424;
+    --p-frame: #2c3c66; --p-frame-line: #47578a; --p-outline: #47578a;
+    --p-shelf-back: rgba(255, 255, 255, 0.035); --p-plank: #2c3c66; --p-plank-top: #4a5b8c; --p-plank-dark: #1d2a4c;
+    --caret-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23e3b04b' d='M5 7l5 6 5-6z'/%3E%3C/svg%3E");
+}
+
+/* the palette -> the variables everything else uses */
+:root:is([data-theme="plain"], [data-theme="plainbold"]) {
+    --shelf-color: var(--p-frame);
+    --bg-color: var(--p-bg);
+    --y2k-pink: var(--p-accent);
+    --y2k-hot-pink: var(--p-accent);
+    --y2k-purple: var(--p-frame);
+    --y2k-lavender: var(--p-soft);
+    --y2k-dark: var(--p-ink);
+    --y2k-text: var(--p-ink);
+    --ink-rgb: var(--p-ink-rgb);
+    --accent-rgb: var(--p-accent-rgb);
+    --y2k-mint: var(--p-accent);
+    --y2k-lilac: var(--p-accent);
+    --y2k-peach: var(--p-accent);
+    --y2k-yellow: #e8d8a8;    /* status shelves: soft, quiet tints */
+    --y2k-blue: #c9d8e6;
+    --y2k-green: #cfe0cc;
+    --y2k-coral: #e8c2b8;
+    --pastel-mint: var(--p-soft);
+    --pastel-yellow: var(--p-soft);
+    --pastel-blue: var(--p-soft);
+    --pastel-pink: var(--p-soft);
+    --pastel-lavender: var(--p-soft);
+    --pastel-lilac: var(--p-soft);
+    --pastel-peach: var(--p-soft);
+    --bg-a: var(--p-bg);
+    --bg-b: var(--p-bg);
+    --bg-c: var(--p-bg);
+    --panel-bg: var(--p-panel);
+    --section-bg: var(--p-surface);
+    --disabled-bg: var(--p-soft);
+    --status-hover: var(--p-soft);
+    --secondary-hover: var(--p-line);
+    --shelf-color-hover: var(--p-accent);
+    --surface: var(--p-surface);
+    --shelf-bg: var(--p-shelf-back);
+    --on-bright: #1a1a1a;
+    --chart-bar: var(--p-accent);
+    --chart-bar-hover: var(--p-frame-line);
+    --focus-fill: color-mix(in srgb, var(--p-surface) 88%, var(--p-accent));
+    --focus-glow: 0 0 0 3px rgba(var(--p-accent-rgb), 0.25);
+}
+
+:root[data-theme="plain"] {
+    --pixel-font: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --outline: var(--p-frame);
+    --btn-shadow: 2px 2px 0 rgba(var(--p-shadow-rgb), 0.22);
+    --panel-shadow: 5px 5px 0 rgba(var(--p-shadow-rgb), 0.14);
+}
+
+:root[data-theme="plainbold"] {
+    --pixel-font: 'Oswald', 'Arial Narrow', sans-serif;
+    --outline: var(--p-outline);
+    --btn-shadow: 0 3px 0 var(--p-outline);
+    --panel-shadow: 6px 6px 0 var(--p-hard-shadow);
 }

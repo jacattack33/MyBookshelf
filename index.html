@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Special+Elite&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Special+Elite&family=Fredoka:wght@500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
     <script>
         try {
             const theme = localStorage.getItem('bookShelfTheme');
-            if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal'].includes(theme)) {
+            if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal', 'typewriter', 'sunset', 'plain', 'plainbold'].includes(theme)) {
                 document.documentElement.dataset.theme = theme;
+            }
+            const tint = localStorage.getItem('bookShelfTint');
+            if (theme === 'plain' || theme === 'plainbold') {
+                document.documentElement.dataset.tint = ['slate', 'sage', 'clay', 'lilac', 'navy'].includes(tint) ? tint : 'paper';
             }
             const mode = localStorage.getItem('bookShelfMode') || 'light';
             if (mode === 'dark' || (mode === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -627,6 +631,21 @@
                         <button type="button" class="toggle-btn" data-theme-choice="loft" onclick="setTheme('loft')">Loft</button>
                         <button type="button" class="toggle-btn" data-theme-choice="blueprint" onclick="setTheme('blueprint')">Blueprint</button>
                         <button type="button" class="toggle-btn" data-theme-choice="terminal" onclick="setTheme('terminal')">Terminal</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="typewriter" onclick="setTheme('typewriter')">Typewriter</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="sunset" onclick="setTheme('sunset')">Sunset</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="plain" onclick="setTheme('plain')">Plain</button>
+                        <button type="button" class="toggle-btn" data-theme-choice="plainbold" onclick="setTheme('plainbold')">Plain Bold</button>
+                    </div>
+                    <div class="tint-row">
+                        <span class="field-label">Colour</span>
+                        <div class="toggle-group theme-toggle" role="group" aria-label="Plain theme colour">
+                            <button type="button" class="toggle-btn" data-tint-choice="paper" onclick="setTint('paper')"><span class="tint-dot" style="--dot: #3a3a3a"></span>Paper</button>
+                            <button type="button" class="toggle-btn" data-tint-choice="slate" onclick="setTint('slate')"><span class="tint-dot" style="--dot: #3d6a96"></span>Slate</button>
+                            <button type="button" class="toggle-btn" data-tint-choice="sage" onclick="setTint('sage')"><span class="tint-dot" style="--dot: #5b7d63"></span>Sage</button>
+                            <button type="button" class="toggle-btn" data-tint-choice="clay" onclick="setTint('clay')"><span class="tint-dot" style="--dot: #b4643f"></span>Clay</button>
+                            <button type="button" class="toggle-btn" data-tint-choice="lilac" onclick="setTint('lilac')"><span class="tint-dot" style="--dot: #7564a8"></span>Lilac</button>
+                            <button type="button" class="toggle-btn" data-tint-choice="navy" onclick="setTint('navy')"><span class="tint-dot" style="--dot: #1f3a6e"></span>Navy</button>
+                        </div>
                     </div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
