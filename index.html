@@ -206,7 +206,6 @@
         <button class="secondary" onclick="document.getElementById('import-file').click()">Import Library</button>
         <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importLibrary(event)">
         <button class="secondary" onclick="openSettings()">&#9881; Settings</button>
-        <button class="secondary" onclick="openBackupHelp()">? How backups work</button>
     </div>
 
     <!-- shown now and then when it's been a while since the last backup -->
@@ -611,7 +610,7 @@
                 <button type="button" class="modal-close-x" onclick="closeGoals()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
             <div class="goals-body">
-                <div class="field-section">
+                <div class="field-section goals-books">
                     <div class="field-section-title">Books this year</div>
                     <label class="field-label">Yearly reading goal
                         <input type="number" id="goal-books" min="0" max="999" step="1" placeholder="0 = off" oninput="setSetting('goal', Math.max(0, parseInt(this.value) || 0))">
@@ -620,7 +619,7 @@
                     <div class="goals-progress" id="goal-books-progress"></div>
                 </div>
 
-                <div class="field-section">
+                <div class="field-section goals-pages">
                     <div class="field-section-title">Pages</div>
                     <label class="field-label">Pages goal
                         <input type="number" id="goal-pages" min="1" max="9999" step="1" placeholder="20" oninput="setSetting('pagesGoal', Math.max(1, parseInt(this.value) || DEFAULT_SETTINGS.pagesGoal))">
@@ -632,8 +631,10 @@
                     </div>
                     <div class="field-hint" id="goal-pages-hint"></div>
                     <div class="goals-progress" id="goal-pages-progress"></div>
+                    <div class="goals-week" id="goal-pages-week"></div>
                     <form class="critter-feed" onsubmit="event.preventDefault(); submitLoggedPages();">
-                        <input type="number" id="goal-log-pages" min="1" max="2000" step="1" inputmode="numeric" placeholder="Pages read" aria-label="Pages read">
+                        <input type="number" id="goal-log-pages" min="1" max="2000" step="1" inputmode="numeric" placeholder="Pages" aria-label="Pages read">
+                        <input type="date" id="goal-log-date" class="goal-log-date" aria-label="Day you read them" title="Day you read them">
                         <button type="submit">Log</button>
                     </form>
                     <div class="field-hint" id="goal-log-note"></div>

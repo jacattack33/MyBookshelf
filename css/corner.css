@@ -297,11 +297,6 @@
     border-width: 1.5px;
 }
 
-.goals-card .reading-goal-fill.done,
-.goals-content .reading-goal-fill.done {
-    background: linear-gradient(90deg, var(--y2k-purple), var(--y2k-pink), var(--y2k-purple));
-}
-
 /* ---------- Debug panel (Settings > Debug) ----------
    a tab on the right edge that slides out a column of buttons */
 .debug-panel {

@@ -24,10 +24,12 @@ function loadPagesLog() {
     return [];
 }
 
-function recordPages(pages) {
+// `at` is when they were read: now, or midday on an earlier day when
+// they're logged after the fact
+function recordPages(pages, at = Date.now()) {
     const cutoff = Date.now() - PAGES_LOG_DAYS * DAY_MS;
     const log = loadPagesLog().filter(e => e.at >= cutoff);
-    log.push({ at: Date.now(), pages });
+    log.push({ at, pages });
     try { localStorage.setItem(PAGES_LOG_KEY, JSON.stringify(log)); } catch (e) {}
     updateGoals();
 }
@@ -87,9 +89,102 @@ function goalBar(done, goal) {
     bar.className = 'reading-goal-bar';
     const fill = document.createElement('div');
     fill.className = 'reading-goal-fill' + (done >= goal ? ' done' : '');
-    fill.style.width = Math.min(100, done / goal * 100) + '%';
+    setBarFill(fill, done / goal * 100);
     bar.appendChild(fill);
     return bar;
+}
+
+// Fill a progress bar to `pct`. Its gradient is sized to the whole bar
+// (--bar-span, used by the CSS), so a half-full bar shows the first half
+// of the gradient rather than all of it squeezed into half the room.
+function setBarFill(fill, pct) {
+    pct = Math.max(0, Math.min(100, pct));
+    fill.style.width = pct + '%';
+    fill.style.setProperty('--bar-span', pct ? (100 / pct * 100) + '%' : '100%');
+}
+
+// The Goals window's progress: a line of text and a bar, plus a ring with
+// the count in it and (if given) a pace line under the bar, which only
+// Candy and Blueprint show (the other themes hide them)
+function goalProgress(box, done, goal, unit, text, pace) {
+    const ring = document.createElement('div');
+    ring.className = 'goals-ring' + (done >= goal ? ' done' : '');
+    ring.style.setProperty('--pct', Math.min(100, done / goal * 100));
+    ring.setAttribute('aria-hidden', 'true');
+    const count = document.createElement('span');
+    count.className = 'goals-ring-count';
+    count.textContent = compactNumber(done);
+    const of = document.createElement('span');
+    of.className = 'goals-ring-of';
+    of.textContent = `of ${compactNumber(goal)} ${unit}`;
+    ring.append(count, of);
+    const line = document.createElement('div');
+    line.className = 'goals-progress-text';
+    line.textContent = text;
+    box.append(ring, line, goalBar(done, goal));
+    if (pace) {
+        const paceLine = document.createElement('div');
+        paceLine.className = 'goals-pace';
+        paceLine.textContent = pace;
+        box.appendChild(paceLine);
+    }
+}
+
+// what's left of this day / week / month's pages, spread over its days
+function pagesPace(done, goal) {
+    if (done >= goal) return done > goal ? `${(done - goal).toLocaleString()} pages extra` : 'Right on the nose';
+    const left = goal - done;
+    const start = new Date(pagesPeriodStart());
+    const end = new Date(start);
+    if (pagesPeriod() === 'day') end.setDate(end.getDate() + 1);
+    if (pagesPeriod() === 'week') end.setDate(end.getDate() + 7);
+    if (pagesPeriod() === 'month') end.setMonth(end.getMonth() + 1);
+    const daysLeft = Math.max(1, Math.round((end - pagesPeriodStart('day')) / DAY_MS));
+    if (daysLeft === 1) return `${left.toLocaleString()} page${left === 1 ? '' : 's'} to go today`;
+    return `${left.toLocaleString()} to go · about ${Math.ceil(left / daysLeft)} a day for ${daysLeft} days`;
+}
+
+// the last 7 days of the pages log as little bars, today last, with a
+// dashed line at the goal's daily pace
+function renderPagesWeek(box) {
+    box.innerHTML = '';
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(pagesPeriodStart('day'));
+        date.setDate(date.getDate() - i);
+        days.push({ start: date.getTime(), date, pages: 0 });
+    }
+    loadPagesLog().forEach(e => {
+        const day = days.findLast(d => e.at >= d.start);
+        if (day) day.pages += e.pages;
+    });
+    const pace = critterGoal();
+    const top = Math.max(pace, ...days.map(d => d.pages)) || 1;
+
+    const title = document.createElement('div');
+    title.className = 'goals-week-title';
+    title.textContent = 'Last 7 days';
+    const chart = document.createElement('div');
+    chart.className = 'goals-week-chart';
+    chart.style.setProperty('--pace', Math.min(100, pace / top * 100));
+    days.forEach((d, i) => {
+        const col = document.createElement('div');
+        col.className = 'goals-day' + (i === 6 ? ' today' : '') + (d.pages >= pace ? ' met' : '');
+        const name = d.date.toLocaleDateString(undefined, { weekday: 'short' });
+        col.title = `${i === 6 ? 'Today' : name}: ${d.pages.toLocaleString()} page${d.pages === 1 ? '' : 's'}`;
+        const bar = document.createElement('div');
+        bar.className = 'goals-day-bar';
+        bar.style.height = (d.pages / top * 100) + '%';
+        const label = document.createElement('span');
+        label.className = 'goals-day-name';
+        label.textContent = name.charAt(0);
+        col.append(bar, label);
+        chart.appendChild(col);
+    });
+    chart.setAttribute('role', 'img');
+    chart.setAttribute('aria-label', 'Pages read, last 7 days: ' +
+        days.map((d, i) => `${i === 6 ? 'today' : d.date.toLocaleDateString(undefined, { weekday: 'long' })} ${d.pages}`).join(', '));
+    box.append(title, chart);
 }
 
 function updateGoals() {
@@ -114,19 +209,48 @@ function updateGoals() {
     const booksBox = document.getElementById('goal-books-progress');
     booksBox.innerHTML = '';
     if (books) {
-        const text = document.createElement('div');
-        text.textContent = `${booksDone} / ${books} books${booksDone >= books ? ' — you did it! ✦' : ''}`;
-        booksBox.append(text, goalBar(booksDone, books));
+        goalProgress(booksBox, booksDone, books, 'books',
+            `${booksDone} / ${books} books${booksDone >= books ? ' — you did it! ✦' : ''}`);
     }
     const pagesBox = document.getElementById('goal-pages-progress');
     pagesBox.innerHTML = '';
-    const text = document.createElement('div');
-    text.textContent = `${pagesDone.toLocaleString()} / ${pages.toLocaleString()} pages ${period.label}${pagesDone >= pages ? ' — goal met! ✦' : ''}`;
-    pagesBox.append(text, goalBar(pagesDone, pages));
+    goalProgress(pagesBox, pagesDone, pages, 'pages',
+        `${pagesDone.toLocaleString()} / ${pages.toLocaleString()} pages ${period.label}${pagesDone >= pages ? ' — goal met! ✦' : ''}`,
+        pagesPace(pagesDone, pages));
+    renderPagesWeek(document.getElementById('goal-pages-week'));
     const perDay = critterGoal();
     document.getElementById('goal-pages-hint').textContent = appSettings.critter
         ? `Your reading critter gets hungry at this pace (${perDay % 1 ? perDay.toFixed(1) : perDay} pages a day).`
         : 'Log pages here, or by feeding your reading critter.';
+}
+
+// a day as the date box writes it, "2026-10-13" (from local fields, not
+// toISOString, which is UTC and can be a day off in the evening)
+function dateBoxValue(d) {
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// The Log box's day, back as far as the pages log keeps. Today's pages
+// are stamped now; an earlier day's at midday, so they land on that day.
+function resetLogDate() {
+    const box = document.getElementById('goal-log-date');
+    const earliest = new Date(pagesPeriodStart('day'));
+    earliest.setDate(earliest.getDate() - (PAGES_LOG_DAYS - 2));
+    box.max = box.value = dateBoxValue(new Date());
+    box.min = dateBoxValue(earliest);
+}
+
+function loggedDay() {
+    const box = document.getElementById('goal-log-date');
+    const [y, m, d] = (box.value || '').split('-').map(Number);
+    const day = y ? new Date(y, m - 1, d, 12) : null;
+    if (!day || box.value >= box.max) return { at: Date.now(), label: '' };
+    if (box.value < box.min) return { error: `That's too far back — pages can go back to ${new Date(box.min + 'T12:00').toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}.` };
+    const yesterday = new Date(pagesPeriodStart('day') - DAY_MS / 2);
+    const label = dateBoxValue(yesterday) === box.value ? ' for yesterday'
+        : ` for ${day.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}`;
+    return { at: day.getTime(), label };
 }
 
 function submitLoggedPages() {
@@ -137,14 +261,22 @@ function submitLoggedPages() {
         note.textContent = 'How many pages did you read?';
         return;
     }
+    const { at, label, error } = loggedDay();
+    if (error) {
+        note.textContent = error;
+        return;
+    }
     input.value = '';
-    // the critter eats them too, if it's around to
+    resetLogDate();
+    const logged = `Logged ${pages} page${pages === 1 ? '' : 's'}${label}`;
+    // the critter eats them too, if it's around to (whatever day they
+    // were read, it's eating them now)
     if (appSettings.critter && critter && !critter.gone) {
-        feedCritter(pages);
-        note.textContent = `Logged ${pages} page${pages === 1 ? '' : 's'}, and fed them to ${critterName()}.`;
+        feedCritter(pages, at);
+        note.textContent = `${logged}, and fed them to ${critterName()}.`;
     } else {
-        recordPages(pages);
-        note.textContent = `Logged ${pages} page${pages === 1 ? '' : 's'}.`;
+        recordPages(pages, at);
+        note.textContent = `${logged}.`;
     }
 }
 
@@ -153,6 +285,7 @@ function openGoals() {
     document.getElementById('goal-pages').value = appSettings.pagesGoal === DEFAULT_SETTINGS.pagesGoal ? '' : appSettings.pagesGoal;
     document.getElementById('goal-log-pages').value = '';
     document.getElementById('goal-log-note').textContent = '';
+    resetLogDate();
     refreshSettingsButtons();
     document.getElementById('goals-modal').style.display = 'flex';
     updateGoals();

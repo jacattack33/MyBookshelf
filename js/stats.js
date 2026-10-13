@@ -101,7 +101,7 @@ function renderSeriesStats(books) {
             row.querySelector('.stats-series-count').textContent = s.finished
                 ? `all ${s.total} read ✦`
                 : s.total ? `${s.readCount} of ${s.total} read` : `${s.readCount} read`;
-            row.querySelector('.reading-goal-fill').style.width = Math.min(100, (s.readCount / s.size) * 100) + '%';
+            setBarFill(row.querySelector('.reading-goal-fill'), s.readCount / s.size * 100);
             if (!s.total) row.title = 'Set how many books are in this series to track finishing it';
             list.appendChild(row);
         });
@@ -469,6 +469,6 @@ function updateReadingGoal() {
     box.querySelector('span').textContent = done >= goal
         ? `${year} goal: ${done} / ${goal} books \u2014 you did it! \u2726`
         : `${year} goal: ${done} / ${goal} books`;
-    box.querySelector('.reading-goal-fill').style.width = Math.min(100, (done / goal) * 100) + '%';
+    setBarFill(box.querySelector('.reading-goal-fill'), done / goal * 100);
     box.classList.add('visible');
 }

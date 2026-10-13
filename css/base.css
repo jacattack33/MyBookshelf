@@ -521,7 +521,11 @@ button.danger:hover {
 
 .reading-goal-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--y2k-pink), var(--y2k-purple));
+    background: linear-gradient(90deg, var(--y2k-purple), var(--y2k-pink));
+    /* the gradient spans the whole bar, not just the filled part
+       (setBarFill sets --bar-span), so a full bar is just the whole
+       gradient and a part-full one the start of it */
+    background-size: var(--bar-span, 100%) 100%;
     transition: width 0.5s ease-out;
 }
 

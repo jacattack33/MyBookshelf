@@ -60,6 +60,25 @@ critter.updatedAt = Date.now() - DAY;
 settleCritter();
 ok('starving when empty', critter.food === 0 && critterMood() === 'starving' && critter.emptySince > 0);
 
+// ---- night owls
+const realHours = Date.prototype.getHours;
+const emptiedAt = critter.emptySince;
+Date.prototype.getHours = () => 2;
+critter.food = goal * 1.5;
+critter.awakeUntil = 0;
+ok('asleep at 2am', critterMood() === 'asleep');
+petCritter();
+ok('one poke lets it sleep', critterMood() === 'asleep');
+petCritter();
+ok('second poke wakes it', critterMood() === 'content');
+critter.awakeUntil = 0;
+feedCritter(5);
+ok('a late feed keeps it up', critterMood() === 'content' && critter.awakeUntil > Date.now() + 60 * 60 * 1000);
+Date.prototype.getHours = realHours;
+critter.awakeUntil = 0;
+critter.food = 0;
+critter.emptySince = emptiedAt;
+
 // ---- switched off: no hunger
 setSetting('critter', false);
 ok('switch hides widget', q('#critter-home').style.display === 'none');

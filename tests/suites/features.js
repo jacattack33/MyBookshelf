@@ -365,8 +365,9 @@ for (const id of ['png1', 'png2']) await dbDelete(id);
 library = library.filter(b => !b.id.startsWith('png'));
 
 // ---- "How backups work" explains export / import to new users
-const helpBtn = [...document.querySelectorAll('.backup-bar button')].find(b => b.textContent.includes('How backups work'));
-ok('the backup bar has a How backups work button', !!helpBtn);
+ok('the backup bar has no How backups work button', ![...document.querySelectorAll('.backup-bar button')].some(b => b.textContent.includes('How backups work')));
+const helpBtn = [...document.querySelectorAll('#settings-modal button')].find(b => b.textContent.includes('How backups work'));
+ok('Settings has a How backups work button', !!helpBtn);
 helpBtn.click();
 ok('it opens the backup help window', q('#backup-help-modal').style.display === 'flex' && /Export/.test(q('.backup-help-body').innerText) && /Import/.test(q('.backup-help-body').innerText));
 q('#backup-help-modal').click();

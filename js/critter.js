@@ -504,8 +504,14 @@ function critterMood(c = critter) {
     if (days <= 0) return 'starving';
     if (days < 1) return 'hungry';
     const hour = new Date().getHours();
-    if (hour >= 23 || hour < 7) return 'asleep';
+    const night = hour >= 23 || hour < 7;
+    // bookworms read late: a feed or a poke keeps it up with you a while
+    if (night && !(c.awakeUntil > Date.now())) return 'asleep';
     return days >= 2 ? 'full' : 'content';
+}
+
+function keepCritterAwake(ms) {
+    critter.awakeUntil = Math.max(critter.awakeUntil || 0, Date.now() + ms);
 }
 
 function critterRunsAway(at) {
@@ -530,11 +536,13 @@ function hatchNewEgg() {
     critterSay('A new egg! Feed it pages to hatch it.');
 }
 
-function feedCritter(pages) {
+// `readAt`: when the pages were read, for the reading log (the Goals
+// window can log an earlier day's); the critter eats them now either way
+function feedCritter(pages, readAt) {
     settleCritter();
     const c = critter;
     if (c.gone) return;
-    recordPages(pages);
+    recordPages(pages, readAt);
     const hatching = !c.bornAt;
     const stageBefore = critterStage(c).id;
     // (left unnamed, it goes by each theme's critter name)
@@ -543,6 +551,7 @@ function feedCritter(pages) {
     c.food = Math.min(critterCap(), c.food + pages);
     if (hatching) c.food = Math.max(c.food, critterGoal()); // a newborn starts with a day's worth
     if (c.food > 0) c.emptySince = null;
+    keepCritterAwake(2 * 60 * 60 * 1000);
     c.log.unshift({ at: Date.now(), pages });
     c.log.length = Math.min(c.log.length, 100);
     saveCritter();
@@ -592,6 +601,20 @@ function petCritter() {
         return;
     }
     const mood = critterMood(c);
+    if (mood === 'asleep') {
+        // a second poke while it's dozing wakes it up for the next hour
+        if (c.pokedAt > Date.now() - 60 * 1000) {
+            keepCritterAwake(60 * 60 * 1000);
+            c.pokedAt = 0;
+            saveCritter();
+            renderCritter();
+            critterSay(['*yawns* Up late reading too?', '*stretches* One more chapter?', "Mm? Oh! I'm awake!"][Math.floor(Math.random() * 3)]);
+            critterAnimate('wiggle', 650);
+            return;
+        }
+        c.pokedAt = Date.now();
+        saveCritter();
+    }
     let lines;
     if (mood === 'asleep') lines = ['zzz…', '*rolls over*', '*sleepy mumble*'];
     else if (mood === 'starving') lines = ['Too hungry to play…', 'Pages… please…'];
@@ -779,7 +802,7 @@ function renderCritterModal() {
         const days = c.food / critterGoal();
         document.getElementById('critter-meter-text').textContent =
             `${days.toFixed(1)} of ${CRITTER_FOOD_DAYS} days of food (${pagesGoalText()})`;
-        document.getElementById('critter-meter-fill').style.width = Math.min(100, c.food / critterCap() * 100) + '%';
+        setBarFill(document.getElementById('critter-meter-fill'), c.food / critterCap() * 100);
 
         const next = CRITTER_STAGES.find(s => s.at > c.totalFed);
         const tiles = [
