@@ -337,7 +337,32 @@ await wait(300);
 ok('an image link loads into the cropper for the spine', q('#crop-modal').style.display === 'flex' && cropContext === 'spine' && q('#book-spine-image-url').value === '');
 useFullImageForCrop();
 ok('the linked picture becomes the pending spine', pendingSpineCrop && pendingSpineCrop.startsWith('data:image/png'));
+document.dispatchEvent(new ClipboardEvent('paste', { clipboardData: pasteDt, bubbles: true }));
+await wait(300);
+confirmCrop();
+ok('a cropped cover is saved as JPEG', pendingCoverCrop && pendingCoverCrop.startsWith('data:image/jpeg'), (pendingCoverCrop || '').slice(0, 30));
 closeModal();
+
+// ---- covers saved as PNG before that are shrunk to JPEG once, at startup
+const pngOf = (alpha) => {
+    const c = document.createElement('canvas');
+    c.width = 120; c.height = 180;
+    const img = c.getContext('2d').createImageData(120, 180);
+    for (let i = 0; i < img.data.length; i++) img.data[i] = i % 4 === 3 ? alpha : Math.random() * 256; // noisy like a photo
+    c.getContext('2d').putImageData(img, 0, 0);
+    return c.toDataURL('image/png');
+};
+const opaquePng = pngOf(255), seeThroughPng = pngOf(128);
+library.push({ id: 'png1', title: 'Old Crop', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#345', width: 100, sortOrder: 80, image: opaquePng, imageRatio: 2 / 3, spineImage: opaquePng });
+library.push({ id: 'png2', title: 'Cut Out', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#345', width: 100, sortOrder: 81, image: seeThroughPng, imageRatio: 2 / 3 });
+await convertPngCoversToJpeg();
+const oldCrop = library.find(b => b.id === 'png1');
+ok('an old PNG cover becomes a smaller JPEG', oldCrop.image.startsWith('data:image/jpeg') && oldCrop.image.length < opaquePng.length, `${opaquePng.length} -> ${oldCrop.image.length}`);
+ok('an old PNG spine photo becomes JPEG too', oldCrop.spineImage.startsWith('data:image/jpeg'));
+ok('a see-through PNG cover is left alone', library.find(b => b.id === 'png2').image === seeThroughPng);
+ok('the shrunk cover is saved', (await dbGetAll()).find(b => b.id === 'png1')?.image === oldCrop.image);
+for (const id of ['png1', 'png2']) await dbDelete(id);
+library = library.filter(b => !b.id.startsWith('png'));
 
 // ---- "How backups work" explains export / import to new users
 const helpBtn = [...document.querySelectorAll('.backup-bar button')].find(b => b.textContent.includes('How backups work'));

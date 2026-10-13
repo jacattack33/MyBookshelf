@@ -95,6 +95,28 @@ async function backfillImageRatios() {
     await dbBulkPut(needsRatio);
 }
 
+async function convertPngCoversToJpeg() {
+    // Cropped covers used to be saved as PNG, about 5x bigger than the JPEG
+    // they're saved as now (see confirmCrop), with no difference you can
+    // see on the shelf. Shrink the ones already saved - including ones
+    // that arrive in an imported backup. pngDataUrlToJpeg leaves any with
+    // see-through parts alone, since JPEG can't keep those.
+    const changed = [];
+    for (const book of library) {
+        let touched = false;
+        for (const field of ['image', 'spineImage']) {
+            if (!book[field] || !book[field].startsWith('data:image/png')) continue;
+            const jpeg = await pngDataUrlToJpeg(book[field]);
+            if (jpeg) {
+                book[field] = jpeg;
+                touched = true;
+            }
+        }
+        if (touched) changed.push(book);
+    }
+    if (changed.length > 0) await dbBulkPut(changed);
+}
+
 async function migrateSpineColorsForGammaFix() {
     // getImageEdgeColor used to average sRGB bytes directly, which reads
     // darker than the strip actually looks. One-time pass to recompute

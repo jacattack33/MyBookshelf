@@ -69,6 +69,30 @@ function updateFiltersCount() {
     document.getElementById('filters-count').textContent = active ? `\u2022 ${active}` : '';
 }
 
+// Covers are saved as data: URLs, often hundreds of KB each. Handing that
+// whole string to a style on every redraw made the browser re-read it each
+// time (about 2s for a few hundred covers), so each picture is turned into
+// a short blob: URL once and reused until the picture changes.
+const shelfImageUrls = new Map(); // key -> { src, url }
+
+function shelfImageUrl(key, src) {
+    const hit = shelfImageUrls.get(key);
+    if (hit && hit.src === src) return hit.url;
+    if (hit && hit.url !== hit.src) URL.revokeObjectURL(hit.url);
+    let url = src;
+    const head = /^data:([^;,]*)(?:;[^;,]*)*;base64,/.exec(src.slice(0, 200));
+    if (head) {
+        try {
+            const bin = atob(src.slice(head[0].length));
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            url = URL.createObjectURL(new Blob([bytes], { type: head[1] }));
+        } catch (e) {} // not valid base64: just use the data: URL as-is
+    }
+    shelfImageUrls.set(key, { src, url });
+    return url;
+}
+
 function buildBookElement(book, draggableEnabled, spineMode) {
     const bookDiv = document.createElement('div');
     bookDiv.className = 'book';
@@ -99,7 +123,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
         bookDiv.style.height = coverHeight + 'px';
 
         if (book.spineImage) {
-            bookDiv.style.backgroundImage = `url(${book.spineImage})`;
+            bookDiv.style.backgroundImage = `url(${shelfImageUrl(book.id + ':spine', book.spineImage)})`;
             bookDiv.style.backgroundSize = 'cover';
             bookDiv.style.backgroundColor = 'transparent';
             const spineImageRatio = book.spineImageRatio || 0.25;
@@ -116,7 +140,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
             bookDiv.appendChild(label);
         }
     } else if (book.image) {
-        bookDiv.style.backgroundImage = `url(${book.image})`;
+        bookDiv.style.backgroundImage = `url(${shelfImageUrl(book.id, book.image)})`;
         bookDiv.innerText = "";
         if (book.imageRatio) {
             bookDiv.style.aspectRatio = book.imageRatio;

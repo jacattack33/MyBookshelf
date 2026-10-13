@@ -1469,8 +1469,43 @@ function confirmCrop() {
     const canvas = document.createElement('canvas');
     canvas.width = sw;
     canvas.height = sh;
-    canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-    applyCropResult(canvas.toDataURL('image/png'));
+    const ctx = canvas.getContext('2d');
+    // JPEG has no see-through parts; without this they'd come out black
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, sw, sh);
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    // JPEG, not PNG: a cover photo is about 5x smaller this way and looks
+    // the same at shelf size
+    applyCropResult(canvas.toDataURL('image/jpeg', COVER_JPEG_QUALITY));
+}
+
+const COVER_JPEG_QUALITY = 0.92;
+
+// A JPEG copy of a PNG data: URL, or null when the PNG has see-through
+// pixels (JPEG would fill them in) or the JPEG wouldn't be any smaller.
+function pngDataUrlToJpeg(dataUrl) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const px = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                for (let i = 3; i < px.length; i += 4) {
+                    if (px[i] < 255) return resolve(null);
+                }
+                const jpeg = canvas.toDataURL('image/jpeg', COVER_JPEG_QUALITY);
+                resolve(jpeg.length < dataUrl.length ? jpeg : null);
+            } catch (e) {
+                resolve(null);
+            }
+        };
+        img.onerror = () => resolve(null);
+        img.src = dataUrl;
+    });
 }
 
 function useFullImageForCrop() {

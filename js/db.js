@@ -98,6 +98,7 @@ async function runMigrations() {
     await backfillSpineColors();
     await backfillTagCapitalization();
     await migrateGenresToTags();
+    await convertPngCoversToJpeg();
 }
 
 // ---------- Backup: export / import ----------
