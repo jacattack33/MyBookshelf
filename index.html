@@ -12,6 +12,12 @@
             if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal', 'typewriter', 'sunset', 'plain', 'plainbold'].includes(theme)) {
                 document.documentElement.dataset.theme = theme;
             }
+            // the Typewriter title types itself in: keep it hidden till then
+            // (typeInTitle clears this; the timeout is a safety net)
+            if (theme === 'typewriter' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.documentElement.dataset.typing = '';
+                setTimeout(() => delete document.documentElement.dataset.typing, 4000);
+            }
             const tint = localStorage.getItem('bookShelfTint');
             if (theme === 'plain' || theme === 'plainbold') {
                 document.documentElement.dataset.tint = ['slate', 'sage', 'clay', 'lilac', 'navy'].includes(tint) ? tint : 'paper';
@@ -180,6 +186,18 @@
                 <button onclick="openModal()" class="add-book-btn">+ Add New Book</button>
             </div>
             </div>
+            <!-- Typewriter (Settings > Typewriter machine): the panel comes out of the machine -->
+            <div class="tw-machine" aria-hidden="true">
+                <span class="tw-scale"><span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span><span>45</span><span>50</span><span>55</span><span>60</span><span>65</span><span>70</span><span>75</span><span>80</span><span>85</span><span>90</span><span>95</span><span>100</span><span>105</span><span>110</span><span>115</span><span>120</span><span>125</span><span>130</span><span>135</span><span>140</span><span>145</span><span>150</span><span>155</span></span>
+                <span class="tw-guide"></span>
+                <span class="tw-platen"></span>
+                <span class="tw-knob tw-l"></span><span class="tw-knob tw-r"></span>
+                <span class="tw-collar tw-l"></span><span class="tw-collar tw-r"></span>
+                <span class="tw-lever"></span>
+                <span class="tw-arm tw-l"></span><span class="tw-arm tw-r"></span>
+                <span class="tw-screw tw-l"></span><span class="tw-screw tw-r"></span>
+                <span class="tw-rod"><span class="tw-roller tw-l"></span><span class="tw-roller tw-r"></span></span>
+            </div>
         </div>
     </div>
 
@@ -188,6 +206,7 @@
         <button class="secondary" onclick="document.getElementById('import-file').click()">Import Library</button>
         <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importLibrary(event)">
         <button class="secondary" onclick="openSettings()">&#9881; Settings</button>
+        <button class="secondary" onclick="openBackupHelp()">? How backups work</button>
     </div>
 
     <!-- shown now and then when it's been a while since the last backup -->
@@ -403,6 +422,11 @@
                                 <span id="file-name-display" class="field-hint">No file chosen</span>
                             </div>
                         </label>
+                        <div class="image-link-row">
+                            <input type="text" id="book-image-url" placeholder="...or paste an image or image link" autocomplete="off" onpaste="handleImagePaste(event, 'cover')" onkeydown="if (event.key === 'Enter') { event.preventDefault(); loadImageFromLinkField('cover'); }">
+                            <button type="button" class="secondary" onclick="loadImageFromLinkField('cover')">Use</button>
+                        </div>
+                        <div id="book-image-link-error" class="image-link-error" role="alert"></div>
                         <div id="existing-image-note" class="field-hint" style="display:none;">
                             Leave blank to keep the current cover image.
                         </div>
@@ -452,6 +476,11 @@
                                 <span id="spine-file-name-display" class="field-hint">No file chosen</span>
                             </div>
                         </label>
+                        <div class="image-link-row">
+                            <input type="text" id="book-spine-image-url" placeholder="...or paste an image or image link" autocomplete="off" onpaste="handleImagePaste(event, 'spine')" onkeydown="if (event.key === 'Enter') { event.preventDefault(); loadImageFromLinkField('spine'); }">
+                            <button type="button" class="secondary" onclick="loadImageFromLinkField('spine')">Use</button>
+                        </div>
+                        <div id="book-spine-image-link-error" class="image-link-error" role="alert"></div>
                         <div class="field-hint">Only shows up in Spine view - a real photo of the book's spine. Leave blank to use the generated leather-look spine instead.</div>
                         <div id="existing-spine-image-note" class="field-hint" style="display:none;">
                             Leave blank to keep the current spine image.
@@ -647,6 +676,14 @@
                             <button type="button" class="toggle-btn" data-tint-choice="navy" onclick="setTint('navy')"><span class="tint-dot" style="--dot: #1f3a6e"></span>Navy</button>
                         </div>
                     </div>
+                    <div class="machine-row">
+                        <span class="field-label">Typewriter machine</span>
+                        <div class="toggle-group theme-toggle" role="group" aria-label="Typewriter machine">
+                            <button type="button" class="toggle-btn" data-setting-choice="typewriterMachine" data-choice="off" onclick="setSetting('typewriterMachine', 'off')">Off</button>
+                            <button type="button" class="toggle-btn" data-setting-choice="typewriterMachine" data-choice="roller" onclick="setSetting('typewriterMachine', 'roller')">Roller</button>
+                            <button type="button" class="toggle-btn" data-setting-choice="typewriterMachine" data-choice="full" onclick="setSetting('typewriterMachine', 'full')">Full front</button>
+                        </div>
+                    </div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
                         <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
@@ -731,6 +768,7 @@
                     </div>
                     <div class="field-hint" id="setting-last-backup"></div>
                     <div class="field-hint">Your books only live in this browser. With reminders on, a note pops up when it's been a while since your last backup, and the Export button glows now and then.</div>
+                    <button type="button" class="secondary" onclick="openBackupHelp()">How backups work</button>
                 </div>
 
                 <div class="field-section danger-section">
@@ -749,6 +787,40 @@
                         </label>
                         <button type="button" class="danger" id="delete-confirm-btn" onclick="deleteLibrary()" disabled>Delete everything</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="backup-help-modal" onclick="if (event.target === this) closeBackupHelp()">
+        <div class="modal-content backup-help-content">
+            <div class="modal-header">
+                <h3>&#9670; How Backups Work</h3>
+                <button type="button" class="modal-close-x" onclick="closeBackupHelp()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="backup-help-body">
+                <div class="field-section">
+                    <div class="field-section-title">Where your books live</div>
+                    <p>There's no account and no server. Your shelf is saved inside <b>this browser on this device</b>, and nowhere else.</p>
+                    <p>That means a different browser, another computer, your phone or a private window each start with their own empty shelf. Clearing your browser's site data will also wipe it.</p>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Export: save a copy</div>
+                    <p><b>Export Library (Backup)</b> downloads one file, named <code>bookshelf-backup-</code> plus today's date, to your Downloads folder.</p>
+                    <p>It holds everything: every book with its cover, notes and dates, your custom genres, and your settings (theme, shelf name, goals, fonts, your critter&hellip;).</p>
+                    <p>Keep it somewhere safe, like a cloud drive or email it to yourself. Exporting never changes your shelf.</p>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Import: bring a copy back</div>
+                    <p><b>Import Library</b> asks for a backup file, then <b>replaces</b> the shelf here with what's in it. Books on this shelf that aren't in the file are gone, so export first if you're unsure.</p>
+                    <p>Use it to restore after something went wrong, or to move your shelf to a new browser or device: export on the old one, import on the new one.</p>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Reminders</div>
+                    <p>A note pops up if you haven't backed up in a while (a week at first, then a month after your last export), and the Export button glows now and then. Turn this off under Settings &rarr; Backups.</p>
                 </div>
             </div>
         </div>

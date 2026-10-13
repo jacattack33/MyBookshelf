@@ -4,6 +4,7 @@ async function init() {
     loadExpandedShelves();
     initThemeToggle();
     loadSettings();
+    typeInTitle(); // (Typewriter only) now the bookshelf name is in
     selectFilterSticky(stickyFilter, false);
     initShelfCat();
     populateGenreSelects();

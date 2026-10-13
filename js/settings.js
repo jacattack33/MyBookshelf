@@ -97,6 +97,7 @@ const DEFAULT_SETTINGS = {
     noteFont: null,             // font new notes start in (null = last one used)
     cardFont: null,             // library card handwriting (null = the book's notes font)
     backupReminders: true,      // nudge to export now and then
+    typewriterMachine: 'off',   // Typewriter: the panel comes out of the machine: 'off', 'roller' or 'full' (adds the typing scale)
     calm: false,                // no animations
     debug: false                // the debug panel on the right edge
 };
@@ -135,6 +136,7 @@ const THEMES = ['candy', 'seaglass', 'holo', 'library', 'deco', 'loft', 'bluepri
 
 function setTheme(theme) {
     if (!THEMES.includes(theme)) theme = 'candy';
+    const switchedToTypewriter = theme === 'typewriter' && document.documentElement.dataset.theme !== 'typewriter';
     if (theme !== 'candy') {
         document.documentElement.dataset.theme = theme;
     } else {
@@ -146,6 +148,47 @@ function setTheme(theme) {
     });
     applyTint();
     renderCritter(); // each theme has its own critter and home
+    if (switchedToTypewriter) typeInTitle();
+    else if (theme !== 'typewriter') delete document.documentElement.dataset.typing;
+}
+
+// Typewriter: the title types itself in, a letter at a time in a
+// typist's uneven rhythm. Each letter is its own span, hidden until its
+// key is struck (so a letter is never shown half-cut), and the name goes
+// back to plain text once it's all typed. (The page opening in
+// Typewriter calls this once the bookshelf name is set; until then the
+// head script keeps the name hidden with data-typing, so it doesn't
+// flash up first.)
+let titleTypingTimer = null;
+
+function typeInTitle() {
+    const root = document.documentElement;
+    const el = document.getElementById('shelf-name');
+    const done = () => delete root.dataset.typing;
+    if (root.dataset.theme !== 'typewriter' || prefersReducedMotion() || !el.firstChild) return done();
+    // picked in Settings: the window covers the title, so it types once
+    // the window closes (closeSettings), hidden till then
+    if (document.getElementById('settings-modal').style.display === 'flex') {
+        root.dataset.typing = 'after-settings';
+        return;
+    }
+    clearTimeout(titleTypingTimer);
+    const name = el.textContent;
+    el.textContent = '';
+    let t = 250;
+    [...name].forEach(ch => {
+        const letter = document.createElement('span');
+        letter.textContent = ch;
+        t += 70 + Math.random() * 80 + (ch === ' ' ? 90 : 0);
+        // hidden until t, then shown when the animation ends
+        letter.animate([{ visibility: 'hidden' }, { visibility: 'hidden' }], { duration: t });
+        el.appendChild(letter);
+    });
+    titleTypingTimer = setTimeout(() => {
+        // (unless it's been renamed meanwhile)
+        if (el.firstElementChild && el.textContent === name) el.textContent = name;
+    }, t + 50);
+    done();
 }
 
 // The two plain themes come in six colours (Settings shows the choice
@@ -341,7 +384,7 @@ function setSetting(key, value) {
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); } catch (e) {}
     refreshSettingsButtons();
     // the name and goals are typed into, so don't redraw every shelf per keystroke
-    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders'].includes(key));
+    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine'].includes(key));
     if (key === 'backupReminders' && !value) hideBackupReminder();
     if (key === 'goal') updateReadingGoal();
     if (['goal', 'pagesGoal', 'pagesPeriod', 'critter'].includes(key)) updateGoals();
@@ -407,6 +450,7 @@ function applySettings(rerender) {
     const name = (appSettings.name || '').trim() || DEFAULT_SETTINGS.name;
     document.getElementById('shelf-name').textContent = name;
     document.title = name;
+    document.documentElement.dataset.machine = appSettings.typewriterMachine; // (only Typewriter shows it)
     if (appSettings.calm) {
         document.documentElement.dataset.calm = '';
     } else {
@@ -430,6 +474,7 @@ function applyStickyFont() {
 
 function closeSettings() {
     document.getElementById('settings-modal').style.display = 'none';
+    if (document.documentElement.dataset.typing === 'after-settings') typeInTitle();
 }
 
 // ---------- Light / dark mode ----------

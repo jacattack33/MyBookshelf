@@ -325,6 +325,10 @@ function openModal(bookId = null) {
     document.getElementById('file-name-display').innerText = "No file chosen";
     document.getElementById('book-spine-image').value = "";
     document.getElementById('spine-file-name-display').innerText = "No file chosen";
+    document.getElementById('book-image-url').value = "";
+    document.getElementById('book-spine-image-url').value = "";
+    setImageLinkError('cover', '');
+    setImageLinkError('spine', '');
     clearSpineImageFlag = false;
     pendingCoverCrop = null;
     pendingSpineCrop = null;
@@ -1177,6 +1181,7 @@ function handleCoverFileSelected() {
     updateFileNameDisplay();
     const input = document.getElementById('book-image');
     if (input.files && input.files[0]) {
+        setImageLinkError('cover', '');
         readFileAsDataURL(input.files[0]).then(dataUrl => openCropModal(dataUrl, 'cover'));
     } else {
         pendingCoverCrop = null;
@@ -1188,6 +1193,7 @@ function handleSpineFileSelected() {
     updateSpineFileNameDisplay();
     const input = document.getElementById('book-spine-image');
     if (input.files && input.files[0]) {
+        setImageLinkError('spine', '');
         readFileAsDataURL(input.files[0]).then(dataUrl => openCropModal(dataUrl, 'spine'));
     } else {
         pendingSpineCrop = null;
@@ -1202,6 +1208,112 @@ function clearSpineImage() {
     document.getElementById('existing-spine-image-note').style.display = 'none';
     document.getElementById('clear-spine-image-btn').style.display = 'none';
 }
+
+// ---------- Image by link or paste ----------
+// Besides choosing a file, a cover or spine can come from a pasted
+// picture or an image's web address. Either way it's turned into the
+// same data URL a chosen file would be, then goes through the cropper.
+
+function imageFieldIds(context) {
+    return context === 'cover'
+        ? { file: 'book-image', display: 'file-name-display', link: 'book-image-url', error: 'book-image-link-error' }
+        : { file: 'book-spine-image', display: 'spine-file-name-display', link: 'book-spine-image-url', error: 'book-spine-image-link-error' };
+}
+
+function setImageLinkError(context, msg) {
+    const ids = imageFieldIds(context);
+    const error = document.getElementById(ids.error);
+    error.innerText = msg;
+    error.classList.toggle('show', !!msg);
+    document.getElementById(ids.link).closest('.image-link-row').classList.toggle('link-failed', !!msg);
+}
+
+function startImageCrop(dataUrl, context, label) {
+    const ids = imageFieldIds(context);
+    setImageLinkError(context, '');
+    document.getElementById(ids.file).value = '';
+    document.getElementById(ids.display).innerText = label;
+    document.getElementById(ids.link).value = '';
+    if (context === 'spine') clearSpineImageFlag = false;
+    openCropModal(dataUrl, context);
+}
+
+function clipboardImageFile(e) {
+    const items = e.clipboardData ? [...e.clipboardData.items] : [];
+    const item = items.find(i => i.kind === 'file' && i.type.startsWith('image/'));
+    return item ? item.getAsFile() : null;
+}
+
+function handleImagePaste(e, context) {
+    const file = clipboardImageFile(e);
+    if (file) {
+        e.preventDefault();
+        e.stopPropagation(); // (not the whole window's paste too)
+        readFileAsDataURL(file).then(dataUrl => startImageCrop(dataUrl, context, 'Pasted image'));
+        return;
+    }
+    // a pasted link loads right away, no need to press Use
+    const text = (e.clipboardData ? e.clipboardData.getData('text') : '').trim();
+    if (/^(https?:\/\/|data:image\/)/i.test(text)) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById(imageFieldIds(context).link).value = text;
+        loadImageFromLink(text, context);
+    }
+}
+
+function loadImageFromLinkField(context) {
+    const url = document.getElementById(imageFieldIds(context).link).value.trim();
+    if (url) loadImageFromLink(url, context);
+}
+
+async function loadImageFromLink(url, context) {
+    const display = document.getElementById(imageFieldIds(context).display);
+    if (/^data:image\//i.test(url)) {
+        startImageCrop(url, context, 'Pasted image');
+        return;
+    }
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+    setImageLinkError(context, '');
+    display.innerText = 'Fetching image...';
+    try {
+        // fetched (not just pointed at) so the cover is kept with the
+        // book and the cropper can read its pixels
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(res.status);
+        const blob = await res.blob();
+        if (!blob.type.startsWith('image/')) throw new Error('not an image');
+        const dataUrl = await readFileAsDataURL(blob);
+        if (document.getElementById('book-modal').style.display !== 'flex') return;
+        const name = decodeURIComponent(new URL(url).pathname.split('/').pop() || '') || 'Image from link';
+        startImageCrop(dataUrl, context, name);
+    } catch (err) {
+        showImageLinkFailure(context);
+    }
+}
+
+// most often the site won't let other pages download its images
+function showImageLinkFailure(context) {
+    const display = document.getElementById(imageFieldIds(context).display);
+    if (display.innerText === 'Fetching image...') display.innerText = 'No file chosen';
+    setImageLinkError(context,
+        "Couldn't load that link. Try right-clicking the image, Copy Image, then paste it here.");
+    const error = document.getElementById(imageFieldIds(context).error);
+    if (!prefersReducedMotion()) {
+        error.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)' },
+            { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 240, iterations: 2 });
+    }
+}
+
+// pasting a picture anywhere in the edit window makes it the cover
+document.addEventListener('paste', (e) => {
+    if (document.getElementById('book-modal').style.display !== 'flex') return;
+    if (document.getElementById('crop-modal').style.display === 'flex') return;
+    const file = clipboardImageFile(e);
+    if (!file) return; // ordinary text pastes are left alone
+    e.preventDefault();
+    readFileAsDataURL(file).then(dataUrl => startImageCrop(dataUrl, 'cover', 'Pasted image'));
+});
 
 // how far along the Cover Width slider's track the gradient fills
 function updateWidthSliderFill() {

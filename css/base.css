@@ -548,6 +548,16 @@ button.danger:hover {
     display: block;
 }
 
+/* ...and the machine choice only while Typewriter is on */
+.machine-row,
+.tw-machine {
+    display: none;
+}
+
+:root[data-theme="typewriter"] .machine-row {
+    display: block;
+}
+
 .tint-dot {
     display: inline-block;
     width: 10px;

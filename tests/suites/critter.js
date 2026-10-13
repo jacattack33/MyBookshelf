@@ -92,6 +92,8 @@ ok('scrapbook lists past critters', q('#critter-scrapbook').classList.contains('
 // ---- theme critters and backups
 setTheme('library');
 ok('theme swaps the critter', !!q('#critter-home .cr') && q('#critter-sub').textContent.includes('bookworm'));
+setTheme('plain');
+ok('plain themes have their own cat', q('#critter-sub').textContent.includes('cat') && (setTheme('plainbold'), q('#critter-sub').textContent.includes('cat')));
 setTheme('candy');
 ok('critter travels with backups', JSON.parse(collectSettingsForBackup().bookShelfCritter).past.length === 1);
 closeCritter();

@@ -25,6 +25,40 @@
     margin-top: 0;
 }
 
+/* ---------- How backups work window ---------- */
+.modal-content.backup-help-content {
+    max-width: 440px;
+}
+
+.backup-help-body {
+    padding: 16px 22px 22px;
+    overflow-y: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--y2k-dark);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.backup-help-body > * {
+    flex-shrink: 0;
+}
+
+.backup-help-body p {
+    margin: 0 0 6px;
+}
+
+.backup-help-body p:last-child {
+    margin-bottom: 0;
+}
+
+.backup-help-body code {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
 /* ---------- Critter window ---------- */
 .modal-content.critter-content {
     max-width: 420px;

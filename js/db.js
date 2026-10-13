@@ -254,6 +254,15 @@ function initBackupReminder() {
     setInterval(glowIfOld, BACKUP_GLOW_EVERY_MS);
 }
 
+// ---------- "How backups work" window ----------
+function openBackupHelp() {
+    document.getElementById('backup-help-modal').style.display = 'flex';
+}
+
+function closeBackupHelp() {
+    document.getElementById('backup-help-modal').style.display = 'none';
+}
+
 function importLibrary(event) {
     const file = event.target.files[0];
     if (!file) return;

@@ -2143,6 +2143,11 @@
     display: none;
 }
 
+/* the name types itself in (typeInTitle); hidden until it starts */
+:root[data-typing] #shelf-name {
+    visibility: hidden;
+}
+
 /* panels: sheets of typing paper, with a faint double margin line down the left */
 :root[data-theme="typewriter"] .controls,
 :root[data-theme="typewriter"] .modal-content {
@@ -2250,7 +2255,7 @@
 
 /* buttons: round typewriter keys in chrome rims; a press pushes
    the key down */
-:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle) {
     border-radius: 999px;
     border: 2px solid var(--outline);
     font-family: var(--pixel-font);
@@ -2260,11 +2265,11 @@
     margin-bottom: 4px;
 }
 
-:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle)::before {
     display: none;
 }
 
-:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(3px);
     box-shadow: var(--btn-shadow-down), inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
@@ -2272,7 +2277,7 @@
 /* every key is a black cap with cream letters (no group colours, in
    either mode); a pressed key flips to cream with black letters */
 :root[data-theme="typewriter"] body .toggle-group .toggle-btn:not(.active),
-:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):not(.active) {
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):not(.active) {
     background: var(--key-cap);
     color: var(--key-letter);
     border-color: #000;
@@ -2281,14 +2286,14 @@
 }
 
 :root[data-theme="typewriter"] body .toggle-group .toggle-btn:not(.active):hover,
-:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):not(.active):hover {
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):not(.active):hover {
     background: var(--key-cap-hover);
     filter: none;
 }
 
-:root[data-theme="typewriter"] body .toggle-group .toggle-btn.active,
+:root[data-theme="typewriter"] body .toggle-group .toggle-btn:is(.active, :active, :active:hover),
 :root[data-theme="typewriter"] body .status-btn.active,
-:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):active {
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):active {
     background: var(--key-down);
     color: var(--key-down-letter);
     border-color: #000;
@@ -2331,6 +2336,280 @@
     :root[data-theme="typewriter"] .genre-title { font-size: 18px; left: 0; padding: 8px 16px 6px; }
     :root[data-theme="typewriter"] .shelf-count { font-size: 26px; }
 }
+
+/* ---------- Typewriter machine (Settings > Typewriter machine) ----------
+   The main panel is a sheet rising up out of the machine: the black
+   rubber platen along its bottom with knurled knobs, the chrome paper
+   bail and its rubber rollers just above, the carriage-return lever out
+   to the left. "Full front" adds the typing scale and a card guide at
+   the typing point. Not on phones - the knobs and lever need room. */
+@media (min-width: 601px) {
+    :root[data-theme="typewriter"]:is([data-machine="roller"], [data-machine="full"]) .controls {
+        position: relative;
+        overflow: visible;
+        border-bottom: none;
+        border-radius: 2px 2px 0 0;
+        margin-bottom: 52px;
+        box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.06), 0 -2px 18px -8px rgba(0, 0, 0, 0.25);
+    }
+
+    /* the paper's top edge is free now */
+    :root[data-theme="typewriter"]:is([data-machine="roller"], [data-machine="full"]) .controls .window-titlebar {
+        display: none;
+    }
+
+    :root[data-theme="typewriter"][data-machine="roller"] .controls-body { padding-bottom: 50px; }
+    :root[data-theme="typewriter"][data-machine="full"] .controls-body { padding-bottom: 70px; }
+
+    /* shaded where it curves into the roller */
+    :root[data-theme="typewriter"]:is([data-machine="roller"], [data-machine="full"]) .controls::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 34px;
+        pointer-events: none;
+        background: linear-gradient(0deg, var(--paper-curl), transparent);
+    }
+
+    :root[data-theme="typewriter"]:is([data-machine="roller"], [data-machine="full"]) .tw-machine {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -22px;
+        height: 0;
+        pointer-events: none;
+    }
+}
+
+.tw-machine > span { position: absolute; }
+
+.tw-platen {
+    z-index: 2;
+    left: -24px;
+    right: -24px;
+    bottom: 0;
+    height: 42px;
+    border-radius: 21px;
+    background: linear-gradient(180deg, #7a7a7a 0%, #3c3c3c 14%, #1a1a1a 38%, #0b0b0b 68%, #222 90%, #3a3a3a 100%);
+    box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.5);
+}
+
+.tw-platen::before {
+    content: "";
+    position: absolute;
+    left: 34px;
+    right: 34px;
+    top: 6px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28) 20%, rgba(255, 255, 255, 0.28) 80%, transparent);
+}
+
+/* knurled chrome knobs and their collars */
+.tw-knob {
+    z-index: 3;
+    bottom: -5px;
+    width: 28px;
+    height: 52px;
+    border-radius: 9px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 32%, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.45)),
+        repeating-linear-gradient(90deg, #77726a 0 2px, #dcd7cd 2px 4px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+}
+
+.tw-knob.tw-l { left: -48px; }
+.tw-knob.tw-r { right: -48px; }
+
+.tw-collar,
+.tw-arm {
+    background: linear-gradient(90deg, #7f7f7b, #f2f2ef 45%, #a2a29e 75%, #6f6f6b);
+}
+
+.tw-collar {
+    z-index: 3;
+    bottom: 5px;
+    width: 9px;
+    height: 32px;
+    border-radius: 3px;
+}
+
+.tw-collar.tw-l { left: -21px; }
+.tw-collar.tw-r { right: -21px; }
+
+/* the paper bail: a polished rod with two rubber rollers, its arms
+   running down to pivot screws on the collars */
+.tw-rod,
+.tw-lever {
+    background: linear-gradient(180deg, #ffffff 0%, #ecece9 18%, #b9b9b5 45%, #7d7d79 70%, #a6a6a2 85%, #d9d9d5 100%);
+}
+
+.tw-rod {
+    z-index: 4;
+    left: -8px;
+    right: -8px;
+    bottom: 44px;
+    height: 9px;
+    border-radius: 5px;
+    box-shadow: 0 3px 4px -1px rgba(0, 0, 0, 0.35), 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+}
+
+.tw-roller {
+    position: absolute;
+    top: -6px;
+    width: 38px;
+    height: 21px;
+    border-radius: 10px;
+    background:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 3px),
+        linear-gradient(180deg, #5c5c5c 0%, #262626 30%, #121212 62%, #050505 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.28), inset 0 -2px 2px rgba(0, 0, 0, 0.6), 0 6px 6px -2px rgba(0, 0, 0, 0.45);
+}
+
+.tw-roller::before,
+.tw-roller::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    width: 3px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #e9e9e6, #8e8e8a);
+}
+
+.tw-roller::before { left: -2px; }
+.tw-roller::after { right: -2px; }
+.tw-roller.tw-l { left: 24%; }
+.tw-roller.tw-r { right: 24%; }
+
+.tw-arm {
+    z-index: 3;
+    bottom: 20px;
+    width: 6px;
+    height: 32px;
+    border-radius: 3px;
+    transform-origin: bottom center;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.tw-arm.tw-l { left: -17px; transform: rotate(-10deg); }
+.tw-arm.tw-r { right: -17px; transform: rotate(10deg); }
+
+.tw-screw {
+    z-index: 5;
+    bottom: 15px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff, #c7c7c3 40%, #6f6f6b 100%);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.tw-screw::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 5px;
+    height: 1.5px;
+    background: rgba(0, 0, 0, 0.45);
+    transform: rotate(-35deg);
+}
+
+.tw-screw.tw-l { left: -22px; }
+.tw-screw.tw-r { right: -22px; }
+
+/* the carriage-return lever */
+.tw-lever {
+    z-index: 5;
+    left: -98px;
+    bottom: 40px;
+    width: 52px;
+    height: 8px;
+    border-radius: 4px;
+    transform-origin: right center;
+    transform: rotate(22deg);
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35);
+}
+
+.tw-lever::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #5a5a5a, #161616 60%, #000);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+/* Full front: a chrome typing scale and a clear card guide at the
+   typing point; the bail sits higher to make room */
+.tw-scale,
+.tw-guide {
+    display: none;
+}
+
+:root[data-machine="full"] .tw-scale,
+:root[data-machine="full"] .tw-guide {
+    display: block;
+}
+
+.tw-scale {
+    z-index: 3;
+    left: 18px;
+    right: 18px;
+    bottom: 42px;
+    height: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    background:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0 1px, transparent 1px 7px) left bottom / 100% 4px no-repeat,
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0 1px, transparent 1px 35px) left bottom / 100% 7px no-repeat,
+        linear-gradient(180deg, #fbfbfa 0%, #d8d8d5 45%, #b5b5b1 100%);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 0.5px rgba(0, 0, 0, 0.35);
+    font: 600 7px/8px 'IBM Plex Mono', monospace;
+    color: #222;
+}
+
+.tw-scale span {
+    display: inline-block;
+    width: 35px;
+    padding-left: 2px;
+    box-sizing: border-box;
+}
+
+.tw-guide {
+    z-index: 4;
+    left: 50%;
+    bottom: 40px;
+    width: 48px;
+    height: 30px;
+    transform: translateX(-50%);
+    border-radius: 7px 7px 0 0;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(205, 215, 220, 0.25));
+    border: 1px solid rgba(110, 120, 125, 0.6);
+    border-bottom: none;
+    box-shadow: 0 -2px 3px rgba(0, 0, 0, 0.12);
+}
+
+.tw-guide::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    bottom: 4px;
+    width: 1px;
+    background: rgba(170, 40, 30, 0.6);
+}
+
+:root[data-machine="full"] .tw-rod { bottom: 64px; }
+:root[data-machine="full"] .tw-arm { height: 52px; }
 
 /* ---------- Sunset materials ---------- */
 :root[data-theme="sunset"] body {
@@ -2495,20 +2774,20 @@
 :root[data-theme="sunset"] .genre-title.tag-status-dnf { --swash: var(--y2k-coral); }
 
 /* buttons: soft pills; pressed ones glow */
-:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle) {
     border-radius: 999px;
     font-family: var(--pixel-font);
     font-weight: 600;
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(2px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.22), 0 0 14px rgba(247, 130, 30, 0.55);
 }
 
 /* add / save / stick it: the sky at its reddest */
-:root[data-theme="sunset"] :is(.add-book-btn, #modal-save-btn, .sticky-submit) {
+:root[data-theme="sunset"] :is(.add-book-btn, #modal-save-btn) {
     background-image: linear-gradient(135deg, #f7821e, #f0282a 40%, #d40848 75%, #9c0a55);
     color: #fff;
     text-shadow: 0 1px 1px rgba(61, 10, 51, 0.45);
@@ -2610,24 +2889,26 @@
     background: var(--p-t3);
 }
 
-:root:is([data-theme="plain"], [data-theme="plainbold"]) body .toggle-group .toggle-btn.active {
+/* (:active too, so a key changes colour the moment it's pressed, not
+   once the shelves have redrawn) */
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body .toggle-group .toggle-btn:is(.active, :active, :active:hover) {
     background: var(--grp-down);
     color: var(--p-on-accent);
     text-shadow: none;
 }
 
 :root:is([data-theme="plain"], [data-theme="plainbold"]) body .status-btn.active,
-:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.add-book-btn, #modal-save-btn, .sticky-submit) {
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.add-book-btn, #modal-save-btn) {
     background: var(--p-s2);
     color: var(--p-on-accent);
     text-shadow: none;
 }
 
-:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.add-book-btn, #modal-save-btn, .sticky-submit):hover {
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.add-book-btn, #modal-save-btn):hover {
     filter: brightness(1.1);
 }
 
-:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle)::before {
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle)::before {
     display: none;
 }
 
@@ -2689,7 +2970,7 @@
     border: 1.5px solid var(--p-frame-line);
 }
 
-:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle) {
     border-radius: 3px;
     border: 1.5px solid var(--p-frame);
     font-family: var(--pixel-font);
@@ -2700,7 +2981,7 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translate(1px, 1px);
     box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
 }
@@ -2791,7 +3072,7 @@
 :root[data-theme="plainbold"] .genre-title.tag-status-read { --sign-accent: var(--y2k-green); }
 :root[data-theme="plainbold"] .genre-title.tag-status-dnf { --sign-accent: var(--y2k-coral); }
 
-:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle) {
+:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle) {
     border-radius: 3px;
     border: 2px solid var(--p-outline);
     font-family: var(--pixel-font);
@@ -2801,7 +3082,7 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(2px);
     box-shadow: 0 1px 0 var(--p-outline), inset 0 2px 3px rgba(0, 0, 0, 0.25);
 }

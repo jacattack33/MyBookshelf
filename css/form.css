@@ -455,6 +455,43 @@
     flex-wrap: wrap;
 }
 
+/* paste an image, or an image's web address, instead of choosing a file */
+.image-link-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.image-link-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.image-link-row button {
+    flex: 0 0 auto;
+}
+
+.image-link-error {
+    display: none;
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-left: 3px solid #c94f4f;
+    border-radius: 4px;
+    background: rgba(201, 79, 79, 0.12);
+    color: #c94f4f;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.image-link-error.show {
+    display: block;
+}
+
+.image-link-row.link-failed input {
+    border-color: #c94f4f;
+}
+
 .file-upload-btn {
     background-color: var(--y2k-green);
     color: var(--y2k-dark);

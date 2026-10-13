@@ -243,6 +243,42 @@ for (const th of ['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 't
 setTheme('candy');
 ok('Candy again clears the theme', !document.documentElement.dataset.theme);
 
+// ---- switching to Typewriter types the title in
+const titleName = q('#shelf-name').textContent;
+const typedLetters = () => [...document.querySelectorAll('#shelf-name span')];
+const shownLetters = () => typedLetters().filter(s => getComputedStyle(s).visibility === 'visible').length;
+setTheme('typewriter');
+await wait(700);
+ok('Typewriter title types itself in, whole letters at a time', typedLetters().length === [...titleName].length && shownLetters() > 0 && shownLetters() < typedLetters().length && !('typing' in document.documentElement.dataset));
+await wait(3000);
+ok('...and ends as the plain name again', !typedLetters().length && q('#shelf-name').textContent === titleName);
+setTheme('candy');
+openSettings();
+setTheme('typewriter');
+await wait(500);
+ok('picked in Settings, it waits (hidden) for the window to close', !typedLetters().length && getComputedStyle(q('#shelf-name')).visibility === 'hidden');
+closeSettings();
+await wait(700);
+ok('...then types in once Settings closes', typedLetters().length > 0 && shownLetters() < typedLetters().length && getComputedStyle(q('#shelf-name')).visibility === 'visible');
+await wait(3000);
+openSettings();
+setTheme('typewriter');
+setTheme('candy');
+closeSettings();
+ok('switching away before closing leaves the title showing', getComputedStyle(q('#shelf-name')).visibility === 'visible');
+
+// ---- Typewriter machine: off by default, Roller or Full front from Settings, Typewriter only
+ok('machine choice hidden in other themes', getComputedStyle(q('.machine-row')).display === 'none' && getComputedStyle(q('.tw-machine')).display === 'none');
+setTheme('typewriter');
+ok('machine off by default; choice shows in Typewriter', getComputedStyle(q('.machine-row')).display !== 'none' && getComputedStyle(q('.tw-machine')).display === 'none');
+setSetting('typewriterMachine', 'roller');
+ok('Roller: the panel comes out of the machine', getComputedStyle(q('.tw-machine')).display === 'block' && getComputedStyle(q('.tw-platen')).display !== 'none' && getComputedStyle(q('.tw-scale')).display === 'none' && getComputedStyle(q('.controls .window-titlebar')).display === 'none');
+setSetting('typewriterMachine', 'full');
+ok('Full front adds the typing scale, and it is saved', getComputedStyle(q('.tw-scale')).display === 'block' && JSON.parse(collectSettingsForBackup().bookShelfSettings).typewriterMachine === 'full');
+setTheme('candy');
+ok('other themes never show it', getComputedStyle(q('.tw-machine')).display === 'none');
+setSetting('typewriterMachine', 'off');
+
 // ---- the plain themes come in six colours, chosen only while one is on
 ok('colour choice hidden in other themes', getComputedStyle(q('.tint-row')).display === 'none' && !document.documentElement.dataset.tint);
 setTheme('plain');
@@ -279,3 +315,34 @@ const leftover = ['Fiction', 'Drama', 'Essays', 'Reference', 'Critical Thinking'
 ok('retired genres are gone from the list', leftover.length === 0, leftover.join(', '));
 for (const b of oldGenreBooks) await dbDelete(b.id);
 library = library.filter(b => !b.id.startsWith('mig'));
+
+// ---- a cover can be pasted, or come from a link, as well as a file
+const PIXEL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+const pngFile = new File([await (await fetch(PIXEL)).blob()], 'cover.png', { type: 'image/png' });
+openModal();
+const pasteDt = new DataTransfer();
+pasteDt.items.add(pngFile);
+document.dispatchEvent(new ClipboardEvent('paste', { clipboardData: pasteDt, bubbles: true }));
+await wait(300);
+ok('pasting a picture in the edit window opens the cropper for the cover', q('#crop-modal').style.display === 'flex' && cropContext === 'cover' && q('#file-name-display').innerText === 'Pasted image');
+useFullImageForCrop();
+ok('the pasted picture becomes the pending cover', pendingCoverCrop && pendingCoverCrop.startsWith('data:image/png'));
+const textDt = new DataTransfer();
+textDt.setData('text/plain', 'just words');
+document.dispatchEvent(new ClipboardEvent('paste', { clipboardData: textDt, bubbles: true }));
+ok('pasting plain text leaves the cropper shut', q('#crop-modal').style.display !== 'flex');
+q('#book-spine-image-url').value = PIXEL;
+loadImageFromLinkField('spine');
+await wait(300);
+ok('an image link loads into the cropper for the spine', q('#crop-modal').style.display === 'flex' && cropContext === 'spine' && q('#book-spine-image-url').value === '');
+useFullImageForCrop();
+ok('the linked picture becomes the pending spine', pendingSpineCrop && pendingSpineCrop.startsWith('data:image/png'));
+closeModal();
+
+// ---- "How backups work" explains export / import to new users
+const helpBtn = [...document.querySelectorAll('.backup-bar button')].find(b => b.textContent.includes('How backups work'));
+ok('the backup bar has a How backups work button', !!helpBtn);
+helpBtn.click();
+ok('it opens the backup help window', q('#backup-help-modal').style.display === 'flex' && /Export/.test(q('.backup-help-body').innerText) && /Import/.test(q('.backup-help-body').innerText));
+q('#backup-help-modal').click();
+ok('clicking outside closes it', q('#backup-help-modal').style.display === 'none');

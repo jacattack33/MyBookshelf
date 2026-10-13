@@ -252,7 +252,13 @@ function buildDebugPanel() {
         ['Wake the cat', () => appSettings.cat ? (wakeCat(), debugSay('The cat moves shelves.')) : debugSay('The cat is off in Settings > Shelf extras.')],
         ['Log 25 pages', () => { recordPages(25); debugSay('Logged 25 pages.'); }],
         ['Clear pages log', () => { try { localStorage.removeItem(PAGES_LOG_KEY); } catch (e) {} updateGoals(); debugSay('Pages log cleared.'); }],
-        ['Confetti', () => confettiFrom(document.getElementById('debug-body'))]
+        ['Confetti', () => confettiFrom(document.getElementById('debug-body'))],
+        ['Image link fails', () => {
+            if (document.getElementById('book-modal').style.display !== 'flex') openModal();
+            showImageLinkFailure('cover');
+            document.getElementById('book-image-link-error').scrollIntoView({ block: 'center' });
+            debugSay('Showing the failed-link message under the cover link box.');
+        }]
     ]);
 
     const status = document.createElement('div');

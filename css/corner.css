@@ -207,6 +207,11 @@
     display: none;
 }
 
+/* a critter with its own asleep face brings its own mouth too */
+.cr.mood-asleep .fm.fm-awake {
+    display: none;
+}
+
 .cr.stage-egg .cr-critter {
     display: none;
 }

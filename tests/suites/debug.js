@@ -69,5 +69,9 @@ library.push({ id: 'dd1', title: 'Dusty', authors: ['A'], genre: 'Fantasy', stat
 await press('Dust one', 100);
 ok('dusts a book', getDustLevel(library.find(b => b.id === 'dd1')) === 2 || status().includes('dust'), status());
 
+await press('Image link fails', 100);
+ok('shows the failed image-link message', q('#book-modal').style.display === 'flex' && q('#book-image-link-error').classList.contains('show') && q('#book-image-link-error').innerText.startsWith("Couldn't load that link"));
+closeModal();
+
 setSetting('debug', false);
 ok('switch hides it again', q('#debug-panel').style.display === 'none');

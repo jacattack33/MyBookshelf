@@ -22,7 +22,9 @@ let critterSayTimer = null;
 // size; each home says where to put it and how big. All the moods' face
 // parts are drawn and CSS shows the right ones (see .cr in the styles).
 
-function crFace(x, y, ink, mouth = true) {
+// `sleep` swaps in a critter's own asleep face (eyes and mouth) for the
+// plain one
+function crFace(x, y, ink, mouth = true, sleep = '') {
     const fill = `style="fill:${ink}"`;
     const line = `fill="none" style="stroke:${ink}" stroke-linecap="round"`;
     const eyes = `<circle cx="${x - 6}" cy="${y}" r="2.4" ${fill}/><circle cx="${x + 6}" cy="${y}" r="2.4" ${fill}/>`;
@@ -30,11 +32,11 @@ function crFace(x, y, ink, mouth = true) {
     return `
         <g class="fe fe-open">${eyes}${shine}</g>
         <g class="fe fe-happy" ${line} stroke-width="1.6"><path d="M${x - 8.5} ${y + 1} q2.5 -4 5 0"/><path d="M${x + 3.5} ${y + 1} q2.5 -4 5 0"/></g>
-        <g class="fe fe-sleep" ${line} stroke-width="1.6"><path d="M${x - 8.5} ${y} q2.5 2.5 5 0"/><path d="M${x + 3.5} ${y} q2.5 2.5 5 0"/></g>
+        <g class="fe fe-sleep">${sleep || `<g ${line} stroke-width="1.6"><path d="M${x - 8.5} ${y} q2.5 2.5 5 0"/><path d="M${x + 3.5} ${y} q2.5 2.5 5 0"/></g>`}</g>
         <g class="fe fe-sad">${eyes}<g ${line} stroke-width="1.4"><path d="M${x - 9} ${y - 4} l5 -1.6"/><path d="M${x + 9} ${y - 4} l-5 -1.6"/></g></g>` + (mouth ? `
         <g ${line} stroke-width="1.5">
             <path class="fm fm-smile" d="M${x - 3} ${y + 5} q3 3 6 0"/>
-            <path class="fm fm-flat" d="M${x - 2.5} ${y + 6} h5"/>
+            <path class="fm fm-flat${sleep ? ' fm-awake' : ''}" d="M${x - 2.5} ${y + 6} h5"/>
             <path class="fm fm-frown" d="M${x - 3} ${y + 7.5} q3 -3 6 0"/>
         </g>
         <ellipse class="fm fm-o" cx="${x}" cy="${y + 6}" rx="2" ry="2.4" ${fill}/>` : '');
@@ -232,20 +234,39 @@ const CRITTER_THEMES = {
         egg: () => `
             <ellipse cx="50" cy="68" rx="11" ry="14" fill="none" class="cr-ln" stroke-width="1.4" stroke-dasharray="3 2"/>
             <path d="M37 68 h26 M50 52 v32" fill="none" class="cr-ln" stroke-width=".6"/>`,
-        // a sitting pup, line-drawn like a drafted sketch
+        // a sitting pup, line-drawn like a drafted sketch: its head filled
+        // with paper so the grid doesn't run through its face, floppy
+        // shaded ears, a collar tag and hard hat in the accent
         art: () => `
             <g fill="none" class="cr-ln" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
                 <path d="M63 78 q9 -1 8 -11"/>
                 <path d="M41 61 q-5 10 -4 21 h26 q1 -11 -4 -21"/>
                 <path d="M45 69 v13 M55 69 v13 M42 82 h6 M52 82 h6"/>
-                <ellipse cx="50" cy="52" rx="12" ry="11"/>
-                <path d="M40 45 q-8 1 -7 14 q4 2 6 -4"/>
-                <path d="M60 45 q8 1 7 14 q-4 2 -6 -4"/>
-                <g class="cr-teen"><path d="M41 62 q9 4 18 0"/><circle cx="50" cy="66" r="1.8" stroke-dasharray="1.5 1"/></g>
-                <g class="cr-adult"><path d="M41 42 q9 -12 18 0 Z M37 42 h26 M50 31 v4"/></g>
             </g>
-            <ellipse cx="50" cy="53.4" rx="1.9" ry="1.3" style="fill:var(--outline)"/>
-            ${crFace(50, 49.5, 'var(--outline)')}`,
+            <g class="cr-teen">
+                <path d="M42 61.5 q8 3.5 16 0" fill="none" style="stroke:var(--y2k-pink)" stroke-width="2.6" stroke-linecap="round"/>
+                <circle cx="50" cy="65.6" r="2.2" class="cr-ln" stroke-width="1" style="fill:var(--y2k-pink)"/>
+            </g>
+            <g class="cr-ln" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round">
+                <ellipse cx="50" cy="49" rx="14.5" ry="12.5" style="fill:var(--surface)"/>
+                <ellipse cx="50" cy="55" rx="6.5" ry="4.5" stroke="none" style="fill:var(--outline)" opacity=".08"/>
+                <path d="M38 40 C31 40 29 51 32 58 C34 61 38 59 39 54 Z" style="fill:var(--surface)"/>
+                <path d="M62 40 C69 40 71 51 68 58 C66 61 62 59 61 54 Z" style="fill:var(--surface)"/>
+                <path d="M38 40 C31 40 29 51 32 58 C34 61 38 59 39 54 Z M62 40 C69 40 71 51 68 58 C66 61 62 59 61 54 Z" stroke="none" style="fill:var(--outline)" opacity=".18"/>
+            </g>
+            <g class="cr-adult">
+                <path d="M39 39.5 a11 10 0 0 1 22 0 Z" class="cr-ln" stroke-width="1.3" stroke-linejoin="round" style="fill:var(--y2k-pink)"/>
+                <path d="M50 29.5 v10" fill="none" class="cr-ln" stroke-width="1"/>
+                <rect x="35" y="38.6" width="30" height="2.8" rx="1.4" class="cr-ln" stroke-width="1.3" style="fill:var(--y2k-pink)"/>
+            </g>
+            ${crCheeks(50, 55, 10.5, '#f07c2a')}
+            <ellipse cx="50" cy="52.6" rx="2.2" ry="1.5" style="fill:var(--outline)"/>
+            ${crFace(50, 49, 'var(--outline)', true, `
+                <g fill="none" style="stroke:var(--outline)" stroke-linecap="round" stroke-width="1.6">
+                    <path d="M40.5 48.5 q3.5 3.4 7 0 M52.5 48.5 q3.5 3.4 7 0"/>
+                    <path d="M40.5 48.5 l-1.4 .8 M59.5 48.5 l1.4 .8" stroke-width="1.1"/>
+                    <path d="M47 54.6 q1.5 1.7 3 0 q1.5 1.7 3 0" stroke-width="1.3"/>
+                </g>`)}`,
         back: () => `
             <g fill="none" class="cr-ln">
                 <rect x="12" y="14" width="76" height="72" stroke-width="1.4" stroke-dasharray="4 3"/>
@@ -334,9 +355,46 @@ const CRITTER_THEMES = {
     }
 };
 
-// the plain themes borrow the critters of the themes they're plain versions of
-CRITTER_THEMES.plain = CRITTER_THEMES.blueprint;
-CRITTER_THEMES.plainbold = CRITTER_THEMES.loft;
+// The plain themes share a plain cat, drawn flat in the colours of
+// whichever tint is picked (with Paper's greys as fallbacks, for the
+// scrapbook in other themes)
+const crP = (name, paper) => `var(--p-${name}, ${paper})`;
+const PLAIN_FUR = crP('s2', '#4a4a4a'), PLAIN_PALE = crP('t3', '#d2d2cd'), PLAIN_FACE = crP('surface', '#ffffff');
+
+CRITTER_THEMES.plain = CRITTER_THEMES.plainbold = {
+    kind: 'cat', name: 'Dot', fit: [50, 84, 0.8], zz: [67, 50],
+    egg: () => `
+        <ellipse cx="50" cy="68" rx="11" ry="14" class="cr-ln" stroke-width="1.6" style="fill:${PLAIN_FACE}"/>
+        <path d="M39.4 66 h21.2 v4 h-21.2z" style="fill:${PLAIN_PALE}"/>`,
+    art: () => `
+        <path d="M62 79 q13 1 12 -12 q-.5 -5 -5 -5" fill="none" class="cr-ln" stroke-width="6" stroke-linecap="round"/>
+        <path d="M62 79 q13 1 12 -12 q-.5 -5 -5 -5" fill="none" stroke-width="3.6" stroke-linecap="round" style="stroke:${PLAIN_FUR}"/>
+        <path d="M36 82 C34 70 38 61 50 61 C62 61 66 70 64 82 Z" class="cr-ln" stroke-width="1.5" style="fill:${PLAIN_FUR}"/>
+        <ellipse cx="50" cy="74" rx="7" ry="6.5" style="fill:${PLAIN_PALE}"/>
+        <g class="cr-ln" stroke-width="1.2" style="fill:${PLAIN_PALE}"><ellipse cx="44.5" cy="81.5" rx="4" ry="2.4"/><ellipse cx="55.5" cy="81.5" rx="4" ry="2.4"/></g>
+        <g class="cr-ln" stroke-width="1.5" stroke-linejoin="round" style="fill:${PLAIN_FUR}"><path d="M38 47 L37 34 L47 41 Z"/><path d="M62 47 L63 34 L53 41 Z"/></g>
+        <g style="fill:${PLAIN_PALE}"><path d="M39.5 44 L39.2 38 L44 41.4 Z"/><path d="M60.5 44 L60.8 38 L56 41.4 Z"/></g>
+        <ellipse cx="50" cy="51" rx="14" ry="12" class="cr-ln" stroke-width="1.5" style="fill:${PLAIN_FUR}"/>
+        <g class="cr-teen">
+            <path d="M41.5 61.5 q8.5 3.6 17 0" fill="none" stroke-width="2.4" stroke-linecap="round" style="stroke:${PLAIN_PALE}"/>
+            <circle cx="50" cy="65.4" r="2.1" fill="#e3b04b" class="cr-ln" stroke-width="1"/>
+        </g>
+        <g fill="none" stroke-width=".8" stroke-linecap="round" opacity=".6" style="stroke:${PLAIN_FACE}"><path d="M35 54 h6 M35.5 57.5 l5.5 -1.5 M65 54 h-6 M64.5 57.5 l-5.5 -1.5"/></g>
+        <path d="M48.6 54.4 h2.8 l-1.4 1.6z" style="fill:${PLAIN_PALE}"/>
+        ${crFace(50, 51, PLAIN_FACE)}
+        <g class="cr-adult" fill="none" stroke-width="1.2" style="stroke:${PLAIN_PALE}"><circle cx="44" cy="51" r="4.3"/><circle cx="56" cy="51" r="4.3"/><path d="M48.3 51 h3.4 M39.7 50.5 l-3.5 -1.5 M60.3 50.5 l3.5 -1.5"/></g>`,
+    // a plain room: a wall, a floor, a cushion, a picture and a few books
+    back: () => `
+        <rect x="14" y="16" width="72" height="72" rx="6" class="cr-ln" stroke-width="2" style="fill:${crP('t1', '#ebebe8')}"/>
+        <path d="M15 76 h70 v6 q0 5 -5 5 h-60 q-5 0 -5 -5z" style="fill:${crP('t2', '#e1e1dd')}"/>
+        <rect x="62" y="24" width="16" height="12" rx="1" class="cr-ln" stroke-width="1.2" style="fill:${PLAIN_FACE}"/>
+        <path d="M64 33 l4 -4 3 3 2 -2 3 3" fill="none" stroke-width="1" stroke-linejoin="round" style="stroke:${crP('accent', '#3a3a3a')}"/>
+        <ellipse cx="50" cy="84" rx="20" ry="4" class="cr-ln" stroke-width="1.2" style="fill:${PLAIN_PALE}"/>`,
+    front: () => `
+        <rect x="17" y="80" width="16" height="4.5" rx="1" class="cr-ln" stroke-width="1" style="fill:${crP('g1', '#3c4450')}"/>
+        <rect x="19" y="75.5" width="13" height="4.5" rx="1" class="cr-ln" stroke-width="1" style="fill:${crP('g4', '#5e5850')}"/>
+        <rect x="18" y="71" width="12" height="4.5" rx="1" class="cr-ln" stroke-width="1" style="fill:${crP('g6', '#6a5a50')}"/>`
+};
 
 function currentTheme() {
     return document.documentElement.dataset.theme || 'candy';
