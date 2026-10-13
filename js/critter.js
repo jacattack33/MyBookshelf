@@ -767,6 +767,7 @@ function renderCritter() {
     const opts = { stage: critterStage(c).id, mood: critterMood(c), empty: !!c.gone };
     document.getElementById('critter-home-art').innerHTML = critterSvg(theme, opts);
     updateCritterWidget();
+    checkPins(); // growing up earns one
     if (document.getElementById('critter-modal').style.display === 'flex') {
         document.getElementById('critter-view-art').innerHTML = critterSvg(theme, opts);
         renderCritterModal();

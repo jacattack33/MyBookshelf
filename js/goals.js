@@ -204,6 +204,7 @@ function updateGoals() {
         `${pagesDone} of ${pages} pages ${period.label}`;
     card.title = `Reading goals: ${title}`;
     card.setAttribute('aria-label', card.title);
+    checkPins(); // (books read, pages logged and goals all earn pins)
 
     if (document.getElementById('goals-modal').style.display !== 'flex') return;
     const booksBox = document.getElementById('goal-books-progress');

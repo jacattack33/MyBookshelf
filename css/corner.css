@@ -232,7 +232,8 @@
 }
 
 /* ---------- Corner stack (bottom-left, on top of the ledger) ----------
-   the goals card, with the critter sitting on top of it; one column
+   the critter, the pin board hung under it, and the goals card; one
+   column
    so the critter follows the card's height (one row or two), and the
    card moves up into place when the critter is switched off */
 .corner-stack {

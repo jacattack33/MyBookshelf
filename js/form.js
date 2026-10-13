@@ -321,6 +321,7 @@ function openModal(bookId = null) {
     populateAuthorOptions();
     populateSeriesOptions();
     populateDateMonthSelects();
+    populateFriendOptions();
     document.getElementById('book-image').value = "";
     document.getElementById('file-name-display').innerText = "No file chosen";
     document.getElementById('book-spine-image').value = "";
@@ -358,6 +359,7 @@ function openModal(bookId = null) {
         setDateField('finished', book.finishedDate);
         formExtraReads = (book.extraReads || []).map(r => ({ ...r }));
         document.getElementById('book-pages').value = book.pages || "";
+        document.getElementById('book-rec-by').value = book.recommendedBy || "";
         setLentTo(book.lentTo || "", book.lentAt || null);
         existingImageNote.style.display = book.image ? 'block' : 'none';
         document.getElementById('existing-spine-image-note').style.display = book.spineImage ? 'block' : 'none';
@@ -385,6 +387,7 @@ function openModal(bookId = null) {
         setDateField('finished', "");
         formExtraReads = [];
         document.getElementById('book-pages').value = "";
+        document.getElementById('book-rec-by').value = "";
         setLentTo("", null);
         existingImageNote.style.display = 'none';
         document.getElementById('existing-spine-image-note').style.display = 'none';
@@ -1367,6 +1370,7 @@ function updatePreview() {
 function closeModal() {
     document.getElementById('book-modal').style.display = 'none';
     editingId = null;
+    recToShelf = null;
     hideLibraryCard();
     slidePulledBookBack();
 }
@@ -1731,6 +1735,7 @@ async function processBookForm() {
 
     const existing = editingId ? library.find(b => b.id === editingId) : null;
 
+    const recommendedBy = document.getElementById('book-rec-by').value.trim();
     const lentTo = owned ? document.getElementById('book-lent-to').value.trim() : "";
     // same person still has it: keep when it went out
     const lentAt = !lentTo ? null
@@ -1802,7 +1807,7 @@ async function processBookForm() {
     const book = {
         id: editingId || Date.now().toString(),
         title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, startedDate, finishedDate,
-        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt,
+        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy,
         sortOrder: existing && Number.isFinite(existing.sortOrder)
             ? existing.sortOrder
             : library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,
@@ -1814,6 +1819,10 @@ async function processBookForm() {
         spineImageRatio: finalSpineImage ? finalSpineImageRatio : null
     };
     await dbPut(book);
+    // a lent book back home (and still yours)
+    if (existing && existing.lentTo && !lentTo && owned) bookBackForPins();
+    if (lentTo && (!existing || existing.lentTo !== lentTo)) noteLentForPins(book.id);
+    if (!existing) recPutOnShelf(); // added from a rec on the Slips window
     const idx = library.findIndex(b => b.id === book.id);
     if (idx >= 0) {
         library[idx] = book;

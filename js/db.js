@@ -108,7 +108,7 @@ async function runMigrations() {
 const SETTINGS_BACKUP_KEYS = [
     'bookShelfSettings', 'bookShelfTheme', 'bookShelfTint', 'bookShelfMode', 'bookShelfStickyFilter',
     'bookShelfQuickAddGenre', 'bookShelfLastNoteFont', 'bookShelfExpandedShelves', 'bookShelfRecentColors',
-    'bookShelfCritter', 'bookShelfPagesLog'
+    'bookShelfCritter', 'bookShelfPagesLog', 'bookShelfPins', 'bookShelfRecs'
 ];
 
 function collectSettingsForBackup() {
@@ -161,6 +161,7 @@ function exportLibrary() {
     URL.revokeObjectURL(url);
     try { localStorage.setItem(LAST_BACKUP_KEY, String(Date.now())); } catch (e) {}
     hideBackupReminder();
+    checkPins(); // backing up earns one
     const lastLine = document.getElementById('setting-last-backup');
     if (lastLine) lastLine.textContent = lastBackupText();
 }

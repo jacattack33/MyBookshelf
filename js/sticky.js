@@ -116,17 +116,60 @@ function buildStickyNoteFace(el, book) {
 // ---------- Sticky-note pile (quick add to Want to Read) ----------
 const QUICK_ADD_GENRE_KEY = 'bookShelfQuickAddGenre';
 
-function openStickyNote() {
-    const pile = document.getElementById('sticky-pile');
-    if (pile.classList.contains('open')) return;
-    const select = document.getElementById('sticky-genre');
+// a quick-add genre list, starting on the genre picked last time
+function fillQuickAddGenres(select) {
     let lastGenre = null;
     try { lastGenre = localStorage.getItem(QUICK_ADD_GENRE_KEY); } catch (e) {}
     const genres = getAllGenres();
     select.innerHTML = '';
     genres.forEach(g => select.add(new Option(g, g)));
     select.value = genres.includes(lastGenre) ? lastGenre : (genres.includes('Sci-Fi') ? 'Sci-Fi' : genres[0]);
+}
 
+// Put a to-get book on the shelf as a sticky note in Want to Read (from
+// the pile, or the Slips window). `extra` adds fields, like recommendedBy.
+async function addStickyBook(title, authorText, genre, extra = {}) {
+    const rawAuthors = String(authorText || '').split(',').map(a => a.trim()).filter(Boolean);
+    try { localStorage.setItem(QUICK_ADD_GENRE_KEY, genre); } catch (e) {}
+    const color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    const now = Date.now();
+    // never the same id twice, even added in the same millisecond
+    let id = now;
+    while (library.some(b => b.id === String(id))) id++;
+
+    // same shape processBookForm saves, with everything optional left blank
+    const book = {
+        id: String(id),
+        title: title.trim(),
+        authors: rawAuthors.length ? rawAuthors : ["Unknown"],
+        series: "", seriesNumber: null, seriesTotal: null,
+        status: 'Want to Read', rating: 0, genre, color, width: 120,
+        tags: [], owned: false, notes: "", notesFont: getLastNoteFont(),
+        startedDate: "", finishedDate: "",
+        statusSince: now, dustedAt: null,
+        stickyNote: true, // shows as a sticky note until owned or given a cover
+        // after every existing book, even if deletions left gaps
+        sortOrder: library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,
+        image: "", imageRatio: null, ratioPreset: null,
+        spineColor: color, spineImage: "", spineImageRatio: null,
+        recommendedBy: "",
+        ...extra
+    };
+    await dbPut(book);
+    library.push(book);
+    countForPins('stickies');
+    populateAuthorOptions();
+    populateSeriesOptions();
+    populateFilterTagSelect();
+    animateLeans = true;
+    renderBookshelf();
+    return book;
+}
+
+function openStickyNote() {
+    const pile = document.getElementById('sticky-pile');
+    if (pile.classList.contains('open')) return;
+    fillQuickAddGenres(document.getElementById('sticky-genre'));
     document.getElementById('sticky-title').value = '';
     document.getElementById('sticky-author').value = '';
     pile.classList.add('open');
@@ -182,38 +225,10 @@ async function submitStickyNote() {
         return;
     }
 
-    const rawAuthors = document.getElementById('sticky-author').value.split(',').map(a => a.trim()).filter(Boolean);
-    const genre = document.getElementById('sticky-genre').value;
-    try { localStorage.setItem(QUICK_ADD_GENRE_KEY, genre); } catch (e) {}
-    const color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
-    const now = Date.now();
-
-    // same shape processBookForm saves, with everything optional left blank
-    const book = {
-        id: now.toString(),
-        title,
-        authors: rawAuthors.length ? rawAuthors : ["Unknown"],
-        series: "", seriesNumber: null, seriesTotal: null,
-        status: 'Want to Read', rating: 0, genre, color, width: 120,
-        tags: [], owned: false, notes: "", notesFont: getLastNoteFont(),
-        startedDate: "", finishedDate: "",
-        statusSince: now, dustedAt: null,
-        stickyNote: true, // shows as a sticky note until owned or given a cover
-        // after every existing book, even if deletions left gaps
-        sortOrder: library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,
-        image: "", imageRatio: null, ratioPreset: null,
-        spineColor: color, spineImage: "", spineImageRatio: null
-    };
-    await dbPut(book);
-    library.push(book);
-    populateAuthorOptions();
-    populateSeriesOptions();
-    populateFilterTagSelect();
-    animateLeans = true;
-    renderBookshelf();
+    const book = await addStickyBook(title, document.getElementById('sticky-author').value, document.getElementById('sticky-genre').value);
 
     document.removeEventListener('pointerdown', stickyOutsideClick);
-    const target = document.querySelector(`.book[data-id="${now}"]`);
+    const target = document.querySelector(`.book[data-id="${book.id}"]`);
     if (prefersReducedMotion()) {
         resetStickyNote();
         return;

@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="css/shelf-extras.css">
     <link rel="stylesheet" href="css/corner.css">
     <link rel="stylesheet" href="css/windows.css">
+    <link rel="stylesheet" href="css/pins.css">
+    <link rel="stylesheet" href="css/slips.css">
     <link rel="stylesheet" href="css/cat.css">
     <link rel="stylesheet" href="css/phone.css">
 </head>
@@ -205,6 +207,7 @@
         <button class="secondary" id="export-btn" onclick="exportLibrary()">Export Library (Backup)</button>
         <button class="secondary" onclick="document.getElementById('import-file').click()">Import Library</button>
         <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importLibrary(event)">
+        <button class="secondary" onclick="openSlips()" title="Books you've lent out, recs from friends, and books to buy">&#9993; Slips</button>
         <button class="secondary" onclick="openSettings()">&#9881; Settings</button>
     </div>
 
@@ -228,11 +231,16 @@
         <span class="stats-ledger-label"></span>
     </button>
 
-    <!-- the critter sits on top of the goals card, which sits on the ledger -->
+    <!-- top to bottom: the critter, the pin board (hung under it), and
+         the goals card, which sits on the ledger -->
     <div class="corner-stack" id="corner-stack">
         <div class="critter-home" id="critter-home" role="button" tabindex="0" onclick="openCritter()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openCritter(); }" title="Your reading critter" aria-label="Your reading critter">
             <div class="critter-art" id="critter-home-art"></div>
             <span class="critter-alert" id="critter-alert"></span>
+        </div>
+        <div class="pin-home" id="pin-home" role="button" tabindex="0" onclick="openPins()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openPins(); }" title="Your pin board" aria-label="Your pin board">
+            <div class="pin-home-board corkboard" id="pin-home-board"></div>
+            <span class="pin-new" id="pin-new"></span>
         </div>
         <div class="goals-card" id="goals-card" role="button" tabindex="0" onclick="openGoals()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openGoals(); }" title="Your reading goals" aria-label="Your reading goals"></div>
     </div>
@@ -327,6 +335,10 @@
                         <label class="field-label">Pages
                             <input type="number" id="book-pages" placeholder="e.g. 320" min="1" max="99999" step="1" inputmode="numeric">
                         </label>
+                        <label class="field-label">Recommended by
+                            <input type="text" id="book-rec-by" placeholder="A friend's name" maxlength="40" list="friend-options" autocomplete="off">
+                        </label>
+                        <datalist id="friend-options"></datalist>
                     </div>
 
                     <div class="field-section">
@@ -403,7 +415,7 @@
 
                         <div class="lend-row" id="lend-row">
                             <label class="field-label lend-label">Lent to
-                                <input type="text" id="book-lent-to" placeholder="Who has it?" maxlength="40" autocomplete="off" oninput="updateLendHint()">
+                                <input type="text" id="book-lent-to" placeholder="Who has it?" maxlength="40" list="friend-options" autocomplete="off" oninput="updateLendHint()">
                             </label>
                             <div class="lend-hint-row">
                                 <span class="field-hint" id="lend-hint"></span>
@@ -643,6 +655,61 @@
         </div>
     </div>
 
+    <!-- the pin board pops up on its own, hung on a nail like the little one -->
+    <div class="modal" id="pins-modal" onclick="if (event.target === this) closePins()">
+        <div class="pins-pop" role="dialog" aria-label="Pin board">
+            <div class="pins-board corkboard" id="pins-board"></div>
+            <button type="button" class="modal-close-x pins-close" onclick="closePins()" aria-label="Close" title="Close"><span class="x-face">&times;</span></button>
+        </div>
+    </div>
+
+    <div class="modal" id="slips-modal" onclick="if (event.target === this) closeSlips()">
+        <div class="modal-content slips-content">
+            <div class="modal-header">
+                <h3>&#9670; Slips</h3>
+                <button type="button" class="modal-close-x" onclick="closeSlips()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="slips-body">
+                <!-- a library date-due slip -->
+                <section class="slip slip-lent" aria-labelledby="slip-lent-title">
+                    <div class="slip-head" id="slip-lent-title">Lent Out</div>
+                    <div class="slip-sub" id="slip-lent-sub"></div>
+                    <ul class="slip-list" id="slip-lent-list"></ul>
+                    <div class="slip-foot">Lend a book from its edit window: tick I Own This Book, then fill in Lent to.</div>
+                </section>
+
+                <!-- a page torn from a notebook -->
+                <section class="slip slip-recs" aria-labelledby="slip-recs-title">
+                    <div class="slip-head" id="slip-recs-title">From Friends &#9825;</div>
+                    <div class="slip-sub" id="slip-recs-sub"></div>
+                    <ul class="slip-list" id="slip-recs-list"></ul>
+                    <form class="slip-add" onsubmit="event.preventDefault(); addRecFromSlip();">
+                        <input type="text" id="rec-title" placeholder="title" aria-label="Title" autocomplete="off">
+                        <input type="text" id="rec-author" placeholder="by" aria-label="Author" autocomplete="off">
+                        <input type="text" id="rec-from" placeholder="from who?" aria-label="Recommended by" maxlength="40" list="friend-options" autocomplete="off">
+                        <button type="submit">Add rec</button>
+                    </form>
+                </section>
+
+                <!-- a shop receipt -->
+                <section class="slip slip-buy" aria-labelledby="slip-buy-title">
+                    <div class="slip-head" id="slip-buy-title">To Buy</div>
+                    <div class="slip-rule"></div>
+                    <ul class="slip-list" id="slip-buy-list"></ul>
+                    <div class="slip-rule"></div>
+                    <div class="slip-total" id="slip-buy-total"></div>
+                    <form class="slip-add" onsubmit="event.preventDefault(); addBuyFromSlip();">
+                        <input type="text" id="buy-title" placeholder="title" aria-label="Title" autocomplete="off">
+                        <input type="text" id="buy-author" placeholder="by" aria-label="Author" autocomplete="off">
+                        <select id="buy-genre" aria-label="Genre"></select>
+                        <button type="submit">Add</button>
+                    </form>
+                    <div class="slip-thanks">*** HAPPY READING ***</div>
+                </section>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="settings-modal" onclick="if (event.target === this) closeSettings()">
         <div class="modal-content settings-content">
             <div class="modal-header">
@@ -732,6 +799,7 @@
                         <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
                         <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky-note pile</button>
                         <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
+                        <button type="button" class="toggle-btn pins-setting" data-setting-switch="pins" onclick="toggleSetting('pins')">Pin board</button>
                     </div>
                     <div class="field-hint">Owned seal: a gold seal on the books you own.</div>
                     <div class="toggle-group settings-choices" role="group" aria-label="Owned seal">
@@ -861,6 +929,8 @@
 <script src="js/critter.js"></script>
 <script src="js/goals.js"></script>
 <script src="js/stats.js"></script>
+<script src="js/pins.js"></script>
+<script src="js/slips.js"></script>
 <script src="js/debug.js"></script>
 <script src="js/exits.js"></script>
 <script src="js/main.js"></script>

@@ -248,6 +248,24 @@ function buildDebugPanel() {
         ['Glow export', () => { glowExportButton(); debugSay('The Export button glows.'); }]
     ]);
 
+    group('Pins', [
+        ['Earn one', () => {
+            const left = PINS.filter(p => !pinState.earned[p.id]);
+            if (!left.length) return debugSay('Every pin is earned already.');
+            const pin = left[Math.floor(Math.random() * left.length)];
+            awardPin(pin.id);
+            debugSay(`Earned "${pin.name}".`);
+        }],
+        ['Earn all', () => { PINS.forEach(p => awardPin(p.id)); debugSay('Every pin earned.'); }],
+        ['Reset pins', () => {
+            pinState = { earned: {}, seen: {}, counts: {}, lentIds: [] };
+            savePins();
+            checkPins(); // anything your shelf has earned comes straight back
+            renderPinWidget();
+            debugSay(`Pins reset (${earnedPins().length} earned back from your shelf).`);
+        }]
+    ]);
+
     group('Other', [
         ['Wake the cat', () => appSettings.cat ? (wakeCat(), debugSay('The cat moves shelves.')) : debugSay('The cat is off in Settings > Shelf extras.')],
         ['Log 25 pages', () => { recordPages(25); debugSay('Logged 25 pages.'); }],

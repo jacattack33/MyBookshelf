@@ -90,6 +90,7 @@ const DEFAULT_SETTINGS = {
     defaultStatus: 'Want to Read',
     cat: true, dust: true, lean: true, sticky: true,
     critter: true,              // the reading critter in the corner
+    pins: true,                 // the pin board (achievements) under the stats ledger; Candy only for now
     ownedSeal: 'series',        // gold seal on owned books: 'off', 'series' (Series shelf only) or 'all'
     unreadFade: 'series',       // fade books not marked Read: 'off', 'series' or 'all'
     pagesGoal: 20,              // pages per pagesPeriod; also how fast the critter gets hungry
@@ -148,6 +149,7 @@ function setTheme(theme) {
     });
     applyTint();
     renderCritter(); // each theme has its own critter and home
+    checkPins(); // trying another theme earns one
     if (switchedToTypewriter) typeInTitle();
     else if (theme !== 'typewriter') delete document.documentElement.dataset.typing;
 }
@@ -382,9 +384,10 @@ function setSetting(key, value) {
     if (['critter', 'pagesGoal', 'pagesPeriod'].includes(key)) settleCritter();
     appSettings[key] = value;
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings)); } catch (e) {}
+    if (SHELF_EXTRA_SETTINGS.includes(key)) awardPin('tinker'); // (even switched back)
     refreshSettingsButtons();
     // the name and goals are typed into, so don't redraw every shelf per keystroke
-    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine'].includes(key));
+    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'pins'].includes(key));
     if (key === 'backupReminders' && !value) hideBackupReminder();
     if (key === 'goal') updateReadingGoal();
     if (['goal', 'pagesGoal', 'pagesPeriod', 'critter'].includes(key)) updateGoals();
@@ -458,6 +461,7 @@ function applySettings(rerender) {
     }
     document.getElementById('sticky-pile').style.display = appSettings.sticky ? '' : 'none';
     document.getElementById('critter-home').style.display = appSettings.critter ? '' : 'none';
+    document.body.classList.toggle('pins-on', !!appSettings.pins); // (the stack above it makes room, see pins.css)
     document.getElementById('debug-panel').style.display = appSettings.debug ? '' : 'none';
     applyStickyFont();
     if (rerender) renderBookshelf();

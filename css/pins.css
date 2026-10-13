@@ -1,0 +1,465 @@
+/* ---------- Pin board (achievements) ----------
+   enamel pins on a board: a little one in the bottom-left stack, and
+   a big one that pops up. Candy (a corkboard) and Blueprint (a drafting
+   sheet, at the end of this file) for now. */
+
+/* cork: a warm tan with random dark and light flecks (two layers of
+   SVG noise, so there's no repeating dot grid), and a soft sheen */
+.corkboard {
+    background:
+        radial-gradient(ellipse at 30% 15%, rgba(255, 228, 185, 0.22), transparent 65%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .15 0 0 0 0 .04 2.8 0 0 0 -1.2'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .74 0 2.6 0 0 -1.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E") 0 0 / 180px 180px,
+        #c48f57;
+}
+
+/* an earned pin sits proud of the cork: a tight contact shadow and a
+   softer one further out */
+.pin-art {
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0.6px 1.3px 0 rgba(60, 30, 8, 0.55)) drop-shadow(0 3px 3px rgba(40, 20, 5, 0.25));
+}
+
+.pin-text {
+    font-family: 'Fredoka', 'Quicksand', sans-serif;
+    font-weight: 700;
+}
+
+/* not earned yet: just its shape, a flat shadow on the cork. The
+   paths are solid and the group is see-through as a whole, so where
+   parts overlap there's no darker line showing the details. The
+   stroke makes it the same size as the real pin (borders and all). */
+.pin-art.locked {
+    filter: none;
+}
+
+.pin-ghost {
+    opacity: 0.3;
+}
+
+.pin-ghost path {
+    fill: var(--pin-shadow, #46230a);
+    stroke: var(--pin-shadow, #46230a);
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+}
+
+/* a new pin's shadow, waiting in its spot for it to land */
+.pin-slot .pin-art.under {
+    position: absolute;
+    inset: 0;
+    rotate: var(--tilt);
+}
+
+.pin-slot.locked:hover .pin-ghost,
+.pin-slot.locked.selected .pin-ghost {
+    opacity: 0.42;
+}
+
+/* now and then light catches the metal */
+.pin-glint {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pin-glint 6s ease-in-out infinite;
+}
+
+.pin-slot:nth-child(3n + 1) .pin-glint { animation-delay: -2s; }
+.pin-slot:nth-child(3n + 2) .pin-glint { animation-delay: -4s; }
+.pin-home-pin:nth-child(2) .pin-glint { animation-delay: -2.5s; }
+.pin-home-pin:nth-child(3) .pin-glint { animation-delay: -4.5s; }
+
+@keyframes pin-glint {
+    0%, 82%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); }
+    90% { opacity: 1; transform: scale(1) rotate(45deg); }
+    96% { opacity: 0; transform: scale(0.4) rotate(90deg); }
+}
+
+:root[data-calm] .pin-glint {
+    animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pin-glint { animation: none; }
+}
+
+/* ---------- The corner widget ----------
+   a little corkboard in a candy-pink frame in the corner stack, hung
+   under the critter (above the goals card). Shows the three newest
+   pins. Settings > Shelf extras can switch it off. */
+.pin-home {
+    display: none;
+    position: relative;
+    width: 72px;
+    margin-top: 14px; /* room for the nail and string */
+    cursor: pointer;
+    transform: rotate(-2deg);
+    transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+:root:is(:not([data-theme]), [data-theme="blueprint"]) body.pins-on .pin-home {
+    display: block;
+}
+
+.pin-home:hover {
+    transform: rotate(2deg) translateY(-4px);
+}
+
+.pin-home:focus-visible {
+    outline: 2px dashed var(--outline);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+/* it hangs by a string from a brass nail */
+.pin-home::before {
+    content: '';
+    position: absolute;
+    left: calc(50% - 9px);
+    top: -9px;
+    width: 18px;
+    height: 18px;
+    border-top: 1.5px solid #8a6248;
+    border-left: 1.5px solid #8a6248;
+    transform: rotate(45deg);
+}
+
+.pin-home::after {
+    content: '';
+    position: absolute;
+    left: calc(50% - 3px);
+    top: -16px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff6d0 0 15%, #d9a93a 40%, #7d5207 100%);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+.pin-home-board {
+    position: relative;
+    height: 46px;
+    padding: 0 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    border: 2px solid var(--outline);
+    border-radius: 6px;
+    box-shadow:
+        inset 0 0 0 4px var(--pin-frame, #ffa9d2),
+        inset 0 0 0 5.5px var(--pin-frame-edge, rgba(74, 35, 120, 0.45)),
+        inset 1px 2px 4px 5px rgba(60, 25, 5, 0.3),
+        2px 2px 0 var(--outline);
+}
+
+/* nothing earned yet: one pushpin waiting */
+.pin-home-board:empty::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0 12%, #ff8cc3 35%, #c2306f 100%);
+    box-shadow: 1px 2px 1px rgba(50, 20, 5, 0.45);
+}
+
+.pin-home-pin {
+    flex: none;
+    width: 21px;
+    height: 21px;
+    rotate: var(--tilt);
+}
+
+.pin-home-pin .pin-art {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0.4px 0.8px 0 rgba(60, 30, 8, 0.6)) drop-shadow(0 1.5px 1.5px rgba(40, 20, 5, 0.25));
+}
+
+/* how many pins you haven't looked at yet */
+.pin-new {
+    position: absolute;
+    z-index: 1;
+    top: -9px;
+    right: -9px;
+    display: none;
+    min-width: 16px;
+    padding: 0 4px;
+    border: 2px solid var(--outline);
+    border-radius: 10px;
+    background: var(--y2k-hot-pink);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 14px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.pin-new.visible {
+    display: block;
+    animation: critter-bob 1.6s ease-in-out infinite;
+}
+
+/* ---------- The big pin board ----------
+   no window round it: the board itself pops up over the page, hung on
+   a nail like the little one, with a round close button on its corner */
+.pins-pop {
+    position: relative;
+    margin-top: 26px; /* the string and nail */
+}
+
+.pins-pop::before {
+    content: '';
+    position: absolute;
+    left: calc(50% - 40px);
+    top: -40px;
+    width: 80px;
+    height: 80px;
+    border-top: 2px solid #8a6248;
+    border-left: 2px solid #8a6248;
+    transform: rotate(45deg);
+}
+
+.pins-pop::after {
+    content: '';
+    position: absolute;
+    left: calc(50% - 6px);
+    top: -63px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff6d0 0 15%, #d9a93a 40%, #7d5207 100%);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+.pins-close {
+    position: absolute;
+    z-index: 3;
+    top: -14px;
+    right: -14px;
+}
+
+/* the board: cork in a candy-pink frame (drawn with inset shadows, so
+   the cork runs right under it). Pins are placed on it by hand, see
+   scatterPins. */
+.pins-board {
+    position: relative;
+    z-index: 1;
+    width: min(840px, calc(100vw - 48px));
+    height: min(560px, calc(100vh - 110px));
+    border: 2px solid var(--outline);
+    border-radius: 10px;
+    box-shadow:
+        inset 0 0 0 11px var(--pin-frame, #ffa9d2),
+        inset 0 1px 0 11px var(--pin-frame-light, #ffd0e6),
+        inset 0 0 0 13px var(--pin-frame-edge, rgba(74, 35, 120, 0.55)),
+        inset 2px 4px 8px 13px rgba(60, 25, 5, 0.32),
+        5px 5px 0 var(--outline),
+        0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.pin-slot {
+    position: absolute;
+    cursor: pointer;
+    outline: none;
+    border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* each one stuck in at its own angle */
+.pin-slot .pin-art {
+    width: 100%;
+    height: 100%;
+    rotate: var(--tilt);
+    transition: transform 0.2s cubic-bezier(.3, 1.6, .5, 1), filter 0.2s;
+}
+/* pick one up a little */
+.pin-slot.earned:hover .pin-art,
+.pin-slot.earned.selected .pin-art {
+    transform: translateY(-3px) scale(1.06);
+    filter: drop-shadow(1px 3px 0 rgba(60, 30, 8, 0.4)) drop-shadow(0 7px 6px rgba(40, 20, 5, 0.3));
+}
+
+.pin-slot:focus-visible {
+    outline: 2px dashed #fffaf0;
+    outline-offset: -2px;
+}
+
+/* about the picked pin: a paper card that pops up right by it (paper
+   in dark mode too), with a little arrow pointing at the pin */
+.pin-detail {
+    position: absolute;
+    z-index: 2;
+    width: 230px;
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px 12px;
+    border: 2px solid var(--outline);
+    border-radius: 8px;
+    background: #fffaf0;
+    box-shadow: 3px 3px 0 var(--outline);
+    color: #4a2378;
+    cursor: default;
+}
+
+.pin-detail.visible {
+    display: flex;
+    animation: pin-card-in 0.18s ease-out;
+}
+
+@keyframes pin-card-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+}
+
+.pin-detail.above.visible {
+    animation-name: pin-card-in-above;
+}
+
+@keyframes pin-card-in-above {
+    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+}
+
+.pin-detail::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--point, 50%) - 7px);
+    top: -8px;
+    width: 12px;
+    height: 12px;
+    border-top: 2px solid var(--outline);
+    border-left: 2px solid var(--outline);
+    background: #fffaf0;
+    transform: rotate(45deg);
+}
+
+.pin-detail.above::before {
+    top: auto;
+    bottom: -8px;
+    transform: rotate(225deg);
+}
+
+.pin-detail-name {
+    font-family: 'Fredoka', 'Quicksand', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.pin-detail-desc {
+    font-size: 13px;
+}
+
+.pin-detail-when {
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+.pin-detail .reading-goal-bar {
+    margin: 4px 0 0;
+}
+
+:root[data-calm] .pin-detail.visible {
+    animation: none;
+}
+
+@media (max-width: 600px) {
+    .pin-home {
+        width: 64px;
+        margin-top: 12px;
+    }
+
+    .pin-home-board {
+        height: 40px;
+        padding: 0 4px;
+    }
+
+    .pin-home-pin {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* a tall board on a phone */
+    .pins-board {
+        width: calc(100vw - 32px);
+        height: min(640px, calc(100vh - 120px));
+    }
+
+    .pins-close {
+        right: -6px;
+    }
+
+    /* closed, a dot on the corner button says there's a new pin */
+    :root:is(:not([data-theme]), [data-theme="blueprint"]) body:not(.corner-open):has(.pin-new.visible) .corner-toggle::after {
+        content: '';
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--outline);
+        border-radius: 50%;
+        background: var(--y2k-hot-pink);
+    }
+}
+
+/* its Settings switch only shows while the board can (Candy, Blueprint) */
+:root[data-theme]:not([data-theme="blueprint"]) .pins-setting {
+    display: none;
+}
+
+/* ---------- Blueprint: a corkboard in a cobalt frame ----------
+   the same bulletin board and nail as Candy, in a cobalt-blue frame,
+   with the enamel in the theme's colours: signal orange, cobalt, steel
+   blue and paper white. */
+:root[data-theme="blueprint"] {
+    --pe-pink: #f28c3a;
+    --pe-hot: #d9621a;
+    --pe-lav: #7f9fca;
+    --pe-mint: #8fc4c4;
+    --pe-yellow: #f7c58f;
+    --pe-sky: #8fb3e0;
+    --pe-peach: #f4a261;
+    --pe-cream: #fbfcfe;
+    --pe-ink: #13294b;
+    --pin-frame: #2f5fa8;
+    --pin-frame-light: #6f95d0;
+    --pin-frame-edge: rgba(19, 41, 75, 0.6);
+}
+
+:root[data-mode="dark"][data-theme="blueprint"] {
+    --pin-frame: #2a4f86;
+    --pin-frame-light: #4f75b0;
+    --pin-frame-edge: rgba(0, 0, 0, 0.5);
+}
+
+/* nothing earned yet: an orange drawing pin waiting */
+:root[data-theme="blueprint"] .pin-home-board:empty::after {
+    background: radial-gradient(circle at 35% 30%, #fff 0 12%, #f28c3a 35%, #a8460f 100%);
+}
+
+/* the card, lettered by hand */
+:root[data-theme="blueprint"] .pin-detail,
+:root[data-theme="blueprint"] .pin-detail::before {
+    background: var(--surface);
+}
+
+:root[data-theme="blueprint"] .pin-detail {
+    border: 1.5px solid var(--outline);
+    border-radius: 2px;
+    box-shadow: var(--btn-shadow);
+    color: var(--y2k-dark);
+    font-family: 'Architects Daughter', cursive;
+}
+
+:root[data-theme="blueprint"] .pin-detail::before {
+    border-width: 1.5px;
+}
+
+:root[data-theme="blueprint"] .pin-detail-name {
+    font-family: 'Architects Daughter', cursive;
+    font-size: 18px;
+    color: var(--y2k-hot-pink);
+}
