@@ -833,10 +833,6 @@ function savePins() {
     try { localStorage.setItem(PINS_KEY, JSON.stringify(pinState)); } catch (e) {}
 }
 
-// hand out any pins that have been earned since we last looked
-function checkPins() {
-    if (!pinsReady) return;
-    const stats = pinStats();
 // an empty board (Settings > Remove example shelf), then whatever the books
 // still here earn
 function resetPins() {
@@ -846,6 +842,10 @@ function resetPins() {
     renderPinWidget();
 }
 
+// hand out any pins that have been earned since we last looked
+function checkPins() {
+    if (!pinsReady) return;
+    const stats = pinStats();
     let changed = false;
     PINS.forEach(pin => {
         if (pin.event || pinState.earned[pin.id]) return;
