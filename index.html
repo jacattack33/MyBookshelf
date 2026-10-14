@@ -207,8 +207,8 @@
         <button class="secondary" id="export-btn" onclick="exportLibrary()">Export Library (Backup)</button>
         <button class="secondary" onclick="document.getElementById('import-file').click()">Import Library</button>
         <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importLibrary(event)">
-        <button class="secondary" onclick="openSlips()" title="Books you've lent out, recs from friends, and books to buy">&#9993; Slips</button>
-        <button class="secondary" onclick="openSettings()">&#9881; Settings</button>
+        <button class="secondary" onclick="openSlips()" title="Books you've lent out, recs from friends, and books to buy"><svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="3.5" width="13" height="9" rx="1"/><path d="M1.5 4.5l6.5 4.5 6.5-4.5"/></svg>Slips</button>
+        <button class="secondary" onclick="openSettings()"><svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7"/><circle cx="11" cy="4" r="2"/><circle cx="5" cy="12" r="2"/></svg>Settings</button>
     </div>
 
     <!-- shown now and then when it's been a while since the last backup -->

@@ -596,6 +596,19 @@ button.danger:hover {
     box-shadow: 2px 2px 0 var(--outline);
 }
 
+/* little line icons on Slips / Settings, drawn in the button's text color */
+.backup-bar .btn-icon {
+    width: 1.05em;
+    height: 1.05em;
+    margin-right: 5px;
+    vertical-align: -0.15em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 /* "it's been a while since your last backup": a soft pulse, three times */
 .backup-bar button.backup-glow {
     animation: backup-glow 1.3s ease-in-out 3;
