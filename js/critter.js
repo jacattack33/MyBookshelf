@@ -542,7 +542,8 @@ function feedCritter(pages, readAt) {
     settleCritter();
     const c = critter;
     if (c.gone) return;
-    recordPages(pages, readAt);
+    const pinsBefore = { ...pinState.earned };
+    const id = recordPages(pages, readAt);
     const hatching = !c.bornAt;
     const stageBefore = critterStage(c).id;
     // (left unnamed, it goes by each theme's critter name)
@@ -552,10 +553,11 @@ function feedCritter(pages, readAt) {
     if (hatching) c.food = Math.max(c.food, critterGoal()); // a newborn starts with a day's worth
     if (c.food > 0) c.emptySince = null;
     keepCritterAwake(2 * 60 * 60 * 1000);
-    c.log.unshift({ at: Date.now(), pages });
+    c.log.unshift({ id, at: Date.now(), pages });
     c.log.length = Math.min(c.log.length, 100);
     saveCritter();
     renderCritter();
+    notePinsFromPages(id, pinsBefore); // (growing up can earn one too)
     // fed from the goals window: nothing to cheer in a closed window
     if (document.getElementById('critter-modal').style.display !== 'flex') return;
 
@@ -666,7 +668,9 @@ function endRenameCritter(input) {
     }
 }
 
-// The run-away note, written letter by letter in a wobbly kid's hand.
+// The run-away note, on a sheet off the sticky-note pile in the corner,
+// written letter by letter in a kid's hand (wobbly, but not so much it's
+// hard to read).
 // The wobble comes from the note's own text, so it looks the same every
 // time it's opened.
 const GONE_NOTE_PAW = `<svg class="paw" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
@@ -686,22 +690,37 @@ function renderGoneNote(box, text) {
         seed = (seed * 1664525 + 1013904223) >>> 0;
         return seed / 4294967296;
     };
+    const writing = document.createElement('div'); // (centred on the square)
+    writing.className = 'writing';
+    box.appendChild(writing);
+    // "love, <name>" goes on a line of its own, like signing a letter
+    const sign = text.lastIndexOf(' love, ');
+    const lines = sign < 0 ? [text] : [text.slice(0, sign), text.slice(sign + 1)];
+    let line;
+    lines.forEach(part => {
+        line = document.createElement('div');
+        writing.appendChild(line);
+        writeGoneLine(line, part, rand);
+    });
+    line.insertAdjacentHTML('beforeend', GONE_NOTE_PAW);
+}
+
+function writeGoneLine(line, text, rand) {
     text.split(' ').forEach((word, i) => {
-        if (i) box.append(' ');
+        if (i) line.append(' ');
         const w = document.createElement('span');
         w.className = 'word';
         [...word].forEach(ch => {
             const s = document.createElement('span');
             s.className = 'ch';
             s.textContent = ch;
-            s.style.setProperty('--r', ((rand() - 0.5) * 26).toFixed(1) + 'deg');
-            s.style.setProperty('--y', ((rand() - 0.5) * 7).toFixed(1) + 'px');
-            s.style.setProperty('--s', (0.85 + rand() * 0.35).toFixed(2));
+            s.style.setProperty('--r', ((rand() - 0.5) * 10).toFixed(1) + 'deg');
+            s.style.setProperty('--y', ((rand() - 0.5) * 3).toFixed(1) + 'px');
+            s.style.setProperty('--s', (0.94 + rand() * 0.12).toFixed(2));
             w.appendChild(s);
         });
-        box.appendChild(w);
+        line.appendChild(w);
     });
-    box.insertAdjacentHTML('beforeend', GONE_NOTE_PAW);
 }
 
 // ----- Critter rendering -----
@@ -835,7 +854,9 @@ function renderCritterModal() {
         what.textContent = `${meal.pages} page${meal.pages === 1 ? '' : 's'}`;
         const when = document.createElement('span');
         when.textContent = shortDate(meal.at);
-        li.append(what, when);
+        li.append(what, when, pagesRemoveButton(meal, lost => {
+            if (lost.length) critterSay(`Pin${lost.length === 1 ? '' : 's'} taken back: ${lost.join(', ')}.`);
+        }));
         list.appendChild(li);
     });
     if (!c.log.length) {
@@ -873,9 +894,25 @@ function renderCritterScrapbook() {
         const dates = document.createElement('div');
         dates.textContent = `${p.bornAt ? shortDate(p.bornAt) : '?'} – ${shortDate(p.endedAt)} · ${p.fate}`;
         info.append(name, kind, dates);
-        row.append(pic, info);
+        info.className = 'critter-past-info';
+        const drop = document.createElement('button');
+        drop.type = 'button';
+        drop.className = 'critter-past-x';
+        drop.innerHTML = '&times;';
+        drop.title = 'Remove from the scrapbook';
+        drop.setAttribute('aria-label', `Remove ${p.name} from the scrapbook`);
+        drop.addEventListener('click', () => removePastCritter(p));
+        row.append(pic, info, drop);
         box.appendChild(row);
     });
+}
+
+// take a critter that ran away out of the scrapbook (any pins it earned stay)
+function removePastCritter(p) {
+    if (!confirm(`Remove ${p.name} from the scrapbook? This can't be undone.`)) return;
+    critter.past = critter.past.filter(x => x !== p);
+    saveCritter();
+    renderCritterScrapbook();
 }
 
 function toggleCritterScrapbook() {

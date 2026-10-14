@@ -67,12 +67,25 @@ function debugPrevStage() {
     debugSay(c.bornAt ? `Back to a ${critterStage().id}.` : 'Back in its egg.');
 }
 
+// take pages back out of the pages log (the reading goals), newest first
+function debugUnlogPages(pages) {
+    const log = loadPagesLog().sort((a, b) => a.at - b.at);
+    for (let i = log.length - 1; i >= 0 && pages > 0; i--) {
+        const off = Math.min(pages, log[i].pages);
+        log[i].pages -= off;
+        pages -= off;
+    }
+    try { localStorage.setItem(PAGES_LOG_KEY, JSON.stringify(log.filter(e => e.pages > 0))); } catch (e) {}
+    updateGoals();
+}
+
 // take pages back off it: off what it's eaten all told (which can drop
-// it a stage) and out of its belly
+// it a stage), out of its belly, and off the reading goals
 function debugTakePages(pages) {
     settleCritter();
     const c = critter;
     if (c.gone || !c.bornAt) return debugSay(c.gone ? 'It ran away. Hatch a new egg first.' : 'Still an egg: nothing to take.');
+    debugUnlogPages(pages);
     c.totalFed = Math.max(0, c.totalFed - pages);
     c.food = Math.max(0, c.food - pages);
     if (c.food === 0 && !c.emptySince) c.emptySince = Date.now();
@@ -193,25 +206,26 @@ function debugExitSelect(exits) {
     return select;
 }
 
-// which sections are folded up (just a convenience: forgotten is fine)
-const DEBUG_FOLDED_KEY = 'bookShelfDebugFolded';
+// which sections have been opened; they start folded up (just a
+// convenience: forgotten is fine)
+const DEBUG_OPEN_KEY = 'bookShelfDebugOpen';
 
-function debugFolded() {
-    try { return JSON.parse(localStorage.getItem(DEBUG_FOLDED_KEY)) || []; } catch (e) { return []; }
+function debugOpened() {
+    try { return JSON.parse(localStorage.getItem(DEBUG_OPEN_KEY)) || []; } catch (e) { return []; }
 }
 
 function buildDebugPanel() {
     const body = document.getElementById('debug-body');
-    const folded = debugFolded();
-    // each section folds up: click its heading
+    const opened = debugOpened();
+    // each section opens and folds up: click its heading
     const group = (title, items) => {
         const box = document.createElement('details');
         box.className = 'debug-section';
-        box.open = !folded.includes(title);
+        box.open = opened.includes(title);
         box.addEventListener('toggle', () => {
-            const now = debugFolded().filter(t => t !== title);
-            if (!box.open) now.push(title);
-            try { localStorage.setItem(DEBUG_FOLDED_KEY, JSON.stringify(now)); } catch (e) {}
+            const now = debugOpened().filter(t => t !== title);
+            if (box.open) now.push(title);
+            try { localStorage.setItem(DEBUG_OPEN_KEY, JSON.stringify(now)); } catch (e) {}
         });
         const head = document.createElement('summary');
         head.className = 'debug-group';

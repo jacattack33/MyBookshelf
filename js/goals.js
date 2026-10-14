@@ -24,14 +24,66 @@ function loadPagesLog() {
     return [];
 }
 
+function savePagesLog(log) {
+    try { localStorage.setItem(PAGES_LOG_KEY, JSON.stringify(log)); } catch (e) {}
+}
+
 // `at` is when they were read: now, or midday on an earlier day when
-// they're logged after the fact
-function recordPages(pages, at = Date.now()) {
+// they're logged after the fact. Each entry has an id (the critter's meal
+// shares it), so a mistake can be taken back out of both.
+function recordPages(pages, at = Date.now(), id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)) {
+    const before = { ...pinState.earned };
     const cutoff = Date.now() - PAGES_LOG_DAYS * DAY_MS;
     const log = loadPagesLog().filter(e => e.at >= cutoff);
-    log.push({ at, pages });
-    try { localStorage.setItem(PAGES_LOG_KEY, JSON.stringify(log)); } catch (e) {}
+    log.push({ id, at, pages });
+    savePagesLog(log);
     updateGoals();
+    notePinsFromPages(id, before);
+    return id;
+}
+
+// remember which pins logging these pages earned, so taking them back
+// out can take those back too
+function notePinsFromPages(id, before) {
+    const won = Object.keys(pinState.earned).filter(p => !before[p]);
+    if (!won.length) return;
+    const log = loadPagesLog();
+    const entry = log.find(e => e.id === id);
+    if (!entry) return;
+    entry.pins = [...new Set([...(entry.pins || []), ...won])];
+    savePagesLog(log);
+}
+
+// Take logged pages back out (the x on Recent pages, or on the critter's
+// Recent meals): off the goals, out of the critter if it ate them, and any
+// pin they earned that's no longer earned without them. `entry` is a pages
+// log entry or a critter meal; older ones (from before ids) are matched by
+// size and time. Gives the names of the pins taken back, or null if
+// cancelled.
+function removeLoggedPages(entry) {
+    const near = (a, b) => a.pages === b.pages && Math.abs(a.at - b.at) < 5000;
+    const log = loadPagesLog();
+    const logged = log.find(e => entry.id ? e.id === entry.id : !e.id && near(e, entry));
+    const meals = critter && !critter.gone ? critter.log : [];
+    const meal = meals.find(m => entry.id ? m.id === entry.id : !m.id && near(m, entry));
+    const pages = entry.pages;
+    const when = new Date((logged || entry).at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const ate = meal ? `, and from what ${critterName()} has eaten` : '';
+    if (!confirm(`Remove ${pages} page${pages === 1 ? '' : 's'} logged ${when}? They come off your reading goals${ate}.`)) return null;
+
+    if (logged) savePagesLog(log.filter(e => e !== logged));
+    if (meal) {
+        settleCritter();
+        critter.log = critter.log.filter(m => m !== meal);
+        critter.totalFed = Math.max(0, critter.totalFed - pages);
+        critter.food = Math.max(0, critter.food - pages);
+        if (critter.food === 0 && !critter.emptySince) critter.emptySince = Date.now();
+        saveCritter();
+        renderCritter();
+    }
+    const lost = takeBackPins(logged ? logged.pins || [] : []);
+    updateGoals();
+    return lost;
 }
 
 // when the current day / week (from Monday) / month began
@@ -219,6 +271,7 @@ function updateGoals() {
         `${pagesDone.toLocaleString()} / ${pages.toLocaleString()} pages ${period.label}${pagesDone >= pages ? ' — goal met! ✦' : ''}`,
         pagesPace(pagesDone, pages));
     renderPagesWeek(document.getElementById('goal-pages-week'));
+    renderRecentPages();
     const perDay = critterGoal();
     document.getElementById('goal-pages-hint').textContent = appSettings.critter
         ? `Your reading critter gets hungry at this pace (${perDay % 1 ? perDay.toFixed(1) : perDay} pages a day).`
@@ -252,6 +305,41 @@ function loggedDay() {
     const label = dateBoxValue(yesterday) === box.value ? ' for yesterday'
         : ` for ${day.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}`;
     return { at: day.getTime(), label };
+}
+
+// the last few pages logged, newest first, each with an x to take it back
+function renderRecentPages() {
+    const list = document.getElementById('goal-recent-list');
+    list.innerHTML = '';
+    const recent = loadPagesLog().sort((a, b) => b.at - a.at).slice(0, 8);
+    document.getElementById('goal-recent').hidden = !recent.length;
+    recent.forEach(entry => {
+        const li = document.createElement('li');
+        const what = document.createElement('span');
+        what.textContent = `${entry.pages} page${entry.pages === 1 ? '' : 's'}`;
+        const when = document.createElement('span');
+        when.textContent = shortDate(entry.at);
+        li.append(what, when, pagesRemoveButton(entry, lost => {
+            document.getElementById('goal-log-note').textContent = lost.length
+                ? `Removed. Pin${lost.length === 1 ? '' : 's'} taken back: ${lost.join(', ')}.` : 'Removed.';
+        }));
+        list.appendChild(li);
+    });
+}
+
+// the x on a logged entry or a critter meal
+function pagesRemoveButton(entry, after) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pages-x';
+    btn.innerHTML = '&times;';
+    btn.title = 'Remove (logged by mistake)';
+    btn.setAttribute('aria-label', `Remove ${entry.pages} pages logged ${shortDate(entry.at)}`);
+    btn.addEventListener('click', () => {
+        const lost = removeLoggedPages(entry);
+        if (lost) after(lost);
+    });
+    return btn;
 }
 
 function submitLoggedPages() {

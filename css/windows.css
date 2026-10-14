@@ -601,9 +601,38 @@
     border-bottom: 1px solid rgba(var(--ink-rgb), 0.12);
 }
 
-.critter-list li span:last-child {
+.critter-list li span:nth-child(2) {
+    margin-left: auto;
     opacity: 0.75;
     text-align: right;
+}
+
+/* take logged pages back out: a plain x, not a themed button */
+.modal .pages-x {
+    flex: none;
+    margin: -2px -2px -2px 0;
+    padding: 0 4px;
+    border: none;
+    background: none;
+    box-shadow: none;
+    clip-path: none;
+    color: rgba(var(--ink-rgb), 0.45);
+    font: 700 16px/1 'Quicksand', sans-serif;
+    cursor: pointer;
+}
+
+.modal .pages-x::before {
+    display: none;
+}
+
+.modal .pages-x:hover {
+    background: none;
+    color: #d6336c;
+    transform: none;
+}
+
+.goal-recent[hidden] {
+    display: none;
 }
 
 .critter-empty {
@@ -638,21 +667,73 @@
     font-weight: 700;
 }
 
-/* the note it leaves when it runs away */
+.critter-past-info {
+    flex: 1;
+    min-width: 0;
+}
+
+/* take it out of the scrapbook: a plain x, not a themed button */
+#critter-modal .critter-past-x {
+    flex: none;
+    align-self: flex-start;
+    padding: 0 4px;
+    border: none;
+    background: none;
+    box-shadow: none;
+    clip-path: none;
+    color: rgba(var(--ink-rgb), 0.45);
+    font: 700 18px/1 'Quicksand', sans-serif;
+    cursor: pointer;
+}
+
+#critter-modal .critter-past-x::before {
+    display: none;
+}
+
+#critter-modal .critter-past-x:hover {
+    background: none;
+    color: #d6336c;
+    transform: none;
+}
+
+/* the note it leaves when it runs away: a sheet off the sticky-note
+   pile in the corner (square, the same paper, tilted, the bottom
+   corner curling up like the notes on the shelf) */
 .critter-gone-note {
-    margin: 0 auto;
-    max-width: 280px;
-    padding: 12px 16px;
-    background: #fff6c2;
-    /* scrawled in crayon by a small creature: a kid's hand, every
-       letter at its own angle and size */
-    color: #2f4fb5;
-    font-family: 'Gloria Hallelujah', cursive;
-    font-size: 18px;
-    line-height: 1.55;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: min(230px, 72vw);
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+    margin: 4px auto 8px;
+    padding: 18px 18px 26px;
+    background: var(--paper-yellow);
+    border-radius: 2px 2px 70px 2px / 2px 2px 20px 2px;
+    filter: drop-shadow(3px 5px 5px rgba(0,0,0,0.22));
+    /* scrawled in charcoal crayon by a small creature: a kid's hand,
+       every letter at its own slight angle and size */
+    color: #36393d;
+    font-family: 'Indie Flower', cursive;
+    font-size: 20px;
+    line-height: 1.5;
     word-spacing: 2px;
-    box-shadow: 2px 3px 6px rgba(0,0,0,0.2);
     rotate: -2deg;
+}
+
+/* the curl's shading */
+.critter-gone-note::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 58%;
+    height: 34%;
+    border-bottom-right-radius: 70px 20px;
+    background:
+        radial-gradient(ellipse 90% 70% at 100% 100%, rgba(255,255,255,0.55), rgba(255,255,255,0) 45%),
+        linear-gradient(to top left, rgba(160, 130, 40, 0.28), rgba(160, 130, 40, 0) 60%);
+    pointer-events: none;
 }
 
 .critter-gone-note .word {

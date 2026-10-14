@@ -844,6 +844,20 @@ function resetPins() {
     renderPinWidget();
 }
 
+// Pages logged by mistake were taken back out: any of these pins they
+// earned goes too, unless it's still earned without them. Gives the names
+// of the ones taken back.
+function takeBackPins(ids) {
+    const stats = pinStats();
+    const lost = PINS.filter(pin => ids.includes(pin.id) && pinState.earned[pin.id] && !pin.event)
+        .filter(pin => { const [have, need] = pin.progress(stats); return have < need; });
+    if (!lost.length) return [];
+    lost.forEach(pin => { delete pinState.earned[pin.id]; delete pinState.seen[pin.id]; });
+    savePins();
+    renderPinWidget();
+    return lost.map(pin => pin.name);
+}
+
 // hand out any pins that have been earned since we last looked
 function checkPins() {
     if (!pinsReady) return;

@@ -27,6 +27,13 @@ await press('Next stage');
 const fedBefore = critter.totalFed;
 await press('Take 50');
 ok('take 50 takes pages back off it, dropping a stage', critter.totalFed === fedBefore - 50 && critterStage().id === 'baby', status());
+// ...and off the reading goals, newest first
+localStorage.setItem(PAGES_LOG_KEY, JSON.stringify([{ at: Date.now() - 2 * DAY_MS, pages: 40 }, { at: Date.now() - 1000, pages: 30 }, { at: Date.now(), pages: 30 }]));
+updateGoals();
+await press('Take 50');
+ok('take 50 takes pages off the reading goals too', pagesReadThisPeriod() === 10 && JSON.stringify(loadPagesLog().map(e => e.pages)) === '[40,10]', JSON.stringify(loadPagesLog()));
+await press('Take 50');
+ok('...emptying older days once today runs out', loadPagesLog().length === 0, JSON.stringify(loadPagesLog()));
 await press('Hungry');
 ok('hungry', critterMood() === 'hungry');
 await press('1 day from leaving');
@@ -78,15 +85,19 @@ await press('Image link fails', 100);
 ok('shows the failed image-link message', q('#book-modal').style.display === 'flex' && q('#book-image-link-error').classList.contains('show') && q('#book-image-link-error').innerText.startsWith("Couldn't load that link"));
 closeModal();
 
-// ---- sections fold up, and stay folded
+// ---- sections start folded up; an opened one stays open
 const section = name => [...document.querySelectorAll('#debug-body .debug-section')].find(s => s.querySelector('summary').textContent === name);
+ok('sections start folded up', [...document.querySelectorAll('#debug-body .debug-section')].every(s => !s.open));
 section('Critter').querySelector('summary').click();
 await wait(50);
-ok('a section folds up from its heading', !section('Critter').open && section('Books').open && JSON.parse(localStorage.getItem(DEBUG_FOLDED_KEY)).includes('Critter'));
+ok('a section opens from its heading', section('Critter').open && !section('Books').open && JSON.parse(localStorage.getItem(DEBUG_OPEN_KEY)).includes('Critter'));
 q('#debug-body').innerHTML = '';
 buildDebugPanel();
-ok('...and is still folded next time', !section('Critter').open && section('Books').open);
-localStorage.removeItem(DEBUG_FOLDED_KEY);
+ok('...and is still open next time', section('Critter').open && !section('Books').open);
+section('Critter').querySelector('summary').click();
+await wait(50);
+ok('...and folds back up', !section('Critter').open && !JSON.parse(localStorage.getItem(DEBUG_OPEN_KEY)).includes('Critter'));
+localStorage.removeItem(DEBUG_OPEN_KEY);
 
 setSetting('debug', false);
 ok('switch hides it again', q('#debug-panel').style.display === 'none');
