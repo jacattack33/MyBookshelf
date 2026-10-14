@@ -1821,7 +1821,9 @@ async function processBookForm() {
     await dbPut(book);
     // a lent book back home (and still yours)
     if (existing && existing.lentTo && !lentTo && owned) bookBackForPins();
-    if (lentTo && (!existing || existing.lentTo !== lentTo)) noteLentForPins(book.id);
+    if (lentTo && (!existing || existing.lentTo !== lentTo)) noteLentForPins(book.id, lentTo);
+    // a book off the To Buy list, bought
+    if (existing && isStickyPlaceholder(existing) && owned) countForPins('bought');
     if (!existing) recPutOnShelf(); // added from a rec on the Slips window
     const idx = library.findIndex(b => b.id === book.id);
     if (idx >= 0) {

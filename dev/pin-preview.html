@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Preview</title>
+    <!-- Every pin drawn big, for working on the pin art. Open it straight
+         from the folder; it draws from js/pins.js and css/pins.css, and
+         pins-before.js (a snapshot) for the before/after view. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/pins.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 16px 20px 40px;
+            background: #fff4fa;
+            color: #4a2378;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        :root[data-theme="blueprint"] body {
+            background: #e8eef7;
+            color: #13294b;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 24px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            align-items: center;
+            margin-bottom: 18px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .controls label {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(calc(var(--size) * var(--cols) + 40px), 1fr));
+            gap: 14px;
+        }
+
+        .tile {
+            padding: 12px 10px 10px;
+            border: 2px solid #4a2378;
+            border-radius: 10px;
+            box-shadow: inset 0 0 0 5px #ffa9d2, inset 1px 2px 5px 6px rgba(60, 25, 5, 0.3);
+            text-align: center;
+        }
+
+        :root[data-theme="blueprint"] .tile {
+            border-color: #13294b;
+            box-shadow: inset 0 0 0 5px #2f5fa8, inset 1px 2px 5px 6px rgba(60, 25, 5, 0.3);
+        }
+
+        .tile.changed {
+            outline: 3px dashed #ff4fa3;
+            outline-offset: 3px;
+        }
+
+        .arts {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .art {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .art .pin-art {
+            width: var(--size);
+            height: var(--size);
+        }
+
+        .art.small .pin-art {
+            width: 21px;
+            height: 21px;
+        }
+
+        .art span {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fffaf0;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+        }
+
+        .name {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #fffaf0;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .name small {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pin Preview</h1>
+    <div class="controls">
+        <label>Theme
+            <select id="theme">
+                <option value="">Candy</option>
+                <option value="blueprint">Blueprint</option>
+            </select>
+        </label>
+        <label>Size <input type="range" id="size" min="48" max="260" value="150"></label>
+        <label><input type="checkbox" id="before"> Before / after</label>
+        <label><input type="checkbox" id="locked"> Not-earned shadow</label>
+        <label><input type="checkbox" id="small" checked> Corner size</label>
+        <label><input type="checkbox" id="onlyChanged"> Only changed</label>
+    </div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+        // always the latest pins.js, not a cached one
+        document.write(['pins-before.js', '../js/pins.js'].map(src => `<script src="${src}?v=${Date.now()}"><\/script>`).join(''));
+    </script>
+    <script>
+        const $ = id => document.getElementById(id);
+        const old = window.PinsBefore;
+        // a pin's changed if its drawing's not the same as the snapshot's
+        const sameArt = (a, b) => b && JSON.stringify([a.art, a.metal, a.rotate, a.glint]) === JSON.stringify([b.art, b.metal, b.rotate, b.glint]);
+
+        function draw() {
+            document.documentElement.dataset.theme = $('theme').value;
+            if (!$('theme').value) delete document.documentElement.dataset.theme;
+            const before = $('before').checked, locked = $('locked').checked, small = $('small').checked;
+            const grid = $('grid');
+            grid.style.setProperty('--size', $('size').value + 'px');
+            grid.style.setProperty('--cols', (before ? 2 : 1) + (locked ? 1 : 0));
+            grid.innerHTML = '';
+            PINS.forEach(pin => {
+                const was = old && old.PINS.find(p => p.id === pin.id);
+                const changed = !sameArt(pin, was);
+                if ($('onlyChanged').checked && !changed) return;
+                const tile = document.createElement('div');
+                tile.className = 'tile corkboard' + (changed ? ' changed' : '');
+                const arts = [];
+                if (before && was) arts.push(['before', old.pinSvg(was)]);
+                arts.push([before ? 'now' : '', pinSvg(pin)]);
+                if (locked) arts.push(['not earned', pinSvg(pin, false)]);
+                if (small) arts.push(['', pinSvg(pin), 'small']);
+                tile.innerHTML = '<div class="arts">' + arts.map(([label, svg, cls = '']) =>
+                    `<div class="art ${cls}">${svg}<span>${label}</span></div>`).join('') + '</div>' +
+                    `<div class="name">${pin.name} <small>${pin.id} · ${pin.metal}</small></div>`;
+                tile.title = pin.desc;
+                grid.appendChild(tile);
+            });
+        }
+
+        ['theme', 'size', 'before', 'locked', 'small', 'onlyChanged'].forEach(id => $(id).addEventListener('input', draw));
+        draw();
+    </script>
+</body>
+</html>

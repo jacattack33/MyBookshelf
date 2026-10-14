@@ -247,8 +247,8 @@
 .pins-board {
     position: relative;
     z-index: 1;
-    width: min(840px, calc(100vw - 48px));
-    height: min(560px, calc(100vh - 110px));
+    width: min(1080px, calc(100vw - 48px));
+    height: min(680px, calc(100vh - 110px));
     border: 2px solid var(--outline);
     border-radius: 10px;
     box-shadow:
@@ -415,13 +415,14 @@
    with the enamel in the theme's colours: signal orange, cobalt, steel
    blue and paper white. */
 :root[data-theme="blueprint"] {
-    --pe-pink: #f28c3a;
-    --pe-hot: #d9621a;
-    --pe-lav: #7f9fca;
-    --pe-mint: #8fc4c4;
-    --pe-yellow: #f7c58f;
-    --pe-sky: #8fb3e0;
-    --pe-peach: #f4a261;
+    --pe-pink: #ff8a2e;
+    --pe-hot: #f0600f;
+    --pe-lav: #6e98e0;
+    --pe-mint: #62cdc6;
+    --pe-teal: #2b9e98;
+    --pe-yellow: #ffc864;
+    --pe-sky: #6db3f7;
+    --pe-peach: #ffa24a;
     --pe-cream: #fbfcfe;
     --pe-ink: #13294b;
     --pin-frame: #2f5fa8;

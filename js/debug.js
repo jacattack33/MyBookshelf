@@ -258,7 +258,7 @@ function buildDebugPanel() {
         }],
         ['Earn all', () => { PINS.forEach(p => awardPin(p.id)); debugSay('Every pin earned.'); }],
         ['Reset pins', () => {
-            pinState = { earned: {}, seen: {}, counts: {}, lentIds: [] };
+            pinState = { earned: {}, seen: {}, counts: {}, lentIds: [], lentTo: [] };
             savePins();
             checkPins(); // anything your shelf has earned comes straight back
             renderPinWidget();

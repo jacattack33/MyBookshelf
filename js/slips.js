@@ -281,6 +281,7 @@ async function setBought(id, bought, row) {
     row.classList.toggle('bought', bought);
     if (bought) sparkleFrom(row, 5);
     renderBookshelf();
+    if (bought) countForPins('bought');
 }
 
 async function addBuyFromSlip() {

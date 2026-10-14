@@ -6,8 +6,9 @@
 
 const PINS_KEY = 'bookShelfPins';
 // id -> when earned; ids already looked at; things counted as they happen
-// (sticky notes stuck up, lent books back); every book ever lent out
-let pinState = { earned: {}, seen: {}, counts: {}, lentIds: [] };
+// (sticky notes stuck up, lent books back); every book ever lent out, and
+// everyone it went to
+let pinState = { earned: {}, seen: {}, counts: {}, lentIds: [], lentTo: [] };
 let pinsReady = false;                    // checks wait until the critter's loaded
 let pinUid = 0;                           // keeps gradient ids unique across SVG copies
 let selectedPin = null;
@@ -16,13 +17,14 @@ let selectedPin = null;
 // Every pin is drawn in a 48x48 box as a list of parts, bottom to top:
 //   ['e', d, colour]           enamel, with a metal border round it
 //   ['e', d, colour, 'evenodd'] ...with a hole in it
+//   ['e', d, colour, rule, width] ...with a thinner border than usual (1.8)
 //   ['d', d, colour]           a bare enamel dot (eyes, cheeks), no border
 //   ['l', d]                   a raised metal line
+//   ['l', d, width]            ...thinner or thicker than usual (1)
 //   ['m', d]                   a solid metal piece
 //   ['t', x, y, size, text]    raised metal lettering
 // The metal is a hard-banded gradient (polished metal reflects in sharp
-// light and dark bands; soft blends are what make it look like wax), plus
-// a thin reversed band down the middle of each border for a bevelled edge.
+// light and dark bands; soft blends are what make it look like wax).
 const PIN_METALS = {
     gold: [[0, '#5c3a02'], [0.1, '#a8740f'], [0.2, '#f3d27a'], [0.26, '#fffbe6'], [0.33, '#e0b23e'], [0.46, '#7d5207'],
         [0.56, '#c7932a'], [0.64, '#fbe7a6'], [0.7, '#fffdf0'], [0.77, '#d8a63a'], [0.9, '#8a5c08'], [1, '#4e3102']],
@@ -33,7 +35,7 @@ const PIN_METALS = {
 // Candy's colours; each theme with a board can swap them (--pe-* in pins.css)
 const PIN_ENAMEL = {
     pink: 'var(--pe-pink, #ff8cc3)', hot: 'var(--pe-hot, #ff4fa3)', lav: 'var(--pe-lav, #c9a6ff)',
-    mint: 'var(--pe-mint, #7ee8c4)', yellow: 'var(--pe-yellow, #ffe066)', sky: 'var(--pe-sky, #8fd3ff)',
+    mint: 'var(--pe-mint, #7ee8c4)', teal: 'var(--pe-teal, #2fbf8f)', yellow: 'var(--pe-yellow, #ffe066)', sky: 'var(--pe-sky, #8fd3ff)',
     peach: 'var(--pe-peach, #ffb48c)', cream: 'var(--pe-cream, #fffaf2)', ink: 'var(--pe-ink, #4a2378)'
 };
 
@@ -48,6 +50,51 @@ function starPath(cx, cy, outer, inner, points = 5) {
     }
     return d + 'Z';
 }
+
+// a gear: flat-topped teeth round a circle
+function gearPath(cx, cy, outer, inner, teeth) {
+    const pt = (r, a) => `${(cx + r * Math.cos(a)).toFixed(2)} ${(cy + r * Math.sin(a)).toFixed(2)}`;
+    const step = Math.PI * 2 / teeth, tip = step * 0.17, base = step * 0.27;
+    let d = '';
+    for (let i = 0; i < teeth; i++) {
+        const a = step * i - Math.PI / 2;
+        d += (i ? `A${inner} ${inner} 0 0 1 ` : 'M') + pt(inner, a - base) +
+            `L${pt(outer, a - tip)}A${outer} ${outer} 0 0 1 ${pt(outer, a + tip)}L${pt(inner, a + base)}`;
+    }
+    return d + `A${inner} ${inner} 0 0 1 ${pt(inner, -Math.PI / 2 - base)}Z`;
+}
+
+// a circle with a wavy edge (a donut's icing)
+function pinWavy(cx, cy, r, amp, waves) {
+    let d = '';
+    for (let i = 0; i < 96; i++) {
+        const a = Math.PI * 2 * i / 96, rr = r + amp * Math.sin(a * waves);
+        d += `${i ? 'L' : 'M'}${(cx + rr * Math.cos(a)).toFixed(2)} ${(cy + rr * Math.sin(a)).toFixed(2)}`;
+    }
+    return d + 'Z';
+}
+
+// a sprinkle: a little bar at (x, y), turned `deg`
+function pinSprinkle(x, y, deg) {
+    const a = deg * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a);
+    const f = n => n.toFixed(2);
+    const p = (s, t) => `${f(x + dx * s - dy * t)} ${f(y + dy * s + dx * t)}`;
+    return `M${p(-1.4, -0.5)}L${p(1.4, -0.5)}L${p(1.4, 0.5)}L${p(-1.4, 0.5)}Z`;
+}
+
+// a puffy cloud sitting on (cx, cy), s times the usual 12 across
+const pinCloud = (cx, cy, s = 1) => {
+    const p = (x, y) => `${cx + x * s} ${cy + y * s}`;
+    return `M${p(-6, 0)}A${2.6 * s} ${2.6 * s} 0 0 1 ${p(-4, -4.2)}A${4.2 * s} ${4.2 * s} 0 0 1 ${p(4, -4.2)}` +
+        `A${2.6 * s} ${2.6 * s} 0 0 1 ${p(6, 0)}Z`;
+};
+
+// a macaron whose filling's at height y: shell, filling, shell
+const pinMacaron = (x, y, colour) => [
+    ['d', `M${x - 13.5} ${y}H${x + 13.5}V${y + 3.4}H${x - 13.5}Z`, PIN_ENAMEL.cream],
+    ['e', `M${x - 15} ${y}Q${x - 15} ${y - 5} ${x} ${y - 5}Q${x + 15} ${y - 5} ${x + 15} ${y}Z`, colour],
+    ['e', `M${x - 15} ${y + 3.4}H${x + 15}Q${x + 15} ${y + 7} ${x} ${y + 7}Q${x - 15} ${y + 7} ${x - 15} ${y + 3.4}Z`, colour]
+];
 
 // a heart centred on (cx, cy), r across
 function pinHeart(cx, cy, r) {
@@ -75,12 +122,13 @@ const PINS = [
         ]
     },
     {
-        id: 'owned', name: 'Mine!', desc: 'Add your first book you own.', metal: 'silver', glint: [9, 21], rotate: -25,
+        id: 'owned', name: 'Mine!', desc: 'Add your first book you own.', metal: 'gold', glint: [9, 19], rotate: -30,
         progress: s => [Math.min(s.owned, 1), 1],
         art: [
-            ['e', pinCircle(14, 24, 9) + pinCircle(14, 24, 3.6), PIN_E.pink, 'evenodd'],
-            ['e', 'M23 21.5h19v5H23Z', PIN_E.pink], ['e', 'M33.5 26.5h3.2v6h-3.2Z', PIN_E.pink], ['e', 'M38.8 26.5h3.2v4h-3.2Z', PIN_E.pink],
-            ['d', pinCircle(10.2, 20.6, 1.1), PIN_E.cream]
+            // a key: a gold shaft, a heart in its bow
+            ['m', 'M20 22H42V31H37V26H20Z'],
+            ['e', pinCircle(13, 24, 9.5), PIN_E.pink],
+            ['e', pinHeart(13, 24.6, 4.6), PIN_E.cream]
         ]
     },
     {
@@ -98,7 +146,8 @@ const PINS = [
         id: 'newlook', name: 'New Look', desc: 'Try another theme (Settings > Theme).', metal: 'gold', glint: [14, 12],
         progress: s => [s.otherTheme ? 1 : 0, 1],
         art: [
-            ['e', 'M24 8C35 8 42 15 42 23C42 29 37 30 33 29C29 28 27 31 29 35C31 39 27 41 22 41C13 41 6 34 6 24C6 15 14 8 24 8Z' + pinCircle(19, 33, 3), PIN_E.cream, 'evenodd'],
+            ['e', 'M24 8C35 8 42 14.5 42 22C42 27.5 38 29.5 34 28.8C30.5 28.2 28.5 30.5 29.5 33.5C30.5 36.8 28 40.5 22.5 40.5C13 40.5 6 33.5 6 24C6 15 14 8 24 8Z' +
+                pinCircle(20.5, 33, 2.9), PIN_E.cream, 'evenodd'],
             ['e', pinCircle(14, 21, 3.4), PIN_E.pink], ['e', pinCircle(22.5, 15, 3.4), PIN_E.mint],
             ['e', pinCircle(32, 17, 3.2), PIN_E.sky], ['e', pinCircle(11.5, 29.5, 2.8), PIN_E.yellow]
         ]
@@ -107,7 +156,7 @@ const PINS = [
         id: 'tinker', name: 'Tinkerer', desc: 'Change some shelf settings (Settings > Shelf extras).', metal: 'silver', glint: [13, 12],
         progress: s => [s.tinkered ? 1 : 0, 1],
         art: [
-            ['e', starPath(24, 24, 18, 14, 9) + pinCircle(24, 24, 5.5), PIN_E.lav, 'evenodd'],
+            ['e', gearPath(24, 24, 18, 13.5, 8) + pinCircle(24, 24, 5.5), PIN_E.lav, 'evenodd'],
             ['l', pinCircle(24, 24, 9.5)]
         ]
     },
@@ -127,8 +176,7 @@ const PINS = [
         progress: s => [s.readCount, 50],
         art: [
             ['e', 'M7 31h33v8H7Z', PIN_E.lav], ['e', 'M11 23h29v8H11Z', PIN_E.pink], ['e', 'M9 15h28v8H9Z', PIN_E.mint],
-            ['l', 'M11 31v8'], ['l', 'M36 31v8'], ['l', 'M15 23v8'], ['l', 'M36 23v8'], ['l', 'M13 15v8'], ['l', 'M33 15v8'],
-            ['d', 'M20 25.6h11v2.8H20Z', PIN_E.yellow]
+            ['l', 'M11 31v8'], ['l', 'M36 31v8'], ['l', 'M15 23v8'], ['l', 'M36 23v8'], ['l', 'M13 15v8'], ['l', 'M33 15v8']
         ]
     },
     {
@@ -150,6 +198,17 @@ const PINS = [
         ]
     },
     {
+        id: 'sundae', name: 'Sundae Best', desc: 'Give 10 books 5 stars.', metal: 'gold', glint: [12, 26],
+        progress: s => [Math.min(s.fiveStarCount, 10), 10],
+        art: [
+            ['l', 'M24 9Q25 5.5 28.5 4.5'],
+            ['e', pinCircle(17, 21, 6.5), PIN_E.pink], ['e', pinCircle(31, 21, 6.5), PIN_E.mint], ['e', pinCircle(24, 15.5, 6.5), PIN_E.yellow],
+            ['e', pinCircle(24, 9.5, 3), PIN_E.hot], ['d', pinCircle(23, 8.6, 0.8), PIN_E.cream],
+            ['e', 'M9 24H39L33 35H15Z', PIN_E.sky],
+            ['m', 'M22 35h4v4.5h-4Z'], ['m', 'M15.5 39.5H32.5Q32.5 42.5 29.5 42.5H18.5Q15.5 42.5 15.5 39.5Z']
+        ]
+    },
+    {
         id: 'bookone', name: 'Book One', desc: 'Start a series (give a book a series name, and read it or start it).', metal: 'silver', glint: [13, 12],
         progress: s => [s.seriesStarted ? 1 : 0, 1],
         art: [
@@ -167,6 +226,13 @@ const PINS = [
         ]
     },
     {
+        id: 'macaron', name: 'Macaron Stack', desc: 'Read 3 books in one series.', metal: 'gold', glint: [13, 7.5],
+        progress: s => [Math.min(s.seriesMost, 3), 3],
+        art: [
+            ...pinMacaron(24, 36.5, PIN_E.lav), ...pinMacaron(25, 23, PIN_E.mint), ...pinMacaron(23, 9.5, PIN_E.pink)
+        ]
+    },
+    {
         id: 'again', name: 'Second Helping', desc: 'Read a book again (write the re-read on its library card).', metal: 'silver', glint: [11, 13],
         progress: s => [s.reread ? 1 : 0, 1],
         art: [
@@ -176,20 +242,60 @@ const PINS = [
         ]
     },
     {
+        id: 'oldfriend', name: 'Old Friend', desc: 'Read a book 3 times (write the re-reads on its library card).', metal: 'gold', glint: [14, 15],
+        progress: s => [Math.min(s.mostReads, 3), 3],
+        art: [
+            ['e', pinCircle(13, 11.5, 5), PIN_E.peach], ['e', pinCircle(35, 11.5, 5), PIN_E.peach],
+            ['d', pinCircle(13, 11.5, 2.4), PIN_E.pink], ['d', pinCircle(35, 11.5, 2.4), PIN_E.pink],
+            ['e', pinCircle(24, 22, 13), PIN_E.peach],
+            ['e', 'M18 27.5a6 4.6 0 1 0 12 0a6 4.6 0 1 0 -12 0Z', PIN_E.cream],
+            ['d', 'M21.8 25.4Q24 24.2 26.2 25.4Q25.6 27.4 24 27.6Q22.4 27.4 21.8 25.4Z', PIN_E.ink],
+            ['l', 'M24 27.6V29.2'], ['l', 'M21.8 29.4q2.2 1.6 4.4 0'],
+            ['d', pinCircle(19, 20, 1.5), PIN_E.ink], ['d', pinCircle(29, 20, 1.5), PIN_E.ink],
+            ['e', 'M24 35.5L16.5 31.5V39.5Z', PIN_E.hot], ['e', 'M24 35.5L31.5 31.5V39.5Z', PIN_E.hot], ['m', pinCircle(24, 35.5, 2)]
+        ]
+    },
+    {
         id: 'doorstop', name: 'Doorstopper', desc: 'Read a book of 500 pages or more.', metal: 'gold', glint: [12, 15],
         progress: s => [Math.min(s.longest, 500), 500],
         art: [
-            ['e', 'M31 9L39 12.5V42L31 39Z', PIN_E.cream], ['e', 'M9 12L31 9V39L9 41.5Z', PIN_E.sky],
-            ['e', 'M13 17L27 15.2V21L13 22.8Z', PIN_E.yellow],
-            ['l', 'M33.6 12.6V39.6'], ['l', 'M36.3 13.8V40.6']
+            // the back cover shows round the pages, top and bottom
+            ['e', 'M8 11L19 6H39V38L28 43H8Z', PIN_E.sky],
+            ['e', 'M10 10.5L20 6.3H37.6V36.4L28 40.8V11Z', PIN_E.cream], ['l', 'M28 11L37.6 6.6'],
+            ['e', 'M8 11H28V43H8Z', PIN_E.sky],
+            ['e', 'M11.5 17H24.5V23H11.5Z', PIN_E.yellow],
+            ['l', 'M31.5 10.5V38.6'], ['l', 'M34.8 9V37.1']
         ]
     },
     {
         id: 'speedy', name: 'Speed Reader', desc: 'Finish a book within 3 days of starting it (full dates on both).', metal: 'silver', glint: [28.5, 7],
         progress: s => [s.speedy ? 1 : 0, 1],
         art: [
-            ['e', 'M27 4L10 27H22L18 44L38 18H26L31 4Z', PIN_E.yellow],
+            ['e', 'M31 3L10 27H22L18 44L38 18H26Z', PIN_E.yellow],
             ['l', 'M4 31h5'], ['l', 'M6 36h6'], ['l', 'M8 41h5']
+        ]
+    },
+    {
+        id: 'slowburn', name: 'Slow Burn', desc: 'Finish a book you’ve been reading for over 3 months (full dates on both).', metal: 'gold', glint: [20, 26],
+        progress: s => [s.slowBurn ? 1 : 0, 1],
+        art: [
+            ['e', 'M8 39.5H40Q40 44 35.5 44H12.5Q8 44 8 39.5Z', PIN_E.lav],
+            ['e', 'M17 21Q24 18.5 31 21V39.5H17Z', PIN_E.cream],
+            ['l', 'M24 16.5V20'],
+            ['e', 'M24 4C27 9 29.5 11.5 29.5 14.5A5.5 5.5 0 0 1 18.5 14.5C18.5 11.5 21 9 24 4Z', PIN_E.yellow],
+            ['d', 'M24 10C25.5 12.5 26.5 13.5 26.5 15A2.5 2.5 0 0 1 21.5 15C21.5 13.5 22.5 12.5 24 10Z', PIN_E.peach]
+        ]
+    },
+    {
+        id: 'halfway', name: 'Halfway There', desc: 'Get halfway to your yearly reading goal (set it in Reading Goals).', metal: 'gold', glint: [33, 10.5],
+        progress: s => s.goal ? [Math.min(s.goalDone, Math.ceil(s.goal / 2)), Math.ceil(s.goal / 2)] : [0, 1],
+        art: [
+            // a flag planted halfway up (the pole covers the flag's own
+            // edge, so they share the one line of metal)
+            ['e', 'M6 43C9 37.5 21 37.5 25 43Z', PIN_E.mint],
+            ['e', 'M15 9C22 6 28 12 35 9V24C28 27 22 21 15 24Z', PIN_E.cream],
+            ['m', 'M13.5 7h3v35h-3Z'], ['m', pinCircle(15, 6, 2.6)],
+            ['d', starPath(26, 16.6, 4.6, 2), PIN_E.hot]
         ]
     },
     {
@@ -202,22 +308,52 @@ const PINS = [
         ]
     },
     {
+        id: 'bigyear', name: 'Big Year', desc: 'Read 50 books in one year (counts books with a finished date).', metal: 'gold', glint: [12, 12],
+        progress: s => [Math.min(s.bestYear, 50), 50],
+        // two bursts and two sparkles, with thin edges
+        art: [
+            ['e', starPath(17, 17, 12, 4.8, 8), PIN_E.pink, null, 1], ['e', starPath(32, 31, 10, 4, 8), PIN_E.mint, null, 1],
+            ['e', starPath(34, 13.5, 4.5, 1.9, 4), PIN_E.yellow, null, 1], ['e', starPath(14, 33.5, 3.8, 1.6, 4), PIN_E.lav, null, 1],
+            ['d', starPath(17, 17, 6, 2.4, 8), PIN_E.hot], ['d', starPath(32, 31, 5, 2, 8), PIN_E.teal]
+        ]
+    },
+    {
+        id: 'freshstart', name: 'Fresh Start', desc: 'Finish a book in January.', metal: 'gold', glint: [14, 26],
+        progress: s => [s.january ? 1 : 0, 1],
+        art: [
+            ['l', 'M24 15V10'], ['l', 'M15 17.5L12 13.5'], ['l', 'M33 17.5L36 13.5'], ['l', 'M9.5 24.5L5 22.5'], ['l', 'M38.5 24.5L43 22.5'],
+            ['e', 'M12 32A12 12 0 0 1 36 32Z', PIN_E.yellow],
+            ['e', 'M5 32H43V36Q43 41 38 41H10Q5 41 5 36Z', PIN_E.sky],
+            ['l', 'M8.5 35.2q2.2-1.5 4.4 0t4.4 0t4.4 0'], ['l', 'M25 38.3q2.2-1.5 4.4 0t4.4 0'], ['l', 'M33.5 34.6q1.8-1.2 3.6 0'],
+            ['d', pinCircle(19.5, 27.5, 1.1), PIN_E.ink], ['d', pinCircle(28.5, 27.5, 1.1), PIN_E.ink], ['d', pinCircle(16.5, 30, 1.3), PIN_E.pink], ['d', pinCircle(31.5, 30, 1.3), PIN_E.pink]
+        ]
+    },
+    {
+        id: 'popsicle', name: 'Popsicle', desc: 'Finish a book in summer (June, July or August).', metal: 'gold', glint: [18, 8],
+        progress: s => [s.summer ? 1 : 0, 1],
+        art: [
+            ['e', 'M21.5 34H26.5V42.5A2.5 2.5 0 0 1 21.5 42.5Z', PIN_E.peach],
+            ['e', 'M14 14A10 10 0 0 1 29 5.34A4.6 4.6 0 0 0 33.85 12.26A10 10 0 0 1 34 14V35Q34 37 32 37H16Q14 37 14 35Z', PIN_E.pink],
+            ['l', 'M18 12V21'], ['l', 'M30 18V21']
+        ]
+    },
+    {
         id: 'lender', name: 'Lending Library', desc: 'Lend a book out (tick I Own This Book, then fill in Lent to).', metal: 'gold', glint: [21, 15],
         progress: s => [s.lentOut ? 1 : 0, 1],
         art: [
             ['l', 'M13 23C8 19 6 13 10 7'],
             ['e', 'M7 23L17 13H41V33H17Z', PIN_E.cream],
-            ['m', pinCircle(14.5, 23, 2.6) + pinCircle(14.5, 23, 1.2)],
-            ['t', 29.5, 26.2, 7.4, 'LENT']
+            ['m', pinCircle(14.5, 23, 2.6) + pinCircle(14.5, 23, 1.2)]
         ]
     },
     {
-        id: 'cameback', name: 'It Came Back', desc: 'Get back a book you lent out.', metal: 'silver', glint: [24, 8.5], event: true,
+        id: 'cameback', name: 'It Came Back', desc: 'Get back a book you lent out.', metal: 'silver', glint: [17, 14], event: true, rotate: -8,
         progress: () => [0, 1],
         art: [
-            ['e', 'M7 31C13 22 17 15 21 9C23 7 27 8 27 11C24 17 20 24 17 31C25 30 33 31 40 33.5C42 35 41 38.5 38.5 38.5C29 37 19 37 10 38C6 38 5 34 7 31Z', PIN_E.peach],
-            ['d', pinCircle(22.6, 13.5, 1.5), PIN_E.mint], ['d', pinCircle(19.6, 19.5, 1.5), PIN_E.mint],
-            ['d', pinCircle(26, 34.6, 1.5), PIN_E.mint], ['d', pinCircle(32.5, 35.2, 1.5), PIN_E.mint]
+            ['e', 'M4 31C8 23 14 15 21 13.5C27 12.5 37 18 44 25A2.7 2.7 0 0 1 41.5 29.5' +
+                'C35 24.5 28 21.5 23 22.5C17 23.5 12 29 8.5 34.5A2.9 2.9 0 0 1 4 31Z', PIN_E.peach],
+            ['d', pinCircle(22, 18, 1.4), PIN_E.mint], ['d', pinCircle(15.5, 21.6, 1.15), PIN_E.mint], ['d', pinCircle(10.4, 27, 1), PIN_E.mint],
+            ['d', pinCircle(29, 19.4, 1.15), PIN_E.mint], ['d', pinCircle(35.6, 22.6, 1), PIN_E.mint]
         ]
     },
     {
@@ -226,7 +362,7 @@ const PINS = [
         art: [
             ['e', 'M6 14H42V38H6Z', PIN_E.pink],
             ['e', 'M6 14L24 28L42 14Z', PIN_E.lav],
-            ['d', 'M24 33C21 31 19.6 29.4 19.6 27.7C19.6 26.3 20.7 25.3 21.9 25.3C22.9 25.3 23.6 25.8 24 26.6C24.4 25.8 25.1 25.3 26.1 25.3C27.3 25.3 28.4 26.3 28.4 27.7C28.4 29.4 27 31 24 33Z', PIN_E.hot]
+            ['e', 'M24 33C21 31 19.6 29.4 19.6 27.7C19.6 26.3 20.7 25.3 21.9 25.3C22.9 25.3 23.6 25.8 24 26.6C24.4 25.8 25.1 25.3 26.1 25.3C27.3 25.3 28.4 26.3 28.4 27.7C28.4 29.4 27 31 24 33Z', PIN_E.hot, null, 0.6]
         ]
     },
     {
@@ -234,7 +370,7 @@ const PINS = [
         progress: s => [s.recRead ? 1 : 0, 1],
         art: [
             ['e', 'M10 9H38Q42 9 42 13V28Q42 32 38 32H22L13.5 39.5V32H10Q6 32 6 28V13Q6 9 10 9Z', PIN_E.cream],
-            ['d', 'M24 27.5C19 24 16.5 21.5 16.5 18.5C16.5 16 18.3 14.3 20.4 14.3C22 14.3 23.3 15.2 24 16.6C24.7 15.2 26 14.3 27.6 14.3C29.7 14.3 31.5 16 31.5 18.5C31.5 21.5 29 24 24 27.5Z', PIN_E.pink]
+            ['e', 'M24 27.5C19 24 16.5 21.5 16.5 18.5C16.5 16 18.3 14.3 20.4 14.3C22 14.3 23.3 15.2 24 16.6C24.7 15.2 26 14.3 27.6 14.3C29.7 14.3 31.5 16 31.5 18.5C31.5 21.5 29 24 24 27.5Z', PIN_E.pink, null, 0.6]
         ]
     },
     {
@@ -250,12 +386,44 @@ const PINS = [
         ]
     },
     {
+        id: 'loyal', name: 'Loyal Critter', desc: 'Keep a reading critter 30 days without it running away.', metal: 'silver', glint: [11, 28],
+        progress: s => [Math.min(s.critterDays, 30), 30],
+        art: [
+            // its bowl
+            ['e', 'M7 22H41Q39 36 24 36Q9 36 7 22Z', PIN_E.pink],
+            ['e', 'M5.5 18.5H42.5V23H5.5Z', PIN_E.hot],
+            ['d', pinHeart(24, 29, 4.2), PIN_E.cream]
+        ]
+    },
+    {
         id: 'genres', name: 'Genre Hopper', desc: 'Read books from 10 different genres.', metal: 'gold', glint: [12, 12],
         progress: s => [Math.min(s.genres, 10), 10],
         art: [
             ['e', pinCircle(24, 24, 17), PIN_E.sky], ['e', pinCircle(24, 24, 12.5), PIN_E.cream],
             ['l', 'M24 8.2v2.4'], ['l', 'M24 37.4v2.4'], ['l', 'M8.2 24h2.4'], ['l', 'M37.4 24h2.4'],
             ['e', 'M24 13L28 24H20Z', PIN_E.hot], ['e', 'M20 24H28L24 35Z', PIN_E.lav], ['m', pinCircle(24, 24, 2)]
+        ]
+    },
+    {
+        id: 'globe', name: 'Globe Trotter', desc: 'Read books from 25 different genres.', metal: 'gold', glint: [16, 13],
+        progress: s => [Math.min(s.genres, 25), 25],
+        art: [
+            ['l', 'M24 5.5A15.5 15.5 0 0 1 24 36.5'],
+            ['e', pinCircle(23, 21, 13), PIN_E.sky],
+            // green land, in a thin line of gold
+            ...['M15 14C18 12 21 13 21 16C21 19 18 19 17 22C16 24 13 22 13 19C13 17 13 15 15 14Z',
+                'M26 20C29 19 33 21 32 25C31 29 27 31 26 28C25 26 24 21 26 20Z',
+                'M24 11C26 10 29 11 29 13C27 14 25 14 24 11Z'].flatMap(d => [['d', d, PIN_E.mint], ['l', d, 0.5]]),
+            ['m', 'M22.6 36.3h2.8v4.2h-2.8Z'],
+            ['e', 'M15 40.5H33Q33 43.5 30 43.5H18Q15 43.5 15 40.5Z', PIN_E.lav]
+        ]
+    },
+    {
+        id: 'fanclub', name: 'Fan Club', desc: 'Read 5 books by the same author (not counting books in a series).', metal: 'silver', glint: [18, 14],
+        progress: s => [Math.min(s.authorRun, 5), 5],
+        art: [
+            ['m', 'M10 7h3v36h-3Z'], ['m', pinCircle(11.5, 6, 2.6)],
+            ['e', 'M13 9L42 18L13 27Z', PIN_E.lav]
         ]
     },
     {
@@ -286,22 +454,50 @@ const PINS = [
         ]
     },
     {
+        id: 'donut', name: 'Donut Stop', desc: 'Log pages 30 days in a row.', metal: 'gold', glint: [12, 14],
+        progress: s => [Math.min(s.streak, 30), 30],
+        art: [
+            // gold all round, with the hole cut out (drawn the other way round)
+            ['m', pinCircle(24, 24, 19.3) + 'M17.5 24a6.5 6.5 0 1 1 13 0a6.5 6.5 0 1 1 -13 0Z'],
+            ['e', pinWavy(24, 24, 17, 1.3, 9) + pinCircle(24, 24, 6.5), PIN_E.pink, 'evenodd'],
+            ...[[0, PIN_E.mint, 30], [50, PIN_E.yellow, -40], [100, PIN_E.sky, 70], [150, PIN_E.cream, 10], [200, PIN_E.lav, -60],
+                [250, PIN_E.yellow, 45], [300, PIN_E.mint, -15]].map(([deg, colour, turn]) => {
+                const a = deg * Math.PI / 180;
+                return ['d', pinSprinkle(24 + 11.3 * Math.cos(a), 24 + 11.3 * Math.sin(a), turn), colour];
+            })
+        ]
+    },
+    {
         id: 'nightowl', name: 'Night Owl', desc: 'Log pages between midnight and 4am.', metal: 'silver', glint: [14, 12],
         progress: s => [s.nightOwl ? 1 : 0, 1],
         art: [
             ['e', 'M22.68 8.02A17 17 0 1 0 38.63 28.52A13 13 0 0 1 22.68 8.02Z', PIN_E.yellow],
-            ['e', starPath(36, 9.5, 5.2, 2.3), PIN_E.lav],
+            ['e', starPath(32.5, 14.5, 5.2, 2.3), PIN_E.lav],
             ['d', pinCircle(14.5, 30, 1.5), PIN_E.pink], ['l', 'M9.5 25.5q2.5 2.2 5 0']
         ]
     },
     {
-        id: 'dnf', name: 'Life’s Too Short', desc: 'Put down a book you weren’t enjoying (mark it DNF).', metal: 'silver', glint: [33, 10.5],
+        id: 'bedtime', name: 'Bedtime Story', desc: 'Log pages on 10 different nights (9pm to 4am).', metal: 'silver', glint: [16, 13],
+        progress: s => [Math.min(s.nights, 10), 10],
+        art: [
+            ['e', 'M23.39 7.02A9 9 0 1 0 32.63 18.57A7.5 7.5 0 0 1 23.39 7.02Z', PIN_E.yellow],
+            ['l', 'M16.6 15.6q1.4 1.2 2.8 0'], ['d', pinCircle(18.8, 19.4, 1), PIN_E.pink],
+            ['t', 35.5, 22, 5.5, 'z'], ['t', 39.5, 15.5, 7.5, 'z'], ['t', 43, 8, 9.5, 'z'],
+            ['e', 'M24 30C19 27 13 27 8 28.5V40C13 38.5 19 38.5 24 41.5Z', PIN_E.cream],
+            ['e', 'M24 30C29 27 35 27 40 28.5V40C35 38.5 29 38.5 24 41.5Z', PIN_E.cream],
+            ['l', 'M11 32c3-.8 6-.8 9 0'], ['l', 'M11 36c3-.8 6-.8 9 0'], ['l', 'M28 32c3-.8 6-.8 9 0']
+        ]
+    },
+    {
+        id: 'dnf', name: 'Life’s Too Short', desc: 'Put down a book you weren’t enjoying (mark it DNF).', metal: 'silver', glint: [13, 13],
         progress: s => [s.dnf ? 1 : 0, 1],
         art: [
-            ['e', 'M6 43C9 37.5 21 37.5 25 43Z', PIN_E.mint],
-            ['m', 'M13.5 7h3v35h-3Z'], ['m', pinCircle(15, 6, 2.6)],
-            ['e', 'M17 9C23 6 28 12 35 9V24C28 27 23 21 17 24Z', PIN_E.cream],
-            ['d', 'M26 20C23.5 18.3 22.3 17 22.3 15.6C22.3 14.4 23.2 13.6 24.2 13.6C25 13.6 25.6 14 26 14.7C26.4 14 27 13.6 27.8 13.6C28.8 13.6 29.7 14.4 29.7 15.6C29.7 17 28.5 18.3 26 20Z', PIN_E.pink]
+            ['e', pinCircle(24, 24, 16.5), PIN_E.yellow],
+            ['d', pinCircle(15.5, 28, 2.3), PIN_E.pink], ['d', pinCircle(32.5, 28, 2.3), PIN_E.pink],
+            ['d', pinCircle(19.5, 24.5, 1.8), PIN_E.ink], ['d', pinCircle(28.5, 24.5, 1.8), PIN_E.ink],
+            ['d', pinCircle(20.1, 23.9, 0.6), '#fff'], ['d', pinCircle(29.1, 23.9, 0.6), '#fff'],
+            ['l', 'M21.5 31q2.5-2 5 0'],
+            ['d', 'M28.6 27.2C27.8 28.7 27.5 29.3 27.5 29.8A1.1 1.1 0 0 0 29.7 29.8C29.7 29.3 29.4 28.7 28.6 27.2Z', PIN_E.sky]
         ]
     },
     {
@@ -315,13 +511,18 @@ const PINS = [
         ]
     },
     {
-        id: 'dressed', name: 'Well Dressed Shelf', desc: 'Give 10 books a real cover image.', metal: 'gold', glint: [16, 11],
+        id: 'dressed', name: 'Well Dressed Shelf', desc: 'Give 10 books a real cover image.', metal: 'gold', glint: [13.5, 11],
         progress: s => [Math.min(s.covers, 10), 10],
         art: [
-            ['e', 'M11 7H37V41H11Z', PIN_E.sky], ['e', 'M11 7h5v34h-5Z', PIN_E.lav],
-            ['e', 'M20 17L27 21.5L20 26Z', PIN_E.hot], ['e', 'M34 17L27 21.5L34 26Z', PIN_E.hot],
-            ['m', pinCircle(27, 21.5, 2)],
-            ['d', 'M20 32h14v2.6H20Z', PIN_E.cream]
+            // a book in a tux: jacket cover, white shirt front, bow tie
+            ['e', 'M11 7H37V41H11Z', PIN_E.ink], ['e', 'M11 7h5v34h-5Z', PIN_E.lav],
+            ['e', 'M20 7H34L27 31Z', PIN_E.cream],
+            ['e', 'M20 7L27 31L19.5 21L22.5 17.5Z', PIN_E.ink], ['e', 'M34 7L27 31L34.5 21L31.5 17.5Z', PIN_E.ink],
+            ['d', pinCircle(27, 19, 0.9), PIN_E.ink], ['d', pinCircle(27, 23.5, 0.9), PIN_E.ink],
+            ['e', 'M21.5 8.5L27 11.5L21.5 14.5Z', PIN_E.hot], ['e', 'M32.5 8.5L27 11.5L32.5 14.5Z', PIN_E.hot],
+            ['m', pinCircle(27, 11.5, 1.7)],
+            ['m', pinCircle(27, 34.5, 1.1)], ['m', pinCircle(27, 38.2, 1.1)],
+            ['l', 'M30 30.5h4.5'], ['d', 'M30.6 30.5L31.6 28.2L32.4 30.5L33.4 28.6L34 30.5Z', PIN_E.hot]
         ]
     },
     {
@@ -330,17 +531,26 @@ const PINS = [
         art: [
             ['e', 'M8 13h7v28H8Z', PIN_E.pink], ['e', 'M15 8h8v33h-8Z', PIN_E.yellow],
             ['e', 'M23 15h6v26h-6Z', PIN_E.mint], ['e', 'M30.5 10.5L37 9L42.5 39L36 40.5Z', PIN_E.lav],
-            ['l', 'M8 17h7'], ['l', 'M8 36h7'], ['l', 'M15 12.5h8'], ['l', 'M15 36h8'], ['l', 'M23 19h6'], ['l', 'M23 37h6'],
-            ['d', 'M17.5 20h3v10h-3Z', PIN_E.hot]
+            ['l', 'M8 17h7'], ['l', 'M8 36h7'], ['l', 'M15 12.5h8'], ['l', 'M15 36h8'], ['l', 'M23 19h6'], ['l', 'M23 37h6']
         ]
     },
     {
-        id: 'tagger', name: 'Tagger', desc: 'Use 10 different tags on your books.', metal: 'gold', glint: [19, 15], rotate: -22,
+        id: 'rainbow', name: 'Rainbow Shelf', desc: 'Have spines in all 7 colours: red, orange, yellow, green, blue, purple and pink.', metal: 'silver', glint: [12, 22],
+        progress: s => [s.colours, 7],
+        art: [
+            ['e', 'M7 32A17 17 0 0 1 41 32H37.4A13.4 13.4 0 0 0 10.6 32Z', PIN_E.hot],
+            ['e', 'M10.6 32A13.4 13.4 0 0 1 37.4 32H33.8A9.8 9.8 0 0 0 14.2 32Z', PIN_E.yellow],
+            ['e', 'M14.2 32A9.8 9.8 0 0 1 33.8 32H30.2A6.2 6.2 0 0 0 17.8 32Z', PIN_E.mint],
+            // a cloud under each end
+            ['e', pinCloud(12.4, 39, 1.5), PIN_E.cream], ['e', pinCloud(35.6, 39, 1.5), PIN_E.cream]
+        ]
+    },
+    {
+        id: 'tagger', name: 'Tagger', desc: 'Use 10 different tags on your books.', metal: 'gold', glint: [20, 9.5],
         progress: s => [Math.min(s.tags, 10), 10],
         art: [
-            ['e', 'M5 24L16 13H43V35H16Z', PIN_E.mint],
-            ['m', pinCircle(13, 24, 2.6) + pinCircle(13, 24, 1.2)],
-            ['t', 30, 28, 10, '#tag']
+            ['e', 'M17.6 6L24.6 6L23.2 13L29.2 13L30.6 6L37.6 6L36.2 13L44.2 13L42.8 20L34.8 20L33.2 28L41.2 28L39.8 35L31.8 35L30.4 42L23.4 42L24.8 35L18.8 35L17.4 42L10.4 42L11.8 35L3.8 35L5.2 28L13.2 28L14.8 20L6.8 20L8.2 13L16.2 13Z' +
+                'M21.8 20L27.8 20L26.2 28L20.2 28Z', PIN_E.mint, 'evenodd']
         ]
     },
     {
@@ -356,12 +566,38 @@ const PINS = [
         ]
     },
     {
+        id: 'cake', name: 'Piece of Cake', desc: 'Finish a book the same day you start it (full dates on both).', metal: 'gold', glint: [13, 21],
+        progress: s => [s.oneDay ? 1 : 0, 1],
+        art: [
+            // a little cake on a plate: dripping frosting, sprinkles, a cherry
+            ['e', 'M4 40a20 4.5 0 1 0 40 0a20 4.5 0 1 0 -40 0Z', PIN_E.lav],
+            ['e', 'M9 21Q24 17 39 21V38Q24 42 9 38Z', PIN_E.pink],
+            ['d', pinCircle(14, 33, 1), PIN_E.mint], ['d', pinCircle(20, 35.8, 1), PIN_E.yellow], ['d', pinCircle(26.5, 33.2, 1), PIN_E.sky],
+            ['d', pinCircle(33, 35.4, 1), PIN_E.cream], ['d', pinCircle(32, 30.4, 1), PIN_E.yellow], ['d', pinCircle(17.5, 29.8, 1), PIN_E.sky],
+            ['e', 'M8.5 21.5Q24 15.5 39.5 21.5V24H38.3V28A1.8 1.8 0 0 1 34.7 28V24.5H30.8V26A1.8 1.8 0 0 1 27.2 26V24.5H23.3V29A1.8 1.8 0 0 1 19.7 29V24.5H15.8V26.5A1.8 1.8 0 0 1 12.2 26.5V24H8.5Z', PIN_E.cream],
+            ['l', 'M24 12Q24.8 8.5 28 7'],
+            ['e', pinCircle(24, 15, 3.6), PIN_E.hot], ['d', pinCircle(22.8, 13.8, 0.9), PIN_E.cream]
+        ]
+    },
+    {
         id: 'sticky', name: 'Sticky Fingers', desc: 'Stick up 10 sticky notes (the pile in the corner, or To Buy).', metal: 'silver', glint: [12, 12], rotate: -6,
         progress: s => [Math.min(s.stickies, 10), 10],
         art: [
             ['e', 'M9 9H39V31L31 39H9Z', PIN_E.yellow],
             ['e', 'M31 39V31H39Z', PIN_E.peach],
             ['l', 'M14 17h19'], ['l', 'M14 23h15'], ['l', 'M14 29h11']
+        ]
+    },
+    {
+        id: 'gotit', name: 'Got It!', desc: 'Buy a book off your To Buy list (tick it in Slips > To Buy, or tick I Own This Book).', metal: 'gold', glint: [13, 23],
+        progress: s => [s.bought ? 1 : 0, 1],
+        art: [
+            ['l', 'M12.5 19C12.5 2.5 35.5 2.5 35.5 19'],
+            ['e', 'M16 7h7.5v16H16Z', PIN_E.lav], ['e', 'M25.5 9.8L31.8 8.4L34.6 22H28Z', PIN_E.mint],
+            ['l', 'M16 10.5h7.5'],
+            ['e', 'M9 19H39L36.5 42H11.5Z', PIN_E.pink],
+            ['l', 'M10.5 23.5h27'],
+            ['e', starPath(24, 32, 6.5, 2.9), PIN_E.yellow]
         ]
     },
     {
@@ -374,14 +610,27 @@ const PINS = [
         ]
     },
     {
+        id: 'bookclub', name: 'Book Club', desc: 'Lend books to 3 different people.', metal: 'gold', glint: [12, 25],
+        progress: s => [Math.min(s.lentPeople, 3), 3],
+        art: [
+            ['e', pinHeart(24, 16, 9), PIN_E.hot],
+            ['e', pinHeart(14.5, 31, 9), PIN_E.pink], ['e', pinHeart(33.5, 31, 9), PIN_E.lav]
+        ]
+    },
+    {
         id: 'returns', name: 'Return Policy', desc: 'Get 5 lent books back.', metal: 'silver', glint: [12, 12],
         progress: s => [Math.min(s.returns, 5), 5],
         art: [
-            ['e', pinCircle(24, 24, 17.5) + pinCircle(24, 24, 12.5), PIN_E.hot, 'evenodd'],
-            ['e', pinCircle(24, 24, 12.5), PIN_E.cream],
-            ['l', 'M17.5 24.5l4.5 4.5l9 -10'],
-            ['d', pinCircle(24, 9, 1.3), PIN_E.cream], ['d', pinCircle(24, 39, 1.3), PIN_E.cream],
-            ['d', pinCircle(9, 24, 1.3), PIN_E.cream], ['d', pinCircle(39, 24, 1.3), PIN_E.cream]
+            // a little alarm clock (back right on time), with a happy face
+            ['m', 'M13 36.5L9.5 42.5H14L16.5 38.5Z'], ['m', 'M35 36.5L38.5 42.5H34L31.5 38.5Z'],
+            ['e', pinCircle(12.5, 12.5, 5), PIN_E.yellow], ['e', pinCircle(35.5, 12.5, 5), PIN_E.yellow],
+            ['m', 'M22.6 7h2.8v4h-2.8Z'],
+            ['e', pinCircle(24, 26, 15), PIN_E.hot],
+            ['e', pinCircle(24, 26, 11.3), PIN_E.cream],
+            ['l', 'M24 26V19.5'], ['l', 'M24 26L28.5 23.5'], ['m', pinCircle(24, 26, 1.3)],
+            ['d', pinCircle(19, 28.5, 1.4), PIN_E.ink], ['d', pinCircle(29, 28.5, 1.4), PIN_E.ink],
+            ['d', pinCircle(16.8, 31.3, 1.5), PIN_E.pink], ['d', pinCircle(31.2, 31.3, 1.5), PIN_E.pink],
+            ['l', 'M22.3 31.5q1.7 1.4 3.4 0']
         ]
     },
     {
@@ -392,6 +641,18 @@ const PINS = [
             ['e', 'M13.8 12.6h4.6v11.4h-4.6Z', PIN_E.pink], ['e', 'M18.4 13.8h4.6v10.2h-4.6Z', PIN_E.mint], ['e', 'M26.5 12.5L30.8 11.4L33.6 23.8H29.2Z', PIN_E.sky],
             ['e', 'M13.8 29.2h4.6v10.3h-4.6Z', PIN_E.yellow], ['e', 'M18.4 30.6h4.6v8.9h-4.6Z', PIN_E.hot], ['e', 'M23 29.6h4.6v9.9H23Z', PIN_E.peach]
         ]
+    },
+    {
+        id: 'cookiejar', name: 'Cookie Jar', desc: 'Have 20 books waiting in Want to Read.', metal: 'silver', glint: [12, 20],
+        progress: s => [Math.min(s.wantToRead, 20), 20],
+        art: [
+            ['e', pinCircle(24, 7.5, 2.6), PIN_E.lav],
+            ['e', 'M11 16H37Q40 16 40 19V38Q40 42 36 42H12Q8 42 8 38V19Q8 16 11 16Z', PIN_E.sky],
+            ['e', pinCircle(17, 34.5, 5.5), PIN_E.peach], ['e', pinCircle(30.5, 33.5, 6), PIN_E.peach], ['e', pinCircle(23, 24.5, 5.5), PIN_E.peach],
+            ...[[15.5, 33], [18.5, 36.5], [29, 31.5], [32.5, 35], [30, 36.5], [21.5, 23], [24.5, 26.5]]
+                .map(([x, y]) => ['d', pinCircle(x, y, 0.9), PIN_E.ink]),
+            ['e', 'M10 9.5H38V16H10Z', PIN_E.lav]
+        ]
     }
 ];
 
@@ -401,22 +662,23 @@ function pinSvg(pin, earned = true) {
     const enamel = pin.art.filter(p => p[0] === 'e' || p[0] === 'm');
     if (!earned) {
         // not earned yet: just its shape, a flat shadow on the cork
-        const shapes = enamel.map(p => `<path d="${p[1]}"${p[3] === 'evenodd' ? ' fill-rule="evenodd"' : ''}/>`).join('');
+        // (dots too, for any pin drawn mostly in dots)
+        const shapes = pin.art.filter(p => 'emd'.includes(p[0]))
+            .map(p => `<path d="${p[1]}"${p[3] === 'evenodd' ? ' fill-rule="evenodd"' : ''}/>`).join('');
         return `<svg class="pin-art locked" viewBox="0 0 48 48" aria-hidden="true"><g class="pin-ghost"${turn}>${shapes}</g></svg>`;
     }
     const stops = PIN_METALS[pin.metal].map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('');
-    const metal = `url(#${id}a)`, bevel = `url(#${id}b)`;
+    const metal = `url(#${id}a)`;
     const parts = pin.art.map(([kind, a, b, c, d]) => {
         if (kind === 'e') {
             const rule = c === 'evenodd' ? ' fill-rule="evenodd"' : '';
             return `<path d="${a}" style="fill:${b}"${rule}/>` +
-                `<path d="${a}" fill="none" stroke="${metal}" stroke-width="1.8" stroke-linejoin="round"/>` +
-                `<path d="${a}" fill="none" stroke="${bevel}" stroke-width="0.5" stroke-linejoin="round" opacity="0.65"/>`;
+                `<path d="${a}" fill="none" stroke="${metal}" stroke-width="${d || 1.8}" stroke-linejoin="round"/>`;
         }
         if (kind === 'd') return `<path d="${a}" style="fill:${b}"/>`;
-        if (kind === 'l') return `<path d="${a}" fill="none" stroke="${metal}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>`;
-        if (kind === 'm') return `<path d="${a}" fill="${metal}" stroke="${bevel}" stroke-width="0.6"/>`;
-        if (kind === 't') return `<text x="${a}" y="${b}" font-size="${c}" text-anchor="middle" fill="${metal}" stroke="${bevel}" stroke-width="0.25" class="pin-text">${d}</text>`;
+        if (kind === 'l') return `<path d="${a}" fill="none" stroke="${metal}" stroke-width="${b || 1}" stroke-linecap="round" stroke-linejoin="round"/>`;
+        if (kind === 'm') return `<path d="${a}" fill="${metal}"/>`;
+        if (kind === 't') return `<text x="${a}" y="${b}" font-size="${c}" text-anchor="middle" fill="${metal}" class="pin-text">${d}</text>`;
         return '';
     }).join('');
     // the enamel's shine: a crisp curved band across the top and one
@@ -426,7 +688,6 @@ function pinSvg(pin, earned = true) {
     return `<svg class="pin-art" viewBox="0 0 48 48" aria-hidden="true">
         <defs>
             <linearGradient id="${id}a" gradientUnits="userSpaceOnUse" x1="6" y1="4" x2="42" y2="44">${stops}</linearGradient>
-            <linearGradient id="${id}b" gradientUnits="userSpaceOnUse" x1="42" y1="6" x2="6" y2="42">${stops}</linearGradient>
             <clipPath id="${id}c">${clip}</clipPath>
         </defs>
         <g${turn}>${parts}</g>
@@ -451,13 +712,47 @@ function pinStats() {
     });
     const log = loadPagesLog();
     const fed = critter ? Math.max(critter.totalFed || 0, ...(critter.past || []).map(p => p.totalFed || 0)) : 0;
+    // every finish with a date (re-reads too), as [year, month]
+    const finishes = [];
+    books.forEach(b => {
+        if (b.status === 'Read') finishes.push(b.finishedDate);
+        (b.extraReads || []).forEach(r => finishes.push(r.finished));
+    });
+    const finished = finishes.filter(d => /^\d{4}-\d{2}/.test(d || '')).map(d => [+d.slice(0, 4), +d.slice(5, 7)]);
+    const perYear = {};
+    finished.forEach(([y]) => { perYear[y] = (perYear[y] || 0) + 1; });
+    // read books by each author, leaving out series books
+    const byAuthor = {};
+    read.filter(b => !(b.series || '').trim()).forEach(b => {
+        new Set((b.authors || []).filter(a => a && a !== 'Unknown').map(a => a.trim().toLowerCase()))
+            .forEach(a => { byAuthor[a] = (byAuthor[a] || 0) + 1; });
+    });
+    // nights read on (the small hours count as the night before)
+    const nights = new Set(log.filter(e => e.pages > 0).map(e => new Date(e.at)).filter(d => d.getHours() >= 21 || d.getHours() < 4)
+        .map(d => dateBoxValue(new Date(d.getTime() - (d.getHours() < 4 ? DAY_MS : 0)))));
+    const critterDays = !critter ? 0 : Math.max(
+        critter.bornAt && !critter.gone ? (Date.now() - critter.bornAt) / DAY_MS : 0,
+        ...(critter.past || []).filter(p => p.bornAt).map(p => (p.endedAt - p.bornAt) / DAY_MS));
     return {
         readCount: read.length,
         fiveStars: books.some(b => normalizeRating(b.rating) >= 5),
+        fiveStarCount: books.filter(b => normalizeRating(b.rating) >= 5).length,
+        mostReads: books.reduce((max, b) => Math.max(max, timesRead(b)), 0),
+        seriesMost: Math.max(0, ...seriesSummary(books).map(s => s.readCount)),
+        slowBurn: spans.some(d => d !== null && d > 90),
+        bestYear: Math.max(0, ...Object.values(perYear)),
+        january: finished.some(([, m]) => m === 1),
+        summer: finished.some(([, m]) => m >= 6 && m <= 8),
+        authorRun: Math.max(0, ...Object.values(byAuthor)),
+        nights: nights.size,
+        critterDays: Math.floor(critterDays),
+        colours: new Set(books.map(b => colourFamily(b.color)).filter(Boolean)).size,
+        wantToRead: books.filter(b => b.status === 'Want to Read').length,
         seriesDone: seriesSummary(books).some(s => s.finished),
         reread: books.some(b => timesRead(b) >= 2),
         longest: read.reduce((max, b) => Math.max(max, b.pages || 0), 0),
         speedy: spans.some(d => d !== null && d <= 3),
+        oneDay: spans.some(d => d === 1), // (the same day counts as 1)
         goal: appSettings.goal || 0,
         goalDone: booksReadThisYear(),
         critterFed: fed,
@@ -483,8 +778,27 @@ function pinStats() {
         // (counted as they happen, as well as what's on the shelf now)
         stickies: Math.max(pinState.counts.stickies || 0, books.filter(b => b.stickyNote).length),
         lentBooks: new Set([...pinState.lentIds, ...books.filter(isLentOut).map(b => b.id)]).size,
+        bought: (pinState.counts.bought || 0) > 0 || books.some(b => b.stickyNote && b.owned),
+        lentPeople: new Set([...pinState.lentTo, ...books.filter(isLentOut).map(b => b.lentTo.trim().toLowerCase())]).size,
         returns: pinState.counts.returns || 0
     };
+}
+
+// which of 7 colour families a spine colour's in (greys, near-blacks
+// and near-whites aren't in any), for Rainbow Shelf
+function colourFamily(hex) {
+    const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex || '').trim());
+    if (!m) return null;
+    const h6 = m[1].length === 3 ? [...m[1]].map(c => c + c).join('') : m[1];
+    const [r, g, b] = [0, 2, 4].map(i => parseInt(h6.slice(i, i + 2), 16) / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
+    const s = max === min ? 0 : (max - min) / (1 - Math.abs(2 * l - 1));
+    if (s < 0.25 || l < 0.12 || l > 0.92) return null;
+    const d = max - min;
+    let hue = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    hue = (hue * 60 + 360) % 360;
+    return hue < 15 || hue >= 345 ? 'red' : hue < 45 ? 'orange' : hue < 70 ? 'yellow' : hue < 170 ? 'green'
+        : hue < 255 ? 'blue' : hue < 290 ? 'purple' : 'pink';
 }
 
 // the Settings > Shelf extras switches (changing any earns Tinkerer)
@@ -507,7 +821,10 @@ function loadPins() {
     try {
         const saved = JSON.parse(localStorage.getItem(PINS_KEY));
         if (saved && typeof saved === 'object') {
-            pinState = { earned: saved.earned || {}, seen: saved.seen || {}, counts: saved.counts || {}, lentIds: saved.lentIds || [] };
+            pinState = {
+                earned: saved.earned || {}, seen: saved.seen || {}, counts: saved.counts || {},
+                lentIds: saved.lentIds || [], lentTo: saved.lentTo || []
+            };
         }
     } catch (e) {}
 }
@@ -549,10 +866,12 @@ function countForPins(key) {
     checkPins();
 }
 
-// a book's been lent out (each book counts once toward Matchmaker)
-function noteLentForPins(id) {
-    if (pinState.lentIds.includes(id)) return;
-    pinState.lentIds.push(id);
+// a book's been lent out (each book counts once toward Matchmaker, each
+// person once toward Book Club)
+function noteLentForPins(id, name) {
+    const who = (name || '').trim().toLowerCase();
+    if (!pinState.lentIds.includes(id)) pinState.lentIds.push(id);
+    if (who && !pinState.lentTo.includes(who)) pinState.lentTo.push(who);
     savePins();
 }
 
@@ -721,6 +1040,13 @@ function scatterPins(width, height, size) {
         });
         sites.forEach((s, i) => { if (sum[i].n) { s.x = sum[i].x / sum[i].n; s.y = sum[i].y / sum[i].n; } });
     }
+    // settling pulls them in off the edges: stretch them back out to fill
+    // the board, so there's no bare strip of cork round the outside
+    ['x', 'y'].forEach(k => {
+        const lo = Math.min(...sites.map(s => s[k])), hi = Math.max(...sites.map(s => s[k]));
+        const span = k === 'x' ? w : h;
+        if (hi > lo) sites.forEach(s => { s[k] = pad + (s[k] - lo) / (hi - lo) * span; });
+    });
     // then any two a bit closer than the usual gap ease apart, so none
     // end up cramped next to a roomy one
     const nearest = () => sites.map((a, i) => Math.min(...sites.filter((_, j) => j !== i).map(b => Math.hypot(a.x - b.x, a.y - b.y))));
@@ -756,7 +1082,13 @@ function renderPinBoard(landing = []) {
     const board = document.getElementById('pins-board');
     board.innerHTML = '';
     let size = board.clientWidth >= 560 ? 86 : 62;
-    const layout = scatterPins(board.clientWidth, board.clientHeight, size);
+    let layout = scatterPins(board.clientWidth, board.clientHeight, size);
+    // shrunk to fit: lay them out again at that size, so the margin round
+    // the edge is for the smaller pins and they get the room back
+    if (layout.size < size) {
+        const again = scatterPins(board.clientWidth, board.clientHeight, layout.size);
+        if (again.size >= layout.size) layout = again;
+    }
     const spots = layout.sites;
     size = layout.size;
     PINS.forEach((pin, i) => {

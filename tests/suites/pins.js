@@ -103,10 +103,38 @@ library.push({ id: 'p2', title: 'Nope', authors: ['B'], genre: 'Horror', status:
 renderBookshelf();
 ['fivestar', 'doorstop', 'speedy', 'dnf'].forEach(id => ok(`earned: ${id}`, !!pinState.earned[id]));
 ok('widget badge counts them', q('#pin-new').textContent === '+4');
+ok('not yet: piece of cake (2 days)', !pinState.earned.cake);
+library.push({ id: 'p3', title: 'Quick One', authors: ['C'], genre: 'History', status: 'Read', startedDate: '2024-04-05', finishedDate: '2024-04-05', color: '#345', width: 100, sortOrder: 82 });
+renderBookshelf();
+ok('earned: piece of cake (started and finished the same day)', !!pinState.earned.cake);
+library = library.filter(b => b.id !== 'p3');
 // pins stay once earned
 library = library.filter(b => !['p1', 'p2'].includes(b.id));
 renderBookshelf();
 ok('pins stay after the books go', !!pinState.earned.fivestar && !!pinState.earned.dnf);
+
+// ---- the bigger shelf pins
+const extraBook = (id, extra) => library.push({ id, title: 'Extra ' + id, authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#345', width: 100, sortOrder: 300, ...extra });
+const newer = ['sundae', 'macaron', 'oldfriend', 'slowburn', 'bigyear', 'freshstart', 'popsicle', 'fanclub', 'rainbow', 'cookiejar'];
+ok('not yet: the bigger shelf pins', newer.every(id => !pinState.earned[id]));
+for (let i = 0; i < 10; i++) extraBook('x5' + i, { rating: 5 });
+['Trio 1', 'Trio 2', 'Trio 3'].forEach((t, i) => extraBook('xt' + i, { series: 'Trio', seriesNumber: i + 1 }));
+extraBook('xr', { extraReads: [{ started: '2023-01-01', finished: '2023-01-09' }, { started: '2024-01-01', finished: '2024-01-09' }] });
+extraBook('xs', { startedDate: '2024-01-01', finishedDate: '2024-05-01' });
+for (let i = 0; i < 50; i++) extraBook('xy' + i, { finishedDate: `2023-0${i % 2 ? 7 : 1}-1${i % 10}` });
+for (let i = 0; i < 5; i++) extraBook('xa' + i, { authors: ['Solo Writer'] });
+['#d93030', '#e8892a', '#f2d23a', '#3a9e4a', '#3060d0', '#8040c0', '#e060a0'].forEach((color, i) => extraBook('xc' + i, { color }));
+for (let i = 0; i < 20; i++) extraBook('xw' + i, { status: 'Want to Read' });
+renderBookshelf();
+newer.forEach(id => ok(`earned: ${id}`, !!pinState.earned[id], JSON.stringify(PINS.find(p => p.id === id).progress(pinStats()))));
+library = library.filter(b => !b.id.startsWith('x'));
+delete pinState.earned.bookone; // (the series books earned it; it's checked later)
+renderBookshelf();
+// a series doesn't count toward Fan Club
+for (let i = 0; i < 5; i++) extraBook('xf' + i, { authors: ['Series Writer'], series: 'Saga' });
+ok('fan club leaves out series books', pinStats().authorRun < 5);
+library = library.filter(b => !b.id.startsWith('x'));
+ok('rainbow: greys aren\'t a colour', colourFamily('#808080') === null && colourFamily('#d93030') === 'red' && colourFamily('#e060a0') === 'pink');
 
 // streak and night owl, from the pages log
 localStorage.setItem(PAGES_LOG_KEY, JSON.stringify([...Array(7)].map((_, i) => {
@@ -119,6 +147,10 @@ ok('earned: streak', !!pinState.earned.streak);
 const late = new Date(); late.setHours(2, 30, 0, 0);
 recordPages(5, late.getTime());
 ok('earned: night owl', !!pinState.earned.nightowl);
+// nights: the small hours count as the night before
+const evening = new Date(); evening.setDate(evening.getDate() - 1); evening.setHours(22, 0, 0, 0);
+recordPages(5, evening.getTime());
+ok('2:30am and 10pm the night before are one night', pinStats().nights === 1, pinStats().nights);
 localStorage.removeItem(PAGES_LOG_KEY);
 
 // ---- lending: getting it back earns a pin, from the edit window...
@@ -193,9 +225,11 @@ ok('to-buy adds a sticky note', messiah && isStickyPlaceholder(messiah));
 ok('to-buy total', q('#slip-buy-total').textContent === 'ITEMS: 1');
 const buyRowFor = title => [...document.querySelectorAll('#slip-buy-list .slip-row')].find(r => r.textContent.includes(title));
 const box = buyRowFor('Dune Messiah').querySelector('input[type="checkbox"]');
+ok('not yet: got it', !pinState.earned.gotit);
 box.click();
 await wait(150);
 ok('ticking it means you own it', messiah.owned && !isStickyPlaceholder(messiah) && buyRowFor('Dune Messiah').classList.contains('bought'));
+ok('earned: got it (ticked off To Buy)', !!pinState.earned.gotit);
 box.click();
 await wait(150);
 ok('unticking puts it back', !messiah.owned && isStickyPlaceholder(messiah) && !buyRowFor('Dune Messiah').classList.contains('bought'));
@@ -207,6 +241,15 @@ ok('a title opens the book', q('#slips-modal').style.display === 'none' && q('#b
 q('#book-rec-by').value = 'Pat';
 await processBookForm();
 ok('recommended by saved from the form', library.find(b => b.title === 'Dune Messiah').recommendedBy === 'Pat');
+// ...or by ticking I Own This Book on it
+delete pinState.earned.gotit;
+delete pinState.counts.bought;
+checkPins();
+ok('got it: not for a to-buy book you don\'t own', !pinState.earned.gotit);
+openModal(messiah.id);
+setOwned(true);
+await processBookForm();
+ok('earned: got it (edit window)', !!pinState.earned.gotit);
 openModal(rec.id);
 ok('...and shown when opened', q('#book-rec-by').value === 'Jo');
 closeModal();
@@ -263,6 +306,13 @@ for (let i = 0; i < 5; i++) {
 ok('earned: return policy (5 back)', !!pinState.earned.returns && pinState.counts.returns >= 5);
 library = library.filter(b => !b.id.startsWith('mm'));
 renderBookshelf();
+ok('book club remembers who you lent to, after the books come back', !!pinState.earned.bookclub && pinStats().lentPeople >= 5);
+// a critter kept a month
+const bornWas = critter.bornAt;
+critter.bornAt = Date.now() - 31 * DAY;
+checkPins();
+ok('earned: loyal critter (30 days)', !!pinState.earned.loyal);
+critter.bornAt = bornWas;
 ok('every pin has art that draws', PINS.every(p => { const svg = pinSvg(p); return svg.includes('<path') && !svg.includes('undefined') && !svg.includes('NaN'); }));
 // settled pins gleam
 pinState.seen = Object.fromEntries(PINS.filter(p => p.id !== 'backup').map(p => [p.id, true]));
