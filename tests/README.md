@@ -4,7 +4,7 @@ Browser tests for the bookshelf, run in a real (headless) Google Chrome.
 
 ```
 python tests/run.py            # all suites
-python tests/run.py phone      # just one: core / phone / features / critter / debug / loans / pins
+python tests/run.py phone      # just one: core / phone / features / critter / debug / loans / pins / starter
 ```
 
 Needs **Node.js 20+** and **Google Chrome** (set `CHROME_PATH` if Chrome isn't in the usual place). Each run uses a brand-new Chrome profile, so your own books and settings are never touched.

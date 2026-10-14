@@ -355,8 +355,57 @@ async function deleteLibrary() {
     renderBookshelf();
 }
 
+// ---------- Example shelf (Settings > Start over, and a first-visit offer) ----------
+// Someone opening a copy of this app gets its example shelf (somebody else's
+// books) and the pins those books earn. Remember which books came with it,
+// so they can be cleared out later without touching any added since.
+const STARTER_IDS_KEY = 'bookShelfStarterIds';
+
+function rememberStarterBooks(books) {
+    try { localStorage.setItem(STARTER_IDS_KEY, JSON.stringify(books.map(b => b.id))); } catch (e) {}
+}
+
+function starterBooksLeft() {
+    let ids = [];
+    try { ids = JSON.parse(localStorage.getItem(STARTER_IDS_KEY)) || []; } catch (e) {}
+    return library.filter(b => ids.includes(b.id));
+}
+
+function refreshStarterSetting() {
+    document.getElementById('starter-remove').hidden = starterBooksLeft().length === 0;
+}
+
+function offerFreshStart() {
+    if (starterBooksLeft().length === 0) return;
+    document.getElementById('fresh-start-modal').style.display = 'flex';
+}
+
+function closeFreshStart() {
+    document.getElementById('fresh-start-modal').style.display = 'none';
+}
+
+async function removeStarterShelf() {
+    const gone = starterBooksLeft();
+    await Promise.all(gone.map(b => dbDelete(b.id)));
+    library = library.filter(b => !gone.includes(b));
+    try {
+        localStorage.removeItem(STARTER_IDS_KEY);
+        localStorage.setItem(STARTED_FRESH_KEY, '1'); // an empty shelf stays empty
+    } catch (e) {}
+    resetPins();
+
+    closeFreshStart();
+    closeSettings();
+    populateGenreSelects();
+    populateAuthorOptions();
+    populateSeriesOptions();
+    populateFilterTagSelect();
+    renderBookshelf();
+}
+
 function openSettings() {
     hideDeleteLibraryConfirm();
+    refreshStarterSetting();
     renderCustomGenreSettings();
     document.getElementById('setting-name').value = appSettings.name === DEFAULT_SETTINGS.name ? '' : appSettings.name;
     renderSettingsFontButtons();

@@ -411,11 +411,13 @@
 }
 
 /* ---------- How backups work window ---------- */
-.modal-content.backup-help-content {
+.modal-content.backup-help-content,
+.modal-content.fresh-start-content {
     max-width: 440px;
 }
 
-.backup-help-body {
+.backup-help-body,
+.fresh-start-body {
     padding: 16px 22px 22px;
     overflow-y: auto;
     min-height: 0;
@@ -431,7 +433,8 @@
     flex-shrink: 0;
 }
 
-.backup-help-body p {
+.backup-help-body p,
+.fresh-start-body p {
     margin: 0 0 6px;
 }
 

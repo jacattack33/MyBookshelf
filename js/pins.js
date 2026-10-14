@@ -837,6 +837,15 @@ function savePins() {
 function checkPins() {
     if (!pinsReady) return;
     const stats = pinStats();
+// an empty board (Settings > Remove example shelf), then whatever the books
+// still here earn
+function resetPins() {
+    pinState = { earned: {}, seen: {}, counts: {}, lentIds: [], lentTo: [] };
+    savePins();
+    checkPins();
+    renderPinWidget();
+}
+
     let changed = false;
     PINS.forEach(pin => {
         if (pin.event || pinState.earned[pin.id]) return;

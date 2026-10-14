@@ -14,7 +14,9 @@ async function init() {
     let startedFresh = false;
     try { startedFresh = localStorage.getItem(STARTED_FRESH_KEY) === '1'; } catch (e) {}
     if (library.length === 0 && !startedFresh) {
-        await dbBulkPut(await loadStarterBooks());
+        const starter = await loadStarterBooks();
+        await dbBulkPut(starter);
+        rememberStarterBooks(starter);
         library = await dbGetAll();
     }
     await runMigrations();
@@ -28,6 +30,7 @@ async function init() {
     initCritter();
     initPins();
     initBackupReminder();
+    if (starterIsExample) offerFreshStart();
 }
 
 init();

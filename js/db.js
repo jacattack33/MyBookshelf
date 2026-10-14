@@ -71,6 +71,8 @@ const SEED_LIBRARY = [
 // all works, then delete what they don't want. Opened straight from a
 // file (no web server) the browser won't let us fetch it, so fall back
 // to the 3 built-in books.
+let starterIsExample = false; // the example shelf loaded, not the 3 built-in books
+
 async function loadStarterBooks() {
     try {
         const res = await fetch('starter-library.json', { cache: 'no-store' });
@@ -80,6 +82,7 @@ async function loadStarterBooks() {
         if (Array.isArray(data.customGenres)) {
             data.customGenres.forEach(g => addCustomGenre(g));
         }
+        starterIsExample = true;
         return data.books;
     } catch (e) {
         return SEED_LIBRARY;

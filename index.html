@@ -844,6 +844,10 @@
 
                 <div class="field-section danger-section">
                     <div class="field-section-title">Start over</div>
+                    <div class="starter-remove" id="starter-remove" hidden>
+                        <div class="field-hint">Your shelf still has books from the example shelf it came with. Remove them, and the pins they earned, to make it all yours. Books you've added stay.</div>
+                        <button type="button" class="danger" onclick="removeStarterShelf()">Remove example shelf</button>
+                    </div>
                     <div class="field-hint">Deletes every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
                     <div class="danger-buttons">
                         <button type="button" class="secondary" onclick="exportLibrary()">Export Library (Backup)</button>
@@ -859,6 +863,24 @@
                         <button type="button" class="danger" id="delete-confirm-btn" onclick="deleteLibrary()" disabled>Delete everything</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="fresh-start-modal" onclick="if (event.target === this) closeFreshStart()">
+        <div class="modal-content fresh-start-content">
+            <div class="modal-header">
+                <h3>&#9670; Welcome to your bookshelf</h3>
+                <button type="button" class="modal-close-x" onclick="closeFreshStart()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="fresh-start-body">
+                <p>This shelf comes filled with someone else's books, and the pins those books earned, so you can see how everything works.</p>
+                <p>Ready to make it yours? Clear them out and start with an empty shelf and an empty pin board.</p>
+                <div class="danger-buttons">
+                    <button type="button" class="secondary" onclick="closeFreshStart()">Keep them for now</button>
+                    <button type="button" class="danger" onclick="removeStarterShelf()">Start my own shelf</button>
+                </div>
+                <div class="field-hint">You can still do this later in Settings &rarr; Start over.</div>
             </div>
         </div>
     </div>
