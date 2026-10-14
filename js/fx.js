@@ -56,10 +56,10 @@ function flyBit(cls, x, y, dx, dy, dur) {
     return b;
 }
 
-function sparkleFrom(el, count = 7) {
+function sparkleFrom(el, count = 7, extraClass = '') {
     burstFrom(el, count, 38, () => {
         const sp = document.createElement('span');
-        sp.className = 'fx-sparkle';
+        sp.className = ('fx-sparkle ' + extraClass).trim();
         sp.textContent = Math.random() < 0.5 ? '\u2726' : '\u2727';
         sp.style.fontSize = (10 + Math.random() * 10) + 'px';
         return sp;

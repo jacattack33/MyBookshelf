@@ -99,7 +99,7 @@
 }
 
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) body.pins-on .pin-home {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) body.pins-on .pin-home {
     display: block;
 }
 
@@ -392,7 +392,7 @@
     }
 
     /* closed, a dot on the corner button says there's a new pin */
-    :root:is(:not([data-theme]), [data-theme="blueprint"]) body:not(.corner-open):has(.pin-new.visible) .corner-toggle::after {
+    :root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) body:not(.corner-open):has(.pin-new.visible) .corner-toggle::after {
         content: '';
         position: absolute;
         top: -2px;
@@ -405,8 +405,9 @@
     }
 }
 
-/* its Settings switch only shows while the board can (Candy, Blueprint) */
-:root[data-theme]:not([data-theme="blueprint"]) .pins-setting {
+/* its Settings switch only shows while the board can (Candy, Blueprint,
+   Sunset) */
+:root[data-theme]:not([data-theme="blueprint"], [data-theme="sunset"]) .pins-setting {
     display: none;
 }
 
@@ -462,5 +463,84 @@
 :root[data-theme="blueprint"] .pin-detail-name {
     font-family: 'Architects Daughter', cursive;
     font-size: 18px;
+    color: var(--y2k-hot-pink);
+}
+/* ---------- Sunset: a corkboard in a sunset frame ----------
+   the same cork and nail, framed in the whole sky (gold through orange
+   and red to plum, like Sunset's panel rims) and rounded like the
+   theme's panels; the enamel in sunset colours, with a sea teal and a
+   twilight blue so the pins don't all run together */
+:root[data-theme="sunset"] {
+    --pe-pink: #ff7d8c;
+    --pe-hot: #e8235a;
+    --pe-lav: #b06ad8;
+    --pe-mint: #4fc8b0;
+    --pe-teal: #1f9a88;
+    --pe-yellow: #ffd04f;
+    --pe-sky: #7f9cf0;
+    --pe-peach: #ff9f52;
+    --pe-cream: #fff7ec;
+    --pe-ink: #3d0a33;
+    /* (the frame's a gradient ring drawn over the cork, below; these
+       leave just its plum inner edge and the shadow it casts) */
+    --pin-frame: transparent;
+    --pin-frame-light: transparent;
+    --pin-frame-edge: rgba(106, 0, 72, 0.6);
+}
+
+:root[data-mode="dark"][data-theme="sunset"] {
+    --pin-frame-edge: rgba(20, 0, 20, 0.6);
+}
+
+:root[data-theme="sunset"] .pins-board {
+    border-radius: 18px;
+}
+
+:root[data-theme="sunset"] .pin-home-board {
+    border-radius: 10px;
+}
+
+/* the gradient ring: the whole sky, cut down to the frame's width */
+:root[data-theme="sunset"] .pins-board::after,
+:root[data-theme="sunset"] .pin-home-board::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 11px;
+    border-radius: inherit;
+    background: var(--sunset);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+:root[data-theme="sunset"] .pin-home-board::before {
+    padding: 4px;
+    background: var(--sunset-down);
+}
+
+/* nothing earned yet: a hot pink-and-orange pushpin waiting */
+:root[data-theme="sunset"] .pin-home-board:empty::after {
+    background: radial-gradient(circle at 35% 30%, #fff 0 12%, #ff7a3d 35%, #c4093f 100%);
+}
+
+/* the card: soft and rounded, its name in the theme's script */
+:root[data-theme="sunset"] .pin-detail,
+:root[data-theme="sunset"] .pin-detail::before {
+    background: var(--surface);
+}
+
+:root[data-theme="sunset"] .pin-detail {
+    border-radius: 14px;
+    box-shadow: var(--panel-shadow), 3px 3px 0 var(--outline);
+    color: var(--y2k-dark);
+}
+
+:root[data-theme="sunset"] .pin-detail-name {
+    font-family: 'Kaushan Script', 'Fredoka', cursive;
+    font-size: 19px;
+    font-weight: 400;
     color: var(--y2k-hot-pink);
 }

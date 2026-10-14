@@ -4,11 +4,13 @@
 const DAY = 864e5;
 const slots = () => [...document.querySelectorAll('#pins-board .pin-slot')];
 
-// ---- the widget: Candy and Blueprint for now
+// ---- the widget: Candy, Blueprint and Sunset for now
 setTheme('candy');
 ok('pin board shows in Candy', getComputedStyle(q('#pin-home')).display !== 'none');
 setTheme('blueprint');
 ok('...and in Blueprint, a corkboard in a cobalt frame', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(document.documentElement).getPropertyValue('--pin-frame').trim() === '#2f5fa8' && getComputedStyle(q('#pin-home-board')).backgroundImage.includes('feTurbulence'));
+setTheme('sunset');
+ok('...and in Sunset, cork in a sunset-gradient frame', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(q('#pins-board'), '::after').backgroundImage.includes('linear-gradient') && getComputedStyle(q('#pin-home-board')).backgroundImage.includes('feTurbulence'));
 setTheme('library');
 ok('...and not in other themes', getComputedStyle(q('#pin-home')).display === 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display === 'none');
 setTheme('candy');

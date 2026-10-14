@@ -25,23 +25,23 @@
     margin-top: 0;
 }
 
-/* the count ring, pace line and 7-day strip are Candy's and
-   Blueprint's (below); the other themes keep the plain text and bar */
+/* the count ring, pace line and 7-day strip are Candy's, Blueprint's
+   and Sunset's (below); the other themes keep the plain text and bar */
 .goals-ring,
 .goals-pace,
 .goals-week {
     display: none;
 }
 
-/* ---------- Goals window, Candy and Blueprint: the layout ----------
+/* ---------- Goals window, Candy, Blueprint and Sunset: the layout ----------
    Each goal's section opens with a big ring showing the count, with
    the bar and how it's pacing beside it; Pages adds the last 7 days.
    Each theme dresses it its own way after this. */
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-body .field-section-title {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-body .field-section-title {
     order: -2;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-progress:not(:empty) {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-progress:not(:empty) {
     order: -1;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -50,7 +50,7 @@
     align-items: center;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-ring {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring {
     grid-row: 1 / -1;
     position: relative;
     width: 92px;
@@ -65,19 +65,19 @@
 }
 
 /* the hole in the middle (the text sits on top of it) */
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-ring::before {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring::before {
     content: "";
     position: absolute;
     border-radius: 50%;
     background: var(--surface);
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-ring > span {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring > span {
     position: relative;
     line-height: 1;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-progress-text {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-progress-text {
     grid-row: 1;
     align-self: end;
     font-size: 14px;
@@ -85,18 +85,18 @@
     line-height: 1.3;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-content .reading-goal-bar {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-content .reading-goal-bar {
     grid-row: 2;
     grid-column: 2;
     position: relative;
     margin-top: 6px;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-content .reading-goal-fill {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-content .reading-goal-fill {
     position: relative;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-pace {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-pace {
     display: block;
     grid-row: 3;
     grid-column: 2;
@@ -108,20 +108,20 @@
 
 /* the last 7 days of pages, today on the right, with a dashed line at
    the daily pace */
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-week {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week {
     order: -1;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-week-title {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-title {
     font-size: 11px;
     font-weight: 700;
     opacity: 0.75;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-week-chart {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-chart {
     position: relative;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -132,7 +132,7 @@
 }
 
 /* the pace line, measured within the bars' area (above the day letters) */
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-week-chart::before {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-chart::before {
     content: "";
     position: absolute;
     left: 4px;
@@ -141,7 +141,7 @@
     pointer-events: none;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-day {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -149,7 +149,7 @@
     min-width: 0;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-day-bar {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day-bar {
     width: 100%;
     max-width: 22px;
     min-height: 3px;
@@ -157,7 +157,7 @@
     border-bottom: none;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-day-name {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day-name {
     height: 18px;
     line-height: 18px;
     font-size: 10px;
@@ -165,7 +165,7 @@
     opacity: 0.7;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"]) .goals-day.today .goals-day-name {
+:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day.today .goals-day-name {
     opacity: 1;
 }
 
@@ -309,7 +309,7 @@
 /* after dark the pastel sections turn murky, and a flat tint of the
    flavour over a dark surface goes grey; a wash of it glowing down
    from the top keeps each section clearly its own colour */
-:root[data-mode="dark"]:is(:not([data-theme]), [data-theme="blueprint"]) :is(.goals-books, .goals-pages) {
+:root[data-mode="dark"]:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) :is(.goals-books, .goals-pages) {
     background:
         linear-gradient(180deg, color-mix(in srgb, var(--goal-flavour) 34%, transparent), color-mix(in srgb, var(--goal-flavour) 8%, transparent) 75%),
         var(--surface);
@@ -408,6 +408,133 @@
 
 :root[data-theme="blueprint"] .goals-day.today .goals-day-name {
     color: var(--signal-orange);
+}
+
+/* ---------- Goals window, Sunset ----------
+   Candy's layout in the evening sky: Books in magenta, Pages in
+   twilight violet, the count in the theme's script, soft rounded bars
+   with a slow sheen. A goal that's done turns sun-gold, ring and bar
+   (and so does any finished bar in Sunset, see below). */
+:root[data-theme="sunset"] .goals-books {
+    --goal-flavour: #d40848;
+    --goal-fill: linear-gradient(90deg, #9c0a55, #f0282a);
+    background: var(--pastel-pink);
+    border-color: #d40848;
+}
+
+:root[data-theme="sunset"] .goals-pages {
+    --goal-flavour: #6a2fa0;
+    --goal-fill: linear-gradient(90deg, #3a1a7a, #a0207a);
+    background: color-mix(in srgb, #6a2fa0 10%, var(--surface));
+    border-color: #6a2fa0;
+}
+
+:root[data-theme="sunset"] .goals-body .field-section {
+    border-radius: 14px;
+}
+
+:root[data-theme="sunset"] .goals-ring {
+    border: 2px solid var(--outline);
+    box-shadow: var(--btn-shadow);
+    background: conic-gradient(var(--goal-flavour) calc(var(--pct) * 1%), var(--surface) 0);
+}
+
+:root[data-theme="sunset"] .goals-ring::before {
+    inset: 11px;
+    border: 2px solid var(--outline);
+}
+
+/* goal met: a sunburst all the way round */
+:root[data-theme="sunset"] .goals-ring.done {
+    background: conic-gradient(#fcc21b, #f7821e, #ffd56b, #f7821e, #fcc21b, #ffe08a, #fcc21b);
+}
+
+:root[data-theme="sunset"] .goals-ring-count {
+    font-family: 'Kaushan Script', 'Fredoka', cursive;
+    font-size: 22px;
+    color: var(--goal-flavour);
+}
+
+:root[data-mode="dark"][data-theme="sunset"] .goals-ring-count {
+    color: color-mix(in srgb, var(--goal-flavour) 45%, #fff);
+}
+
+:root[data-theme="sunset"] .goals-ring.done .goals-ring-count {
+    color: #d4580a;
+}
+
+:root[data-mode="dark"][data-theme="sunset"] .goals-ring.done .goals-ring-count {
+    color: #ffc25c;
+}
+
+:root[data-theme="sunset"] .goals-ring-of {
+    font-size: 9px;
+    font-weight: 700;
+    opacity: 0.75;
+}
+
+:root[data-theme="sunset"] .goals-content .reading-goal-bar {
+    height: 16px;
+    border-radius: 10px;
+}
+
+:root[data-theme="sunset"] .goals-content .reading-goal-fill {
+    border-radius: 0 8px 8px 0;
+    background:
+        linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 45%, transparent 60%),
+        var(--goal-fill);
+    background-size: 200% 100%, var(--bar-span, 100%) 100%;
+    background-repeat: no-repeat;
+    animation: goal-sheen 3s ease-in-out infinite;
+}
+
+:root[data-theme="sunset"] .goals-content .reading-goal-fill.done {
+    background:
+        linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.5) 45%, transparent 60%),
+        linear-gradient(90deg, #f7821e, #fcc21b 60%, #ffe58a);
+    background-size: 200% 100%, var(--bar-span, 100%) 100%;
+    background-repeat: no-repeat;
+}
+
+@keyframes goal-sheen {
+    from { background-position: 150% 0, 0 0; }
+    to { background-position: -50% 0, 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root[data-theme="sunset"] .goals-content .reading-goal-fill { animation: none; }
+}
+
+:root[data-theme="sunset"] .goals-week-chart {
+    border: 2px solid var(--outline);
+    border-radius: 12px;
+}
+
+/* the pace line in coral */
+:root[data-theme="sunset"] .goals-week-chart::before {
+    border-top: 2px dashed #f0503a;
+}
+
+:root[data-theme="sunset"] .goals-day-bar {
+    border: 2px solid var(--outline);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: color-mix(in srgb, var(--goal-flavour) 40%, var(--surface));
+}
+
+/* days that kept up with the pace glow sun-gold */
+:root[data-theme="sunset"] .goals-day.met .goals-day-bar {
+    background: linear-gradient(180deg, #fcc21b, #f7821e);
+}
+
+:root[data-theme="sunset"] .goals-day.today .goals-day-name {
+    color: var(--y2k-hot-pink);
+}
+
+/* any finished bar in Sunset (the goals card, a pin's card) turns
+   sun-gold too, instead of the usual plum-to-red */
+:root[data-theme="sunset"] .reading-goal-fill.done {
+    background-image: linear-gradient(90deg, #f7821e, #fcc21b 60%, #ffe58a);
 }
 
 /* ---------- How backups work window ---------- */

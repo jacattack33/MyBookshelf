@@ -157,7 +157,7 @@ function setBarFill(fill, pct) {
 
 // The Goals window's progress: a line of text and a bar, plus a ring with
 // the count in it and (if given) a pace line under the bar, which only
-// Candy and Blueprint show (the other themes hide them)
+// Candy, Blueprint and Sunset show (the other themes hide them)
 function goalProgress(box, done, goal, unit, text, pace) {
     const ring = document.createElement('div');
     ring.className = 'goals-ring' + (done >= goal ? ' done' : '');

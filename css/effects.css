@@ -165,6 +165,12 @@
     line-height: 1;
 }
 
+/* the pin drop on the cork: paler, nearly white */
+.fx-sparkle-pale {
+    color: #fffbe0;
+    text-shadow: 0 0 6px rgba(255, 246, 200, 0.95), 0 0 2px #fff;
+}
+
 .fx-confetti {
     width: 8px;
     height: 12px;

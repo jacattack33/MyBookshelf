@@ -155,6 +155,14 @@ ok('feeding counts toward the pages goal', pagesReadThisPeriod() === logged + 30
 q('#goal-log-pages').value = '15';
 submitLoggedPages();
 ok('logging pages feeds the critter too', pagesReadThisPeriod() === logged + 45 && critter.log[0].pages === 15);
+// Sunset: the ring layout, and a finished bar turns sun-gold
+setTheme('sunset');
+const sunGold = 'rgb(252, 194, 27)';
+ok('sunset: goals get the ring and the 7 days', getComputedStyle(q('.goals-pages .goals-ring')).display !== 'none' && getComputedStyle(q('.goals-week')).display !== 'none');
+ok('sunset: a met goal\'s bar and ring go sun-gold', getComputedStyle(q('.goals-pages .reading-goal-fill.done')).backgroundImage.includes(sunGold) && getComputedStyle(q('.goals-pages .goals-ring.done')).backgroundImage.includes(sunGold));
+ok('sunset: one still going isn\'t gold', !getComputedStyle(q('.goals-books .reading-goal-fill')).backgroundImage.includes(sunGold) && !q('.goals-books .goals-ring.done'));
+ok('sunset: a finished bar on the goals card is gold too', getComputedStyle(q('#goals-card .reading-goal-fill.done')).backgroundImage.includes(sunGold) && !getComputedStyle(q('#goals-card .reading-goal-fill:not(.done)')).backgroundImage.includes(sunGold));
+setTheme('candy');
 setSetting('pagesGoal', 70);
 setSetting('pagesPeriod', 'week');
 ok('weekly goal: critter eats a seventh a day', Math.abs(critterGoal() - 10) < 1e-9 && q('#goals-card').textContent.includes('Week'));

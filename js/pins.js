@@ -1,8 +1,9 @@
 // ---------- Pin board (achievements) ----------
 // Enamel pins you earn by reading, stuck on a little corkboard in the
 // bottom-left stack (under the stats ledger). Once earned a pin stays, even
-// if the books that earned it go. Only Candy shows the board for now (and
-// Settings can switch it off); pins are still earned in every theme.
+// if the books that earned it go. Only Candy, Blueprint and Sunset show the
+// board for now (and Settings can switch it off); pins are still earned in
+// every theme.
 
 const PINS_KEY = 'bookShelfPins';
 // id -> when earned; ids already looked at; things counted as they happen
@@ -540,9 +541,12 @@ const PINS = [
         id: 'rainbow', name: 'Rainbow Shelf', desc: 'Have spines in all 7 colours: red, orange, yellow, green, blue, purple and pink.', metal: 'silver', glint: [12, 22],
         progress: s => [s.colours, 7],
         art: [
-            ['e', 'M7 32A17 17 0 0 1 41 32H37.4A13.4 13.4 0 0 0 10.6 32Z', PIN_E.hot],
-            ['e', 'M10.6 32A13.4 13.4 0 0 1 37.4 32H33.8A9.8 9.8 0 0 0 14.2 32Z', PIN_E.yellow],
-            ['e', 'M14.2 32A9.8 9.8 0 0 1 33.8 32H30.2A6.2 6.2 0 0 0 17.8 32Z', PIN_E.mint],
+            // one outline round the whole arch, the bands inside it split
+            // by thin lines
+            ['e', 'M7 32A17 17 0 0 1 41 32H30.2A6.2 6.2 0 0 0 17.8 32Z', PIN_E.hot],
+            ['d', 'M10.6 32A13.4 13.4 0 0 1 37.4 32H33.8A9.8 9.8 0 0 0 14.2 32Z', PIN_E.yellow],
+            ['d', 'M14.2 32A9.8 9.8 0 0 1 33.8 32H31.1A7.1 7.1 0 0 0 16.9 32Z', PIN_E.mint],
+            ['l', 'M10.6 32A13.4 13.4 0 0 1 37.4 32', 0.9], ['l', 'M14.2 32A9.8 9.8 0 0 1 33.8 32', 0.9],
             // a cloud under each end
             ['e', pinCloud(12.4, 39, 1.5), PIN_E.cream], ['e', pinCloud(35.6, 39, 1.5), PIN_E.cream]
         ]
@@ -993,7 +997,7 @@ function openPins() {
             { transform: `rotate(${lean * 0.15}deg) scale(1.04)`, offset: 0.78 },
             { transform: 'none' }
         ], { duration: dur, delay: at, easing: 'cubic-bezier(.3, .7, .4, 1)', fill: 'backwards' });
-        setTimeout(() => sparkleFrom(art, 6), at + dur * 0.55);
+        setTimeout(() => sparkleFrom(art, 6, 'fx-sparkle-pale'), at + dur * 0.55);
         // it's landed on its shadow: the shadow's gone under it
         if (shadow) setTimeout(() => shadow.remove(), at + dur * 0.55);
         // settled in: light runs across its enamel
