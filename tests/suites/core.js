@@ -77,3 +77,14 @@
   ok('cat hopped shelves', catState.index !== startIdx, startIdx + '->' + catState.index);
   await wait(2300);
   ok('cat back asleep', cat.classList.contains('sleeping') && !catState.busy);
+
+// ---- the visit counter: only on the real site, as an image
+ok('no visit counted off the real site (tests, copies, files)', countVisit() === null && countVisit('friend.github.io') === null);
+const RealImage = window.Image;
+window.Image = function () { return {}; }; // (no real request from the tests)
+const visit = countVisit('jacattack33.github.io');
+window.Image = RealImage;
+const visitUrl = new URL(visit.src);
+ok('on the real site: one image to GoatCounter with the page and no book data',
+    visitUrl.origin === 'https://mybookshelf.goatcounter.com' && visitUrl.pathname === '/count' &&
+    visitUrl.searchParams.get('p') === location.pathname && [...visitUrl.searchParams.keys()].sort().join() === 'p,r,rnd,s,t', visit.src);

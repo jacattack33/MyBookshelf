@@ -20,7 +20,7 @@ All data lives **locally in your browser**, not on a server:
 - **IndexedDB** (`BookShelfDB`) stores the actual library — titles, authors, page counts, cover/spine images, status, ratings, start/finish dates and any re-reads (`extraReads`), tags, notes, who a book is lent to and since when (`lentTo` / `lentAt`), who recommended it (`recommendedBy`), and when each book entered its current status or was last dusted off (`statusSince` / `dustedAt`, used for the dust effect).
 - **localStorage** stores a few small things: your custom genre list, recent colors, which shelves are expanded, your last-used notes font, the last genre picked on a sticky note, your Settings choices, the pins you've earned, your recs from friends, when you last exported a backup from this browser (for the backup reminder), and a few one-time migration flags.
 
-There is no backend and no account — the app makes no network calls of its own (the only external request is loading the Google Fonts used for styling).
+There is no backend and no account. The app's only outside requests are loading the Google Fonts used for styling and, on the hosted site (`jacattack33.github.io`) only, one anonymous visit count to [GoatCounter](https://www.goatcounter.com/) per page load, to see whether anyone's using it. That count is a tiny image request carrying the page's address, the site that linked to it, the screen size, and what any web request carries (browser, rough location); GoatCounter uses no cookies and doesn't keep IP addresses. Nothing about your books or settings is sent, and copies of the app on other sites or opened from a file don't count at all.
 
 What this means in practice:
 
