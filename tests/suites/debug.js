@@ -18,6 +18,15 @@ await press('Next stage');
 ok('next stage hatches the egg', critterStage().id === 'baby');
 await press('Next stage');
 ok('next stage grows it', critterStage().id === 'kid');
+await press('Previous stage');
+ok('previous stage takes it back one', critterStage().id === 'baby' && !!critter.bornAt);
+await press('Previous stage');
+ok('...and a baby goes back in its egg', !critter.bornAt && critter.totalFed === 0);
+await press('Next stage');
+await press('Next stage');
+const fedBefore = critter.totalFed;
+await press('Take 50');
+ok('take 50 takes pages back off it, dropping a stage', critter.totalFed === fedBefore - 50 && critterStage().id === 'baby', status());
 await press('Hungry');
 ok('hungry', critterMood() === 'hungry');
 await press('1 day from leaving');
@@ -46,11 +55,7 @@ ok('deletes a debug book with a chosen exit', library.length === before && !libr
 await press('Add a book', 200);
 await press('Remove debug books & notes', 200);
 ok('removes debug books', library.length === before && !library.some(b => b.debug));
-q('#debug-real-books').checked = true;
-deleteBtns[1].click();
-await wait(3000);
-ok('ticked: deletes can hit a real book', library.length === before - 1, status());
-q('#debug-real-books').checked = false;
+ok('no way to delete real books', !q('#debug-real-books'));
 
 // ---- sticky notes
 await press('New note', 1500);
@@ -72,6 +77,16 @@ ok('dusts a book', getDustLevel(library.find(b => b.id === 'dd1')) === 2 || stat
 await press('Image link fails', 100);
 ok('shows the failed image-link message', q('#book-modal').style.display === 'flex' && q('#book-image-link-error').classList.contains('show') && q('#book-image-link-error').innerText.startsWith("Couldn't load that link"));
 closeModal();
+
+// ---- sections fold up, and stay folded
+const section = name => [...document.querySelectorAll('#debug-body .debug-section')].find(s => s.querySelector('summary').textContent === name);
+section('Critter').querySelector('summary').click();
+await wait(50);
+ok('a section folds up from its heading', !section('Critter').open && section('Books').open && JSON.parse(localStorage.getItem(DEBUG_FOLDED_KEY)).includes('Critter'));
+q('#debug-body').innerHTML = '';
+buildDebugPanel();
+ok('...and is still folded next time', !section('Critter').open && section('Books').open);
+localStorage.removeItem(DEBUG_FOLDED_KEY);
 
 setSetting('debug', false);
 ok('switch hides it again', q('#debug-panel').style.display === 'none');

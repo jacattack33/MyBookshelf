@@ -1,3 +1,32 @@
+/* TEMP: Blueprint shows only "error 404 :(" for now, light or dark
+   (double-click it to go back to Candy). Delete this and the div at the
+   top of index.html to bring Blueprint back. */
+.temp-404 {
+    display: none;
+}
+
+:root[data-theme="blueprint"] .temp-404 {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #000;
+    font: 400 32px sans-serif;
+    cursor: default;
+}
+
+:root[data-theme="blueprint"][data-mode="dark"] .temp-404 {
+    background: #000;
+    color: #fff;
+}
+
+:root[data-theme="blueprint"] body {
+    overflow: hidden;
+}
+
 /* Always keep room for the page scrollbar - otherwise filtering down
    to a short page drops the scrollbar and everything jumps wider. */
 html {

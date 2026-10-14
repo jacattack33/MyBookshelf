@@ -166,15 +166,15 @@ What this means in practice:
   - **Start new books as:** Want to Read, Reading, or Read.
   - **Shelf extras:** turn the shelf cat, dust, leaning books, the sticky-note pile, the reading critter and the pin board (Candy) on or off, and choose whether the owned seal and unread fading show nowhere, on the Series shelf only, or on every shelf.
   - **Calm mode:** turns off all the animations.
-  - **Debug panel:** adds a **DEBUG** tab on the right edge of the page. Click it for buttons that make things happen right away, instead of waiting or using the browser console:
-    - **Critter:** Feed 50, Next stage (hatches an egg, then grows it a stage), +1 day / +1 week (moves its clock forward, so hunger and running away happen as if that time passed), Full / Hungry / Starving, 1 day from leaving, Run away now, and New egg.
+  - **Debug panel:** adds a **DEBUG** tab on the right edge of the page. Click it for buttons that make things happen right away, instead of waiting or using the browser console. Click a section's heading to fold it up (the panel remembers which are folded):
+    - **Critter:** Feed 50, Next stage (hatches an egg, then grows it a stage), Previous stage (back a stage; a baby goes back to an egg), Take 50 (takes 50 pages off what it's eaten and out of its belly, which can drop it a stage), +1 day / +1 week (moves its clock forward, so hunger and running away happen as if that time passed), Full / Hungry / Starving, 1 day from leaving, Run away now, and New egg.
     - **Sticky notes:** New note (fills in the quick-add note with a random title and sticks it up), Make one fall, Stick all back up, and Delete one with a chosen exit (or a random one).
     - **Books:** Add a book (a random title, genre and status, scrolled into view), Remove debug books & notes (deletes only the ones the panel made), Delete one with a chosen exit (any theme's exit works in any theme), and Dust one (makes a Want to Read book heavily dusty).
     - **Backups:** Backup reminder (shows the reminder note now, whenever you last backed up) and Glow export (makes the Export button glow).
     - **Pins:** Earn one (a random pin you don't have), Earn all, and Reset pins (anything your shelf has already earned comes straight back).
     - **Other:** Wake the cat, Log 25 pages, Clear pages log, Confetti.
 
-    **Deletes only touch books and notes the panel made** (with New note or Add a book), so your real library is safe. Tick **Deletes can hit real books** at the top to let them pick any book; those deletes are permanent, with no confirmation. Deletes and exits only play for books and notes you can see, so scroll to one first. A line at the bottom says what happened, or why nothing did. Critter changes are real and stick.
+    **Deletes only ever touch books and notes the panel made** (with New note or Add a book), so your real library is safe. Deletes and exits only play for books and notes you can see, so scroll to one first. A line at the bottom says what happened, or why nothing did. Critter changes are real and stick.
   - **Start over:** delete the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings too. The 3 starter books don't come back afterwards.
 
 ## Tests

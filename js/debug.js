@@ -15,14 +15,12 @@ function toggleDebugPanel() {
 }
 
 // books / sticky notes drawn on screen right now (exits only play for
-// those). With `deleting`, only ones the panel made, unless "Deletes can
-// hit real books" is ticked.
+// those). With `deleting`, only ones the panel made: debug deletes never
+// touch your real books.
 function debugOnScreen(selector, deleting = false) {
-    const real = document.getElementById('debug-real-books');
-    const anyBook = !deleting || (real && real.checked);
     return [...document.querySelectorAll(`#library-room ${selector}`)].filter(el => {
         const book = library.find(b => b.id === el.dataset.id);
-        if (!book || (!anyBook && !book.debug)) return false;
+        if (!book || (deleting && !book.debug)) return false;
         const r = el.getBoundingClientRect();
         return r.width && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
     });
@@ -50,6 +48,37 @@ function debugSetBelly(days, emptyFor = 0) {
     saveCritter();
     renderCritter();
     debugSay(critterMoodText());
+}
+
+// back a stage (a baby goes back to being an egg)
+function debugPrevStage() {
+    settleCritter();
+    const c = critter;
+    if (c.gone) return debugSay('It ran away. Hatch a new egg first.');
+    if (!c.bornAt) return debugSay('Already an egg.');
+    const i = CRITTER_STAGES.indexOf(critterStage(c));
+    if (i <= 0) {
+        Object.assign(c, { bornAt: null, totalFed: 0, food: 0, emptySince: null });
+    } else {
+        c.totalFed = CRITTER_STAGES[i - 1].at;
+    }
+    saveCritter();
+    renderCritter();
+    debugSay(c.bornAt ? `Back to a ${critterStage().id}.` : 'Back in its egg.');
+}
+
+// take pages back off it: off what it's eaten all told (which can drop
+// it a stage) and out of its belly
+function debugTakePages(pages) {
+    settleCritter();
+    const c = critter;
+    if (c.gone || !c.bornAt) return debugSay(c.gone ? 'It ran away. Hatch a new egg first.' : 'Still an egg: nothing to take.');
+    c.totalFed = Math.max(0, c.totalFed - pages);
+    c.food = Math.max(0, c.food - pages);
+    if (c.food === 0 && !c.emptySince) c.emptySince = Date.now();
+    saveCritter();
+    renderCritter();
+    debugSay(`Took ${pages}. ${c.totalFed.toLocaleString()} pages eaten, a ${critterStage().id}. ${critterMoodText()}`);
 }
 
 async function debugAddBook() {
@@ -87,11 +116,7 @@ async function debugAddBook() {
 
 async function debugDeleteOnScreen(selector, exit, toss) {
     const el = debugPick(debugOnScreen(selector, true));
-    if (!el) {
-        return debugSay(document.getElementById('debug-real-books').checked
-            ? 'Nothing like that on screen. Scroll to one first.'
-            : 'No debug-made one on screen. Make one first (or scroll to it), or tick "Deletes can hit real books".');
-    }
+    if (!el) return debugSay('No debug-made one on screen. Make one first (or scroll to it).');
     const id = el.dataset.id;
     const title = (library.find(b => b.id === id) || {}).title;
     const holdMs = (exit ? toss(id, exit) : toss(id)) || 0;
@@ -168,10 +193,27 @@ function debugExitSelect(exits) {
     return select;
 }
 
+// which sections are folded up (just a convenience: forgotten is fine)
+const DEBUG_FOLDED_KEY = 'bookShelfDebugFolded';
+
+function debugFolded() {
+    try { return JSON.parse(localStorage.getItem(DEBUG_FOLDED_KEY)) || []; } catch (e) { return []; }
+}
+
 function buildDebugPanel() {
     const body = document.getElementById('debug-body');
+    const folded = debugFolded();
+    // each section folds up: click its heading
     const group = (title, items) => {
-        const head = document.createElement('div');
+        const box = document.createElement('details');
+        box.className = 'debug-section';
+        box.open = !folded.includes(title);
+        box.addEventListener('toggle', () => {
+            const now = debugFolded().filter(t => t !== title);
+            if (!box.open) now.push(title);
+            try { localStorage.setItem(DEBUG_FOLDED_KEY, JSON.stringify(now)); } catch (e) {}
+        });
+        const head = document.createElement('summary');
         head.className = 'debug-group';
         head.textContent = title;
         const row = document.createElement('div');
@@ -185,14 +227,9 @@ function buildDebugPanel() {
             btn.addEventListener('click', fn);
             row.appendChild(btn);
         });
-        body.append(head, row);
+        box.append(head, row);
+        body.appendChild(box);
     };
-
-    // deletes stick to books and notes the panel made, unless this is ticked
-    const real = document.createElement('label');
-    real.className = 'debug-real';
-    real.innerHTML = '<input type="checkbox" id="debug-real-books"> Deletes can hit real books';
-    body.appendChild(real);
 
     const critterOff = fn => () => appSettings.critter ? fn() : debugSay('The critter is off in Settings > Shelf extras.');
     group('Critter', [
@@ -204,6 +241,8 @@ function buildDebugPanel() {
             feedCritter(Math.max(1, next.at - critter.totalFed));
             debugSay(`Now ${critterStage().id === 'adult' ? 'an adult' : 'a ' + critterStage().id}.`);
         })],
+        ['Previous stage', critterOff(debugPrevStage)],
+        ['Take 50', critterOff(() => debugTakePages(50))],
         ['+1 day', critterOff(() => debugPassDays(1))],
         ['+1 week', critterOff(() => debugPassDays(7))],
         ['Full', critterOff(() => debugSetBelly(CRITTER_FOOD_DAYS))],

@@ -342,26 +342,39 @@
     display: block;
 }
 
+/* each section folds up from its heading, with a little arrow */
 .debug-group {
     margin: 8px 0 4px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
     opacity: 0.7;
-}
-
-.debug-real {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 4px;
-    font-weight: 700;
     cursor: pointer;
+    list-style: none;
+    user-select: none;
 }
 
-.debug-real input {
-    width: auto;
-    margin: 0;
+.debug-group::-webkit-details-marker {
+    display: none;
+}
+
+.debug-group::before {
+    content: '▸';
+    display: inline-block;
+    width: 1.1em;
+    transition: transform 0.15s;
+}
+
+.debug-section[open] > .debug-group::before {
+    transform: rotate(90deg);
+}
+
+.debug-group:hover {
+    opacity: 1;
+}
+
+.debug-section:first-child > .debug-group {
+    margin-top: 0;
 }
 
 .debug-buttons {
