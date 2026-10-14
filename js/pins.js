@@ -89,11 +89,13 @@ const pinCloud = (cx, cy, s = 1) => {
         `A${2.6 * s} ${2.6 * s} 0 0 1 ${p(6, 0)}Z`;
 };
 
-// a macaron whose filling's at height y: shell, filling, shell
+// a macaron whose filling's at height y: shell, shell, then the filling
+// laid over the inside half of their flat edges, so the gold lines either
+// side of it are thin
 const pinMacaron = (x, y, colour) => [
-    ['d', `M${x - 13.5} ${y}H${x + 13.5}V${y + 3.4}H${x - 13.5}Z`, PIN_ENAMEL.cream],
-    ['e', `M${x - 15} ${y}Q${x - 15} ${y - 5} ${x} ${y - 5}Q${x + 15} ${y - 5} ${x + 15} ${y}Z`, colour],
-    ['e', `M${x - 15} ${y + 3.4}H${x + 15}Q${x + 15} ${y + 7} ${x} ${y + 7}Q${x - 15} ${y + 7} ${x - 15} ${y + 3.4}Z`, colour]
+    ['e', `M${x - 15} ${y + 0.9}Q${x - 15} ${y - 5} ${x} ${y - 5}Q${x + 15} ${y - 5} ${x + 15} ${y + 0.9}Z`, colour],
+    ['e', `M${x - 15} ${y + 2.5}H${x + 15}Q${x + 15} ${y + 7} ${x} ${y + 7}Q${x - 15} ${y + 7} ${x - 15} ${y + 2.5}Z`, colour],
+    ['d', `M${x - 13.5} ${y + 0.9}H${x + 13.5}V${y + 2.5}H${x - 13.5}Z`, PIN_ENAMEL.cream]
 ];
 
 // a heart centred on (cx, cy), r across

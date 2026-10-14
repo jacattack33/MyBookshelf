@@ -360,6 +360,7 @@ async function deleteLibrary() {
 // books) and the pins those books earn. Remember which books came with it,
 // so they can be cleared out later without touching any added since.
 const STARTER_IDS_KEY = 'bookShelfStarterIds';
+let freshStartPreview = false; // shown from the debug panel: remove nothing
 
 function rememberStarterBooks(books) {
     try { localStorage.setItem(STARTER_IDS_KEY, JSON.stringify(books.map(b => b.id))); } catch (e) {}
@@ -382,9 +383,11 @@ function offerFreshStart() {
 
 function closeFreshStart() {
     document.getElementById('fresh-start-modal').style.display = 'none';
+    freshStartPreview = false;
 }
 
 async function removeStarterShelf() {
+    if (freshStartPreview) return closeFreshStart();
     const gone = starterBooksLeft();
     await Promise.all(gone.map(b => dbDelete(b.id)));
     library = library.filter(b => !gone.includes(b));

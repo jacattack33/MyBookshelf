@@ -171,6 +171,7 @@ What this means in practice:
     - **Sticky notes:** New note (fills in the quick-add note with a random title and sticks it up), Make one fall, Stick all back up, and Delete one with a chosen exit (or a random one).
     - **Books:** Add a book (a random title, genre and status, scrolled into view), Remove debug books & notes (deletes only the ones the panel made), Delete one with a chosen exit (any theme's exit works in any theme), and Dust one (makes a Want to Read book heavily dusty).
     - **Backups:** Backup reminder (shows the reminder note now, whenever you last backed up) and Glow export (makes the Export button glow).
+    - **Example shelf:** Welcome popup (shows the first-visit offer to clear the example shelf, as a preview: its buttons just close it, so nothing is removed).
     - **Pins:** Earn one (a random pin you don't have), Earn all, and Reset pins (anything your shelf has already earned comes straight back).
     - **Other:** Wake the cat, Log 25 pages, Clear pages log, Confetti.
 

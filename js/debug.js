@@ -287,6 +287,14 @@ function buildDebugPanel() {
         ['Glow export', () => { glowExportButton(); debugSay('The Export button glows.'); }]
     ]);
 
+    group('Example shelf', [
+        ['Welcome popup', () => {
+            freshStartPreview = true;
+            document.getElementById('fresh-start-modal').style.display = 'flex';
+            debugSay('Preview only: its buttons just close it.');
+        }]
+    ]);
+
     group('Pins', [
         ['Earn one', () => {
             const left = PINS.filter(p => !pinState.earned[p.id]);

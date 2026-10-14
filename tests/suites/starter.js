@@ -39,3 +39,15 @@ ok('the Settings button goes away', q('#starter-remove').hidden);
 closeSettings();
 offerFreshStart();
 ok('nothing left to offer', q('#fresh-start-modal').style.display !== 'flex');
+
+// the debug panel can show the popup, but only as a preview
+const pinsBefore = JSON.stringify(pinState.earned);
+setSetting('debug', true);
+toggleDebugPanel();
+[...document.querySelectorAll('#debug-body button')].find(b => b.textContent === 'Welcome popup').click();
+ok('debug: welcome popup shows', q('#fresh-start-modal').style.display === 'flex');
+q('#fresh-start-modal .danger').click();
+await wait(300);
+ok('...and its button removes nothing', q('#fresh-start-modal').style.display === 'none' && library.length === 1 && JSON.stringify(pinState.earned) === pinsBefore);
+toggleDebugPanel();
+setSetting('debug', false);
