@@ -1299,9 +1299,17 @@
     box-shadow: var(--panel-shadow);
 }
 
-/* title bars: navy drafting film with a fine grid and an orange tab */
+/* title bars: navy drafting film with a fine grid; the main panel's
+   has an orange tab */
 :root[data-theme="blueprint"] .window-titlebar,
 :root[data-theme="blueprint"] .modal-header {
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
+        #1d3d6e;
+}
+
+:root[data-theme="blueprint"] .window-titlebar {
     background:
         linear-gradient(90deg, var(--signal-orange) 0 40px, transparent 40px),
         linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
@@ -1310,16 +1318,13 @@
 }
 
 :root[data-theme="blueprint"] .modal-header {
-    padding-left: 56px;
+    padding-left: 18px;
 }
 
-/* no orange tab on the Settings or Reading Goals headers */
-:root[data-theme="blueprint"] :is(#settings-modal, #goals-modal) .modal-header {
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
-        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 10px 10px,
-        #1d3d6e;
-    padding-left: 18px;
+/* a popup's title starts with a diamond, like Settings; these two
+   don't have one of their own */
+:root[data-theme="blueprint"] :is(#critter-modal, #book-modal) .modal-header h3::before {
+    content: "\25C6\00a0";
 }
 
 :root[data-theme="blueprint"] .modal-header h3 {

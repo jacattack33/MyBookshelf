@@ -333,6 +333,9 @@ function openModal(bookId = null) {
     clearSpineImageFlag = false;
     pendingCoverCrop = null;
     pendingSpineCrop = null;
+    setPreviewFace('cover');
+    // (it closes this window, so not while editing a book)
+    document.getElementById('shelf-photo-link').style.display = bookId ? 'none' : '';
 
     if (bookId) {
         const book = library.find(b => b.id === bookId);
@@ -1210,6 +1213,7 @@ function clearSpineImage() {
     document.getElementById('spine-file-name-display').innerText = "No file chosen";
     document.getElementById('existing-spine-image-note').style.display = 'none';
     document.getElementById('clear-spine-image-btn').style.display = 'none';
+    if (previewFace === 'spine') renderPreviewSpine();
 }
 
 // ---------- Image by link or paste ----------
@@ -1364,6 +1368,70 @@ function updatePreview() {
         } else {
             applyColor();
         }
+    }
+    if (previewFace === 'spine') renderPreviewSpine();
+}
+
+// ---------- Cover or spine in the preview ----------
+// Under the preview, Cover / Spine: the spine is the book as it stands
+// on the shelf in Spines view, the real spine photo or the generated
+// leather one, at the size it'd be there.
+
+let previewFace = 'cover';
+let previewSpineDraw = 0; // (only the latest of overlapping redraws lands)
+
+function setPreviewFace(face) {
+    previewFace = face;
+    document.querySelectorAll('#book-modal [data-preview-face]').forEach(btn => {
+        const on = btn.dataset.previewFace === face;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    document.getElementById('preview-book-wrap').classList.toggle('spine-face', face === 'spine');
+    if (face === 'spine') renderPreviewSpine();
+}
+
+async function renderPreviewSpine() {
+    const draw = ++previewSpineDraw;
+    const el = document.getElementById('preview-spine');
+    const existing = editingId ? library.find(b => b.id === editingId) : null;
+    const color = document.getElementById('book-color').value;
+    const width = parseFloat(document.getElementById('preview-book').style.width) || 120;
+
+    // as tall as the cover, like on the shelf
+    const cover = pendingCoverCrop || (existing && existing.image) || '';
+    let ratio = 2 / 3;
+    if (cover) {
+        const preset = Number(document.getElementById('book-ratio-preset').value);
+        ratio = preset || (!pendingCoverCrop && existing.imageRatio) || await getImageAspectRatio(cover) || 2 / 3;
+    }
+    const height = Math.round(width / ratio);
+
+    const spine = pendingSpineCrop || (!clearSpineImageFlag && existing && existing.spineImage) || '';
+    const spineRatio = spine
+        ? (pendingSpineCrop ? await getSpineImageAspectRatio(spine) : existing.spineImageRatio) || 0.25
+        : null;
+    const edge = cover && !spine ? await getImageEdgeColor(cover) : null;
+    if (draw !== previewSpineDraw) return;
+
+    el.innerHTML = '';
+    el.style.height = height + 'px';
+    el.classList.toggle('spine-mode-generated', !spine);
+    if (spine) {
+        el.style.backgroundImage = `url(${spine})`;
+        el.style.backgroundSize = 'cover';
+        el.style.width = Math.max(18, Math.round(height * spineRatio)) + 'px';
+    } else {
+        el.style.backgroundImage = '';
+        el.style.backgroundSize = '';
+        el.style.width = Math.max(18, Math.round(width / 4)) + 'px';
+        applySpineVars(el, edge || (existing && cover && existing.spineColor) || color);
+        const label = document.createElement('span');
+        label.className = 'spine-label';
+        const title = document.getElementById('book-title').value.trim() || 'Book Title';
+        const author = document.getElementById('book-author').value.split(',')[0].trim();
+        label.innerText = title + (author ? ` — ${author}` : '');
+        el.appendChild(label);
     }
 }
 
@@ -1522,9 +1590,12 @@ function applyCropResult(dataUrl) {
     } else if (cropContext === 'spine') {
         pendingSpineCrop = dataUrl;
     }
+    const context = cropContext;
     closeCropModal();
+    // turn the preview to whichever side just changed
+    setPreviewFace(context === 'spine' ? 'spine' : 'cover');
     updatePreview();
-    if (pendingCoverCrop === dataUrl) wigglePreview(); // new cover, not a spine photo
+    wigglePreview();
 }
 
 function cancelCrop() {

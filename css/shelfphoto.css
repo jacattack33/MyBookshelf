@@ -1,0 +1,729 @@
+/* ---------- Shelf photo window ----------
+   one photo of a row of spines, split into a spine photo per book.
+   The picture keeps its own colours; the lines and labels on it use
+   the theme's accent with a dark halo so they show on any photo. */
+/* wide, so the photo can be big enough to see each spine */
+.modal-content.shelf-photo-content {
+    width: 96%;
+    max-width: 1400px;
+}
+
+.shelf-photo-body {
+    padding: 20px 24px 24px;
+    overflow-y: auto;
+    min-height: 0;
+    overscroll-behavior: contain;
+    color: var(--y2k-text);
+}
+
+.sp-pick-step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.sp-pick-step p,
+.sp-done p {
+    margin: 0;
+    line-height: 1.45;
+}
+
+.sp-question {
+    margin-top: 4px;
+    font-weight: 700;
+}
+
+/* shelf or stack: two cards with a little drawing each */
+.sp-kinds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* (an id, so they're cards, not the app's buttons) */
+#shelf-photo-pick .sp-kind,
+#shelf-photo-pick .sp-kind:hover,
+#shelf-photo-pick .sp-kind:active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 190px;
+    padding: 12px 14px;
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--y2k-text);
+    font: inherit;
+    box-shadow: none;
+    transform: none;
+    cursor: pointer;
+}
+
+#shelf-photo-pick .sp-kind::before {
+    content: none;
+}
+
+#shelf-photo-pick .sp-kind:hover {
+    border-color: rgba(var(--accent-rgb), 0.6);
+}
+
+#shelf-photo-pick .sp-kind.picked {
+    border-color: rgb(var(--accent-rgb));
+    background: rgba(var(--accent-rgb), 0.1);
+    box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.25);
+}
+
+#shelf-photo-pick .sp-kind:focus-visible {
+    outline: 2px solid rgb(var(--accent-rgb));
+    outline-offset: 2px;
+}
+
+.sp-kind svg {
+    width: 64px;
+    height: 44px;
+    margin-bottom: 4px;
+    fill: rgba(var(--accent-rgb), 0.18);
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+}
+
+.sp-kind.picked svg {
+    fill: rgba(var(--accent-rgb), 0.45);
+}
+
+.sp-kind-name {
+    font-weight: 700;
+}
+
+.sp-kind-sub {
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+#shelf-photo-choose:disabled {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+}
+
+.sp-tip {
+    padding: 8px 12px;
+    border-left: 3px solid rgb(var(--accent-rgb));
+    border-radius: 4px;
+    background: rgba(var(--accent-rgb), 0.08);
+    font-size: 13px;
+}
+
+#shelf-photo-error:empty {
+    display: none;
+}
+
+/* "Whole shelf", next to Choose Spine Photo in the Add Book window */
+.shelf-photo-btn .btn-icon {
+    width: 1.05em;
+    height: 1.05em;
+    margin-right: 5px;
+    vertical-align: -0.15em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+}
+
+/* with two buttons there's no room beside them: the chosen file's
+   name goes underneath, the same in every theme */
+#spine-file-name-display {
+    flex-basis: 100%;
+}
+
+.sp-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.sp-tools button {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.sp-tilt {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.sp-tilt input {
+    width: 140px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+/* a mark at the middle of the slider: the photo as it was taken */
+.sp-tilt-track {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+}
+
+.sp-tilt-track::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: currentColor;
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.sp-zoom {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.sp-zoom button {
+    min-width: 34px;
+}
+
+/* the picture, with everything drawn over it */
+.sp-stage-wrap {
+    overflow-x: auto;
+    text-align: center;
+}
+
+/* zoomed in: the photo's bigger than the window, and this box scrolls
+   both ways, the same height the fitted photo would be */
+.sp-stage-wrap.zoomed {
+    overflow: auto;
+    max-height: max(300px, calc(92vh - 230px));
+    border-radius: 4px;
+    overscroll-behavior: contain;
+}
+
+#shelf-photo-stage {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+    touch-action: none;
+    user-select: none;
+    cursor: crosshair;
+}
+
+#shelf-photo-canvas {
+    display: block;
+    max-width: 100%;
+    /* as tall as the window has room for under its title and the
+       tools, so the whole photo shows without scrolling */
+    max-height: max(300px, calc(92vh - 230px));
+    border-radius: 4px;
+}
+
+#shelf-photo-overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.sp-shade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+}
+
+.sp-slice {
+    position: absolute;
+}
+
+.sp-slice.hot {
+    background: rgba(var(--accent-rgb), 0.22);
+    box-shadow: inset 0 0 0 2px rgb(var(--accent-rgb));
+}
+
+.sp-num {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 18px;
+    padding: 2px 4px;
+    border-radius: 9px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font: 700 11px/14px system-ui, sans-serif;
+    text-align: center;
+    pointer-events: none;
+}
+
+.sp-slice.assigned .sp-num {
+    background: rgb(var(--accent-rgb));
+}
+
+.stack .sp-num {
+    top: 50%;
+    left: 6px;
+    transform: translateY(-50%);
+}
+
+/* The lines on the picture. Each is a wide, see-through strip that's
+   easy to grab, with the line drawn down its middle: .v ones run up
+   and down, .h ones across. .cut lines go between spines (and can be
+   removed); .end lines mark where a spine starts or stops, dashed
+   while guessed and solid once you've dragged one. */
+.sp-line {
+    position: absolute;
+    z-index: 1;
+}
+
+.sp-line.v {
+    width: 14px;
+    margin-left: -7px;
+    cursor: ew-resize;
+}
+
+.sp-line.h {
+    height: 14px;
+    margin-top: -7px;
+    cursor: ns-resize;
+}
+
+.sp-line::before {
+    content: '';
+    position: absolute;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.8));
+}
+
+.sp-line.v::before {
+    top: 0;
+    bottom: 0;
+    left: 6px;
+    border-left: 2px dashed #fff;
+}
+
+.sp-line.h::before {
+    left: 0;
+    right: 0;
+    top: 6px;
+    border-top: 2px dashed #fff;
+}
+
+.sp-line.end.own::before {
+    border-style: solid;
+}
+
+.sp-line.cut {
+    z-index: 2;
+}
+
+.sp-line.cut::before {
+    border-style: solid;
+    border-color: rgb(var(--accent-rgb));
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.7));
+}
+
+/* The round buttons on the picture: x removes a line, the slashed
+   circle says a slice isn't a book, + says it is after all. (An id, so
+   the app's pressed-button nudge can't move one out from under the
+   pointer mid-click.) */
+#shelf-photo-overlay button,
+#shelf-photo-overlay button:hover,
+#shelf-photo-overlay button:active {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 1.5px solid #fff;
+    border-radius: 50%;
+    background: rgb(var(--accent-rgb));
+    color: #fff;
+    font: 700 13px/1 system-ui, sans-serif;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    transform: none;
+    cursor: pointer;
+}
+
+#shelf-photo-overlay button::before {
+    content: none;
+}
+
+/* under the slice's number, while you're over the slice */
+#shelf-photo-overlay .sp-skip {
+    top: 24px;
+    left: 50%;
+    margin-left: -9px;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+#shelf-photo-overlay.stack .sp-skip {
+    top: 50%;
+    left: 34px;
+    margin: -9px 0 0;
+}
+
+#shelf-photo-overlay .sp-slice:hover .sp-skip,
+#shelf-photo-overlay .sp-skip:focus-visible {
+    opacity: 1;
+}
+
+/* (no hovering on a touch screen) */
+@media (hover: none) {
+    #shelf-photo-overlay .sp-skip {
+        opacity: 0.85;
+    }
+}
+
+/* a slice that isn't a book: shaded, with a + to make it one again */
+.sp-slice.blank {
+    cursor: crosshair;
+}
+
+#shelf-photo-overlay .sp-unskip {
+    top: 50%;
+    left: 50%;
+    margin: -9px 0 0 -9px;
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgb(var(--accent-rgb));
+    color: rgb(var(--accent-rgb));
+    font-size: 15px;
+}
+
+/* at the shelf end of a line between standing books, at the right-hand
+   end of one between lying books */
+#shelf-photo-overlay .sp-line.v .sp-remove {
+    left: -2px;
+    bottom: -9px;
+}
+
+#shelf-photo-overlay .sp-line.h .sp-remove {
+    top: -2px;
+    right: 2px;
+}
+
+.sp-count {
+    margin: 14px 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.sp-count:empty {
+    display: none;
+}
+
+/* one row per slice: number, thumbnail, which book */
+.sp-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 8px;
+}
+
+.sp-row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px;
+    border: 2px solid var(--y2k-lavender);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+.sp-row.hot {
+    border-color: rgb(var(--accent-rgb));
+}
+
+.sp-row-num {
+    flex: 0 0 auto;
+    width: 20px;
+    padding-top: 4px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.sp-row-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* the spine on its side, title reading left to right; bigger while
+   you're over it */
+.sp-strip {
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    outline: none;
+    transform-origin: left center;
+    transition: transform 0.15s;
+}
+
+.sp-strip canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* a spine is a strip; a wide slice (the wall, a frame) is held to
+       a strip's height rather than filling the row */
+    max-height: 110px;
+    object-fit: cover;
+    border-radius: 3px;
+}
+
+.sp-strip:hover,
+.sp-strip:focus-visible {
+    z-index: 6;
+    transform: scale(1.9);
+}
+
+.sp-strip:hover,
+.sp-strip:focus-visible {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sp-strip {
+        transition: none;
+    }
+}
+
+.sp-row-main .sp-notbook {
+    align-self: flex-start;
+    padding: 3px 10px;
+    font-size: 12px;
+}
+
+.sp-search {
+    position: relative;
+}
+
+.sp-search input,
+.sp-new input,
+.sp-new select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sp-by {
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+.sp-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    margin: 2px 0 0;
+    padding: 4px 0;
+    list-style: none;
+    max-height: 240px;
+    overflow-y: auto;
+    border: 2px solid var(--outline);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 3px 3px 0 rgba(var(--ink-rgb), 0.25);
+}
+
+.sp-options li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.sp-options li:hover {
+    background: rgba(var(--accent-rgb), 0.12);
+}
+
+.sp-opt-title {
+    font-weight: 700;
+}
+
+.sp-opt-by {
+    opacity: 0.7;
+}
+
+.sp-opt-tag {
+    padding: 0 6px;
+    border-radius: 8px;
+    background: rgba(var(--ink-rgb), 0.1);
+    font-size: 11px;
+}
+
+/* already has a spine photo: a solid pill in the theme's own colour */
+.sp-opt-tag.has-spine {
+    padding: 2px 9px;
+    border-radius: 10px;
+    background: rgb(var(--accent-rgb));
+    color: #fff; /* (set to whichever of dark or light reads best) */
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.sp-options li.sp-opt-none {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.sp-options li.sp-opt-none:hover {
+    background: none;
+}
+
+.sp-options li.sp-opt-new {
+    color: var(--y2k-hot-pink);
+    font-weight: 700;
+}
+
+.sp-new {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.sp-new-label {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--y2k-hot-pink);
+}
+
+.sp-new-title {
+    grid-column: 1 / -1;
+}
+
+.sp-new-title.missing {
+    border-color: #c94f4f;
+    box-shadow: 0 0 0 2px rgba(201, 79, 79, 0.25);
+}
+
+/* the picked book's title with its x beside it */
+.sp-picked {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sp-picked input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* (an id, so it's a plain x, not one of the app's buttons) */
+#shelf-photo-rows .sp-unpick,
+#shelf-photo-rows .sp-unpick:hover,
+#shelf-photo-rows .sp-unpick:active {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font-size: 20px;
+    line-height: 1;
+    opacity: 0.6;
+    transform: none;
+    cursor: pointer;
+}
+
+#shelf-photo-rows .sp-unpick::before {
+    content: none;
+}
+
+#shelf-photo-rows .sp-unpick:hover,
+#shelf-photo-rows .sp-unpick:focus-visible {
+    opacity: 1;
+    background: rgba(var(--accent-rgb), 0.12);
+}
+
+#shelf-photo-modal .modal-buttons button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+@media (max-width: 600px) {
+    .shelf-photo-body {
+        padding: 14px 14px 18px;
+    }
+
+    .sp-rows {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #shelf-photo-pick .sp-kind,
+    #shelf-photo-pick .sp-kind:hover,
+    #shelf-photo-pick .sp-kind:active {
+        flex: 1 1 0;
+        width: auto;
+        padding: 10px 8px;
+    }
+
+    /* fingers need bigger lines to grab */
+    .sp-line.v {
+        width: 24px;
+        margin-left: -12px;
+    }
+
+    .sp-line.v::before {
+        left: 11px;
+    }
+
+    .sp-line.h {
+        height: 24px;
+        margin-top: -12px;
+    }
+
+    .sp-line.h::before {
+        top: 11px;
+    }
+
+    #shelf-photo-overlay button,
+    #shelf-photo-overlay button:active {
+        width: 24px;
+        height: 24px;
+    }
+
+    #shelf-photo-overlay .sp-line.v .sp-remove {
+        left: 0;
+        bottom: -12px;
+    }
+
+    #shelf-photo-overlay .sp-line.h .sp-remove {
+        top: 0;
+    }
+}
+
+/* (themes give buttons a display of their own) */
+#shelf-photo-modal [hidden] {
+    display: none !important;
+}

@@ -192,6 +192,11 @@
         display: none;
     }
 
+    /* (but the Cover / Spine switch stays) */
+    .preview-label.preview-faces {
+        display: flex;
+    }
+
     .preview-actions {
         display: flex;
         flex-direction: column;

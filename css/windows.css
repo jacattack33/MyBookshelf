@@ -1593,6 +1593,79 @@
     #preview-book:hover { transform: none; }
 }
 
+/* Cover / Spine: the spine is drawn like a book on the shelf in Spines
+   view, in place of the cover (and the bits that go with the cover:
+   the page under it, the peeking notes) */
+#preview-spine {
+    display: none;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.preview-book-wrap.spine-face {
+    display: flex;
+    justify-content: center;
+}
+
+.preview-book-wrap.spine-face #preview-spine {
+    display: flex;
+}
+
+.preview-book-wrap.spine-face :is(#preview-book, .preview-under-page, .preview-notes-peek) {
+    display: none;
+}
+
+/* the label under the preview is the switch: two words in its own
+   lettering, the one showing full strength and underlined */
+.preview-faces {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 6px;
+}
+
+#book-modal .preview-face,
+#book-modal .preview-face:hover,
+#book-modal .preview-face:active {
+    padding: 0 2px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    opacity: 0.5;
+    overflow: visible; /* (buttons clip, which would hide the underline) */
+    transform: none;
+    cursor: pointer;
+}
+
+#book-modal .preview-face::before {
+    content: none;
+}
+
+#book-modal .preview-face:hover {
+    opacity: 0.8;
+}
+
+#book-modal .preview-face.active {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+}
+
+#book-modal .preview-face:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.preview-face-dot {
+    opacity: 0.5;
+}
+
 /* Opening book for the library card: a copy of the preview book
    drawn on top of the whole page (the edit window clips anything
    that pokes outside it), so its cover can swing all the way open
