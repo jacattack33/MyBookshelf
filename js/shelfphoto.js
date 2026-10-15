@@ -871,9 +871,9 @@ window.addEventListener('pointerup', () => {
     const drag = shelfPhotoDrag;
     shelfPhotoDrag = null;
     if (!drag.moved) return;
-    // re-guess the spines either side of a moved line, or all of them
-    // for a moved shelf
-    if (drag.divider !== undefined) guessShelfTops([drag.divider, drag.divider + 1]);
+    // re-guess the spines' tops for a moved shelf. A moved side line
+    // leaves its spines' ends where they are: they were fine, or you'd
+    // have dragged them.
     if (drag.bottom) guessShelfTops();
     renderShelfPhotoOverlay();
     renderShelfPhotoRows(); // new thumbnails
