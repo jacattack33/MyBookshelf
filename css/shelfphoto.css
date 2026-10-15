@@ -152,6 +152,17 @@
     font-size: 13px;
 }
 
+/* the same turning tools above the cropper */
+.crop-tools {
+    justify-content: center;
+    margin-bottom: 6px;
+}
+
+.crop-turn-note {
+    margin: 0 0 8px;
+    text-align: center;
+}
+
 .sp-tilt {
     display: inline-flex;
     align-items: center;

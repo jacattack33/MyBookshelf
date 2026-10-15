@@ -1316,14 +1316,17 @@ function showImageLinkFailure(context) {
     }
 }
 
-// pasting a picture anywhere in the edit window makes it the cover
+// pasting a picture anywhere in the edit window makes it whichever
+// side the preview is showing - the cover, or the spine once it's
+// turned to Spine (choosing or cropping a spine turns it there too)
 document.addEventListener('paste', (e) => {
     if (document.getElementById('book-modal').style.display !== 'flex') return;
     if (document.getElementById('crop-modal').style.display === 'flex') return;
     const file = clipboardImageFile(e);
     if (!file) return; // ordinary text pastes are left alone
     e.preventDefault();
-    readFileAsDataURL(file).then(dataUrl => startImageCrop(dataUrl, 'cover', 'Pasted image'));
+    const side = previewFace === 'spine' ? 'spine' : 'cover';
+    readFileAsDataURL(file).then(dataUrl => startImageCrop(dataUrl, side, 'Pasted image'));
 });
 
 // how far along the Cover Width (or another) slider's track the gradient fills
@@ -1489,9 +1492,39 @@ function closeModal() {
 
 // ---------- Crop modal ----------
 
+// The picture as it came in, and how far it's been turned (quarter
+// turns) and straightened (degrees) - the Whole shelf window's tools.
+let cropSourceUrl = null;
+let cropSourceImg = null;
+let cropTurns = 0;
+let cropTilt = 0;
+
 function openCropModal(dataUrl, context) {
     cropContext = context;
+    cropSourceUrl = dataUrl;
+    cropSourceImg = null;
+    cropTurns = 0;
+    cropTilt = 0;
+    document.getElementById('crop-tilt').value = 0;
+    document.getElementById('crop-turn-note').hidden = true;
     document.getElementById('crop-modal').style.display = 'flex';
+    const src = new Image();
+    src.onload = () => {
+        if (cropSourceUrl !== dataUrl) return; // (another picture came in since)
+        cropSourceImg = src;
+        // a spine stands tall and thin, so one photographed lying down
+        // starts out turned upright - clockwise, so a title that read
+        // left to right reads top to bottom, as on most spines
+        if (context === 'spine' && src.naturalWidth > src.naturalHeight) {
+            cropTurns = 1;
+            document.getElementById('crop-turn-note').hidden = false;
+        }
+        showCropImage();
+    };
+    src.src = dataUrl;
+}
+
+function showCropImage() {
     const img = document.getElementById('crop-image');
     img.onload = () => {
         cropNaturalWidth = img.naturalWidth;
@@ -1502,7 +1535,42 @@ function openCropModal(dataUrl, context) {
         cropBoxState = { x: 0, y: 0, w: rect.width, h: rect.height };
         renderCropBox();
     };
-    img.src = dataUrl;
+    // (left as it came, it isn't redrawn at all)
+    img.src = (cropTurns || cropTilt) ? turnedCropImage() : cropSourceUrl;
+}
+
+// the picture turned and straightened, trimmed to the biggest upright
+// rectangle inside it so a straightened one has no blank corners
+function turnedCropImage() {
+    const src = cropSourceImg;
+    const iw = src.naturalWidth, ih = src.naturalHeight;
+    const sideways = cropTurns % 2 === 1;
+    const tilt = cropTilt * Math.PI / 180;
+    const inner = innerRectAfterTurn(sideways ? ih : iw, sideways ? iw : ih, tilt);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.floor(inner.w));
+    canvas.height = Math.max(1, Math.floor(inner.h));
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(cropTurns * Math.PI / 2 + tilt);
+    ctx.drawImage(src, -iw / 2, -ih / 2, iw, ih);
+    return canvas.toDataURL('image/jpeg', 0.95);
+}
+
+function turnCropImage(dir) {
+    if (!cropSourceImg) return;
+    cropTurns = (cropTurns + dir + 4) % 4;
+    document.getElementById('crop-turn-note').hidden = true;
+    showCropImage();
+}
+
+function tiltCropImage(deg) {
+    if (!cropSourceImg) return;
+    document.getElementById('crop-tilt').value = deg;
+    cropTilt = Number(deg) || 0;
+    showCropImage();
 }
 
 function renderCropBox() {
@@ -1660,6 +1728,8 @@ function cancelCrop() {
 function closeCropModal() {
     document.getElementById('crop-modal').style.display = 'none';
     cropContext = null;
+    cropSourceUrl = null;
+    cropSourceImg = null;
     cropDrag = null;
 }
 

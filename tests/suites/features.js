@@ -367,10 +367,37 @@ await wait(300);
 ok('an image link loads into the cropper for the spine', q('#crop-modal').style.display === 'flex' && cropContext === 'spine' && q('#book-spine-image-url').value === '');
 useFullImageForCrop();
 ok('the linked picture becomes the pending spine', pendingSpineCrop && pendingSpineCrop.startsWith('data:image/png'));
+ok('setting a spine turns the preview to Spine', previewFace === 'spine', previewFace);
+document.dispatchEvent(new ClipboardEvent('paste', { clipboardData: pasteDt, bubbles: true }));
+await wait(300);
+ok('pasting with the preview on Spine opens the cropper for the spine, not the cover', q('#crop-modal').style.display === 'flex' && cropContext === 'spine', cropContext);
+cancelCrop();
+setPreviewFace('cover');
 document.dispatchEvent(new ClipboardEvent('paste', { clipboardData: pasteDt, bubbles: true }));
 await wait(300);
 confirmCrop();
 ok('a cropped cover is saved as JPEG', pendingCoverCrop && pendingCoverCrop.startsWith('data:image/jpeg'), (pendingCoverCrop || '').slice(0, 30));
+
+// ---- the cropper can turn and straighten; a sideways spine starts upright
+const wideCanvas = document.createElement('canvas');
+wideCanvas.width = 200; wideCanvas.height = 40;
+const WIDE = wideCanvas.toDataURL('image/png');
+const cropImgSize = () => [q('#crop-image').naturalWidth, q('#crop-image').naturalHeight].join('x');
+openCropModal(WIDE, 'spine');
+await wait(400);
+ok('a sideways spine photo is turned upright in the cropper', cropImgSize() === '40x200' && !q('#crop-turn-note').hidden, cropImgSize());
+turnCropImage(1);
+await wait(300);
+ok('Turn turns it another quarter', cropImgSize() === '200x40' && q('#crop-turn-note').hidden, cropImgSize());
+tiltCropImage(10);
+await wait(300);
+ok('straightening trims off the blank corners', q('#crop-image').naturalWidth < 200 && q('#crop-image').naturalHeight < 40, cropImgSize());
+useFullImageForCrop();
+ok('the turned picture is what gets used', pendingSpineCrop && pendingSpineCrop.startsWith('data:image/jpeg'));
+openCropModal(WIDE, 'cover');
+await wait(400);
+ok('a wide cover is left as it is', cropImgSize() === '200x40' && q('#crop-turn-note').hidden && q('#crop-tilt').value === '0', cropImgSize());
+cancelCrop();
 closeModal();
 
 // ---- covers saved as PNG before that are shrunk to JPEG once, at startup

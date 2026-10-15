@@ -1025,7 +1025,17 @@
                 <h3>&#9670; Crop Image</h3>
                 <button type="button" class="modal-close-x" onclick="cancelCrop()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
-            <div class="modal-body" style="flex-direction: column; align-items: center;">
+            <div class="modal-body" style="flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 0;">
+                <div class="sp-tools crop-tools">
+                    <button type="button" class="secondary" onclick="turnCropImage(-1)" title="Turn left">&#10226; Turn</button>
+                    <button type="button" class="secondary" onclick="turnCropImage(1)" title="Turn right">Turn &#10227;</button>
+                    <label class="sp-tilt" title="Turn the picture a little to straighten it. The mark in the middle is the picture as it was; double-click the slider to go back to it.">Straighten
+                        <span class="sp-tilt-track">
+                            <input type="range" id="crop-tilt" min="-15" max="15" step="0.5" value="0" onchange="tiltCropImage(this.value)" ondblclick="tiltCropImage(0)">
+                        </span>
+                    </label>
+                </div>
+                <div class="field-hint crop-turn-note" id="crop-turn-note" hidden>Turned upright, since a spine stands tall. Use Turn if it's the wrong way round.</div>
                 <div id="crop-stage">
                     <img id="crop-image" alt="" draggable="false">
                     <div id="crop-box" onpointerdown="startCropDrag(event, 'move')">
