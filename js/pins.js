@@ -1,8 +1,8 @@
 // ---------- Pin board (achievements) ----------
 // Enamel pins you earn by reading, stuck on a little corkboard in the
 // bottom-left stack (under the stats ledger). Once earned a pin stays, even
-// if the books that earned it go. Only Candy, Blueprint and Sunset show the
-// board for now (and Settings can switch it off); pins are still earned in
+// if the books that earned it go. Only Candy, Sea Glass, Loft, Blueprint and
+// Sunset show the board for now (and Settings can switch it off); pins are still earned in
 // every theme.
 
 const PINS_KEY = 'bookShelfPins';
@@ -808,7 +808,7 @@ function colourFamily(hex) {
 }
 
 // the Settings > Shelf extras switches (changing any earns Tinkerer)
-const SHELF_EXTRA_SETTINGS = ['cat', 'dust', 'lean', 'sticky', 'critter', 'pins', 'ownedSeal', 'unreadFade'];
+const SHELF_EXTRA_SETTINGS = ['cat', 'dust', 'lean', 'sticky', 'noteFalls', 'shelfCounts', 'critter', 'pins', 'pinAlerts', 'ownedSeal', 'unreadFade'];
 
 // the most days in a row with pages logged
 function longestStreak(log) {
@@ -934,7 +934,7 @@ function renderPinWidget(justEarned = false) {
         spot.innerHTML = pinSvg(pin);
         board.appendChild(spot);
     });
-    const fresh = unseenPins().length;
+    const fresh = appSettings.pinAlerts ? unseenPins().length : 0;
     const badge = document.getElementById('pin-new');
     badge.textContent = fresh ? `+${fresh}` : '';
     badge.classList.toggle('visible', fresh > 0);
@@ -942,7 +942,7 @@ function renderPinWidget(justEarned = false) {
     const title = `Pin board: ${earnedPins().length} of ${PINS.length} pins` + (fresh ? ` (${fresh} new)` : '');
     home.title = title;
     home.setAttribute('aria-label', title);
-    if (justEarned && !prefersReducedMotion() && home.offsetParent) {
+    if (justEarned && appSettings.pinAlerts && !prefersReducedMotion() && home.offsetParent) {
         home.animate([
             { transform: 'rotate(0)' }, { transform: 'rotate(-6deg) scale(1.08)' },
             { transform: 'rotate(5deg)' }, { transform: 'rotate(0)' }

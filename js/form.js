@@ -1062,7 +1062,7 @@ let suppressPreviewWiggle = false;
 let previewWiggleTimer = null;
 
 function wigglePreview() {
-    if (suppressPreviewWiggle || prefersReducedMotion()) return;
+    if (suppressPreviewWiggle || celebrationsOff()) return;
     clearTimeout(previewWiggleTimer);
     previewWiggleTimer = setTimeout(() => {
         const wrap = document.getElementById('preview-book-wrap');
@@ -1836,7 +1836,7 @@ async function processBookForm() {
     pendingSpineCrop = null;
     // got the book (owned, or a cover added): the sticky note leaves
     // like a deleted one, and the real book poofs in where it was
-    const gotIt = existing && isStickyPlaceholder(existing) && !isStickyPlaceholder(book) && !prefersReducedMotion();
+    const gotIt = existing && isStickyPlaceholder(existing) && !isStickyPlaceholder(book) && appSettings.goodbyes && !prefersReducedMotion();
     let poofAt = 0;
     if (gotIt) {
         closeModal();

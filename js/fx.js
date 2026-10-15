@@ -2,6 +2,8 @@
 
 const prefersReducedMotion = () => appSettings.calm ||
     (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+// sparkles, confetti and wiggles can be switched off on their own
+const celebrationsOff = () => !appSettings.celebrations || prefersReducedMotion();
 
 function getFxLayer() {
     let layer = document.getElementById('fx-layer');
@@ -57,6 +59,7 @@ function flyBit(cls, x, y, dx, dy, dur) {
 }
 
 function sparkleFrom(el, count = 7, extraClass = '') {
+    if (celebrationsOff()) return;
     burstFrom(el, count, 38, () => {
         const sp = document.createElement('span');
         sp.className = ('fx-sparkle ' + extraClass).trim();
@@ -69,6 +72,7 @@ function sparkleFrom(el, count = 7, extraClass = '') {
 const CONFETTI_COLORS = ['#ff2e93', '#b57bff', '#5fe8c4', '#ffe066', '#9fdcff', '#ff9eb0'];
 
 function confettiFrom(el) {
+    if (celebrationsOff()) return;
     burstFrom(el, 70, 220, (i) => {
         const bit = document.createElement('span');
         bit.className = 'fx-confetti';

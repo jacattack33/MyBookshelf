@@ -27,6 +27,20 @@ ok('fallen note stays inside the shelf', note.getBoundingClientRect().bottom <= 
 note.click();
 await wait(100);
 ok('click sticks it back up (without opening the book)', !note.classList.contains('fallen') && q('#book-modal').style.display !== 'flex');
+dropNote(note);
+toggleSetting('noteFalls');
+await wait(100);
+ok('turning falls off sticks fallen notes back up', !q('.book[data-id="sn1"]').classList.contains('fallen') && fallenNotes.size === 0);
+maybeDropNote(1);
+ok('no notes fall while falls are off', fallenNotes.size === 0);
+toggleSetting('noteFalls');
+
+// ---- the book count on each shelf can be switched off
+ok('shelves show their book count', !!q('.shelf-count'));
+setSetting('shelfCounts', false);
+ok('Book counts off hides them', !q('.shelf-count'));
+setSetting('shelfCounts', true);
+ok('...and back on', !!q('.shelf-count'));
 
 // ---- new books always sort after every other book
 library = library.filter(b => b.id !== '2');
@@ -157,6 +171,22 @@ await deletingBook;
 ok('book is gone from the shelf and library', !q('#library-room .book[data-id="bk1"]') && !library.some(b => b.id === 'bk1'));
 await wait(4000);
 ok('its copy is cleaned up', !q('#fx-layer .tossed-book'));
+// ---- switches for sparkles/confetti and goodbye scenes
+setSetting('celebrations', false);
+sparkleFrom(document.body);
+confettiFrom(document.body);
+ok('sparkles & confetti off: none fly', !q('#fx-layer .fx-sparkle, #fx-layer .fx-confetti'));
+setSetting('celebrations', true);
+sparkleFrom(document.body);
+ok('...back on, they do', !!q('#fx-layer .fx-sparkle'));
+setSetting('goodbyes', false);
+library.push({ id: 'bk3', title: 'Quietly', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#5fe8c4', width: 110, sortOrder: 1 });
+renderBookshelf();
+openModal('bk3');
+await deleteCurrentBook();
+ok('goodbye animations off: a deleted book just goes', !q('#fx-layer .tossed-book') && !library.some(b => b.id === 'bk3'));
+setSetting('goodbyes', true);
+
 const allBookExits = [...BOOK_EXITS, ...Object.values(THEME_BOOK_EXITS)];
 library.push({ id: 'bk2', title: 'Again', authors: ['A'], genre: 'Fantasy', status: 'Read', color: '#ff2e93', width: 110, sortOrder: 1 });
 const leaving = {};

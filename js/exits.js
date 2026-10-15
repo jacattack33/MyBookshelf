@@ -110,7 +110,7 @@ async function deleteCurrentBook() {
     // a to-get sticky note gets crumpled up and thrown off the screen;
     // a book leaves one of its own ways (its pulled-out pose is read
     // before the window closes and starts sliding it back)
-    const toss = !book || prefersReducedMotion() ? null
+    const toss = !book || !appSettings.goodbyes || prefersReducedMotion() ? null
         : isStickyPlaceholder(book)
             ? () => { closeModal(); return tossStickyNote(id); }
             : () => { const ms = tossBook(id); closeModal(); return ms; };

@@ -89,8 +89,11 @@ const DEFAULT_SETTINGS = {
     goal: 0,                    // yearly reading goal; 0 = off
     defaultStatus: 'Want to Read',
     cat: true, dust: true, lean: true, sticky: true,
+    noteFalls: true,            // to-get sticky notes now and then fall off the shelf
+    shelfCounts: true,          // the number of books in the corner of each shelf
     critter: true,              // the reading critter in the corner
     pins: true,                 // the pin board (achievements) under the stats ledger; Candy only for now
+    pinAlerts: true,            // the pin board wiggles, sparkles and shows a +N badge for new pins
     ownedSeal: 'series',        // gold seal on owned books: 'off', 'series' (Series shelf only) or 'all'
     unreadFade: 'series',       // fade books not marked Read: 'off', 'series' or 'all'
     pagesGoal: 20,              // pages per pagesPeriod; also how fast the critter gets hungry
@@ -99,6 +102,8 @@ const DEFAULT_SETTINGS = {
     cardFont: null,             // library card handwriting (null = the book's notes font)
     backupReminders: true,      // nudge to export now and then
     typewriterMachine: 'off',   // Typewriter: the panel comes out of the machine: 'off', 'roller' or 'full' (adds the typing scale)
+    celebrations: true,         // sparkles, confetti and the preview wiggle
+    goodbyes: true,             // deleted books and notes leave in a little scene (and a got note poofs into a book)
     calm: false,                // no animations
     debug: false                // the debug panel on the right edge
 };
@@ -439,8 +444,10 @@ function setSetting(key, value) {
     if (SHELF_EXTRA_SETTINGS.includes(key)) awardPin('tinker'); // (even switched back)
     refreshSettingsButtons();
     // the name and goals are typed into, so don't redraw every shelf per keystroke
-    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'pins'].includes(key));
+    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'pins', 'pinAlerts', 'celebrations', 'goodbyes'].includes(key));
     if (key === 'backupReminders' && !value) hideBackupReminder();
+    if (key === 'noteFalls' && !value) stickAllNotesBackUp();
+    if (key === 'pinAlerts') renderPinWidget();
     if (key === 'goal') updateReadingGoal();
     if (['goal', 'pagesGoal', 'pagesPeriod', 'critter'].includes(key)) updateGoals();
     if (key === 'pagesGoal' || key === 'pagesPeriod') renderCritter();

@@ -9,7 +9,7 @@ function isStickyPlaceholder(book) {
 // Now and then one to-get note comes unstuck, flutters down and lands
 // crooked at the bottom of its shelf. It stays down (even after a
 // reload) until you click it to stick it back up. One at a time; never
-// in Calm mode or with reduced motion.
+// in Calm mode, with reduced motion, or with Falling sticky notes off.
 const FALLEN_KEY = 'bookShelfFallenNotes';
 let fallenNotes = new Set();
 try { fallenNotes = new Set(JSON.parse(localStorage.getItem(FALLEN_KEY)) || []); } catch (e) {}
@@ -68,13 +68,20 @@ function stickNoteBackUp(el, id) {
 
 // maybe let one note fall (only if none is down, and one is on screen)
 function maybeDropNote(chance) {
-    if (prefersReducedMotion() || fallenNotes.size > 0 || Math.random() > chance) return;
+    if (!appSettings.noteFalls || prefersReducedMotion() || fallenNotes.size > 0 || Math.random() > chance) return;
     const onScreen = [...document.querySelectorAll('#library-room .book.sticky-book:not(.fallen)')].filter(el => {
         const r = el.getBoundingClientRect();
         return r.bottom > 0 && r.top < window.innerHeight;
     });
     if (onScreen.length === 0) return;
     dropNote(onScreen[Math.floor(Math.random() * onScreen.length)]);
+}
+
+// turning falls off puts any fallen notes back where they belong
+function stickAllNotesBackUp() {
+    document.querySelectorAll('#library-room .book.sticky-book.fallen').forEach(el => stickNoteBackUp(el, el.dataset.id));
+    fallenNotes.clear();
+    saveFallenNotes();
 }
 
 function scheduleNoteFalls() {

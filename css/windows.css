@@ -25,23 +25,24 @@
     margin-top: 0;
 }
 
-/* the count ring, pace line and 7-day strip are Candy's, Blueprint's
-   and Sunset's (below); the other themes keep the plain text and bar */
+/* the count ring, pace line and 7-day strip are Candy's, Sea Glass's,
+   Loft's, Blueprint's and Sunset's (below); the other themes keep the
+   plain text and bar */
 .goals-ring,
 .goals-pace,
 .goals-week {
     display: none;
 }
 
-/* ---------- Goals window, Candy, Blueprint and Sunset: the layout ----------
+/* ---------- Goals window, Candy, Sea Glass, Loft, Blueprint and Sunset: the layout ----------
    Each goal's section opens with a big ring showing the count, with
    the bar and how it's pacing beside it; Pages adds the last 7 days.
    Each theme dresses it its own way after this. */
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-body .field-section-title {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-body .field-section-title {
     order: -2;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-progress:not(:empty) {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-progress:not(:empty) {
     order: -1;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -50,7 +51,7 @@
     align-items: center;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring {
     grid-row: 1 / -1;
     position: relative;
     width: 92px;
@@ -65,19 +66,19 @@
 }
 
 /* the hole in the middle (the text sits on top of it) */
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring::before {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring::before {
     content: "";
     position: absolute;
     border-radius: 50%;
     background: var(--surface);
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring > span {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-ring > span {
     position: relative;
     line-height: 1;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-progress-text {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-progress-text {
     grid-row: 1;
     align-self: end;
     font-size: 14px;
@@ -85,18 +86,18 @@
     line-height: 1.3;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-content .reading-goal-bar {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-content .reading-goal-bar {
     grid-row: 2;
     grid-column: 2;
     position: relative;
     margin-top: 6px;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-content .reading-goal-fill {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-content .reading-goal-fill {
     position: relative;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-pace {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-pace {
     display: block;
     grid-row: 3;
     grid-column: 2;
@@ -108,20 +109,20 @@
 
 /* the last 7 days of pages, today on the right, with a dashed line at
    the daily pace */
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-week {
     order: -1;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-title {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-title {
     font-size: 11px;
     font-weight: 700;
     opacity: 0.75;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-chart {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-chart {
     position: relative;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -132,7 +133,7 @@
 }
 
 /* the pace line, measured within the bars' area (above the day letters) */
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-chart::before {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-week-chart::before {
     content: "";
     position: absolute;
     left: 4px;
@@ -141,7 +142,7 @@
     pointer-events: none;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-day {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -149,7 +150,7 @@
     min-width: 0;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day-bar {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-day-bar {
     width: 100%;
     max-width: 22px;
     min-height: 3px;
@@ -157,7 +158,7 @@
     border-bottom: none;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day-name {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-day-name {
     height: 18px;
     line-height: 18px;
     font-size: 10px;
@@ -165,63 +166,64 @@
     opacity: 0.7;
 }
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) .goals-day.today .goals-day-name {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .goals-day.today .goals-day-name {
     opacity: 1;
 }
 
-/* ---------- Goals window, Candy ----------
+/* ---------- Goals window, Candy (and Sea Glass) ----------
    Each goal gets its own flavour - Books bubblegum, Pages mint - with
-   a chunky ring and a fat glossy striped bar like a stick of rock */
-:root:not([data-theme]) .goals-books {
+   a chunky ring and a fat glossy striped bar like a stick of rock.
+   Sea Glass is the same in its own colours (see below). */
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-books {
     --goal-flavour: var(--y2k-hot-pink);
     --goal-fill: linear-gradient(90deg, var(--y2k-pink), var(--y2k-hot-pink));
     background: var(--pastel-pink);
     border-color: var(--y2k-pink);
 }
 
-:root:not([data-theme]) .goals-pages {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-pages {
     --goal-flavour: #2fcfa5;
     --goal-fill: linear-gradient(90deg, var(--y2k-blue), var(--y2k-mint));
     background: var(--pastel-mint);
     border-color: var(--y2k-mint);
 }
 
-:root:not([data-theme]) .goals-body .field-section-title {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-body .field-section-title {
     color: var(--y2k-dark);
 }
 
-:root:not([data-theme]) .goals-ring {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-ring {
     border: 2px solid var(--outline);
     box-shadow: 3px 3px 0 var(--outline);
     background: conic-gradient(var(--goal-flavour) calc(var(--pct) * 1%), var(--surface) 0);
 }
 
-:root:not([data-theme]) .goals-ring::before {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-ring::before {
     inset: 12px;
     border: 2px solid var(--outline);
 }
 
-:root:not([data-theme]) .goals-ring.done {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-ring.done {
     background: conic-gradient(var(--y2k-pink), var(--y2k-yellow), var(--y2k-mint), var(--y2k-blue), var(--y2k-purple), var(--y2k-pink));
 }
 
-:root:not([data-theme]) .goals-ring-count {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-ring-count {
     font-family: var(--pixel-font);
     font-size: 15px;
 }
 
-:root:not([data-theme]) .goals-ring-of {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-ring-of {
     font-size: 9px;
     font-weight: 700;
     opacity: 0.75;
 }
 
-:root:not([data-theme]) .goals-content .reading-goal-bar {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-content .reading-goal-bar {
     height: 18px;
     border-radius: 10px;
 }
 
-:root:not([data-theme]) .goals-content .reading-goal-fill {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-content .reading-goal-fill {
     border-radius: 0 8px 8px 0;
     background:
         repeating-linear-gradient(-45deg, rgba(255,255,255,0.4) 0 7px, transparent 7px 14px),
@@ -230,15 +232,15 @@
     animation: goal-stripes 1.2s linear infinite;
 }
 
-:root:not([data-theme]) .goals-content .reading-goal-fill.done {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-content .reading-goal-fill.done {
     background:
         repeating-linear-gradient(-45deg, rgba(255,255,255,0.4) 0 7px, transparent 7px 14px),
         linear-gradient(90deg, var(--y2k-pink), var(--y2k-yellow), var(--y2k-mint), var(--y2k-blue), var(--y2k-purple));
     background-size: 20px 20px, var(--bar-span, 100%) 100%;
 }
 
-/* the shine across the top, like hard candy */
-:root:not([data-theme]) .goals-content .reading-goal-bar::after {
+/* the shine across the top, like hard candy (Sunset borrows it too) */
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="sunset"]) .goals-content .reading-goal-bar::after {
     content: "";
     position: absolute;
     left: 5px;
@@ -251,7 +253,7 @@
 }
 
 /* a sparkle riding the front edge */
-:root:not([data-theme]) .goals-content .reading-goal-fill:not([style*="width: 0%"])::after {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-content .reading-goal-fill:not([style*="width: 0%"])::after {
     content: "✦";
     position: absolute;
     right: 2px;
@@ -264,16 +266,16 @@
     animation: goal-twinkle 1.6s ease-in-out infinite;
 }
 
-:root:not([data-theme]) .goals-week-chart {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-week-chart {
     border: 2px solid var(--outline);
     border-radius: 10px;
 }
 
-:root:not([data-theme]) .goals-week-chart::before {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-week-chart::before {
     border-top: 2px dashed rgba(var(--ink-rgb), 0.3);
 }
 
-:root:not([data-theme]) .goals-day-bar {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-day-bar {
     border: 2px solid var(--outline);
     border-bottom: none;
     border-radius: 6px 6px 0 0;
@@ -283,13 +285,13 @@
 }
 
 /* days that kept up with the pace get the full mint */
-:root:not([data-theme]) .goals-day.met .goals-day-bar {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-day.met .goals-day-bar {
     background:
         repeating-linear-gradient(-45deg, rgba(255,255,255,0.4) 0 5px, transparent 5px 10px),
         var(--y2k-mint);
 }
 
-:root:not([data-theme]) .goals-day.today .goals-day-name {
+:root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-day.today .goals-day-name {
     color: var(--y2k-hot-pink);
 }
 
@@ -302,14 +304,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    :root:not([data-theme]) .goals-content .reading-goal-fill,
-    :root:not([data-theme]) .goals-content .reading-goal-fill::after { animation: none; }
+    :root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-content .reading-goal-fill,
+    :root:is(:not([data-theme]), [data-theme="seaglass"]) .goals-content .reading-goal-fill::after { animation: none; }
 }
 
 /* after dark the pastel sections turn murky, and a flat tint of the
    flavour over a dark surface goes grey; a wash of it glowing down
    from the top keeps each section clearly its own colour */
-:root[data-mode="dark"]:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) :is(.goals-books, .goals-pages) {
+:root[data-mode="dark"]:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) :is(.goals-books, .goals-pages) {
     background:
         linear-gradient(180deg, color-mix(in srgb, var(--goal-flavour) 34%, transparent), color-mix(in srgb, var(--goal-flavour) 8%, transparent) 75%),
         var(--surface);
@@ -474,7 +476,7 @@
 }
 
 :root[data-theme="sunset"] .goals-content .reading-goal-bar {
-    height: 16px;
+    height: 18px;
     border-radius: 10px;
 }
 
@@ -535,6 +537,127 @@
    sun-gold too, instead of the usual plum-to-red */
 :root[data-theme="sunset"] .reading-goal-fill.done {
     background-image: linear-gradient(90deg, #f7821e, #fcc21b 60%, #ffe58a);
+}
+
+/* ---------- Goals window, Sea Glass ----------
+   Candy's glossy rings and striped bars (above), in sea colours: Books
+   in teal, Pages in a deep sea blue */
+:root[data-theme="seaglass"] .goals-books {
+    --goal-flavour: var(--y2k-hot-pink);
+    --goal-fill: linear-gradient(90deg, var(--y2k-pink), var(--y2k-hot-pink));
+}
+
+:root[data-theme="seaglass"] .goals-pages {
+    --goal-flavour: var(--y2k-purple);
+    --goal-fill: linear-gradient(90deg, #8fc6ef, var(--y2k-purple));
+    background: var(--pastel-lavender);
+    border-color: var(--y2k-purple);
+}
+
+/* ---------- Goals window, Loft ----------
+   Candy's layout in metal: Books in copper, Pages in brushed steel,
+   square-cornered with hard shadows. The bars are a strip of metal with
+   a bright edge along the top; a goal that's done gets a polished copper
+   ring and bar */
+:root[data-theme="loft"] .goals-books {
+    --goal-flavour: #b8734a;
+    --goal-fill: linear-gradient(180deg, #e7ad84 0%, #c07a55 45%, #9a5a37 75%, #c88760 100%);
+    background: var(--pastel-pink);
+    border-color: #b8734a;
+}
+
+:root[data-theme="loft"] .goals-pages {
+    --goal-flavour: #5c6670;
+    --goal-fill: linear-gradient(180deg, #b3b9c0 0%, #7f8892 45%, #5c6670 75%, #8e979f 100%);
+    background: var(--pastel-blue);
+    border-color: #5c6670;
+}
+
+:root[data-mode="dark"][data-theme="loft"] .goals-pages {
+    --goal-flavour: #9aa3ac;
+}
+
+:root[data-theme="loft"] .goals-body .field-section {
+    border-radius: 4px;
+}
+
+:root[data-theme="loft"] .goals-ring {
+    border: 2px solid var(--outline);
+    box-shadow: 3px 3px 0 var(--outline);
+    background: conic-gradient(var(--goal-flavour) calc(var(--pct) * 1%), var(--surface) 0);
+}
+
+:root[data-theme="loft"] .goals-ring::before {
+    inset: 12px;
+    border: 2px solid var(--outline);
+}
+
+/* goal met: a ring of polished copper, light catching it in two places */
+:root[data-theme="loft"] .goals-ring.done {
+    background: conic-gradient(#9a5a37, #f1c09a, #c07a55, #8a4c2c, #e7ad84, #b8734a, #9a5a37);
+}
+
+:root[data-theme="loft"] .goals-ring-count {
+    font-family: var(--pixel-font);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+:root[data-theme="loft"] .goals-ring-of {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+:root[data-theme="loft"] .goals-content .reading-goal-bar {
+    height: 18px;
+    border-radius: 3px;
+}
+
+:root[data-theme="loft"] .goals-content .reading-goal-fill {
+    border-right: 2px solid var(--outline);
+    background:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 3px),
+        var(--goal-fill);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+:root[data-theme="loft"] .goals-content .reading-goal-fill[style*="width: 0%"] {
+    border-right: none;
+}
+
+:root[data-theme="loft"] .reading-goal-fill.done {
+    background-image:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 3px),
+        linear-gradient(180deg, #f6cfae 0%, #e09a6c 30%, #b8693f 60%, #d89466 100%);
+}
+
+:root[data-theme="loft"] .goals-week-chart {
+    border: 2px solid var(--outline);
+    border-radius: 4px;
+}
+
+/* the pace line in copper */
+:root[data-theme="loft"] .goals-week-chart::before {
+    border-top: 2px dashed #b8734a;
+}
+
+:root[data-theme="loft"] .goals-day-bar {
+    border: 2px solid var(--outline);
+    border-bottom: none;
+    border-radius: 2px 2px 0 0;
+    background: var(--steel-bar);
+}
+
+/* days that kept up with the pace are copper */
+:root[data-theme="loft"] .goals-day.met .goals-day-bar {
+    background: linear-gradient(90deg, #9a5a37, #e7ad84 40%, #c07a55 70%, #9a5a37);
+}
+
+:root[data-theme="loft"] .goals-day.today .goals-day-name {
+    color: #b8734a;
 }
 
 /* ---------- How backups work window ---------- */

@@ -161,6 +161,14 @@ const sunGold = 'rgb(252, 194, 27)';
 ok('sunset: goals get the ring and the 7 days', getComputedStyle(q('.goals-pages .goals-ring')).display !== 'none' && getComputedStyle(q('.goals-week')).display !== 'none');
 ok('sunset: a met goal\'s bar and ring go sun-gold', getComputedStyle(q('.goals-pages .reading-goal-fill.done')).backgroundImage.includes(sunGold) && getComputedStyle(q('.goals-pages .goals-ring.done')).backgroundImage.includes(sunGold));
 ok('sunset: one still going isn\'t gold', !getComputedStyle(q('.goals-books .reading-goal-fill')).backgroundImage.includes(sunGold) && !q('.goals-books .goals-ring.done'));
+ok('sunset: the bar has a glassy shine', getComputedStyle(q('.goals-pages .reading-goal-bar'), '::after').content !== 'none');
+for (const th of ['seaglass', 'loft']) {
+    setTheme(th);
+    ok(th + ': goals get the ring and the 7 days', getComputedStyle(q('.goals-pages .goals-ring')).display !== 'none' && getComputedStyle(q('.goals-week')).display !== 'none');
+}
+ok('loft: a met goal goes polished copper', getComputedStyle(q('.goals-pages .reading-goal-fill.done')).backgroundImage.includes('rgb(246, 207, 174)') && getComputedStyle(q('.goals-pages .goals-ring.done')).backgroundImage.includes('rgb(241, 192, 154)'));
+ok('loft: Add Book is copper', getComputedStyle(q('.add-book-btn')).backgroundImage.includes('rgb(196, 122, 76)'));
+setTheme('sunset');
 ok('sunset: a finished bar on the goals card is gold too', getComputedStyle(q('#goals-card .reading-goal-fill.done')).backgroundImage.includes(sunGold) && !getComputedStyle(q('#goals-card .reading-goal-fill:not(.done)')).backgroundImage.includes(sunGold));
 setTheme('candy');
 setSetting('pagesGoal', 70);

@@ -4,13 +4,17 @@
 const DAY = 864e5;
 const slots = () => [...document.querySelectorAll('#pins-board .pin-slot')];
 
-// ---- the widget: Candy, Blueprint and Sunset for now
+// ---- the widget: Candy, Sea Glass, Loft, Blueprint and Sunset for now
 setTheme('candy');
 ok('pin board shows in Candy', getComputedStyle(q('#pin-home')).display !== 'none');
 setTheme('blueprint');
 ok('...and in Blueprint, a corkboard in a cobalt frame', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(document.documentElement).getPropertyValue('--pin-frame').trim() === '#2f5fa8' && getComputedStyle(q('#pin-home-board')).backgroundImage.includes('feTurbulence'));
 setTheme('sunset');
 ok('...and in Sunset, cork in a sunset-gradient frame', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(q('#pins-board'), '::after').backgroundImage.includes('linear-gradient') && getComputedStyle(q('#pin-home-board')).backgroundImage.includes('feTurbulence'));
+setTheme('seaglass');
+ok('...and in Sea Glass, in a frosted sea-glass frame', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(document.documentElement).getPropertyValue('--pin-frame').trim() === '#9fd3c7');
+setTheme('loft');
+ok('...and in Loft, a steel frame with rivets', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(document.documentElement).getPropertyValue('--pin-frame').trim() === '#3a3e44' && getComputedStyle(q('#pins-board'), '::after').backgroundImage.includes('radial-gradient'));
 setTheme('library');
 ok('...and not in other themes', getComputedStyle(q('#pin-home')).display === 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display === 'none');
 setTheme('candy');
@@ -34,6 +38,10 @@ ok('pins are saved', JSON.parse(localStorage.getItem(PINS_KEY)).earned.first > 0
 ok('pins go in backups', SETTINGS_BACKUP_KEYS.includes(PINS_KEY));
 ok('new pin badge on the widget', q('#pin-new').classList.contains('visible') && q('#pin-new').textContent === `+${unseenPins().length}`);
 ok('widget shows the pin', q('#pin-home-board .pin-home-pin .pin-art'));
+setSetting('pinAlerts', false);
+ok('new-pin alerts off hides the badge', !q('#pin-new').classList.contains('visible') && unseenPins().length > 0);
+setSetting('pinAlerts', true);
+ok('...and back on shows it again', q('#pin-new').classList.contains('visible'));
 
 // ---- the window
 const unseenPinsAtOpen = unseenPins().length;

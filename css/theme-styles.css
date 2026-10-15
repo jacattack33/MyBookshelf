@@ -276,7 +276,7 @@
    panel, in the Orbitron font. (The cut also clips any outer
    shadow, so depth comes from inside, and the two diagonal edges
    get drawn-on outline strokes.) */
-:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 0;
     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
     font-family: var(--pixel-font);
@@ -289,7 +289,7 @@
         inset 0 2px 0 rgba(255, 255, 255, 0.6);
 }
 
-:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::after {
+:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -299,7 +299,7 @@
         linear-gradient(135deg, transparent calc(50% - 1.5px), var(--outline) calc(50% - 1.5px), var(--outline) calc(50% + 1.5px), transparent calc(50% + 1.5px)) bottom right / 10px 10px no-repeat;
 }
 
-:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button):active {
+:root[data-theme="holo"] body :is(.add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):active {
     transform: translateY(1px);
     box-shadow:
         inset 0 3px 5px rgba(var(--ink-rgb), 0.35),
@@ -801,18 +801,18 @@
 }
 
 /* buttons: soft leather with a stitched edge */
-:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 6px;
     border-width: 1.5px;
     border-color: rgba(var(--ink-rgb), 0.55);
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     opacity: 0.35;
 }
 
-:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::after {
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::after {
     content: "";
     position: absolute;
     inset: 3px;
@@ -821,7 +821,7 @@
     pointer-events: none;
 }
 
-:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="library"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(1px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -958,7 +958,7 @@
 :root[data-theme="deco"] .genre-title::after { margin-left: 12px; }
 
 /* buttons: sharp lacquer with a thin gold inner rule, uppercase */
-:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 2px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -971,11 +971,11 @@
     color: var(--y2k-dark);
 }
 
-:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     display: none;
 }
 
-:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="deco"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translate(1px, 1px);
     box-shadow:
         inset 0 0 0 2px rgba(255, 255, 255, 0.3),
@@ -1088,7 +1088,7 @@
 }
 
 /* buttons: flat industrial keys with a hard bottom edge */
-:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 3px;
     font-family: var(--pixel-font);
     font-weight: 500;
@@ -1097,13 +1097,28 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     display: none;
 }
 
-:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="loft"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(2px);
     box-shadow: 0 1px 0 var(--outline), inset 0 2px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Add Book: a plate of polished copper - lighter where the light hits
+   the top, darker through the middle, a fine brushed grain, and the
+   label stamped in */
+:root[data-theme="loft"] body .add-book-btn {
+    background:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, rgba(90, 40, 15, 0.06) 1px 2px, transparent 2px 4px),
+        linear-gradient(180deg, #eebf9b 0%, #dc9a70 18%, #c47a4c 44%, #a35f38 58%, #b9714a 80%, #d99c76 100%);
+    color: #3a1a08;
+    text-shadow: 0 1px 0 rgba(255, 225, 195, 0.5);
+    box-shadow:
+        0 3px 0 var(--outline),
+        inset 0 1px 0 rgba(255, 240, 225, 0.6),
+        inset 0 -2px 2px rgba(80, 35, 10, 0.25);
 }
 
 /* library: heading font sizes */
@@ -1367,7 +1382,7 @@
 }
 
 /* buttons: flat, squared, condensed capitals */
-:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 3px;
     border-width: 1.5px;
     font-family: var(--pixel-font);
@@ -1378,11 +1393,11 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     display: none;
 }
 
-:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="blueprint"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translate(1px, 1px);
     box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
 }
@@ -1884,7 +1899,7 @@
 }
 
 /* buttons: square, VT323 capitals; pressed ones go inverse video */
-:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 0;
     border-width: 2px;
     font-family: var(--pixel-font);
@@ -1895,11 +1910,11 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     display: none;
 }
 
-:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button):active {
+:root[data-theme="terminal"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):active {
     transform: translateY(1px);
 }
 
@@ -2261,7 +2276,7 @@
 
 /* buttons: round typewriter keys in chrome rims; a press pushes
    the key down */
-:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 999px;
     border: 2px solid var(--outline);
     font-family: var(--pixel-font);
@@ -2271,11 +2286,11 @@
     margin-bottom: 4px;
 }
 
-:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     display: none;
 }
 
-:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="typewriter"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(3px);
     box-shadow: var(--btn-shadow-down), inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
@@ -2283,7 +2298,7 @@
 /* every key is a black cap with cream letters (no group colours, in
    either mode); a pressed key flips to cream with black letters */
 :root[data-theme="typewriter"] body .toggle-group .toggle-btn:not(.active),
-:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button):not(.active) {
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):not(.active) {
     background: var(--key-cap);
     color: var(--key-letter);
     border-color: #000;
@@ -2292,14 +2307,14 @@
 }
 
 :root[data-theme="typewriter"] body .toggle-group .toggle-btn:not(.active):hover,
-:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button):not(.active):hover {
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):not(.active):hover {
     background: var(--key-cap-hover);
     filter: none;
 }
 
 :root[data-theme="typewriter"] body .toggle-group .toggle-btn:is(.active, :active, :active:hover),
 :root[data-theme="typewriter"] body .status-btn.active,
-:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button):active {
+:root[data-theme="typewriter"] body :is(.status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):active {
     background: var(--key-down);
     color: var(--key-down-letter);
     border-color: #000;
@@ -2780,14 +2795,14 @@
 :root[data-theme="sunset"] .genre-title.tag-status-dnf { --swash: var(--y2k-coral); }
 
 /* buttons: soft pills; pressed ones glow */
-:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle) {
+:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 999px;
     font-family: var(--pixel-font);
     font-weight: 600;
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="sunset"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(2px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.22), 0 0 14px rgba(247, 130, 30, 0.55);
 }
@@ -2914,7 +2929,7 @@
     filter: brightness(1.1);
 }
 
-:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button)::before {
+:root:is([data-theme="plain"], [data-theme="plainbold"]) body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch)::before {
     display: none;
 }
 
@@ -2976,7 +2991,7 @@
     border: 1.5px solid var(--p-frame-line);
 }
 
-:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 3px;
     border: 1.5px solid var(--p-frame);
     font-family: var(--pixel-font);
@@ -2987,7 +3002,7 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="plain"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translate(1px, 1px);
     box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.2);
 }
@@ -3078,7 +3093,7 @@
 :root[data-theme="plainbold"] .genre-title.tag-status-read { --sign-accent: var(--y2k-green); }
 :root[data-theme="plainbold"] .genre-title.tag-status-dnf { --sign-accent: var(--y2k-coral); }
 
-:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button) {
+:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
     border-radius: 3px;
     border: 2px solid var(--p-outline);
     font-family: var(--pixel-font);
@@ -3088,7 +3103,7 @@
     box-shadow: var(--btn-shadow);
 }
 
-:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button):is(.toggle-btn.active, .status-btn.active, :active) {
+:root[data-theme="plainbold"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch):is(.toggle-btn.active, .status-btn.active, :active) {
     transform: translateY(2px);
     box-shadow: 0 1px 0 var(--p-outline), inset 0 2px 3px rgba(0, 0, 0, 0.25);
 }

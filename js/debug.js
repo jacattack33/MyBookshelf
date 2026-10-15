@@ -192,11 +192,9 @@ function debugDropNote() {
 }
 
 function debugStickNotesBack() {
-    const down = [...document.querySelectorAll('#library-room .book.sticky-book.fallen')];
-    down.forEach(el => stickNoteBackUp(el, el.dataset.id));
-    fallenNotes.clear();
-    saveFallenNotes();
-    debugSay(`Stuck ${down.length} note(s) back up.`);
+    const down = document.querySelectorAll('#library-room .book.sticky-book.fallen').length;
+    stickAllNotesBackUp();
+    debugSay(`Stuck ${down} note(s) back up.`);
 }
 
 function debugExitSelect(exits) {

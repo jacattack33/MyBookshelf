@@ -519,13 +519,15 @@ function renderShelves() {
         shelf.className = spineMode ? 'shelf spine-shelf' : 'shelf';
         shelf.dataset.group = key;
 
-        const countBadge = document.createElement('span');
-        countBadge.className = 'shelf-count';
-        countBadge.innerText = seriesTotal > 0 ? `${booksInSection.length} of ${seriesTotal}` : booksInSection.length;
-        // appended to the section, not the shelf - the shelf scrolls
-        // horizontally, and a child of it scrolls right along with the
-        // books, dragging the count off to the side as you scroll.
-        section.appendChild(countBadge);
+        if (appSettings.shelfCounts) {
+            const countBadge = document.createElement('span');
+            countBadge.className = 'shelf-count';
+            countBadge.innerText = seriesTotal > 0 ? `${booksInSection.length} of ${seriesTotal}` : booksInSection.length;
+            // appended to the section, not the shelf - the shelf scrolls
+            // horizontally, and a child of it scrolls right along with the
+            // books, dragging the count off to the side as you scroll.
+            section.appendChild(countBadge);
+        }
 
         if (isSeriesGroup) {
             const ownedNumbers = new Set(

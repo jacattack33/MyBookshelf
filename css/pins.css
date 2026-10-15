@@ -99,7 +99,7 @@
 }
 
 
-:root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) body.pins-on .pin-home {
+:root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) body.pins-on .pin-home {
     display: block;
 }
 
@@ -392,7 +392,7 @@
     }
 
     /* closed, a dot on the corner button says there's a new pin */
-    :root:is(:not([data-theme]), [data-theme="blueprint"], [data-theme="sunset"]) body:not(.corner-open):has(.pin-new.visible) .corner-toggle::after {
+    :root:is(:not([data-theme]), [data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) body:not(.corner-open):has(.pin-new.visible) .corner-toggle::after {
         content: '';
         position: absolute;
         top: -2px;
@@ -405,9 +405,9 @@
     }
 }
 
-/* its Settings switch only shows while the board can (Candy, Blueprint,
-   Sunset) */
-:root[data-theme]:not([data-theme="blueprint"], [data-theme="sunset"]) .pins-setting {
+/* its Settings switch only shows while the board can (Candy, Sea Glass,
+   Loft, Blueprint, Sunset) */
+:root[data-theme]:not([data-theme="seaglass"], [data-theme="loft"], [data-theme="blueprint"], [data-theme="sunset"]) .pins-setting {
     display: none;
 }
 
@@ -542,5 +542,113 @@
     font-family: 'Kaushan Script', 'Fredoka', cursive;
     font-size: 19px;
     font-weight: 400;
+    color: var(--y2k-hot-pink);
+}
+
+/* ---------- Sea Glass: a corkboard in a frosted sea-glass frame ----------
+   the same cork and nail as Candy, framed in pale frosted green, with
+   the enamel in sea colours: teal, sea blue, foam, sand and a coral */
+:root[data-theme="seaglass"] {
+    --pe-pink: #7fd1c3;
+    --pe-hot: #2a8c96;
+    --pe-lav: #8fb3e6;
+    --pe-mint: #a6e6cf;
+    --pe-teal: #1f7f86;
+    --pe-yellow: #f4dc8a;
+    --pe-sky: #7cc4ec;
+    --pe-peach: #f3a985;
+    --pe-cream: #f6fbfa;
+    --pe-ink: #1f3b4d;
+    --pin-frame: #9fd3c7;
+    --pin-frame-light: #d2efe8;
+    --pin-frame-edge: rgba(31, 59, 77, 0.5);
+}
+
+:root[data-mode="dark"][data-theme="seaglass"] {
+    --pin-frame: #4f8c83;
+    --pin-frame-light: #79b0a7;
+    --pin-frame-edge: rgba(0, 0, 0, 0.5);
+}
+
+/* nothing earned yet: a teal pushpin waiting */
+:root[data-theme="seaglass"] .pin-home-board:empty::after {
+    background: radial-gradient(circle at 35% 30%, #fff 0 12%, #5fb8ad 35%, #1f6f76 100%);
+}
+
+/* the card in sea ink instead of Candy's purple */
+:root[data-theme="seaglass"] .pin-detail {
+    color: #1f3b4d;
+}
+
+:root[data-theme="seaglass"] .pin-detail-name {
+    color: #2a8c96;
+}
+
+/* ---------- Loft: a corkboard in a riveted steel frame ----------
+   the same cork and nail, in a blackened-steel frame with a rivet in
+   each corner, square-cornered like the theme's panels; the enamel in
+   workshop colours: copper, rust, patina, brass and slate */
+:root[data-theme="loft"] {
+    --pe-pink: #d08a5f;
+    --pe-hot: #b5502e;
+    --pe-lav: #7d8fa8;
+    --pe-mint: #8fc4b0;
+    --pe-teal: #3f8a7a;
+    --pe-yellow: #d6b25e;
+    --pe-sky: #8fa9c4;
+    --pe-peach: #e0a070;
+    --pe-cream: #f3eee6;
+    --pe-ink: #24272b;
+    --pin-frame: #3a3e44;
+    --pin-frame-light: #6b717a;
+    --pin-frame-edge: rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="loft"] .pins-board {
+    border-radius: 4px;
+}
+
+:root[data-theme="loft"] .pin-home-board {
+    border-radius: 3px;
+}
+
+/* a rivet in each corner of the big board's frame */
+:root[data-theme="loft"] .pins-board::after {
+    --rivet: #e2e5e9 0 1.5px, #4a5059 2px 3px, transparent 3.5px;
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        radial-gradient(circle at 5.5px 5.5px, var(--rivet)),
+        radial-gradient(circle at calc(100% - 5.5px) 5.5px, var(--rivet)),
+        radial-gradient(circle at 5.5px calc(100% - 5.5px), var(--rivet)),
+        radial-gradient(circle at calc(100% - 5.5px) calc(100% - 5.5px), var(--rivet));
+    pointer-events: none;
+}
+
+/* nothing earned yet: a copper tack waiting */
+:root[data-theme="loft"] .pin-home-board:empty::after {
+    background: radial-gradient(circle at 35% 30%, #fff 0 12%, #d08a5f 35%, #7a4220 100%);
+}
+
+/* the card: a square tag with its name stamped in copper capitals */
+:root[data-theme="loft"] .pin-detail,
+:root[data-theme="loft"] .pin-detail::before {
+    background: var(--surface);
+}
+
+:root[data-theme="loft"] .pin-detail {
+    border-radius: 3px;
+    box-shadow: 4px 4px 0 var(--outline);
+    color: var(--y2k-dark);
+}
+
+:root[data-theme="loft"] .pin-detail-name {
+    font-family: var(--pixel-font);
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--y2k-hot-pink);
 }
