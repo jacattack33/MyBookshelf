@@ -403,7 +403,7 @@
 }
 
 .tag-chip-remove:hover {
-    background-color: var(--y2k-hot-pink);
+    background-color: var(--button-pink, var(--y2k-hot-pink));
     color: white;
 }
 
@@ -547,7 +547,7 @@
 }
 
 .status-btn.active {
-    background: var(--y2k-hot-pink);
+    background: var(--button-pink, var(--y2k-hot-pink));
     border-color: var(--outline);
     color: white;
     transform: translate(2px, 2px);

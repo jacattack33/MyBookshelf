@@ -27,6 +27,20 @@ h1 {
     animation: title-float 3.2s ease-in-out infinite;
 }
 
+/* Candy: each letter runs from its buttons' bubblegum in its top left
+   to the fuchsia - the pixel font's letters are all 1em wide (plus the
+   1px letter-spacing), so the gradient just repeats once per letter.
+   (A drop-shadow for the purple, since a text-shadow would paint over
+   the gradient.) */
+:root:not([data-theme]) #shelf-name {
+    background: linear-gradient(135deg, var(--button-pink) 15%, var(--y2k-hot-pink) 70%) 0 0 / calc(1em + 1px) 100% repeat-x;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(3px 3px 0 var(--y2k-purple));
+}
+
 /* the title gently bobs up and down */
 @keyframes title-float {
     0%, 100% { transform: translateY(0); }
@@ -128,7 +142,7 @@ h1 {
 }
 
 .search-clear:hover .x-face {
-    background-color: var(--y2k-hot-pink);
+    background-color: var(--button-pink, var(--y2k-hot-pink));
     color: white;
     transform: rotate(90deg);
 }
@@ -277,10 +291,17 @@ select:focus {
     .controls select:focus { animation: none; }
 }
 
+/* Candy: every pink button is the Add Book bubblegum (the other themes
+   keep their deeper accent, lightening to their bubblegum on hover) */
+:root:not([data-theme]) {
+    --button-pink: var(--y2k-pink);
+    --button-pink-hover: #ff80bb;
+}
+
 button {
     position: relative;
     overflow: hidden;
-    background-color: var(--y2k-hot-pink);
+    background-color: var(--button-pink, var(--y2k-hot-pink));
     color: white;
     border: 2px solid var(--outline);
     cursor: pointer;
@@ -307,7 +328,7 @@ button::before {
 }
 
 button:hover {
-    background-color: var(--y2k-pink);
+    background-color: var(--button-pink-hover, var(--y2k-pink));
 }
 
 button:active::before {
@@ -402,7 +423,7 @@ button.danger:hover {
 }
 
 .custom-genre-chip .x-btn:hover {
-    background-color: var(--y2k-hot-pink);
+    background-color: var(--button-pink, var(--y2k-hot-pink));
     color: white;
 }
 

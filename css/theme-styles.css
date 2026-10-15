@@ -2109,6 +2109,137 @@
     background: rgba(159, 220, 255, 0.22);
 }
 
+/* ---------- Candy after dark: glossy buttons ----------
+   Instead of see-through tints under a white wash (which went grey):
+   everything that stands up is solid glossy candy like Add Book, and a
+   picked toggle sinks into a well. The shine is the Goals tube's: a
+   thin line of light curved round the top-left corner, opposite the
+   right/bottom shadows, fading out to nothing. */
+:root[data-mode="dark"]:not([data-theme]) {
+    --glass-black: #0d0716;
+}
+
+:root[data-mode="dark"]:not([data-theme]) button { --c: var(--y2k-pink); }
+:root[data-mode="dark"]:not([data-theme]) .toggle-btn { --c: var(--y2k-mint); }
+:root[data-mode="dark"]:not([data-theme]) .toggle-yellow .toggle-btn { --c: var(--y2k-yellow); }
+:root[data-mode="dark"]:not([data-theme]) .toggle-blue .toggle-btn { --c: var(--y2k-blue); }
+:root[data-mode="dark"]:not([data-theme]) .toggle-lilac .toggle-btn { --c: var(--y2k-lilac); }
+:root[data-mode="dark"]:not([data-theme]) .toggle-peach .toggle-btn { --c: var(--y2k-peach); }
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-pink .toggle-btn, .status-btn) { --c: var(--y2k-pink); }
+:root[data-mode="dark"]:not([data-theme]) :is(button.secondary, .critter-chips button, .critter-scrap-toggle) { --c: var(--y2k-lilac); }
+
+:root[data-mode="dark"]:not([data-theme]) button::before {
+    inset: 3px auto auto 3px;
+    width: 85%;
+    height: 85%;
+    border-top: 3px solid rgba(255, 255, 255, 0.7);
+    border-left: 3px solid rgba(255, 255, 255, 0.7);
+    border-radius: 5px 0 0 0;
+    background: none;
+    /* full strength only right in the corner, thinning out to nothing */
+    -webkit-mask-image: radial-gradient(farthest-side at 0 0, #000 5%, rgba(0, 0, 0, 0.45) 40%, rgba(0, 0, 0, 0.12) 70%, transparent 95%);
+    mask-image: radial-gradient(farthest-side at 0 0, #000 5%, rgba(0, 0, 0, 0.45) 40%, rgba(0, 0, 0, 0.12) 70%, transparent 95%);
+    opacity: 1;
+}
+
+/* the little chips get a finer line */
+:root[data-mode="dark"]:not([data-theme]) :is(.critter-chips button, .critter-scrap-toggle)::before {
+    border-top-width: 2px;
+    border-left-width: 2px;
+}
+
+/* (too small for it) */
+:root[data-mode="dark"]:not([data-theme]) .date-today-btn::before {
+    display: none;
+}
+
+:root[data-mode="dark"]:not([data-theme]) button:active::before {
+    opacity: 0.3;
+}
+
+/* standing up: solid glossy candy with a glow of its own colour */
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle) {
+    background: var(--c);
+    color: var(--on-bright);
+    border-color: color-mix(in srgb, var(--c) 45%, var(--glass-black));
+    box-shadow:
+        3px 3px 0 var(--glass-black),
+        inset 0 -4px 8px -2px rgba(0, 0, 0, 0.3),
+        0 0 12px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+:root[data-mode="dark"]:not([data-theme]) .status-btn:not(.active) {
+    color: white;
+}
+
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle):hover {
+    background: var(--c);
+    filter: brightness(1.08);
+}
+
+:root[data-mode="dark"]:not([data-theme]) :is(button.secondary, .critter-chips button, .critter-scrap-toggle):active {
+    box-shadow: 1px 1px 0 var(--glass-black), inset 0 -4px 8px -2px rgba(0, 0, 0, 0.3);
+}
+
+/* pressed in: sunk level with the panel (no shadow of its own), the
+   panel's purple inside going black at the edges, deepest at the
+   top-left, light catching the inner bottom-right wall, and the rim
+   glowing its colour all round */
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn, .status-btn).active {
+    transform: translate(3px, 3px);
+    background: color-mix(in srgb, var(--c) 10%, var(--surface));
+    color: color-mix(in srgb, var(--c) 80%, white);
+    border-color: color-mix(in srgb, var(--c) 85%, white);
+    box-shadow:
+        inset 5px 5px 9px rgba(0, 0, 0, 0.85),
+        inset 0 0 6px 1px rgba(0, 0, 0, 0.7),
+        inset -2px -2px 3px color-mix(in srgb, var(--c) 55%, transparent),
+        inset 0 0 10px color-mix(in srgb, var(--c) 35%, transparent),
+        0 0 8px color-mix(in srgb, var(--c) 35%, transparent);
+}
+
+/* ...with a fainter, skinnier shine, tinted its colour */
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn, .status-btn).active::before {
+    border-top-width: 1.5px;
+    border-left-width: 1.5px;
+    border-color: color-mix(in srgb, var(--c) 45%, white);
+    opacity: 0.5;
+}
+
+/* the bubblegum buttons (Add Book, Put on Shelf...) glow too */
+:root[data-mode="dark"]:not([data-theme]) :is(.add-book-btn, .modal-buttons button:not(.secondary, .danger), .critter-feed button, .critter-hatch) {
+    border-color: color-mix(in srgb, var(--c) 45%, var(--glass-black));
+    box-shadow:
+        3px 3px 0 var(--glass-black),
+        inset 0 -4px 8px -2px rgba(120, 0, 60, 0.35),
+        0 0 14px rgba(255, 111, 176, 0.45);
+}
+
+:root[data-mode="dark"]:not([data-theme]) :is(.add-book-btn, .modal-buttons button:not(.secondary, .danger), .critter-feed button, .critter-hatch):active {
+    box-shadow: 1px 1px 0 var(--glass-black), inset 0 -4px 8px -2px rgba(120, 0, 60, 0.35);
+}
+
+/* rating stars: faceted like a metal badge star - each point split
+   along its ridge into a lit half and a shaded half, lit from the top
+   left, with a crisp shadow down-right like the buttons (drawn as an
+   image; the ★ underneath is just made invisible) */
+:root[data-mode="dark"]:not([data-theme]) .star-btn {
+    --star-empty: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50.0,53.0 50.0,6.0 37.7,36.0' fill='%23917dbf' stroke='%23917dbf' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 50.0,6.0 62.3,36.0' fill='%237c6aa7' stroke='%237c6aa7' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 62.3,36.0' fill='%23433562' stroke='%23433562' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 70.0,59.5' fill='%2330244c' stroke='%2330244c' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 70.0,59.5' fill='%2321163a' stroke='%2321163a' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 50.0,74.0' fill='%2322173c' stroke='%2322173c' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 50.0,74.0' fill='%233f315d' stroke='%233f315d' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 30.0,59.5' fill='%2356477a' stroke='%2356477a' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 30.0,59.5' fill='%238e7abc' stroke='%238e7abc' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 37.7,36.0' fill='%239c87cc' stroke='%239c87cc' stroke-width='0.6' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --star-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50.0,53.0 50.0,6.0 37.7,36.0' fill='%23fef6d7' stroke='%23fef6d7' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 50.0,6.0 62.3,36.0' fill='%23fbedbb' stroke='%23fbedbb' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 62.3,36.0' fill='%23f5d46e' stroke='%23f5d46e' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 70.0,59.5' fill='%23f4cc55' stroke='%23f4cc55' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 70.0,59.5' fill='%23f2c641' stroke='%23f2c641' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 50.0,74.0' fill='%23f2c743' stroke='%23f2c743' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 50.0,74.0' fill='%23f5d369' stroke='%23f5d369' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 30.0,59.5' fill='%23f8dd89' stroke='%23f8dd89' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 30.0,59.5' fill='%23fdf5d3' stroke='%23fdf5d3' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 37.7,36.0' fill='%23fffbe6' stroke='%23fffbe6' stroke-width='0.6' stroke-linejoin='round'/%3E%3C/svg%3E");
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    color: transparent;
+    text-shadow: none;
+    background: var(--star-empty) center / contain no-repeat;
+    filter: drop-shadow(2px 2px 0 var(--glass-black));
+}
+
+:root[data-mode="dark"]:not([data-theme]) .star-btn.filled {
+    background-image: var(--star-filled);
+    filter: drop-shadow(2px 2px 0 var(--glass-black)) drop-shadow(0 0 6px rgba(255, 224, 102, 0.8)) drop-shadow(0 0 12px rgba(255, 193, 7, 0.45));
+}
+
 /* the open list inside dropdowns follows dark mode too */
 :root[data-mode="dark"] option,
 :root[data-mode="dark"] optgroup {
