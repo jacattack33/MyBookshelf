@@ -157,13 +157,27 @@
         gap: 14px;
     }
 
+    /* the book with its Cover / Spine switch under it, the buttons
+       beside them */
     .modal-preview {
         position: static;
         flex: 1 1 100%;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: auto auto;
         align-items: center;
         justify-content: center;
-        gap: 18px;
+        column-gap: 18px;
+        row-gap: 8px;
+    }
+
+    .preview-shelf,
+    .preview-faces {
+        grid-column: 1;
+    }
+
+    .preview-actions {
+        grid-column: 2;
+        grid-row: 1 / span 2;
     }
 
     .preview-shelf {

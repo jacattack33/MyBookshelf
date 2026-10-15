@@ -105,8 +105,9 @@ function buildBookElement(book, draggableEnabled, spineMode) {
     // hand-edited import) would otherwise turn every size calculation
     // below into NaN - most visibly in spine mode, where an invalid
     // "NaNpx" height/width collapses the whole spine to nothing.
-    // books are drawn smaller on phones (see shelfScale)
-    const width = (Number.isFinite(book.width) ? book.width : 120) * shelfScale();
+    // books are drawn smaller on phones (see shelfScale), but not spines:
+    // they're narrow enough already, and shorter ones cut their titles off
+    const width = (Number.isFinite(book.width) ? book.width : 120) * (spineMode ? 1 : shelfScale());
 
     if (isStickyPlaceholder(book)) {
         buildStickyNoteFace(bookDiv, book);
@@ -124,10 +125,14 @@ function buildBookElement(book, draggableEnabled, spineMode) {
 
         if (book.spineImage) {
             bookDiv.style.backgroundImage = `url(${shelfImageUrl(book.id + ':spine', book.spineImage)})`;
-            bookDiv.style.backgroundSize = 'cover';
+            // stretched to the box rather than cropped to it: a very thin
+            // spine is widened to the minimum, and cropping that would cut
+            // off its top and bottom
+            bookDiv.style.backgroundSize = '100% 100%';
             bookDiv.style.backgroundColor = 'transparent';
+            bookDiv.style.padding = '0'; // (the padding alone is 20px wide)
             const spineImageRatio = book.spineImageRatio || 0.25;
-            bookDiv.style.width = Math.max(18, Math.round(coverHeight * spineImageRatio)) + 'px';
+            bookDiv.style.width = Math.max(12, Math.round(coverHeight * spineImageRatio)) + 'px';
         } else {
             bookDiv.classList.add('spine-mode-generated');
             bookDiv.style.backgroundColor = 'transparent';
@@ -341,7 +346,7 @@ function buildMissingSeriesSlot(seriesName, slotNumber, seriesTotal, spineMode, 
     el.className = spineMode ? 'book series-missing spine-mode' : 'book series-missing';
     el.draggable = false;
 
-    const width = (refWidth || 120) * shelfScale();
+    const width = (refWidth || 120) * (spineMode ? 1 : shelfScale());
     if (spineMode) {
         const coverHeight = Math.round(width / (2 / 3));
         el.style.height = coverHeight + 'px';

@@ -1419,11 +1419,13 @@ async function renderPreviewSpine() {
     el.classList.toggle('spine-mode-generated', !spine);
     if (spine) {
         el.style.backgroundImage = `url(${spine})`;
-        el.style.backgroundSize = 'cover';
-        el.style.width = Math.max(18, Math.round(height * spineRatio)) + 'px';
+        el.style.backgroundSize = '100% 100%'; // (as on the shelf)
+        el.style.padding = '0';
+        el.style.width = Math.max(12, Math.round(height * spineRatio)) + 'px';
     } else {
         el.style.backgroundImage = '';
         el.style.backgroundSize = '';
+        el.style.padding = '';
         el.style.width = Math.max(18, Math.round(width / 4)) + 'px';
         applySpineVars(el, edge || (existing && cover && existing.spineColor) || color);
         const label = document.createElement('span');
