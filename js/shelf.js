@@ -93,6 +93,21 @@ function shelfImageUrl(key, src) {
     return url;
 }
 
+// A generated spine's width in px: set by hand (spineWidth), or else
+// from the page count (thicker the longer the book; 300 pages comes out
+// as wide as the old quarter-of-the-cover), or else a quarter of the cover.
+const SPINE_WIDTH_MIN = 18; // (room for the lettering)
+const SPINE_WIDTH_MAX = 64;
+
+function autoSpineWidth(pages, coverWidth) {
+    if (pages > 0) return Math.min(SPINE_WIDTH_MAX, Math.max(SPINE_WIDTH_MIN, Math.round(16 + pages * 0.045)));
+    return Math.max(SPINE_WIDTH_MIN, Math.round((Number.isFinite(coverWidth) ? coverWidth : 120) / 4));
+}
+
+function generatedSpineWidth(book) {
+    return Number.isFinite(book.spineWidth) ? book.spineWidth : autoSpineWidth(book.pages, book.width);
+}
+
 function buildBookElement(book, draggableEnabled, spineMode) {
     const bookDiv = document.createElement('div');
     bookDiv.className = 'book';
@@ -136,7 +151,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
         } else {
             bookDiv.classList.add('spine-mode-generated');
             bookDiv.style.backgroundColor = 'transparent';
-            bookDiv.style.width = Math.max(18, Math.round(width / 4)) + 'px';
+            bookDiv.style.width = generatedSpineWidth(book) + 'px';
 
             const label = document.createElement('span');
             label.className = 'spine-label';
@@ -974,6 +989,7 @@ function pullOutAndOpen(bookDiv, id) {
     const current = getComputedStyle(bookDiv).transform;
     const anim = bookDiv.animate([{ transform: current === 'none' ? 'none' : current }, PULL_OUT_POSE],
         { duration: 220, easing: 'cubic-bezier(.2, .8, .3, 1)', fill: 'forwards' });
+    bookDiv.classList.add('lifted');
     pulledBook = { el: bookDiv, anim, pending: true };
     setTimeout(() => {
         if (pulledBook) pulledBook.pending = false;
@@ -987,6 +1003,7 @@ function slidePulledBookBack() {
     if (!pulled) return;
     if (!pulled.el.isConnected || prefersReducedMotion()) {
         pulled.anim.cancel();
+        pulled.el.classList.remove('lifted');
         return;
     }
     const back = pulled.el.animate([PULL_OUT_POSE, { transform: 'none' }],
@@ -994,6 +1011,7 @@ function slidePulledBookBack() {
     setTimeout(() => {
         pulled.anim.cancel();
         back.cancel();
+        pulled.el.classList.remove('lifted');
     }, 200);
 }
 

@@ -715,6 +715,26 @@
     box-sizing: border-box;
 }
 
+.field-label input[type="range"]:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+#book-modal .spine-width-auto {
+    flex: 0 0 auto;
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+#book-modal .spine-width-auto:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+#book-spine-width-hint:empty {
+    display: none;
+}
+
 .width-value {
     font-size: 13px;
     color: var(--y2k-purple);

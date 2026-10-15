@@ -984,8 +984,15 @@ button.danger:hover {
     pointer-events: none;
 }
 
+/* a lifted book (hovered, or pulled out to open) rises in front of
+   the shelf's title tag (z-index 5) and book count (6) */
+.book.lifted {
+    z-index: 7;
+}
+
 @media (hover: hover) {
     .book:hover {
+        z-index: 7;
         transform: translateY(-25px);
         box-shadow:
             8px 12px 18px rgba(0,0,0,0.4),

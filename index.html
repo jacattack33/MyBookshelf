@@ -340,7 +340,7 @@
                         </div>
                         <datalist id="series-options"></datalist>
                         <label class="field-label">Pages
-                            <input type="number" id="book-pages" placeholder="e.g. 320" min="1" max="99999" step="1" inputmode="numeric">
+                            <input type="number" id="book-pages" placeholder="e.g. 320" min="1" max="99999" step="1" inputmode="numeric" oninput="refreshSpineWidthField(); if (previewFace === 'spine') renderPreviewSpine()">
                         </label>
                         <label class="field-label">Recommended by
                             <input type="text" id="book-rec-by" placeholder="A friend's name" maxlength="40" list="friend-options" autocomplete="off">
@@ -484,6 +484,14 @@
                             </label>
                             <span id="book-width-value" class="width-value">120px</span>
                         </div>
+                        <div class="field-row">
+                            <label class="field-label" style="flex:1;">Spine Width
+                                <input type="range" id="book-spine-width" min="18" max="64" value="30" oninput="setSpineWidthAuto(false)">
+                            </label>
+                            <span id="book-spine-width-value" class="width-value">30px</span>
+                            <button type="button" id="book-spine-width-auto" class="secondary spine-width-auto" onclick="setSpineWidthAuto(true)" title="Size it by the page count">Auto</button>
+                        </div>
+                        <span id="book-spine-width-hint" class="field-hint"></span>
 
                         <div class="field-section-divider"></div>
 

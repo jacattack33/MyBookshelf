@@ -354,6 +354,8 @@ function openModal(bookId = null) {
         document.getElementById('book-genre').dataset.previous = book.genre;
         document.getElementById('book-color').value = book.color || "#1a334d";
         document.getElementById('book-width').value = book.width || 120;
+        document.getElementById('book-spine-width').value = Number.isFinite(book.spineWidth) ? book.spineWidth : 30;
+        document.getElementById('book-spine-width').dataset.auto = Number.isFinite(book.spineWidth) ? '' : '1';
         document.getElementById('book-ratio-preset').value = book.ratioPreset || "";
         setTags(book.tags || []);
         setOwned(!!book.owned);
@@ -382,6 +384,7 @@ function openModal(bookId = null) {
         document.getElementById('book-genre').dataset.previous = "";
         document.getElementById('book-color').value = "#1a334d";
         document.getElementById('book-width').value = 120;
+        document.getElementById('book-spine-width').dataset.auto = '1';
         document.getElementById('book-ratio-preset').value = "0.667";
         setTags([]);
         setOwned(false);
@@ -1213,6 +1216,7 @@ function clearSpineImage() {
     document.getElementById('spine-file-name-display').innerText = "No file chosen";
     document.getElementById('existing-spine-image-note').style.display = 'none';
     document.getElementById('clear-spine-image-btn').style.display = 'none';
+    refreshSpineWidthField();
     if (previewFace === 'spine') renderPreviewSpine();
 }
 
@@ -1322,11 +1326,45 @@ document.addEventListener('paste', (e) => {
     readFileAsDataURL(file).then(dataUrl => startImageCrop(dataUrl, 'cover', 'Pasted image'));
 });
 
-// how far along the Cover Width slider's track the gradient fills
-function updateWidthSliderFill() {
-    const slider = document.getElementById('book-width');
+// how far along the Cover Width (or another) slider's track the gradient fills
+function updateWidthSliderFill(slider = document.getElementById('book-width')) {
     const pct = (slider.value - slider.min) / (slider.max - slider.min) * 100;
     slider.style.setProperty('--fill', pct + '%');
+}
+
+// ---------- Spine width ----------
+// Auto follows the page count (see autoSpineWidth); dragging the slider
+// sets it by hand, and Auto goes back. A spine photo is as wide as the
+// photo, so the slider's off while there's one.
+
+function setSpineWidthAuto(auto) {
+    document.getElementById('book-spine-width').dataset.auto = auto ? '1' : '';
+    refreshSpineWidthField();
+    if (previewFace === 'spine') renderPreviewSpine();
+}
+
+// what's saved: px, or null for auto
+function formSpineWidth() {
+    const slider = document.getElementById('book-spine-width');
+    return slider.dataset.auto ? null : parseInt(slider.value, 10);
+}
+
+function refreshSpineWidthField() {
+    const slider = document.getElementById('book-spine-width');
+    const auto = !!slider.dataset.auto;
+    const pages = parseInt(document.getElementById('book-pages').value, 10);
+    if (auto) slider.value = autoSpineWidth(pages, parseInt(document.getElementById('book-width').value, 10));
+    const existing = editingId ? library.find(b => b.id === editingId) : null;
+    const photo = !!(pendingSpineCrop || (!clearSpineImageFlag && existing && existing.spineImage));
+    slider.disabled = photo;
+    document.getElementById('book-spine-width-auto').disabled = auto || photo;
+    document.getElementById('book-spine-width-value').innerText = photo ? '\u2014' : slider.value + 'px';
+    document.getElementById('book-spine-width-hint').innerText = photo
+        ? 'A spine photo is as wide as the photo.'
+        : !auto ? ''
+        : pages > 0 ? 'Auto: thicker the more pages it has.'
+        : 'Auto: fill in Pages to size it by those.';
+    updateWidthSliderFill(slider);
 }
 
 // the edit window's preview book is drawn smaller on phones
@@ -1340,6 +1378,7 @@ function updatePreview() {
     const title = document.getElementById('book-title').value.trim() || 'Book Title';
     const color = document.getElementById('book-color').value;
     const width = document.getElementById('book-width').value;
+    refreshSpineWidthField();
 
     // (phones: bigger than before, but never so wide it can't sit beside the buttons)
     previewBook.style.width = Math.round(previewScale() < 1 ? Math.min(width * previewScale(), 130) : width) + 'px';
@@ -1426,7 +1465,10 @@ async function renderPreviewSpine() {
         el.style.backgroundImage = '';
         el.style.backgroundSize = '';
         el.style.padding = '';
-        el.style.width = Math.max(18, Math.round(width / 4)) + 'px';
+        // the shelf's width, shrunk as much as the preview is
+        const coverWidth = parseInt(document.getElementById('book-width').value, 10) || 120;
+        const spineWidth = parseInt(document.getElementById('book-spine-width').value, 10) || 30;
+        el.style.width = Math.max(12, Math.round(spineWidth * width / coverWidth)) + 'px';
         applySpineVars(el, edge || (existing && cover && existing.spineColor) || color);
         const label = document.createElement('span');
         label.className = 'spine-label';
@@ -1872,6 +1914,7 @@ async function processBookForm() {
     const restyled = existing && (
         hex(color) !== hex(existing.color) ||
         width !== (Number.isFinite(existing.width) ? existing.width : 120) ||
+        formSpineWidth() !== (Number.isFinite(existing.spineWidth) ? existing.spineWidth : null) ||
         (ratioPreset || null) !== (existing.ratioPreset || null) ||
         (!!finalSpineImage && finalSpineImage !== (existing.spineImage || '')) ||
         (!!finalImage && finalImage !== (existing.image || '')));
@@ -1889,7 +1932,8 @@ async function processBookForm() {
         ratioPreset: finalImage ? ratioPreset : null,
         spineColor: finalSpineColor,
         spineImage: finalSpineImage,
-        spineImageRatio: finalSpineImage ? finalSpineImageRatio : null
+        spineImageRatio: finalSpineImage ? finalSpineImageRatio : null,
+        spineWidth: formSpineWidth()
     };
     await dbPut(book);
     // a lent book back home (and still yours)

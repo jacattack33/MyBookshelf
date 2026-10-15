@@ -245,7 +245,11 @@
     /* --- shelves: smaller books (shelfScale), tighter spacing --- */
     .shelf {
         gap: 14px;
-        padding: 22px 10px 30px; /* 20px of that bottom is the ledge */
+        /* 20px of the bottom is the ledge; the top is headroom for a
+           book pulled out to open, which rises about 42px and would
+           be cut off at the shelf's top (it scrolls sideways, so it
+           clips) rather than passing in front of the shelf's title */
+        padding: 44px 10px 30px;
         min-height: 160px;
     }
 
