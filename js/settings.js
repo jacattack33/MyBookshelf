@@ -87,6 +87,7 @@ const SETTINGS_KEY = 'bookShelfSettings';
 const DEFAULT_SETTINGS = {
     name: 'My Bookshelf',
     goal: 0,                    // yearly reading goal; 0 = off
+    libraryCard: false,         // you have a local library card (earns Card Carrier)
     defaultStatus: 'Want to Read',
     cat: true, dust: true, lean: true, sticky: true,
     noteFalls: true,            // to-get sticky notes now and then fall off the shelf
@@ -448,6 +449,7 @@ function setSetting(key, value) {
     if (key === 'backupReminders' && !value) hideBackupReminder();
     if (key === 'noteFalls' && !value) stickAllNotesBackUp();
     if (key === 'pinAlerts') renderPinWidget();
+    if (key === 'libraryCard') checkPins();
     if (key === 'goal') updateReadingGoal();
     if (['goal', 'pagesGoal', 'pagesPeriod', 'critter'].includes(key)) updateGoals();
     if (key === 'pagesGoal' || key === 'pagesPeriod') renderCritter();
@@ -504,6 +506,7 @@ function refreshSettingsButtons() {
     document.querySelectorAll('[data-pages-period]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.pagesPeriod === appSettings.pagesPeriod);
     });
+    document.getElementById('setting-library-card').checked = !!appSettings.libraryCard;
 }
 
 // Push the settings onto the page; `rerender` redraws the shelves (for

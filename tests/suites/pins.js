@@ -199,6 +199,17 @@ recordPages(5, at(friday, 19, 1));
 ok('not yet: pizza night', !pinState.earned.pizza);
 recordPages(5, at(friday, 19));
 ok('earned: pizza night', !!pinState.earned.pizza);
+// a library card: ticked in Settings
+ok('not yet: card carrier', !pinState.earned.librarycard);
+openSettings();
+const cardBox = q('#setting-library-card');
+ok('library card box starts unticked', !cardBox.checked);
+cardBox.click();
+ok('ticking it saves the setting', appSettings.libraryCard === true);
+ok('earned: card carrier', !!pinState.earned.librarycard);
+cardBox.click();
+ok('unticking keeps the pin', appSettings.libraryCard === false && !!pinState.earned.librarycard);
+closeSettings();
 localStorage.removeItem(PAGES_LOG_KEY);
 
 // ---- lending: getting it back earns a pin, from the edit window...

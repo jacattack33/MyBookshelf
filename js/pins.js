@@ -786,6 +786,19 @@ const PINS = [
         ]
     },
     {
+        id: 'librarycard', name: 'Card Carrier', desc: 'Have a local library card (tick it in Settings > Your shelf).', metal: 'silver', glint: [10, 16], rotate: -10,
+        progress: s => [s.libraryCard ? 1 : 0, 1],
+        art: [
+            // a library card: a coloured band across the top, lines to
+            // write on, and a stamp in the corner
+            ['e', 'M8 11H40Q43 11 43 14V35Q43 38 40 38H8Q5 38 5 35V14Q5 11 8 11Z', PIN_E.cream],
+            ['e', 'M8 11H40Q43 11 43 14V18H5V14Q5 11 8 11Z', PIN_E.hot, null, 1],
+            ['l', 'M10 24H27'], ['l', 'M10 28.5H24'], ['l', 'M10 33H21'],
+            ['e', pinCircle(35, 29.5, 5), PIN_E.lav, null, 1],
+            ['e', starPath(35, 29.5, 3.2, 1.4), PIN_E.yellow, null, 0.8]
+        ]
+    },
+    {
         id: 'pizza', name: 'Pizza Night', desc: 'Log pages on a Friday evening, between 6pm and 10pm.', metal: 'silver', glint: [15, 9], rotate: -14,
         progress: s => [s.pizzaNight ? 1 : 0, 1],
         art: [
@@ -935,6 +948,7 @@ function pinStats() {
         december: finished.some(([, m]) => m === 12),
         readingNow: books.filter(b => b.status === 'Reading').length,
         toughCookie: read.some(b => normalizeRating(b.rating) >= 1 && normalizeRating(b.rating) <= 2),
+        libraryCard: !!appSettings.libraryCard,
         teaTime: log.some(e => e.pages > 0 && [15, 16].includes(new Date(e.at).getHours())),
         pizzaNight: log.some(e => {
             const d = new Date(e.at);

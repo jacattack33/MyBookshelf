@@ -510,6 +510,17 @@ button.danger:hover {
     color: var(--y2k-dark);
 }
 
+/* a yes/no about you in Settings (I have a library card) */
+.settings-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--y2k-dark);
+    cursor: pointer;
+}
+
 .delete-confirm button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
