@@ -81,13 +81,58 @@ function crCageBars() {
     }).join('');
 }
 
+// The Candy gummy's glitter, like pink craft glitter: fine dark and pale
+// flecks and white pinpoints from noise, loose flakes at every angle, and a few
+// that flash now and then (.cr-glint). Seeded so it's the same every time.
+// Only after dark for now (.cr-glitter in the styles).
+const CANDY_BODY = 'M30 82 C27 62 34 46 50 46 C66 46 73 62 70 82 Z';
+const CANDY_GLITTER = (() => {
+    let seed = 20240917;
+    const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const colors = ['#fff', '#fff', '#fff', '#ffe3f1', '#ffc2e0', '#ff9cc9', '#b8225e', '#fff1c4', '#e6dcff'];
+    let flakes = '';
+    for (let i = 0; i < 160; i++) {
+        const x = (30 + rand() * 40).toFixed(1), y = (44 + rand() * 38).toFixed(1);
+        const w = (0.35 + rand() * 0.6).toFixed(2), h = (0.3 + rand() * 0.45).toFixed(2);
+        const op = (0.35 + rand() * 0.6).toFixed(2);
+        flakes += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${colors[Math.floor(rand() * colors.length)]}" opacity="${op}" transform="rotate(${Math.round(rand() * 180)} ${x} ${y})"/>`;
+    }
+    const glints = [[38, 62], [61, 58], [46, 75], [57, 71], [34, 74], [52, 52], [65, 77], [42, 50]].map(([x, y], i) =>
+        `<path class="cr-glint" style="animation-delay:${(i * 0.73 % 4.4).toFixed(2)}s" d="M${x} ${y - 2.2} q.35 1.85 2.2 2.2 q-1.85 .35 -2.2 2.2 q-.35 -1.85 -2.2 -2.2 q1.85 -.35 2.2 -2.2z" fill="#fff"/>`).join('');
+    return flakes + glints;
+})();
+
 const CRITTER_THEMES = {
     candy: {
         kind: 'gummy blob', name: 'Gummy', fit: [50, 86, 0.95], zz: [68, 46],
         egg: crEgg('#ffd1e8', '#ff7ab8'),
-        art: () => `
+        art: uid => `
+            <defs>
+                <radialGradient id="${uid}g" gradientUnits="userSpaceOnUse" cx="45" cy="57" r="32">
+                    <stop offset="0" stop-color="#ffa6d0"/><stop offset=".55" stop-color="#ff6fae"/><stop offset="1" stop-color="#e8458f"/>
+                </radialGradient>
+                <clipPath id="${uid}b"><path d="${CANDY_BODY}"/><circle class="cr-teen" cx="37" cy="50" r="5.5"/><circle class="cr-teen" cx="63" cy="50" r="5.5"/></clipPath>
+                <filter id="${uid}n" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">
+                    <feTurbulence type="fractalNoise" baseFrequency="2.4" seed="3"/>
+                    <feColorMatrix values="0 0 0 0 .6  0 0 0 0 .08  0 0 0 0 .3  -14 0 0 0 6.5" result="dark"/>
+                    <feTurbulence type="fractalNoise" baseFrequency="2.7" seed="11"/>
+                    <feColorMatrix values="0 0 0 0 1  0 0 0 0 .8  0 0 0 0 .9  14 0 0 0 -7.6" result="light"/>
+                    <feTurbulence type="fractalNoise" baseFrequency="3.1" seed="23"/>
+                    <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  26 0 0 0 -15.4" result="hot"/>
+                    <feTurbulence type="fractalNoise" baseFrequency=".14" numOctaves="2" seed="5"/>
+                    <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  5 0 0 0 -1.9" result="patch"/>
+                    <feComposite in="hot" in2="patch" operator="in" result="hot"/>
+                    <feMerge><feMergeNode in="dark"/><feMergeNode in="light"/><feMergeNode in="hot"/></feMerge>
+                </filter>
+            </defs>
             <g class="cr-teen"><circle cx="37" cy="50" r="5.5" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/><circle cx="63" cy="50" r="5.5" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/></g>
-            <path d="M30 82 C27 62 34 46 50 46 C66 46 73 62 70 82 Z" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/>
+            <path d="${CANDY_BODY}" fill="#ff6fae" class="cr-ln" stroke-width="1.5"/>
+            <g class="cr-glitter" clip-path="url(#${uid}b)">
+                <rect x="26" y="40" width="48" height="44" fill="url(#${uid}g)"/>
+                <rect x="26" y="40" width="48" height="44" filter="url(#${uid}n)"/>
+                ${CANDY_GLITTER}
+                <path d="${CANDY_BODY}" fill="none" class="cr-ln" stroke-width="1.5"/>
+            </g>
             <ellipse cx="40" cy="56" rx="5" ry="2.6" fill="#fff" opacity=".55" transform="rotate(-30 40 56)"/>
             <g class="cr-adult">
                 <rect x="42" y="49" width="4" height="1.6" rx=".8" fill="#ffe066" transform="rotate(-20 44 50)"/>
@@ -414,7 +459,7 @@ function critterSvg(theme, { stage = 'baby', mood = 'content', empty = false } =
     const body = empty ? '' : `
         <g transform="translate(${fx} ${fy}) scale(${fs}) translate(-50 -82)">
             <g transform="translate(50 82) scale(${scale}) translate(-50 -82)">
-                <g class="cr-idle"><g class="cr-egg">${t.egg()}</g><g class="cr-critter">${t.art()}</g></g>
+                <g class="cr-idle"><g class="cr-egg">${t.egg()}</g><g class="cr-critter">${t.art(uid)}</g></g>
             </g>
         </g>
         <text class="cr-zz" x="${t.zz[0]}" y="${t.zz[1]}" style="fill:${t.zzInk || 'var(--outline)'}">z<tspan dx="1" dy="-4" font-size="7">z</tspan></text>`;

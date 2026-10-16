@@ -176,6 +176,36 @@
     70% { transform: rotate(-4deg) scale(1.03, 0.97); }
 }
 
+/* the Candy gummy's glitter, only in Dark Candy for now: a few flakes
+   flash as the light catches them, each at its own moment */
+.cr .cr-glitter {
+    display: none;
+}
+
+:root[data-mode="dark"]:not([data-theme]) .cr .cr-glitter {
+    display: inline;
+}
+
+.cr .cr-glint {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: critter-glint 4.4s ease-in-out infinite;
+}
+
+@keyframes critter-glint {
+    0%, 82%, 100% { opacity: 0; transform: scale(0.2) rotate(0); }
+    90% { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cr .cr-glint {
+        animation: none;
+        opacity: 0.7;
+        transform: scale(0.5);
+    }
+}
+
 /* face parts: hidden unless the mood calls for them */
 .cr .fe, .cr .fm, .cr .cr-zz, .cr .cr-teen, .cr .cr-adult, .cr .cr-egg {
     display: none;
