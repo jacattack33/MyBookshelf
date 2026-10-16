@@ -883,6 +883,8 @@
                         <div class="field-hint">Your shelf still has books from the example shelf it came with. Remove them, and the pins they earned, to make it all yours. Books you've added stay.</div>
                         <button type="button" class="danger" onclick="removeStarterShelf()">Remove example shelf</button>
                     </div>
+                    <div class="field-hint">Restart pins: takes every pin off the board. Any your books still earn come straight back; one-off ones, like getting back a book you lent, don't.</div>
+                    <button type="button" class="secondary" onclick="restartPins()">Restart pins&hellip;</button>
                     <div class="field-hint">Deletes every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
                     <div class="danger-buttons">
                         <button type="button" class="secondary" onclick="exportLibrary()">Export Library (Backup)</button>
@@ -893,7 +895,7 @@
                             <input type="text" id="delete-confirm-input" autocomplete="off" spellcheck="false" oninput="updateDeleteConfirm()">
                         </label>
                         <label class="delete-reset-settings">
-                            <input type="checkbox" id="delete-reset-settings"> Also reset all settings
+                            <input type="checkbox" id="delete-reset-settings"> Also reset all settings and pins
                         </label>
                         <button type="button" class="danger" id="delete-confirm-btn" onclick="deleteLibrary()" disabled>Delete everything</button>
                     </div>

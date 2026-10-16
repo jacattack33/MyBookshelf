@@ -181,7 +181,7 @@ What this means in practice:
     - **Other:** Wake the cat, Log 25 pages, Clear pages log, Confetti.
 
     **Deletes only ever touch books and notes the panel made** (with New note or Add a book), so your real library is safe. Deletes and exits only play for books and notes you can see, so scroll to one first. A line at the bottom says what happened, or why nothing did. Critter changes are real and stick.
-  - **Start over:** delete the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings too. The 3 starter books don't come back afterwards.
+  - **Start over:** **Restart pins** takes every pin off the board (after asking); any your books still earn come straight back, but one-off ones like It Came Back don't. **Delete Library** deletes the whole library (type DELETE to confirm), with an Export button right there to save a backup first. Optionally resets all settings and pins too. The 3 starter books don't come back afterwards.
 
 ## Tests
 

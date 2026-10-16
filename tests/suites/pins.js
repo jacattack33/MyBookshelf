@@ -346,3 +346,18 @@ setSetting('debug', false);
 
 library = library.filter(b => !['l2'].includes(b.id) && !['Piranesi', 'Dune Messiah'].includes(b.title));
 renderBookshelf();
+
+// ---- Settings > Start over > Restart pins
+awardPin('cameback');
+const confirmWas = window.confirm;
+window.confirm = () => false;
+restartPins();
+ok('restart pins: cancelling keeps the board', !!pinState.earned.cameback);
+window.confirm = () => true;
+openSettings();
+[...document.querySelectorAll('#settings-modal button, .modal button')].find(b => b.textContent.startsWith('Restart pins')).click();
+window.confirm = confirmWas;
+ok('restart pins: one-off pins are gone', !pinState.earned.cameback);
+ok('restart pins: what the shelf earns comes back', !!pinState.earned.first);
+ok('restart pins: saved', !JSON.parse(localStorage.getItem(PINS_KEY)).earned.cameback);
+ok('delete checkbox says pins go too', q('label.delete-reset-settings').textContent.includes('pins'));

@@ -848,6 +848,13 @@ function resetPins() {
     renderPinWidget();
 }
 
+// Settings > Start over > Restart pins
+function restartPins() {
+    if (!confirm('Take every pin off the board and start again? Pins your books still earn come straight back. This can\'t be undone.')) return;
+    resetPins();
+    closeSettings();
+}
+
 // Pages logged by mistake were taken back out: any of these pins they
 // earned goes too, unless it's still earned without them. Gives the names
 // of the ones taken back.

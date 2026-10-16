@@ -65,6 +65,9 @@ ok('removes debug books', library.length === before && !library.some(b => b.debu
 ok('no way to delete real books', !q('#debug-real-books'));
 
 // ---- sticky notes
+// keep the page's own random falls (5-12s after load) from dropping a note mid-check
+const noteFallsWas = appSettings.noteFalls;
+appSettings.noteFalls = false;
 await press('New note', 1500);
 const sticky = library.find(b => b.stickyNote);
 ok('makes a sticky note, flagged as debug', !!sticky && sticky.debug);
@@ -75,6 +78,7 @@ ok('notes stuck back up', fallenNotes.size === 0 && !q('.book.sticky-book.fallen
 deleteBtns[0].click();
 await wait(3000);
 ok('deletes a sticky note', !library.some(b => b.id === sticky.id));
+appSettings.noteFalls = noteFallsWas;
 
 // ---- dust
 library.push({ id: 'dd1', title: 'Dusty', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', owned: true, color: '#ccc', width: 100, sortOrder: 90, statusSince: Date.now() });
