@@ -254,3 +254,20 @@ q('#book-got-how').value = '';
 await processBookForm();
 await wait(300);
 ok('clearing it clears who/where too', library.find(b => b.id === '2').gotHow === '' && library.find(b => b.id === '2').gotFrom === '');
+
+// ---- the year boxes can't be nudged to 1000 (an empty number box's
+// up arrow or a scroll jumped to its minimum)
+openModal('1');
+setDateField('finished', '');
+const yearBox = q('#finished-year');
+ok('year box has no spinner to nudge', yearBox.type === 'text' && yearBox.inputMode === 'numeric');
+yearBox.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+ok('up arrow leaves an empty year empty', yearBox.value === '');
+yearBox.value = '2o25';
+yearBox.dispatchEvent(new Event('input'));
+ok('only digits stay in the year', yearBox.value === '225');
+yearBox.value = '2025';
+yearBox.dispatchEvent(new Event('input'));
+ok('a typed year still reads', readDateField('finished', 'finished').value === '2025');
+closeModal();
+await wait(350);
