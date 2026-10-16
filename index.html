@@ -433,86 +433,95 @@
 
                     <div class="field-section">
                         <div class="field-section-title">Appearance</div>
-                        <label class="field-label">Cover Image
-                            <div class="file-upload-row">
+
+                        <!-- what the book looks like in Covers view -->
+                        <div class="look-card">
+                            <div class="look-card-head"><span class="look-glyph cover" aria-hidden="true"></span>Cover<span class="look-card-where">Covers view</span></div>
+                            <div>
                                 <input type="file" id="book-image" accept="image/*" style="display:none;" onchange="handleCoverFileSelected()">
-                                <button type="button" class="file-upload-btn" onclick="document.getElementById('book-image').click()">&#128193; Choose Cover</button>
-                                <span id="file-name-display" class="field-hint">No file chosen</span>
+                                <div class="file-upload-row">
+                                    <button type="button" class="file-upload-btn" onclick="document.getElementById('book-image').click()">&#128193; Choose Cover</button>
+                                    <span id="file-name-display" class="field-hint">No file chosen</span>
+                                </div>
+                                <div class="image-link-row">
+                                    <input type="text" id="book-image-url" placeholder="...or paste an image or image link" autocomplete="off" onpaste="handleImagePaste(event, 'cover')" onkeydown="if (event.key === 'Enter') { event.preventDefault(); loadImageFromLinkField('cover'); }">
+                                    <button type="button" class="secondary" onclick="loadImageFromLinkField('cover')">Use</button>
+                                </div>
+                                <div id="book-image-link-error" class="image-link-error" role="alert"></div>
+                                <div id="existing-image-note" class="field-hint" style="display:none;">
+                                    Leave blank to keep the current cover image.
+                                </div>
                             </div>
-                        </label>
-                        <div class="image-link-row">
-                            <input type="text" id="book-image-url" placeholder="...or paste an image or image link" autocomplete="off" onpaste="handleImagePaste(event, 'cover')" onkeydown="if (event.key === 'Enter') { event.preventDefault(); loadImageFromLinkField('cover'); }">
-                            <button type="button" class="secondary" onclick="loadImageFromLinkField('cover')">Use</button>
-                        </div>
-                        <div id="book-image-link-error" class="image-link-error" role="alert"></div>
-                        <div id="existing-image-note" class="field-hint" style="display:none;">
-                            Leave blank to keep the current cover image.
-                        </div>
-                        <label class="field-label">Cover Shape
-                            <select id="book-ratio-preset" onchange="updatePreview()">
-                                <option value="">Natural (no crop)</option>
-                                <option value="0.62">Mass Market Paperback (0.62)</option>
-                                <option value="0.65">Digest / Manga (0.65)</option>
-                                <option value="0.667" selected>Standard 2:3 (0.67)</option>
-                                <option value="0.7">Trade Paperback (0.70)</option>
-                                <option value="0.75">Hardcover (0.75)</option>
-                                <option value="0.77">Textbook / Letter (0.77)</option>
-                                <option value="0.8">Picture Book (0.80)</option>
-                                <option value="0.85">Nearly Square (0.85)</option>
-                                <option value="1">Square (1.0)</option>
-                                <option value="1.33">Landscape / Coffee Table (1.33)</option>
-                            </select>
-                        </label>
-                        <div class="field-hint">Pick the same shape across a series to keep them matching.</div>
-
-                        <div class="or-divider"><span>or use a solid color</span></div>
-
-                        <div class="field-row" style="align-items: center;">
-                            <label class="field-label" style="flex:0 0 auto;">Fallback Color
-                                <input type="color" id="book-color" value="#1a334d" oninput="updatePreview()">
+                            <label class="field-label">Shape
+                                <select id="book-ratio-preset" onchange="updatePreview()" title="Pick the same shape across a series to keep them matching.">
+                                    <option value="">Natural (no crop)</option>
+                                    <option value="0.62">Mass Market Paperback (0.62)</option>
+                                    <option value="0.65">Digest / Manga (0.65)</option>
+                                    <option value="0.667" selected>Standard 2:3 (0.67)</option>
+                                    <option value="0.7">Trade Paperback (0.70)</option>
+                                    <option value="0.75">Hardcover (0.75)</option>
+                                    <option value="0.77">Textbook / Letter (0.77)</option>
+                                    <option value="0.8">Picture Book (0.80)</option>
+                                    <option value="0.85">Nearly Square (0.85)</option>
+                                    <option value="1">Square (1.0)</option>
+                                    <option value="1.33">Landscape / Coffee Table (1.33)</option>
+                                </select>
                             </label>
-                            <div class="field-label" style="flex:0 0 auto; font-size: 10px;">Recent Colors
-                                <div class="recent-colors-row" id="recent-colors"></div>
+                            <div class="field-row">
+                                <label class="field-label" style="flex:1;">Width
+                                    <input type="range" id="book-width" min="90" max="240" value="120" oninput="document.getElementById('book-width-value').innerText = this.value + 'px'; updateWidthSliderFill(); updatePreview();">
+                                </label>
+                                <span id="book-width-value" class="width-value">120px</span>
+                            </div>
+                            <div class="field-label">No picture? Use a color
+                                <div class="look-color">
+                                    <input type="color" id="book-color" value="#1a334d" oninput="updatePreview()" aria-label="Color">
+                                    <div class="recent-colors-row" id="recent-colors" aria-label="Recent colors"></div>
+                                </div>
+                            </div>
+                            <!-- our own colour picker (browsers' own differ, and some have no custom colour at all) -->
+                            <div class="color-pop" id="color-pop" hidden>
+                                <div class="cp-sv" id="cp-sv" tabindex="0" role="slider" aria-label="Shade: richer to the right, darker going down"><div class="cp-sv-thumb" id="cp-sv-thumb"></div></div>
+                                <div class="cp-hue" id="cp-hue" tabindex="0" role="slider" aria-label="Hue" aria-valuemin="0" aria-valuemax="360"><div class="cp-hue-thumb" id="cp-hue-thumb"></div></div>
+                                <div class="cp-swatches" id="cp-swatches"></div>
+                                <div class="cp-foot">
+                                    <span class="cp-now" id="cp-now" aria-hidden="true"></span>
+                                    <input type="text" id="cp-hex" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Hex code" oninput="typedPickerHex(this.value)">
+                                    <button type="button" onclick="closeColorPicker()">Done</button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="field-section-divider"></div>
-
-                        <div class="field-row">
-                            <label class="field-label" style="flex:1;">Cover Width
-                                <input type="range" id="book-width" min="90" max="240" value="120" oninput="document.getElementById('book-width-value').innerText = this.value + 'px'; updateWidthSliderFill(); updatePreview();">
-                            </label>
-                            <span id="book-width-value" class="width-value">120px</span>
-                        </div>
-                        <div class="field-row">
-                            <label class="field-label" style="flex:1;">Spine Width
-                                <input type="range" id="book-spine-width" min="18" max="64" value="30" oninput="setSpineWidthAuto(false)">
-                            </label>
-                            <span id="book-spine-width-value" class="width-value">30px</span>
-                            <button type="button" id="book-spine-width-auto" class="secondary spine-width-auto" onclick="setSpineWidthAuto(true)" title="Size it by the page count">Auto</button>
-                        </div>
-                        <span id="book-spine-width-hint" class="field-hint"></span>
-
-                        <div class="field-section-divider"></div>
-
-                        <label class="field-label">Spine Image
-                            <div class="file-upload-row">
+                        <!-- ...and in Spines view -->
+                        <div class="look-card">
+                            <div class="look-card-head"><span class="look-glyph spine" aria-hidden="true"></span>Spine<span class="look-card-where">Spines view</span></div>
+                            <div>
                                 <input type="file" id="book-spine-image" accept="image/*" style="display:none;" onchange="handleSpineFileSelected()">
-                                <button type="button" class="file-upload-btn" onclick="document.getElementById('book-spine-image').click()">&#128193; Choose Spine Photo</button>
-                                <button type="button" id="shelf-photo-link" class="secondary shelf-photo-btn" onclick="openShelfPhoto()" title="A photo of a row of books: split it into a spine photo for each"><svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="4" width="3.5" height="10.5" rx="0.5"/><rect x="6.25" y="1.5" width="3.5" height="13" rx="0.5"/><rect x="11" y="5.5" width="3.5" height="9" rx="0.5"/></svg>Whole shelf</button>
-                                <span id="spine-file-name-display" class="field-hint">No file chosen</span>
+                                <div class="file-upload-row">
+                                    <button type="button" class="file-upload-btn" onclick="document.getElementById('book-spine-image').click()">&#128193; Choose Spine</button>
+                                    <button type="button" id="shelf-photo-link" class="secondary shelf-photo-btn" onclick="openShelfPhoto()" title="A photo of a row of books: split it into a spine photo for each"><svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="4" width="3.5" height="10.5" rx="0.5"/><rect x="6.25" y="1.5" width="3.5" height="13" rx="0.5"/><rect x="11" y="5.5" width="3.5" height="9" rx="0.5"/></svg>Whole shelf</button>
+                                    <span id="spine-file-name-display" class="field-hint">No file chosen</span>
+                                </div>
+                                <div class="image-link-row">
+                                    <input type="text" id="book-spine-image-url" placeholder="...or paste an image or image link" autocomplete="off" onpaste="handleImagePaste(event, 'spine')" onkeydown="if (event.key === 'Enter') { event.preventDefault(); loadImageFromLinkField('spine'); }">
+                                    <button type="button" class="secondary" onclick="loadImageFromLinkField('spine')">Use</button>
+                                </div>
+                                <div id="book-spine-image-link-error" class="image-link-error" role="alert"></div>
+                                <div id="existing-spine-image-note" class="field-hint" style="display:none;">
+                                    Leave blank to keep the current spine image.
+                                </div>
+                                <button type="button" id="clear-spine-image-btn" class="secondary" style="display:none;" onclick="clearSpineImage()">Remove Spine Image</button>
                             </div>
-                        </label>
-                        <div class="image-link-row">
-                            <input type="text" id="book-spine-image-url" placeholder="...or paste an image or image link" autocomplete="off" onpaste="handleImagePaste(event, 'spine')" onkeydown="if (event.key === 'Enter') { event.preventDefault(); loadImageFromLinkField('spine'); }">
-                            <button type="button" class="secondary" onclick="loadImageFromLinkField('spine')">Use</button>
+                            <div class="field-row">
+                                <label class="field-label" style="flex:1;">Width
+                                    <input type="range" id="book-spine-width" min="18" max="64" value="30" oninput="setSpineWidthAuto(false)">
+                                </label>
+                                <span id="book-spine-width-value" class="width-value">30px</span>
+                                <button type="button" id="book-spine-width-auto" class="secondary spine-width-auto" onclick="setSpineWidthAuto(true)" title="Based on the total page count">Auto</button>
+                            </div>
+                            <span id="book-spine-width-hint" class="field-hint"></span>
+                            <div class="field-hint">No photo? It gets a gilt leather spine in the cover's colour.</div>
                         </div>
-                        <div id="book-spine-image-link-error" class="image-link-error" role="alert"></div>
-                        <div class="field-hint">Only shows up in Spine view - a real photo of the book's spine. Leave blank to use the generated leather-look spine instead.</div>
-                        <div id="existing-spine-image-note" class="field-hint" style="display:none;">
-                            Leave blank to keep the current spine image.
-                        </div>
-                        <button type="button" id="clear-spine-image-btn" class="secondary" style="display:none;" onclick="clearSpineImage()">Remove Spine Image</button>
                     </div>
                 </div>
             </div>

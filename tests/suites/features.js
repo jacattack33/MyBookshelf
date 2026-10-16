@@ -400,6 +400,42 @@ ok('a wide cover is left as it is', cropImgSize() === '200x40' && q('#crop-turn-
 cancelCrop();
 closeModal();
 
+// ---- our own colour picker, in place of the browser one
+openModal();
+const circleClick = new MouseEvent('click', { bubbles: true, cancelable: true });
+q('#book-color').dispatchEvent(circleClick);
+ok('the colour circle opens our picker instead of the browser one', !q('#color-pop').hidden && circleClick.defaultPrevented);
+ok('it starts on the current colour', q('#cp-hex').value === q('#book-color').value, q('#cp-hex').value);
+ok('the swatches are the theme ones', q('#cp-swatches .cp-swatch').title === PICKER_PALETTES.candy[0], q('#cp-swatches .cp-swatch').title);
+const firstSwatch = q('#cp-swatches .cp-swatch').title;
+q('#cp-swatches .cp-swatch').click();
+ok('a swatch sets the colour', q('#book-color').value === firstSwatch, q('#book-color').value);
+const hexBox = q('#cp-hex');
+hexBox.value = '#3a5f8c';
+hexBox.dispatchEvent(new Event('input', { bubbles: true }));
+ok('a typed hex code sets the colour', q('#book-color').value === '#3a5f8c', q('#book-color').value);
+hexBox.value = 'f0c';
+hexBox.dispatchEvent(new Event('input', { bubbles: true }));
+ok('a short hex code works too', q('#book-color').value === '#ff00cc', q('#book-color').value);
+const svRect = q('#cp-sv').getBoundingClientRect();
+const svAt = (type, fx, fy) => q('#cp-sv').dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: svRect.left + svRect.width * fx, clientY: svRect.top + svRect.height * fy }));
+svAt('pointerdown', 1, 1);
+svAt('pointerup', 1, 1);
+ok('dragging to the bottom of the square makes it black', q('#book-color').value === '#000000', q('#book-color').value);
+ok('and the preview follows', getComputedStyle(q('#preview-book')).backgroundColor === 'rgb(0, 0, 0)', getComputedStyle(q('#preview-book')).backgroundColor);
+document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+ok('Escape puts the picker away', q('#color-pop').hidden);
+ok('hex round trip', hsvToHex(hexToHsv('#5b3f94')) === '#5b3f94');
+setTheme('sunset');
+openColorPicker();
+ok('another theme gets its own swatches', q('#cp-swatches .cp-swatch').title === PICKER_PALETTES.sunset[0], q('#cp-swatches .cp-swatch').title);
+setTheme('plainbold');
+closeColorPicker(); openColorPicker();
+ok('Plain Bold shares the Plain swatches', q('#cp-swatches .cp-swatch').title === PICKER_PALETTES.plain[0]);
+closeColorPicker();
+setTheme('candy');
+closeModal();
+
 // ---- covers saved as PNG before that are shrunk to JPEG once, at startup
 const pngOf = (alpha) => {
     const c = document.createElement('canvas');
@@ -452,7 +488,7 @@ await wait(300);
 ok('the hand-set width is saved', library.find(b => b.id === sid).spineWidth === 50);
 selectViewMode('spine');
 await wait(300);
-ok('and used on the shelf', q(`.book.spine-mode[data-id="${sid}"]`).offsetWidth === 50, q(`.book.spine-mode[data-id="${sid}"]`).offsetWidth);
+ok('and used on the shelf (at the Spines view size)', q(`.book.spine-mode[data-id="${sid}"]`).offsetWidth === Math.round(50 * SPINE_VIEW_SCALE), q(`.book.spine-mode[data-id="${sid}"]`).offsetWidth);
 openModal(sid);
 ok('it opens as set by hand', sw.value == 50 && !sw.dataset.auto);
 setSpineWidthAuto(true);

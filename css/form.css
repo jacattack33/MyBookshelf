@@ -658,29 +658,176 @@
 }
 
 
-.or-divider {
+/* Appearance: a card for the cover (Covers view) and one for the
+   spine (Spines view), each with its picture, size and fallback */
+.look-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px 14px;
+    border: 2px solid rgba(var(--ink-rgb), 0.16);
+    border-radius: 12px;
+}
+
+.look-card-head {
     display: flex;
     align-items: center;
-    text-align: center;
-    color: var(--y2k-purple);
-    font-size: 12px;
-    margin: 2px 0;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
 }
 
-.or-divider::before,
-.or-divider::after {
-    content: "";
+/* a little outline of the cover / spine */
+.look-glyph {
+    display: inline-block;
+    height: 15px;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+}
+
+.look-glyph.cover { width: 11px; }
+.look-glyph.spine { width: 4px; }
+
+.look-card-where {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.65;
+}
+
+.look-color {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.look-color input[type="color"] {
+    width: 40px;
+    height: 40px;
+}
+
+/* the recent colours' hearts, a little smaller beside it */
+.look-color .recent-colors-row {
+    zoom: 0.8;
+}
+
+/* our own colour picker, under the colour circle */
+.color-pop {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border: 2px solid var(--outline);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 3px 3px 0 var(--outline);
+}
+
+.color-pop[hidden] {
+    display: none;
+}
+
+/* richer to the right, darker going down, in the hue below */
+.cp-sv {
+    position: relative;
+    height: 140px;
+    border-radius: 8px;
+    background:
+        linear-gradient(to top, #000, transparent),
+        linear-gradient(to right, #fff, var(--cp-hue, red));
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.cp-hue {
+    position: relative;
+    height: 16px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+    cursor: pointer;
+    touch-action: none;
+}
+
+.cp-sv-thumb,
+.cp-hue-thumb {
+    position: absolute;
+    box-sizing: border-box;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.cp-sv-thumb {
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border: 2px solid #fff;
+}
+
+.cp-hue-thumb {
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    border: 3px solid #fff;
+}
+
+.cp-sv:focus-visible,
+.cp-hue:focus-visible {
+    outline: 2px solid rgb(var(--accent-rgb));
+    outline-offset: 2px;
+}
+
+.cp-swatches {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+}
+
+.color-pop .cp-swatch {
+    aspect-ratio: 1;
+    width: 100%;
+    padding: 0;
+    border: 2px solid var(--outline);
+    border-radius: 50%;
+    box-shadow: none;
+    transition: transform 0.1s;
+}
+
+.color-pop .cp-swatch::before {
+    display: none !important;
+}
+
+.color-pop .cp-swatch:hover {
+    transform: scale(1.12);
+}
+
+.cp-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cp-now {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--outline);
+    border-radius: 50%;
+}
+
+#cp-hex {
     flex: 1;
-    border-bottom: 2px dashed var(--y2k-lavender);
+    min-width: 0;
+    padding: 7px 10px;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 14px;
 }
 
-.or-divider span {
-    padding: 0 10px;
-}
-
-.field-section-divider {
-    border-top: 2px dashed var(--y2k-lavender);
-    margin: 4px 0;
+.cp-foot button {
+    padding: 7px 14px;
+    font-size: 13px;
 }
 
 #crop-stage {

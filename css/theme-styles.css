@@ -1468,10 +1468,23 @@
     box-shadow: 0 0 0 2px var(--key-rim), 0 3px 0 2px var(--key-depth);
 }
 
-/* little suns setting: rounded on top, flat along the horizon */
+/* little spiky suns: twelve sharp rays, in the colour itself */
 :root[data-theme="sunset"] .recent-color-swatch {
-    border-radius: 17px 17px 4px 4px;
-    box-shadow: 0 3px 8px rgba(212, 8, 72, 0.3);
+    width: 38px;
+    height: 38px;
+    margin: 0 1px;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    clip-path: polygon(50% 0%, 56.7% 24.9%, 75% 6.7%, 68.4% 31.6%, 93.3% 25%, 75.1% 43.3%, 100% 50%, 75.1% 56.7%, 93.3% 75%, 68.4% 68.4%, 75% 93.3%, 56.7% 75.1%, 50% 100%, 43.3% 75.1%, 25% 93.3%, 31.6% 68.4%, 6.7% 75%, 24.9% 56.7%, 0% 50%, 24.9% 43.3%, 6.7% 25%, 31.6% 31.6%, 25% 6.7%, 43.3% 24.9%);
+}
+
+:root[data-theme="sunset"] .recent-color-swatch::before {
+    display: none;
+}
+
+:root[data-theme="sunset"] .recent-color-swatch:hover {
+    transform: scale(1.12) rotate(15deg);
 }
 
 /* Terminal after dark: a green phosphor CRT, all in shades of green */
@@ -2127,6 +2140,7 @@
 :root[data-mode="dark"]:not([data-theme]) .toggle-peach .toggle-btn { --c: var(--y2k-peach); }
 :root[data-mode="dark"]:not([data-theme]) :is(.toggle-pink .toggle-btn, .status-btn) { --c: var(--y2k-pink); }
 :root[data-mode="dark"]:not([data-theme]) :is(button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle) { --c: var(--y2k-lilac); }
+:root[data-mode="dark"]:not([data-theme]) .file-upload-btn { --c: var(--y2k-green); }
 
 :root[data-mode="dark"]:not([data-theme]) button::before {
     inset: 3px auto auto 3px;
@@ -2148,6 +2162,24 @@
     border-left-width: 2px;
 }
 
+/* the pill-shaped photo buttons: the line follows their round end */
+:root[data-mode="dark"]:not([data-theme]) .file-upload-btn::before {
+    border-radius: 999px 0 0 999px;
+}
+
+/* the recent colours' hearts: a round gloss on the left lobe instead
+   (the heart's clip would leave the line as a square corner) */
+:root[data-mode="dark"]:not([data-theme]) .recent-color-swatch::before {
+    inset: 0;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.7) 0 10%, rgba(255, 255, 255, 0.25) 18%, transparent 30%);
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
 /* (too small for it) */
 :root[data-mode="dark"]:not([data-theme]) .date-today-btn::before {
     display: none;
@@ -2158,7 +2190,7 @@
 }
 
 /* standing up: solid glossy candy with a glow of its own colour */
-:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"])) {
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"]), .file-upload-btn) {
     background: var(--c);
     color: var(--on-bright);
     border-color: color-mix(in srgb, var(--c) 45%, var(--glass-black));
@@ -2172,7 +2204,7 @@
     color: white;
 }
 
-:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"])):hover {
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"]), .file-upload-btn):hover {
     background: var(--c);
     filter: brightness(1.08);
 }
@@ -2256,8 +2288,9 @@
 /* rating stars: faceted like a metal badge star - each point split
    along its ridge into a lit half and a shaded half, lit from the top
    left, with a crisp shadow down-right like the buttons (drawn as an
-   image; the ★ underneath is just made invisible) */
-:root[data-mode="dark"]:not([data-theme]) .star-btn {
+   image; the ★ underneath is just made invisible). Sunset after dark
+   has them too, without the shadow. */
+:root[data-mode="dark"]:is(:not([data-theme]), [data-theme="sunset"]) .star-btn {
     --star-empty: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50.0,53.0 50.0,6.0 37.7,36.0' fill='%23917dbf' stroke='%23917dbf' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 50.0,6.0 62.3,36.0' fill='%237c6aa7' stroke='%237c6aa7' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 62.3,36.0' fill='%23433562' stroke='%23433562' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 70.0,59.5' fill='%2330244c' stroke='%2330244c' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 70.0,59.5' fill='%2321163a' stroke='%2321163a' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 50.0,74.0' fill='%2322173c' stroke='%2322173c' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 50.0,74.0' fill='%233f315d' stroke='%233f315d' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 30.0,59.5' fill='%2356477a' stroke='%2356477a' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 30.0,59.5' fill='%238e7abc' stroke='%238e7abc' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 37.7,36.0' fill='%239c87cc' stroke='%239c87cc' stroke-width='0.6' stroke-linejoin='round'/%3E%3C/svg%3E");
     --star-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50.0,53.0 50.0,6.0 37.7,36.0' fill='%23fef6d7' stroke='%23fef6d7' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 50.0,6.0 62.3,36.0' fill='%23fbedbb' stroke='%23fbedbb' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 62.3,36.0' fill='%23f5d46e' stroke='%23f5d46e' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 94.7,38.5 70.0,59.5' fill='%23f4cc55' stroke='%23f4cc55' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 70.0,59.5' fill='%23f2c641' stroke='%23f2c641' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 77.6,91.0 50.0,74.0' fill='%23f2c743' stroke='%23f2c743' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 50.0,74.0' fill='%23f5d369' stroke='%23f5d369' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 22.4,91.0 30.0,59.5' fill='%23f8dd89' stroke='%23f8dd89' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 30.0,59.5' fill='%23fdf5d3' stroke='%23fdf5d3' stroke-width='0.6' stroke-linejoin='round'/%3E%3Cpolygon points='50.0,53.0 5.3,38.5 37.7,36.0' fill='%23fffbe6' stroke='%23fffbe6' stroke-width='0.6' stroke-linejoin='round'/%3E%3C/svg%3E");
     display: inline-block;
@@ -2269,9 +2302,17 @@
     filter: drop-shadow(2px 2px 0 var(--glass-black));
 }
 
-:root[data-mode="dark"]:not([data-theme]) .star-btn.filled {
+:root[data-mode="dark"]:is(:not([data-theme]), [data-theme="sunset"]) .star-btn.filled {
     background-image: var(--star-filled);
     filter: drop-shadow(2px 2px 0 var(--glass-black)) drop-shadow(0 0 6px rgba(255, 224, 102, 0.8)) drop-shadow(0 0 12px rgba(255, 193, 7, 0.45));
+}
+
+:root[data-mode="dark"][data-theme="sunset"] .star-btn {
+    filter: none;
+}
+
+:root[data-mode="dark"][data-theme="sunset"] .star-btn.filled {
+    filter: drop-shadow(0 0 6px rgba(255, 224, 102, 0.8)) drop-shadow(0 0 12px rgba(255, 193, 7, 0.45));
 }
 
 /* the open list inside dropdowns follows dark mode too */

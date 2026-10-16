@@ -798,6 +798,16 @@ button.danger:hover {
     gap: 0;
 }
 
+/* the spines are drawn bigger (SPINE_VIEW_SCALE), so on a wide screen
+   their shelf gets headroom for the shelf's title to hang in without
+   covering the first spine's top, as in Covers view (phones already
+   have it) */
+@media (min-width: 601px) {
+    .shelf.spine-shelf {
+        padding-top: 70px;
+    }
+}
+
 /* Shelves that scroll sideways: the ledge goes back to being a real
    bottom border, so the scrollbar sits just above it like it always
    did. (Elsewhere the ledge is painted inside the shelf so a fallen
@@ -1104,6 +1114,11 @@ body.drag-active .book:not(.dragging) {
     text-shadow:
         1px 1px 1px rgba(0,0,0,0.65),
         -0.5px -0.5px 0 rgba(255,255,255,0.2);
+}
+
+/* on the shelf, where spines are drawn half as big again (SPINE_VIEW_SCALE) */
+.spine-shelf .spine-label {
+    font-size: 16px;
 }
 
 .spine-label::before,

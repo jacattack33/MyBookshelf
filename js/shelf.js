@@ -28,6 +28,11 @@ function shelfScale() {
     return phoneQuery && phoneQuery.matches ? 0.72 : 1;
 }
 
+// Spines view draws every book half as big again (taller, wider, and
+// bigger lettering), so the spines can be read - a spine is only a
+// sliver of the cover's width.
+const SPINE_VIEW_SCALE = 1.5;
+
 if (phoneQuery && phoneQuery.addEventListener) {
     phoneQuery.addEventListener('change', () => renderBookshelf());
 }
@@ -122,7 +127,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
     // "NaNpx" height/width collapses the whole spine to nothing.
     // books are drawn smaller on phones (see shelfScale), but not spines:
     // they're narrow enough already, and shorter ones cut their titles off
-    const width = (Number.isFinite(book.width) ? book.width : 120) * (spineMode ? 1 : shelfScale());
+    const width = (Number.isFinite(book.width) ? book.width : 120) * (spineMode ? SPINE_VIEW_SCALE : shelfScale());
 
     if (isStickyPlaceholder(book)) {
         buildStickyNoteFace(bookDiv, book);
@@ -151,7 +156,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
         } else {
             bookDiv.classList.add('spine-mode-generated');
             bookDiv.style.backgroundColor = 'transparent';
-            bookDiv.style.width = generatedSpineWidth(book) + 'px';
+            bookDiv.style.width = Math.round(generatedSpineWidth(book) * SPINE_VIEW_SCALE) + 'px';
 
             const label = document.createElement('span');
             label.className = 'spine-label';
@@ -361,11 +366,11 @@ function buildMissingSeriesSlot(seriesName, slotNumber, seriesTotal, spineMode, 
     el.className = spineMode ? 'book series-missing spine-mode' : 'book series-missing';
     el.draggable = false;
 
-    const width = (refWidth || 120) * (spineMode ? 1 : shelfScale());
+    const width = (refWidth || 120) * (spineMode ? SPINE_VIEW_SCALE : shelfScale());
     if (spineMode) {
         const coverHeight = Math.round(width / (2 / 3));
         el.style.height = coverHeight + 'px';
-        el.style.width = Math.max(18, Math.round(width / 4)) + 'px';
+        el.style.width = Math.max(Math.round(SPINE_WIDTH_MIN * SPINE_VIEW_SCALE), Math.round(width / 4)) + 'px';
     } else {
         el.style.width = width + 'px';
         el.style.aspectRatio = '2 / 3';

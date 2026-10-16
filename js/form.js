@@ -25,7 +25,193 @@ function renderRecentColorSwatches() {
 function pickRecentColor(color) {
     document.getElementById('book-color').value = color;
     updatePreview();
+    if (!document.getElementById('color-pop').hidden) {
+        pickerHsv = hexToHsv(color, pickerHsv.h);
+        renderColorPicker();
+    }
 }
+
+// ---------- Colour picker ----------
+// Our own, opened from the colour circle in place of the browser's: each
+// browser draws its own (Firefox on phones has no custom colour at all),
+// and this one looks and works the same everywhere. The circle (a real
+// <input type="color">) still holds the colour, so everything that reads
+// it is unchanged.
+
+// colours to start from, picked by hand for each theme: book-cover-ish,
+// in that theme's own colours
+const PICKER_PALETTES = {
+    candy: ['#ff6fb0', '#ff2e93', '#ff9eb0', '#ffdcee', '#b57bff', '#8a4fe0', '#c9a6ff', '#4a2378',
+        '#9fdcff', '#2b4a7e', '#5fe8c4', '#a0eab5', '#ffe066', '#fff6c2', '#ffb48c', '#7a1f5c'],
+    seaglass: ['#14303f', '#1f3b4d', '#335c67', '#1f6f78', '#2a8c96', '#5fb8ad', '#9fc9c1', '#a7d7c5',
+        '#3d7a5e', '#5a8fd6', '#7aa6c2', '#cfe2f2', '#e1f1ee', '#d9c7a0', '#f0a07a', '#e6efe9'],
+    holo: ['#14161f', '#2b2f4a', '#4a5070', '#8e96ad', '#c0c6d6', '#e8e8f0', '#a6b1e1', '#9a7fd1',
+        '#d6c1f0', '#e0b0ff', '#f2c1d6', '#ffd1e8', '#b8f2e6', '#6fc2b8', '#7fd1e8', '#b0e0ff'],
+    library: ['#1a1410', '#2b1d14', '#4a3b2a', '#6b4a2b', '#a0522d', '#5c1f1a', '#7a2e1f', '#6b1e3b',
+        '#3b2b4a', '#1a2b4a', '#2e4a4a', '#1f3a2b', '#3d5a3a', '#8a6a2a', '#c9a227', '#e8dcc0'],
+    deco: ['#111111', '#2b2b2b', '#3a3a3a', '#14213d', '#2e5e6e', '#0f5c4a', '#1f4d3a', '#4a3b6b',
+        '#5c1f3a', '#7a1f2b', '#b87333', '#8a7a4a', '#c9a227', '#e6c869', '#e8dcc0', '#f5ecd6'],
+    loft: ['#1c2c3c', '#24272b', '#4a4f55', '#5a5047', '#7a8087', '#9aa5ad', '#a89f91', '#c9c4ba',
+        '#e8e4dc', '#3d5a6b', '#2f4f4f', '#6b7f5a', '#8a3b2b', '#b87333', '#d4925a', '#c2a878'],
+    blueprint: ['#0e1f3a', '#13294b', '#1f3a6e', '#2b5a8a', '#3d6a96', '#4a6380', '#5b7fa6', '#7aa6d6',
+        '#8fb3d9', '#cfe0f2', '#d9e6f2', '#ffffff', '#f8c88a', '#e07a2b', '#c45a1a', '#a8420c'],
+    terminal: ['#002200', '#0a1a0a', '#1c2b1c', '#1a3a2a', '#2f4f2f', '#3d7a3d', '#4a6b4a', '#5fbf5f',
+        '#88aa88', '#9fdf9f', '#33ff66', '#7fff9f', '#c8ffc8', '#d8ffd8', '#ffb000', '#ff8c00'],
+    typewriter: ['#111111', '#2b2b2b', '#4a4a4a', '#7a7a7a', '#a89a7a', '#d9c9a3', '#ece3cf', '#f5efe0',
+        '#b5121b', '#7a0e14', '#4a1f1f', '#5c4a2b', '#8a7a5a', '#2b3d2b', '#1a2b4a', '#3a4f6b'],
+    sunset: ['#ffcf87', '#ffd23f', '#ffb347', '#ff7a3d', '#e8401c', '#d40848', '#ff8fa3', '#f7a8b8',
+        '#ffe6d0', '#c96b9a', '#a3086b', '#7a4fa0', '#6b1e7a', '#3d0a33', '#2a1b5c', '#14213d'],
+    plain: ['#1a1a1a', '#3a3a3a', '#8a8a8a', '#d9d4c7', '#f2efe8', '#34495e', '#4f6d8a', '#1f3a6e',
+        '#2e6b6b', '#5b7d63', '#7564a8', '#7a1f2b', '#b4643f', '#a3471b', '#5c4a3a', '#c9a227']
+};
+
+function pickerPalette() {
+    const theme = document.documentElement.dataset.theme || 'candy';
+    return PICKER_PALETTES[theme === 'plainbold' ? 'plain' : theme] || PICKER_PALETTES.candy;
+}
+
+let pickerHsv = { h: 0, s: 0, v: 0 };
+let pickerDrag = null; // 'sv' or 'hue' while dragging
+
+function hexToRgb(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function hexToHsv(hex, keepHue = 0) {
+    const [r, g, b] = hexToRgb(hex).map(c => c / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = keepHue; // (a grey has no hue: keep the one it had)
+    if (d) {
+        if (max === r) h = 60 * (((g - b) / d) % 6);
+        else if (max === g) h = 60 * ((b - r) / d + 2);
+        else h = 60 * ((r - g) / d + 4);
+        if (h < 0) h += 360;
+    }
+    return { h, s: max ? d / max : 0, v: max };
+}
+
+function hsvToHex({ h, s, v }) {
+    const f = n => {
+        const k = (n + h / 60) % 6;
+        return Math.round(255 * (v - v * s * Math.max(0, Math.min(k, 4 - k, 1))));
+    };
+    return '#' + [f(5), f(3), f(1)].map(c => c.toString(16).padStart(2, '0')).join('');
+}
+
+function openColorPicker() {
+    const pop = document.getElementById('color-pop');
+    if (!pop.hidden) { closeColorPicker(); return; }
+    // (drawn each time: the theme may have changed since)
+    document.getElementById('cp-swatches').innerHTML = pickerPalette().map(c =>
+        `<button type="button" class="cp-swatch" style="background:${c};" title="${c}" aria-label="${c}" onclick="pickPickerSwatch('${c}')"></button>`
+    ).join('');
+    pickerHsv = hexToHsv(document.getElementById('book-color').value);
+    pop.hidden = false;
+    renderColorPicker();
+}
+
+function closeColorPicker() {
+    document.getElementById('color-pop').hidden = true;
+    pickerDrag = null;
+}
+
+// the chosen colour goes into the circle, and the preview follows
+function applyPickerColor(fromHexBox = false) {
+    const input = document.getElementById('book-color');
+    input.value = hsvToHex(pickerHsv);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    renderColorPicker(fromHexBox);
+}
+
+function renderColorPicker(keepHexBox = false) {
+    const hue = `hsl(${pickerHsv.h}, 100%, 50%)`;
+    document.getElementById('cp-sv').style.setProperty('--cp-hue', hue);
+    const hueThumb = document.getElementById('cp-hue-thumb');
+    hueThumb.style.background = hue;
+    hueThumb.style.left = (pickerHsv.h / 360 * 100) + '%';
+    const svThumb = document.getElementById('cp-sv-thumb');
+    svThumb.style.left = (pickerHsv.s * 100) + '%';
+    svThumb.style.top = ((1 - pickerHsv.v) * 100) + '%';
+    document.getElementById('cp-hue').setAttribute('aria-valuenow', Math.round(pickerHsv.h));
+    const hex = hsvToHex(pickerHsv);
+    document.getElementById('cp-now').style.background = hex;
+    if (!keepHexBox) document.getElementById('cp-hex').value = hex;
+}
+
+function pickPickerSwatch(hex) {
+    pickerHsv = hexToHsv(hex, pickerHsv.h);
+    applyPickerColor();
+}
+
+function typedPickerHex(text) {
+    const m = /^#?([0-9a-f]{6}|[0-9a-f]{3})$/i.exec(text.trim());
+    if (!m) return;
+    let digits = m[1].toLowerCase();
+    if (digits.length === 3) digits = digits.split('').map(c => c + c).join('');
+    pickerHsv = hexToHsv('#' + digits, pickerHsv.h);
+    applyPickerColor(true);
+}
+
+function pickerPointer(e) {
+    const el = document.getElementById(pickerDrag === 'sv' ? 'cp-sv' : 'cp-hue');
+    const r = el.getBoundingClientRect();
+    const x = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1);
+    if (pickerDrag === 'sv') {
+        const y = Math.min(Math.max((e.clientY - r.top) / r.height, 0), 1);
+        pickerHsv = { ...pickerHsv, s: x, v: 1 - y };
+    } else {
+        pickerHsv = { ...pickerHsv, h: x * 360 };
+    }
+    applyPickerColor();
+}
+
+['sv', 'hue'].forEach(part => {
+    const el = document.getElementById('cp-' + part);
+    el.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        el.focus();
+        pickerDrag = part;
+        el.setPointerCapture(e.pointerId);
+        pickerPointer(e);
+    });
+    el.addEventListener('pointermove', e => { if (pickerDrag === part) pickerPointer(e); });
+    el.addEventListener('pointerup', () => { pickerDrag = null; });
+    el.addEventListener('pointercancel', () => { pickerDrag = null; });
+    // arrow keys nudge it (Shift for bigger steps)
+    el.addEventListener('keydown', e => {
+        const dx = { ArrowRight: 1, ArrowLeft: -1 }[e.key] || 0;
+        const dy = { ArrowUp: 1, ArrowDown: -1 }[e.key] || 0;
+        if (!dx && !dy) return;
+        e.preventDefault();
+        const step = e.shiftKey ? 0.1 : 0.02;
+        const clamp = n => Math.min(Math.max(n, 0), 1);
+        pickerHsv = part === 'sv'
+            ? { ...pickerHsv, s: clamp(pickerHsv.s + dx * step), v: clamp(pickerHsv.v + dy * step) }
+            : { ...pickerHsv, h: clamp(pickerHsv.h / 360 + (dx || dy) * step) * 360 };
+        applyPickerColor();
+    });
+});
+
+// the circle opens ours instead of the browser's
+document.getElementById('book-color').addEventListener('click', e => {
+    e.preventDefault();
+    openColorPicker();
+});
+
+// a click anywhere else, or Escape, puts it away
+document.addEventListener('pointerdown', e => {
+    const pop = document.getElementById('color-pop');
+    if (pop.hidden || pop.contains(e.target) || e.target.id === 'book-color') return;
+    closeColorPicker();
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape' || document.getElementById('color-pop').hidden) return;
+    e.preventDefault();
+    closeColorPicker();
+    document.getElementById('book-color').focus();
+});
 
 function saveCustomGenres() {
     localStorage.setItem(CUSTOM_GENRES_KEY, JSON.stringify(customGenres));
@@ -316,6 +502,7 @@ function openModal(bookId = null) {
     const existingImageNote = document.getElementById('existing-image-note');
     document.getElementById('modal-delete-btn').style.display = bookId ? 'inline-block' : 'none';
     renderRecentColorSwatches();
+    closeColorPicker();
 
     populateGenreSelects();
     populateAuthorOptions();
@@ -1365,8 +1552,8 @@ function refreshSpineWidthField() {
     document.getElementById('book-spine-width-hint').innerText = photo
         ? 'A spine photo is as wide as the photo.'
         : !auto ? ''
-        : pages > 0 ? 'Auto: thicker the more pages it has.'
-        : 'Auto: fill in Pages to size it by those.';
+        : pages > 0 ? 'Auto: based on the total page count.'
+        : 'Auto: based on the total page count, once Pages is filled in.';
     updateWidthSliderFill(slider);
 }
 
