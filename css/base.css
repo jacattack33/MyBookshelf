@@ -510,6 +510,66 @@ button.danger:hover {
     color: var(--y2k-dark);
 }
 
+/* Settings > Walkthrough: topics that open and close */
+.walkthrough {
+    gap: 6px;
+}
+
+.walk-topic {
+    border-top: 1px dashed var(--y2k-lavender);
+    padding: 6px 0 2px;
+}
+
+.walk-topic summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--y2k-dark);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.walk-topic summary::-webkit-details-marker {
+    display: none;
+}
+
+/* a little arrow that turns when the topic opens */
+.walk-topic summary::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 6px solid var(--y2k-purple);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    transition: transform 0.15s;
+}
+
+.walk-topic[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.walk-body {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--y2k-dark);
+    padding: 4px 2px 6px 14px;
+}
+
+.walk-body p {
+    margin: 0 0 4px;
+}
+
+.walk-body ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.walk-body li + li {
+    margin-top: 4px;
+}
+
 /* a yes/no about you in Settings (I have a library card) */
 .settings-check {
     display: flex;

@@ -769,6 +769,128 @@
                 <button type="button" class="modal-close-x" onclick="closeSettings()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
             <div class="settings-body">
+                <div class="field-section walkthrough" id="settings-walkthrough">
+                    <div class="field-section-title">Walkthrough</div>
+                    <div class="field-hint">Handy things to know. Click a topic to open it.</div>
+
+                    <details class="walk-topic">
+                        <summary>Where your books are saved</summary>
+                        <div class="walk-body">
+                            <p>Your shelf lives in this browser on this device. There's no account and nothing goes online.</p>
+                            <ul>
+                                <li><b>Export Library</b> saves a backup file (with your settings and pins too). It's the only way to move your shelf to another device, so do it now and then.</li>
+                                <li>Clearing site data, a private window or a different browser starts with an empty shelf, not yours.</li>
+                                <li><b>Import Library</b> swaps your whole shelf for the one in a backup.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Adding books</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li><b>+ Add New Book</b> for the full details. Paste an image or image link to use as the cover.</li>
+                                <li>The <b>sticky-note pile</b> in the bottom-left corner is a quick add for books you want to get: a title, an author, a genre and you're done.</li>
+                                <li>Got a shelf of books already? <b>Whole shelf</b> (in the Spine card of the edit window) takes one photo and cuts out every spine.</li>
+                                <li><b>Start new books as</b> (below) picks the status new books start in.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Arranging your shelves</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li><b>Organize by</b> sorts the shelves by genre, status, author, series, tag or rating.</li>
+                                <li>With Sort on <b>Custom</b>, drag books to put them in order. Dragging one onto another shelf changes its genre, status or rating.</li>
+                                <li><b>Covers</b> / <b>Spines</b> switches how books stand on the shelf.</li>
+                                <li>A long shelf has a little round arrow under it to open it out into more rows.</li>
+                                <li>On a phone, everything but Search is under <b>Filters &amp; sorting</b>.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Hidden spots in the edit window</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>Click the <b>preview book</b>: its cover opens and the <b>library card</b> slides out. Click a line on it to write dates, and the blank lines are for re-reads.</li>
+                                <li><b>Cover · Spine</b> under the preview shows the book as it stands in Spines view.</li>
+                                <li><b>Notes</b> open a notepad in your pick of handwriting. A book can have two: the corner button in the notepad starts the <b>pink note</b>, for a different kind of thing. Each peeks out from behind the book; click it to open it.</li>
+                                <li><b>How I got it</b> (bought, library, borrowed&hellip;) is written at the bottom of the library card.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Dates, without the fuss</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>Started and Finished can be a full date, a month and year, or just a year. Leave them blank if you don't remember.</li>
+                                <li>Marking a book Read doesn't fill in the date for you: press <b>today</b> if you finished it today.</li>
+                                <li>On the library card you can write dates almost any way: <i>today</i>, <i>2024</i>, <i>3/2024</i>, <i>Mar 15, 2024</i>&hellip;</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Sticky notes and To Buy</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>A sticky note on the shelf is a book you want to get. It turns into a real book once you tick <b>I Own This Book</b> or give it a cover, a spine photo, a colour or a size.</li>
+                                <li>Now and then one falls off its shelf: click it to stick it back up (or turn falling off in Shelf extras).</li>
+                                <li><b>Slips &gt; To Buy</b> is your shopping list: tick one when you get it.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Lending and recommendations</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>On a book you own, type a name in <b>Lent to</b>. Its spot on the shelf holds a little tag until you press <b>it's back</b>.</li>
+                                <li><b>Slips</b> (next to Settings) lists what's lent out, recs from friends, and your To Buy list.</li>
+                                <li>Names you've used are offered as you type.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Goals and the reading critter</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>Click the <b>goals card</b> (bottom left) to set a yearly books goal and a pages goal for each day, week or month.</li>
+                                <li>Feed the <b>critter</b> the pages you read (click it). That counts toward your pages goal too, so you only enter them once.</li>
+                                <li>Its belly holds three days of food at your pages pace. Starve it for a week and it runs away (it warns you with a "!" first). It sleeps from 11pm to 7am.</li>
+                                <li>Logged pages by mistake? Each entry under Recent pages has an &times; to take it back.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic pins-setting">
+                        <summary>Pins</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>Pins earn themselves as you read and use the shelf. Click the little pin board for all of them; the ones still to earn are shadows on the cork. Click one to see how to get it.</li>
+                                <li><b>Books you already had:</b> so only new reading earns pins, tick <b>Don't count toward pins</b> on a book (under Shelf Info). They still count in your stats and goals.</li>
+                                <li>Typing in an old library? Switch off <b>New books count toward pins</b> in Shelf extras while you do, or use <b>Don't count every book on my shelf now</b> once.</li>
+                                <li><b>Restart pins</b> (in Start over) takes every pin off the board to begin again.</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="walk-topic">
+                        <summary>Making it yours</summary>
+                        <div class="walk-body">
+                            <ul>
+                                <li>Twelve <b>themes</b>, each in Light or Dark (or Match device).</li>
+                                <li><b>Shelf extras</b> turns the cat, dust, leaning books, the critter and more on or off.</li>
+                                <li><b>Calm mode</b> turns off the animations.</li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+
                 <div class="field-section">
                     <div class="field-section-title">Theme</div>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Theme">

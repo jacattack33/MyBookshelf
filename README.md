@@ -145,7 +145,7 @@ What this means in practice:
 - Marking a book **Read** pops confetti. (It leaves the Finished date alone; use its **today** button if you want today.)
 - The preview book wiggles when you change its status or give it a new cover.
 - A "reading ♡" sticker appears on the preview while a book's status is Reading.
-- If a book has notes, a corner of notepad paper peeks out behind the preview. Hover and it slides up a little; click it and it pulls out and unfolds into the notepad. Closing the notepad tucks it back behind the book. A book can have a **second note** too, on pale pink paper: once the first note has words on it, click **＋ Another note** at the top left of the notepad. The pink page peeks out from the lower left of the book (the first one is top right), and the same button flips between the two. Each note keeps its own font, and both count toward Margin Notes and the stats.
+- If a book has notes, a corner of notepad paper peeks out behind the preview. Hover and it slides up a little; click it and it pulls out and unfolds into the notepad. Closing the notepad tucks it back behind the book. A book can have a **second note** too, on pale pink paper: click **＋ A pink note** at the top left of the notepad (with or without a first note, for keeping two kinds of thing apart). Only the pink page's corner pokes out, lower down the same side as the first one, and the same button flips between the two. Each note keeps its own font, and both count toward Margin Notes and the stats.
 - New tags bounce in and removed ones shrink away; new books get a random cute example title and author as placeholders.
 - Hover over the preview book and its cover lifts a little; click it and the cover swings wide open, and its library checkout card slides out of a library pocket with the title, author, page count and start/finish dates handwritten in your notes font, who it's on loan to (if anyone), plus a stamp for its status. Click to slide it back in.
   - **Writing dates on the card:** click any line under Checked out / Returned and write a date, in pretty much any form: `today`, `2024`, `3/2024`, `3/15/2024`, `Mar 2024`, `March 15, 2024`, `15 March 2024` or `2024-03-15`. Press Enter (or click away) to write it, Escape to leave it. The first line is the book's Started / Finished dates, so writing there fills in the form too. The blank lines below are for **re-reads**: each one is another time you read it. Clear both dates on a line and it goes away. A date the card can't read, or a return before its checkout, gets a little shake and a note at the bottom instead of being written. After four lines, the lines scroll. Like the rest of the edit window, it's saved when you save the book.
@@ -153,6 +153,7 @@ What this means in practice:
 
 ### Other
 - **Settings** (button next to Export/Import). Everything here is remembered:
+  - **Walkthrough:** at the top, short tips that open and close: where your books are saved, adding books, arranging shelves, the edit window's hidden spots, dates, sticky notes, lending, goals and the critter, pins (and leaving books you already had out of them), and making it yours.
   - **Theme:** twelve to pick from, each with a light and a dark version:
     - **Candy:** pinks and purples.
     - **Sea Glass:** blues and greens.

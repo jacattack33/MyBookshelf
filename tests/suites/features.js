@@ -562,3 +562,19 @@ selectViewMode('cover');
     await processBookForm(); await wait(300);
     ok('shape back to natural updates shelf', Math.abs(el().offsetWidth - el().offsetHeight) < 3, el().offsetWidth + 'x' + el().offsetHeight + ' ' + library.find(x => x.id === '1').imageRatio);
 }
+
+// ---- Settings opens with a walkthrough of handy things to know
+openSettings();
+const walk = q('#settings-walkthrough');
+ok('the walkthrough is the first thing in Settings', q('.settings-body').firstElementChild === walk);
+const topics = [...walk.querySelectorAll('details.walk-topic')];
+ok('its topics start closed', topics.length >= 8 && topics.every(t => !t.open), topics.length);
+topics[0].querySelector('summary').click();
+ok('a topic opens when clicked', topics[0].open && topics[0].querySelector('.walk-body').offsetHeight > 0);
+topics[0].querySelector('summary').click();
+const pinsTopic = topics.find(t => t.querySelector('summary').textContent === 'Pins');
+ok('it explains leaving old books out of pins', pinsTopic.textContent.includes("Don't count toward pins"));
+setTheme('holo');
+ok('no pins topic in a theme without a pin board', pinsTopic.offsetParent === null);
+setTheme('candy');
+closeSettings();
