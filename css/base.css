@@ -1437,6 +1437,26 @@ html:has(.modal[style*="flex"]) {
     transform: rotate(14deg) translate(4px, -4px);
 }
 
+/* the second note: pink paper tucked in further down, turned so just
+   one corner pokes out of the pages (its poses are in NOTE_PAGES too) */
+:root {
+    --note2-tint: sepia(0.5) saturate(3) hue-rotate(-75deg);
+}
+
+.preview-notes-peek.page-2 {
+    top: auto;
+    bottom: 22px;
+    right: -16px;
+    width: 52px;
+    height: 66px;
+    transform: rotate(42deg);
+    filter: var(--note2-tint) drop-shadow(2px 3px 3px rgba(0,0,0,0.3));
+}
+
+.preview-notes-peek.page-2:hover {
+    transform: rotate(38deg) translate(6px, -2px);
+}
+
 /* "reading" washi tape stuck across the cover's top-left corner:
    see-through pastel blue, zigzag torn ends (clip-path) */
 .preview-sticker {

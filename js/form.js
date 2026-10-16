@@ -547,6 +547,7 @@ function openModal(bookId = null) {
         setTags(book.tags || []);
         setOwned(!!book.owned);
         setNotes(book.notes || "", book.notesFont);
+        setNotes(book.notes2 || "", book.notes2Font || book.notesFont, 2);
         setDateField('started', book.startedDate);
         setDateField('finished', book.finishedDate);
         formExtraReads = (book.extraReads || []).map(r => ({ ...r }));
@@ -576,6 +577,7 @@ function openModal(bookId = null) {
         setTags([]);
         setOwned(false);
         setNotes("");
+        setNotes("", "", 2);
         setDateField('started', "");
         setDateField('finished', "");
         formExtraReads = [];
@@ -1117,12 +1119,27 @@ function getLastNoteFont() {
     }
 }
 
-function setNotes(notes, font) {
-    document.getElementById('book-notes').value = notes;
-    document.getElementById('book-notes-font').value = getNoteFont(font || getLastNoteFont()).name;
+// A book can have two notes, for two kinds of thing: one on cream paper
+// peeking out at the top right of the preview, one on pink paper lower
+// down the same side, only its corner showing. Either can be written without the other, and each
+// keeps its own font.
+const NOTE_PAGES = {
+    1: { text: 'book-notes', font: 'book-notes-font', peek: 'preview-notes-peek',
+         rest: 'rotate(10deg)', lift: 'rotate(14deg) translate(4px, -4px)', out: 'rotate(22deg) translate(26px, -46px)' },
+    2: { text: 'book-notes-2', font: 'book-notes-2-font', peek: 'preview-notes-peek-2',
+         rest: 'rotate(42deg)', lift: 'rotate(38deg) translate(6px, -2px)', out: 'rotate(30deg) translate(44px, 6px)' }
+};
+
+const pageNotes = page => document.getElementById(NOTE_PAGES[page].text).value;
+const pageFont = page => document.getElementById(NOTE_PAGES[page].font).value;
+
+function setNotes(notes, font, page = 1) {
+    const p = NOTE_PAGES[page];
+    document.getElementById(p.text).value = notes;
+    document.getElementById(p.font).value = getNoteFont(font || getLastNoteFont()).name;
+    document.getElementById(p.peek).classList.toggle('visible', !!notes.trim());
     document.getElementById('modal-notes-btn').innerHTML =
-        notes.trim() ? '&#9998; Edit Notes' : '&#9998; Add Notes';
-    document.getElementById('preview-notes-peek').classList.toggle('visible', !!notes.trim());
+        (pageNotes(1).trim() || pageNotes(2).trim()) ? '&#9998; Edit Notes' : '&#9998; Add Notes';
 }
 
 function applyNotepadFont(name) {
@@ -1168,13 +1185,47 @@ function offsetToElement(el) {
 
 let notepadOrigin = null;
 let notepadClosing = false;
+let notepadPage = 1;
 
-// fromEl: the peeking paper or the Add/Edit Notes button
-function openNotepad(fromEl) {
+// put which note is open on the paper: its words, font and colour
+function showNotepadPage(page) {
+    notepadPage = page;
+    const text = document.getElementById('notepad-text');
+    text.value = pageNotes(page);
+    applyNotepadFont(pageFont(page));
+    document.querySelector('.notepad').classList.toggle('page-2', page === 2);
+    updateNotepadFlip();
+}
+
+// the corner button: turn to the other note (or start it)
+function updateNotepadFlip() {
+    const btn = document.getElementById('notepad-flip');
+    const hasOther = !!pageNotes(notepadPage === 1 ? 2 : 1).trim();
+    const name = notepadPage === 1 ? 'pink note' : 'cream note';
+    btn.textContent = hasOther ? `To the ${name}` : `\uFF0B A ${name}`;
+}
+
+// keep what's written on this note, then turn to the other one
+function flipNotepad() {
+    const text = document.getElementById('notepad-text');
+    setNotes(text.value, text.dataset.font, notepadPage);
+    showNotepadPage(notepadPage === 1 ? 2 : 1);
+    text.focus();
+    if (prefersReducedMotion()) return;
+    const dir = notepadPage === 2 ? 1 : -1;
+    document.querySelector('.notepad').animate([
+        { transform: `translateX(${dir * 40}px) rotate(${dir * 3}deg)`, opacity: 0 },
+        { transform: 'none', opacity: 1 }
+    ], { duration: 260, easing: 'cubic-bezier(.2, .8, .3, 1.05)' });
+}
+
+// fromEl: the peeking paper or the Add/Edit Notes button; page: which
+// note (the Notes button opens the first one with words on it)
+function openNotepad(fromEl, page) {
     renderNotepadFontButtons();
     const text = document.getElementById('notepad-text');
-    text.value = document.getElementById('book-notes').value;
-    applyNotepadFont(document.getElementById('book-notes-font').value);
+    if (!page) page = !pageNotes(1).trim() && pageNotes(2).trim() ? 2 : 1;
+    showNotepadPage(page);
     notepadOrigin = fromEl || document.getElementById('modal-notes-btn');
 
     const showPad = () => {
@@ -1188,13 +1239,14 @@ function openNotepad(fromEl) {
         ], { duration: 450, easing: 'cubic-bezier(.2, .8, .3, 1.05)' });
     };
 
-    const peek = document.getElementById('preview-notes-peek');
+    const p = NOTE_PAGES[page];
+    const peek = document.getElementById(p.peek);
     if (notepadOrigin === peek && !prefersReducedMotion()) {
         // slide the paper the rest of the way out from behind the book,
         // then the notepad unfolds from where it was
         peek.animate([
-            { transform: 'rotate(14deg) translate(4px, -4px)' },
-            { transform: 'rotate(22deg) translate(26px, -46px) scale(1.25)', opacity: 0 }
+            { transform: p.lift },
+            { transform: `${p.out} scale(1.25)`, opacity: 0 }
         ], { duration: 220, easing: 'ease-in' });
         setTimeout(showPad, 220); // timer, not onfinish - see closeNotepad
     } else {
@@ -1204,14 +1256,14 @@ function openNotepad(fromEl) {
 
 async function closeNotepad() {
     if (notepadClosing) return;
-    const notes = document.getElementById('notepad-text').value;
     const font = document.getElementById('notepad-text').dataset.font;
-    setNotes(notes, font);
+    setNotes(document.getElementById('notepad-text').value, font, notepadPage);
 
-    // tuck the notepad back where it came from - into the peeking paper
-    // if the book has notes now, otherwise back into the Notes button
+    // tuck the notepad back where it came from - into this note's
+    // peeking paper if it has words now, otherwise the Notes button
     const modal = document.getElementById('notepad-modal');
-    const peek = document.getElementById('preview-notes-peek');
+    const p = NOTE_PAGES[notepadPage];
+    const peek = document.getElementById(p.peek);
     const target = peek.classList.contains('visible') ? peek : document.getElementById('modal-notes-btn');
     if (!prefersReducedMotion()) {
         notepadClosing = true;
@@ -1230,8 +1282,8 @@ async function closeNotepad() {
     document.querySelector('.notepad-wrap').getAnimations().forEach(a => a.cancel());
     if (target === peek && !prefersReducedMotion()) {
         peek.animate([
-            { transform: 'rotate(22deg) translate(26px, -46px)', opacity: 0 },
-            { transform: 'rotate(10deg)', opacity: 1 }
+            { transform: p.out, opacity: 0 },
+            { transform: p.rest, opacity: 1 }
         ], { duration: 260, easing: 'cubic-bezier(.2, .8, .3, 1.2)' });
     }
     try { localStorage.setItem(LAST_NOTE_FONT_KEY, font); } catch (e) {}
@@ -1240,9 +1292,9 @@ async function closeNotepad() {
     // otherwise closing the edit window with Cancel/X would silently
     // throw away everything just written.
     const existing = editingId ? library.find(b => b.id === editingId) : null;
-    if (existing && ((existing.notes || "") !== notes || existing.notesFont !== font)) {
-        existing.notes = notes;
-        existing.notesFont = font;
+    const notes = { notes: pageNotes(1), notesFont: pageFont(1), notes2: pageNotes(2), notes2Font: pageFont(2) };
+    if (existing && Object.keys(notes).some(k => (existing[k] || '') !== notes[k])) {
+        Object.assign(existing, notes);
         await dbPut(existing);
     }
 }
@@ -1632,7 +1684,7 @@ async function renderPreviewSpine() {
     let ratio = 2 / 3;
     if (cover) {
         const preset = Number(document.getElementById('book-ratio-preset').value);
-        ratio = preset || (!pendingCoverCrop && existing.imageRatio) || await getImageAspectRatio(cover) || 2 / 3;
+        ratio = preset || await getImageAspectRatio(cover) || 2 / 3;
     }
     const height = Math.round(width / ratio);
 
@@ -2075,6 +2127,8 @@ async function processBookForm() {
     const owned = document.getElementById('book-owned').checked;
     const notes = document.getElementById('book-notes').value;
     const notesFont = document.getElementById('book-notes-font').value;
+    const notes2 = document.getElementById('book-notes-2').value;
+    const notes2Font = document.getElementById('book-notes-2-font').value;
 
     if (!title) {
         alert('Please include a book title!');
@@ -2132,15 +2186,12 @@ async function processBookForm() {
     }
 
     const finalImage = image !== null ? image : (existing ? existing.image : "");
-    let finalRatio = image !== null ? imageRatio : (existing ? existing.imageRatio : null);
-    if (finalImage && !finalRatio) {
-        // keeping an existing image that predates imageRatio tracking -
-        // compute it now instead of leaving the shelf stuck on the old
-        // fixed 2:3 box forever.
-        finalRatio = await getImageAspectRatio(finalImage);
-    }
-    if (finalImage && ratioPreset) {
-        finalRatio = ratioPreset;
+    // the cover's shape: the Shape picked, or else the picture's own.
+    // A kept picture is measured again, since its saved ratio may be an
+    // old Shape (switching back to Natural has to undo that).
+    let finalRatio = null;
+    if (finalImage) {
+        finalRatio = ratioPreset || (image !== null ? imageRatio : await getImageAspectRatio(finalImage));
     }
 
     // spine color: for a solid-color book, just use that color; for
@@ -2179,7 +2230,7 @@ async function processBookForm() {
 
     const book = {
         id: editingId || Date.now().toString(),
-        title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, startedDate, finishedDate,
+        title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, notes2, notes2Font, startedDate, finishedDate,
         statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy,
         sortOrder: existing && Number.isFinite(existing.sortOrder)
             ? existing.sortOrder

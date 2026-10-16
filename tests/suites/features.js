@@ -497,3 +497,68 @@ await processBookForm();
 await wait(300);
 ok('auto is saved as no width', library.find(b => b.id === sid).spineWidth === null);
 selectViewMode('cover');
+
+// ---- a second note: its own pink page, lower down the same side
+{
+    const book = library.find(b => b.id === '1');
+    book.notes = ''; book.notes2 = '';
+    openModal('1');
+    const peek1 = q('#preview-notes-peek'), peek2 = q('#preview-notes-peek-2'), flip = q('#notepad-flip');
+    ok('no notes: neither page peeks out', !peek1.classList.contains('visible') && !peek2.classList.contains('visible'));
+    openNotepad();
+    ok('the pink note can be started straight away', !flip.hidden && /A pink note/.test(flip.textContent), flip.textContent);
+    flipNotepad();
+    const text = q('#notepad-text');
+    text.value = 'just the pink one';
+    await closeNotepad();
+    await wait(100);
+    ok('a pink note on its own peeks out by itself', !peek1.classList.contains('visible') && peek2.classList.contains('visible'));
+    ok('and is saved without a first note', book.notes === '' && book.notes2 === 'just the pink one');
+    ok('Edit Notes then opens the pink one', (openNotepad(), q('.notepad').classList.contains('page-2')));
+    ok('which offers a cream note', /A cream note/.test(flip.textContent), flip.textContent);
+    flipNotepad();
+    text.value = 'first thoughts';
+    flipNotepad();
+    text.value = '';
+    ok('the second note is a fresh pink page', text.value === '' && q('.notepad').classList.contains('page-2'));
+    text.value = 'second thoughts';
+    flipNotepad();
+    ok('flipping back shows the first note again', text.value === 'first thoughts' && !q('.notepad').classList.contains('page-2'));
+    ok('and offers the other one', /To the pink note/.test(flip.textContent), flip.textContent);
+    await closeNotepad();
+    await wait(100);
+    ok('both pages peek out', peek1.classList.contains('visible') && peek2.classList.contains('visible'));
+    const cover = q('#preview-book').getBoundingClientRect(), r1 = peek1.getBoundingClientRect(), r2 = peek2.getBoundingClientRect();
+    ok('the pink one sits lower down', r2.top > r1.bottom - 10, r1.bottom + ' ' + r2.top);
+    ok('both stick out of the pages side, not the spine', r1.right > cover.right && r2.right > cover.right && r2.left > cover.left + cover.width / 2);
+    ok('both are saved on the book straight away', book.notes === 'first thoughts' && book.notes2 === 'second thoughts');
+    openNotepad(peek2, 2);
+    ok('the pink peek opens the second note', text.value === 'second thoughts' && q('.notepad').classList.contains('page-2'));
+    await closeNotepad();
+    await processBookForm();
+    await wait(300);
+    const saved = library.find(b => b.id === '1');
+    ok('Save keeps both notes', saved.notes === 'first thoughts' && saved.notes2 === 'second thoughts' && !!saved.notes2Font);
+}
+
+// ---- a cover's Shape reaches the shelf, also when set back to Natural
+{
+    const mk = (w, h, c) => { const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const x = cv.getContext('2d'); x.fillStyle = c; x.fillRect(0, 0, w, h); return cv.toDataURL('image/png'); };
+        openModal('1');
+    pendingCoverCrop = mk(200, 300, '#f00');
+    await processBookForm(); await wait(300);
+    const el = () => q('.book[data-id="1"]');
+    ok('cover saved', !!library.find(x => x.id === '1').image, el().style.aspectRatio);
+    openModal('1');
+    pendingCoverCrop = mk(300, 300, '#0f0');
+    document.getElementById('book-ratio-preset').value = '';
+    await processBookForm(); await wait(300);
+    ok('re-cropped square shows square on shelf', Math.abs(el().offsetWidth - el().offsetHeight) < 3, el().offsetWidth + 'x' + el().offsetHeight + ' ' + el().style.aspectRatio + ' ' + library.find(x => x.id === '1').imageRatio);
+    openModal('1');
+    document.getElementById('book-ratio-preset').value = '0.667';
+    await processBookForm(); await wait(300);
+    openModal('1');
+    document.getElementById('book-ratio-preset').value = '';
+    await processBookForm(); await wait(300);
+    ok('shape back to natural updates shelf', Math.abs(el().offsetWidth - el().offsetHeight) < 3, el().offsetWidth + 'x' + el().offsetHeight + ' ' + library.find(x => x.id === '1').imageRatio);
+}

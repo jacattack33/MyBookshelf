@@ -250,7 +250,7 @@ function openStats() {
         ['DNF', count('DNF')],
         ['Owned', books.filter(b => b.owned).length],
         ['Lent out', books.filter(isLentOut).length],
-        ['With notes', books.filter(b => (b.notes || '').trim()).length],
+        ['With notes', books.filter(b => (b.notes || '').trim() || (b.notes2 || '').trim()).length],
         ['Average rating', rated.length ? `${avg} \u2605` : avg],
         ['Pages read', pagesOf(finishedReads()).toLocaleString()]
     ];

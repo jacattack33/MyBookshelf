@@ -191,6 +191,14 @@ ok('not yet: tea time', !pinState.earned.teatime);
 const tea = new Date(); tea.setHours(15, 30, 0, 0);
 recordPages(5, tea.getTime());
 ok('earned: tea time', !!pinState.earned.teatime);
+// pizza night: a Friday evening (a Friday afternoon or a Saturday evening doesn't count)
+const friday = new Date(); friday.setDate(friday.getDate() - ((friday.getDay() + 2) % 7) - 7);
+const at = (d, h, days = 0) => { const t = new Date(d); t.setDate(t.getDate() + days); t.setHours(h, 0, 0, 0); return t.getTime(); };
+recordPages(5, at(friday, 14));
+recordPages(5, at(friday, 19, 1));
+ok('not yet: pizza night', !pinState.earned.pizza);
+recordPages(5, at(friday, 19));
+ok('earned: pizza night', !!pinState.earned.pizza);
 localStorage.removeItem(PAGES_LOG_KEY);
 
 // ---- lending: getting it back earns a pin, from the edit window...

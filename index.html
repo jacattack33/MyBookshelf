@@ -292,7 +292,8 @@
                 <div class="modal-preview">
                     <div class="preview-shelf">
                         <div class="preview-book-wrap" id="preview-book-wrap">
-                            <div class="preview-notes-peek" id="preview-notes-peek" onclick="openNotepad(this)" title="Open notes"></div>
+                            <div class="preview-notes-peek" id="preview-notes-peek" onclick="openNotepad(this, 1)" title="Open notes"></div>
+                            <div class="preview-notes-peek page-2" id="preview-notes-peek-2" onclick="openNotepad(this, 2)" title="Open the other note"></div>
                             <div class="preview-under-page"></div>
                             <div class="book preview-only" id="preview-book" style="width:120px;" onclick="openLibraryCard()" title="Open the library card">
                                 <div class="spine-top"></div>
@@ -314,6 +315,8 @@
                     </div>
                     <textarea id="book-notes" hidden></textarea>
                     <input type="hidden" id="book-notes-font">
+                    <textarea id="book-notes-2" hidden></textarea>
+                    <input type="hidden" id="book-notes-2-font">
                 </div>
 
                 <div class="modal-fields">
@@ -538,6 +541,7 @@
             <div class="notepad-fonts" id="notepad-fonts"></div>
             <div class="notepad">
                 <button type="button" class="notepad-done" onclick="closeNotepad()">Done</button>
+                <button type="button" class="notepad-flip" id="notepad-flip" onclick="flipNotepad()"></button>
                 <textarea id="notepad-text" spellcheck="false" placeholder="Write your thoughts..."></textarea>
             </div>
         </div>

@@ -213,6 +213,14 @@
         height: 52px;
     }
 
+    .preview-notes-peek.page-2 {
+        top: auto;
+        bottom: 15px;
+        right: -10px;
+        width: 34px;
+        height: 43px;
+    }
+
     .preview-sticker {
         top: 6px;
         left: -16px;

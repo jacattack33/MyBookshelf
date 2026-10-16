@@ -1000,6 +1000,27 @@
     z-index: 1;
 }
 
+/* the second note is on pink paper: a tinted copy of the paper laid
+   over the cream one, so the words and buttons keep their colours */
+.notepad.page-2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    filter: var(--note2-tint);
+}
+
+/* turn to the other note, or start it */
+.notepad-flip {
+    position: absolute;
+    top: -14px;
+    left: -8px;
+    font-size: 12px;
+    padding: 6px 14px;
+    z-index: 1;
+}
+
+
 .empty-note {
     text-align: center;
     color: var(--y2k-purple);

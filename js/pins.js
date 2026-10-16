@@ -784,6 +784,18 @@ const PINS = [
             ['e', 'M33 24L44.5 13Q41.5 18.5 45 24Q41.5 29.5 44.5 35Z', PIN_E.lav],
             ['e', 'M13 24a11 8.5 0 1 0 22 0a11 8.5 0 1 0 -22 0Z', PIN_E.lav],
         ]
+    },
+    {
+        id: 'pizza', name: 'Pizza Night', desc: 'Log pages on a Friday evening, between 6pm and 10pm.', metal: 'silver', glint: [15, 9], rotate: -14,
+        progress: s => [s.pizzaNight ? 1 : 0, 1],
+        art: [
+            // a slice of pepperoni, cheese dripping off one edge
+            ['e', 'M8.5 13Q24 7.5 39.5 13L25.5 43Q24 45.5 22.5 43Z', PIN_E.yellow],
+            ['e', 'M33.5 26Q35.5 31 34 33Q32 34.5 31.6 30.2Z', PIN_E.yellow, null, 1],
+            ['e', 'M5.5 10.5Q24 2 42.5 10.5Q43 14.5 39.5 15Q24 9 8.5 15Q5 14.5 5.5 10.5Z', PIN_E.peach],
+            ['e', pinCircle(18.5, 20.5, 3.4), PIN_E.hot], ['e', pinCircle(29, 21.5, 3.1), PIN_E.hot], ['e', pinCircle(24, 32, 2.8), PIN_E.hot],
+            ['d', pinCircle(23.5, 15.5, 0.9), PIN_E.teal], ['d', pinCircle(21, 26.5, 0.8), PIN_E.teal], ['d', pinCircle(28.5, 28, 0.8), PIN_E.teal]
+        ]
     }
 ];
 
@@ -893,7 +905,7 @@ function pinStats() {
         goalDone: booksReadThisYear(),
         critterFed: fed,
         genres: new Set(read.map(b => b.genre).filter(Boolean)).size,
-        withNotes: books.filter(b => (b.notes || '').trim()).length,
+        withNotes: books.filter(b => (b.notes || '').trim() || (b.notes2 || '').trim()).length,
         pages: pagesOf(finishedReads()),
         streak: longestStreak(log),
         nightOwl: log.some(e => new Date(e.at).getHours() < 4),
@@ -924,6 +936,10 @@ function pinStats() {
         readingNow: books.filter(b => b.status === 'Reading').length,
         toughCookie: read.some(b => normalizeRating(b.rating) >= 1 && normalizeRating(b.rating) <= 2),
         teaTime: log.some(e => e.pages > 0 && [15, 16].includes(new Date(e.at).getHours())),
+        pizzaNight: log.some(e => {
+            const d = new Date(e.at);
+            return e.pages > 0 && d.getDay() === 5 && d.getHours() >= 18 && d.getHours() < 22;
+        }),
         genreMost: Math.max(0, ...Object.values(perGenre))
     };
 }
