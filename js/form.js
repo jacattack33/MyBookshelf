@@ -18,7 +18,7 @@ function renderRecentColorSwatches() {
     const row = document.getElementById('recent-colors');
     if (!row) return;
     row.innerHTML = recentColors.map(c =>
-        `<button type="button" class="recent-color-swatch" style="background:${c};" onclick="pickRecentColor('${c}')" title="${c}"></button>`
+        `<button type="button" class="recent-color-swatch" style="background:${c}; --swatch:${c};" onclick="pickRecentColor('${c}')" title="${c}"></button>`
     ).join('');
 }
 

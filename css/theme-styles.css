@@ -1468,19 +1468,27 @@
     box-shadow: 0 0 0 2px var(--key-rim), 0 3px 0 2px var(--key-depth);
 }
 
-/* little spiky suns: twelve sharp rays, in the colour itself */
+/* little suns: a round disc with twelve pointed rays, in the colour
+   itself (drawn on ::before as a mask, filled from --swatch) */
 :root[data-theme="sunset"] .recent-color-swatch {
-    width: 38px;
-    height: 38px;
-    margin: 0 1px;
+    width: 42px;
+    height: 42px;
+    margin: 0;
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    clip-path: polygon(50% 0%, 56.7% 24.9%, 75% 6.7%, 68.4% 31.6%, 93.3% 25%, 75.1% 43.3%, 100% 50%, 75.1% 56.7%, 93.3% 75%, 68.4% 68.4%, 75% 93.3%, 56.7% 75.1%, 50% 100%, 43.3% 75.1%, 25% 93.3%, 31.6% 68.4%, 6.7% 75%, 24.9% 56.7%, 0% 50%, 24.9% 43.3%, 6.7% 25%, 31.6% 31.6%, 25% 6.7%, 43.3% 24.9%);
+    clip-path: none;
+    background: transparent !important;
 }
 
 :root[data-theme="sunset"] .recent-color-swatch::before {
-    display: none;
+    display: block;
+    inset: 0;
+    border-radius: 0;
+    opacity: 1;
+    background: var(--swatch);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='27'/%3E%3Cpolygon points='50.0,2.0 45.1,28.6 54.9,28.6'/%3E%3Cpolygon points='74.0,8.4 56.4,29.0 65.0,33.9'/%3E%3Cpolygon points='91.6,26.0 66.1,35.0 71.0,43.6'/%3E%3Cpolygon points='98.0,50.0 71.4,45.1 71.4,54.9'/%3E%3Cpolygon points='91.6,74.0 71.0,56.4 66.1,65.0'/%3E%3Cpolygon points='74.0,91.6 65.0,66.1 56.4,71.0'/%3E%3Cpolygon points='50.0,98.0 54.9,71.4 45.1,71.4'/%3E%3Cpolygon points='26.0,91.6 43.6,71.0 35.0,66.1'/%3E%3Cpolygon points='8.4,74.0 33.9,65.0 29.0,56.4'/%3E%3Cpolygon points='2.0,50.0 28.6,54.9 28.6,45.1'/%3E%3Cpolygon points='8.4,26.0 29.0,43.6 33.9,35.0'/%3E%3Cpolygon points='26.0,8.4 35.0,33.9 43.6,29.0'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='27'/%3E%3Cpolygon points='50.0,2.0 45.1,28.6 54.9,28.6'/%3E%3Cpolygon points='74.0,8.4 56.4,29.0 65.0,33.9'/%3E%3Cpolygon points='91.6,26.0 66.1,35.0 71.0,43.6'/%3E%3Cpolygon points='98.0,50.0 71.4,45.1 71.4,54.9'/%3E%3Cpolygon points='91.6,74.0 71.0,56.4 66.1,65.0'/%3E%3Cpolygon points='74.0,91.6 65.0,66.1 56.4,71.0'/%3E%3Cpolygon points='50.0,98.0 54.9,71.4 45.1,71.4'/%3E%3Cpolygon points='26.0,91.6 43.6,71.0 35.0,66.1'/%3E%3Cpolygon points='8.4,74.0 33.9,65.0 29.0,56.4'/%3E%3Cpolygon points='2.0,50.0 28.6,54.9 28.6,45.1'/%3E%3Cpolygon points='8.4,26.0 29.0,43.6 33.9,35.0'/%3E%3Cpolygon points='26.0,8.4 35.0,33.9 43.6,29.0'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
 }
 
 :root[data-theme="sunset"] .recent-color-swatch:hover {
@@ -2141,6 +2149,8 @@
 :root[data-mode="dark"]:not([data-theme]) :is(.toggle-pink .toggle-btn, .status-btn) { --c: var(--y2k-pink); }
 :root[data-mode="dark"]:not([data-theme]) :is(button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle) { --c: var(--y2k-lilac); }
 :root[data-mode="dark"]:not([data-theme]) .file-upload-btn { --c: var(--y2k-green); }
+:root[data-mode="dark"]:not([data-theme]) button.danger { --c: var(--y2k-coral); }
+:root[data-mode="dark"]:not([data-theme]) :is(.reading-goal-set, .stats-table-toggle, .date-today-btn, .notepad-font-btn) { --c: var(--y2k-lilac); }
 
 :root[data-mode="dark"]:not([data-theme]) button::before {
     inset: 3px auto auto 3px;
@@ -2156,8 +2166,16 @@
     opacity: 1;
 }
 
+/* the little ones stand up less far */
+:root[data-mode="dark"]:not([data-theme]) :is(.reading-goal-set, .stats-table-toggle, .date-today-btn) {
+    box-shadow:
+        2px 2px 0 var(--glass-black),
+        inset 0 -3px 6px -2px rgba(0, 0, 0, 0.3),
+        0 0 8px color-mix(in srgb, var(--c) 40%, transparent);
+}
+
 /* the little chips get a finer line */
-:root[data-mode="dark"]:not([data-theme]) :is(.critter-chips button, .critter-scrap-toggle)::before {
+:root[data-mode="dark"]:not([data-theme]) :is(.critter-chips button, .critter-scrap-toggle, .reading-goal-set, .stats-table-toggle)::before {
     border-top-width: 2px;
     border-left-width: 2px;
 }
@@ -2190,7 +2208,7 @@
 }
 
 /* standing up: solid glossy candy with a glow of its own colour */
-:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"]), .file-upload-btn) {
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"]), .file-upload-btn, button.danger, .reading-goal-set, .stats-table-toggle, .date-today-btn, .notepad-font-btn:not(.active)) {
     background: var(--c);
     color: var(--on-bright);
     border-color: color-mix(in srgb, var(--c) 45%, var(--glass-black));
@@ -2204,7 +2222,7 @@
     color: white;
 }
 
-:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"]), .file-upload-btn):hover {
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn:not(.active), .status-btn:not(.active), button.secondary, .critter-chips button, .critter-scrap-toggle, .filters-toggle:not([aria-expanded="true"]), .file-upload-btn, button.danger, .reading-goal-set, .stats-table-toggle, .date-today-btn, .notepad-font-btn:not(.active)):hover {
     background: var(--c);
     filter: brightness(1.08);
 }
@@ -2217,7 +2235,7 @@
    panel's purple inside going black at the edges, deepest at the
    top-left, light catching the inner bottom-right wall, and the rim
    glowing its colour all round */
-:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn.active, .status-btn.active, .filters-toggle[aria-expanded="true"]) {
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn.active, .status-btn.active, .filters-toggle[aria-expanded="true"], .notepad-font-btn.active) {
     transform: translate(3px, 3px);
     background: color-mix(in srgb, var(--c) 10%, var(--surface));
     color: color-mix(in srgb, var(--c) 80%, white);
@@ -2231,15 +2249,15 @@
 }
 
 /* ...with a fainter, skinnier shine, tinted its colour */
-:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn.active, .status-btn.active, .filters-toggle[aria-expanded="true"])::before {
+:root[data-mode="dark"]:not([data-theme]) :is(.toggle-btn.active, .status-btn.active, .filters-toggle[aria-expanded="true"], .notepad-font-btn.active)::before {
     border-top-width: 1.5px;
     border-left-width: 1.5px;
     border-color: color-mix(in srgb, var(--c) 45%, white);
     opacity: 0.5;
 }
 
-/* the bubblegum buttons (Add Book, Put on Shelf...) glow too */
-:root[data-mode="dark"]:not([data-theme]) :is(.add-book-btn, .modal-buttons button:not(.secondary, .danger), .critter-feed button, .critter-hatch) {
+/* the bubblegum buttons (Add Book, Put on Shelf, Done...) glow too */
+:root[data-mode="dark"]:not([data-theme]) :is(.add-book-btn, .modal-buttons button:not(.secondary, .danger), .critter-feed button, .critter-hatch, button:not([class], .critter-chips button, .debug-buttons button), .notepad-done) {
     border-color: color-mix(in srgb, var(--c) 45%, var(--glass-black));
     box-shadow:
         3px 3px 0 var(--glass-black),
@@ -2247,8 +2265,23 @@
         0 0 14px rgba(255, 111, 176, 0.45);
 }
 
-:root[data-mode="dark"]:not([data-theme]) :is(.add-book-btn, .modal-buttons button:not(.secondary, .danger), .critter-feed button, .critter-hatch):active {
+:root[data-mode="dark"]:not([data-theme]) :is(.add-book-btn, .modal-buttons button:not(.secondary, .danger), .critter-feed button, .critter-hatch, button:not([class], .critter-chips button, .debug-buttons button), .notepad-done):active {
     box-shadow: 1px 1px 0 var(--glass-black), inset 0 -4px 8px -2px rgba(120, 0, 60, 0.35);
+}
+
+/* the debug panel's buttons: lavender with the corner shine, but no glow */
+:root[data-mode="dark"]:not([data-theme]) .debug-buttons button {
+    background: var(--y2k-lilac);
+    color: var(--on-bright);
+    border-color: color-mix(in srgb, var(--y2k-lilac) 45%, var(--glass-black));
+    box-shadow: none;
+}
+
+:root[data-mode="dark"]:not([data-theme]) .debug-buttons button::before {
+    inset: 2px auto auto 2px;
+    border-top-width: 1.5px;
+    border-left-width: 1.5px;
+    border-radius: 3px 0 0 0;
 }
 
 /* ---------- Candy shelf titles ----------
