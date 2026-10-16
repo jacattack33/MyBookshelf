@@ -1983,8 +1983,18 @@
     text-overflow: ellipsis;
 }
 
-.lc-lent:empty {
+.lc-lent:empty,
+.lc-got:empty {
     display: none;
+}
+
+/* how you got it: handwritten like the loan line, a little smaller */
+.lc-got {
+    font-size: 16px;
+    color: #3d3d3d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lc-note {

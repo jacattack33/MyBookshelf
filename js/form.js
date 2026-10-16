@@ -553,6 +553,7 @@ function openModal(bookId = null) {
         formExtraReads = (book.extraReads || []).map(r => ({ ...r }));
         document.getElementById('book-pages').value = book.pages || "";
         document.getElementById('book-rec-by').value = book.recommendedBy || "";
+        setGotHow(book.gotHow || "", book.gotFrom || "");
         setLentTo(book.lentTo || "", book.lentAt || null);
         existingImageNote.style.display = book.image ? 'block' : 'none';
         document.getElementById('existing-spine-image-note').style.display = book.spineImage ? 'block' : 'none';
@@ -583,6 +584,7 @@ function openModal(bookId = null) {
         formExtraReads = [];
         document.getElementById('book-pages').value = "";
         document.getElementById('book-rec-by').value = "";
+        setGotHow("", "");
         setLentTo("", null);
         existingImageNote.style.display = 'none';
         document.getElementById('existing-spine-image-note').style.display = 'none';
@@ -666,6 +668,7 @@ function openLibraryCard() {
         <div class="lc-rows" id="lc-rows"></div>
         <div class="lc-foot">
             <div class="lc-foot-left">
+                <span class="lc-got"></span>
                 <span class="lc-lent"></span>
                 <span class="lc-note" id="lc-note">Click a line to write a date.</span>
             </div>
@@ -679,6 +682,9 @@ function openLibraryCard() {
     card.querySelector('.lc-stamp').textContent = stampText;
     card.querySelector('.lc-lent').textContent = lentTo ? `On loan to ${lentTo}` : '';
     card.querySelector('.lc-lent').style.cssText = lentTo ? hand : '';
+    const got = gotLine(document.getElementById('book-got-how').value, document.getElementById('book-got-from').value.trim());
+    card.querySelector('.lc-got').textContent = got;
+    card.querySelector('.lc-got').style.cssText = got ? hand : '';
     renderLibraryCardRows();
 
     if (prefersReducedMotion()) {
@@ -701,6 +707,46 @@ function openLibraryCard() {
         ], { duration: 520, easing: 'ease-out', fill: 'backwards' });
         libraryCardBusy = false;
     }, COVER_OPEN_MS * 0.6); // the cover looks open well before its easing finishes
+}
+
+// ---------- How I got it ----------
+// Bought, thrifted, from the library, borrowed, a gift or free, with an
+// optional who or where. Written at the bottom of the library card.
+const GOT_HOW = {
+    bought: { from: 'Where', hint: 'Which shop? (optional)', line: f => f ? `Bought at ${f}` : 'Bought' },
+    thrift: { from: 'Where', hint: 'Which shop? (optional)', line: f => f ? `Thrifted at ${f}` : 'Thrifted' },
+    library: { from: 'Which library', hint: 'e.g. Main Street (optional)', line: f => f ? `From ${f} library` : 'From the library' },
+    borrowed: { from: 'Who from', hint: "A friend's name", friends: true, line: f => f ? `Borrowed from ${f}` : 'Borrowed' },
+    gift: { from: 'Who from', hint: "A friend's name", friends: true, line: f => f ? `A gift from ${f}` : 'A gift' },
+    free: { from: 'Where', hint: 'e.g. a little free library (optional)', line: f => f ? `Free from ${f}` : 'Free' }
+};
+
+// the card's line, e.g. "Borrowed from Sam" ("" if it's not set)
+function gotLine(how, from) {
+    const g = GOT_HOW[how];
+    if (!g) return '';
+    // "Main Street Library" typed in full doesn't need "library" again
+    if (how === 'library' && /library$/i.test(from)) return `From ${from}`;
+    return g.line(from);
+}
+
+function setGotHow(how, from) {
+    document.getElementById('book-got-how').value = GOT_HOW[how] ? how : '';
+    document.getElementById('book-got-from').value = from;
+    updateGotFromField();
+}
+
+// the who/where box only shows once you've picked how, and asks the
+// right question (with your friends' names offered for people)
+function updateGotFromField() {
+    const g = GOT_HOW[document.getElementById('book-got-how').value];
+    const input = document.getElementById('book-got-from');
+    document.getElementById('book-got-from-label').style.visibility = g ? '' : 'hidden';
+    if (!g) return;
+    document.getElementById('book-got-from-title').textContent = g.from;
+    input.placeholder = g.hint;
+    if (g.friends) input.setAttribute('list', 'friend-options');
+    else input.removeAttribute('list');
 }
 
 function libraryCardHandStyle() {
@@ -2162,6 +2208,8 @@ async function processBookForm() {
     const existing = editingId ? library.find(b => b.id === editingId) : null;
 
     const recommendedBy = document.getElementById('book-rec-by').value.trim();
+    const gotHow = document.getElementById('book-got-how').value;
+    const gotFrom = gotHow ? document.getElementById('book-got-from').value.trim() : "";
     const lentTo = owned ? document.getElementById('book-lent-to').value.trim() : "";
     // same person still has it: keep when it went out
     const lentAt = !lentTo ? null
@@ -2231,7 +2279,7 @@ async function processBookForm() {
     const book = {
         id: editingId || Date.now().toString(),
         title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, notes2, notes2Font, startedDate, finishedDate,
-        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy,
+        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy, gotHow, gotFrom,
         sortOrder: existing && Number.isFinite(existing.sortOrder)
             ? existing.sortOrder
             : library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,

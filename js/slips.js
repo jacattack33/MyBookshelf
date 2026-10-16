@@ -28,7 +28,8 @@ function populateFriendOptions() {
     const names = new Set();
     loadRecs().forEach(r => names.add(r.from));
     visibleBooks().forEach(b => {
-        [b.lentTo, b.recommendedBy].forEach(n => { if (n && n.trim()) names.add(n.trim()); });
+        const gotFriend = ['borrowed', 'gift'].includes(b.gotHow) ? b.gotFrom : '';
+        [b.lentTo, b.recommendedBy, gotFriend].forEach(n => { if (n && n.trim()) names.add(n.trim()); });
     });
     const list = document.getElementById('friend-options');
     list.innerHTML = '';

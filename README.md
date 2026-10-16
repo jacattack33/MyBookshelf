@@ -129,6 +129,7 @@ What this means in practice:
 - **Ratings:** 1–5 stars per book (click the current star again to clear it).
 - **Pages:** how many pages the book has (under Details). Shows on the library card and adds up in Reading stats.
 - **Recommended by:** who told you to read it (under Details). The book shows up on the From Friends slip.
+- **How I got it:** under Recommended by, pick Bought, Thrifted / used, Library, Borrowed, Gift or Free / book swap, then optionally where or who from (Borrowed and Gift offer your friends' names). It's written in handwriting at the bottom of the library card, like "Borrowed from Sam" or "Thrifted at Goodwill". Saved in backups.
 - **Lending:** once **I Own This Book** is on, a **Lent to** box appears. Type who has it and save; the hint says how long ago it went out, and **it's back ✓** clears it. Changing the name starts the clock again. Unticking Owned clears it.
 - **Reading dates:** Started and Finished dates under Status. A full date, a month and year, or just a year all work, and each has a **today** button. The app catches impossible dates and a finish date before the start date. Dates are saved as `2024`, `2024-03`, or `2024-03-15`, ready for future per-month/per-year charts.
 - **Genre vs. tags:** a book's genre is what it's about (Fantasy, Mystery, History…). Audience and format are tags instead, the way libraries label them: Children's, Middle Grade, Young Adult, New Adult, Graphic Novel, Short Stories, Poetry, Audiobook and Series are always suggested in the tag dropdown.

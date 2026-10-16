@@ -224,3 +224,33 @@ ok('filter: both', shownIds().includes('fk1') && shownIds().includes('fk2'));
 library = library.filter(b => !b.id.startsWith('fk'));
 renderBookshelf();
 setSetting('debug', false);
+
+// ---- how I got it: saved with the book, written at the bottom of the card
+openModal('2');
+const gotLabel = q('#book-got-from-label');
+ok('how I got it starts blank, no who/where box', q('#book-got-how').value === '' && gotLabel.style.visibility === 'hidden');
+q('#book-got-how').value = 'borrowed';
+updateGotFromField();
+ok('Borrowed asks who from, offering friends', gotLabel.style.visibility === '' && q('#book-got-from-title').textContent === 'Who from' && q('#book-got-from').getAttribute('list') === 'friend-options');
+q('#book-got-from').value = 'Priya';
+await processBookForm();
+await wait(300);
+ok('saved with the book', library.find(b => b.id === '2').gotHow === 'borrowed' && library.find(b => b.id === '2').gotFrom === 'Priya');
+populateFriendOptions();
+ok('who you borrowed from joins the friend names', [...q('#friend-options').options].some(o => o.value === 'Priya'));
+openModal('2');
+ok('opens with it filled in', q('#book-got-how').value === 'borrowed' && q('#book-got-from').value === 'Priya');
+openLibraryCard();
+await wait(1900);
+ok('the card says so at the bottom', q('#library-card .lc-foot .lc-got').textContent === 'Borrowed from Priya');
+closeLibraryCard();
+await wait(600);
+q('#book-got-how').value = 'thrift';
+updateGotFromField();
+ok('Thrifted asks where, no friend names', q('#book-got-from-title').textContent === 'Where' && !q('#book-got-from').hasAttribute('list'));
+ok('card lines', gotLine('thrift', 'Goodwill') === 'Thrifted at Goodwill' && gotLine('library', 'Main Street Library') === 'From Main Street Library'
+    && gotLine('library', '') === 'From the library' && gotLine('gift', 'Mom') === 'A gift from Mom' && gotLine('', 'x') === '');
+q('#book-got-how').value = '';
+await processBookForm();
+await wait(300);
+ok('clearing it clears who/where too', library.find(b => b.id === '2').gotHow === '' && library.find(b => b.id === '2').gotFrom === '');

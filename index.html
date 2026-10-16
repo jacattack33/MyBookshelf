@@ -348,6 +348,22 @@
                         <label class="field-label">Recommended by
                             <input type="text" id="book-rec-by" placeholder="A friend's name" maxlength="40" list="friend-options" autocomplete="off">
                         </label>
+                        <div class="field-row">
+                            <label class="field-label" style="flex:1;">How I got it
+                                <select id="book-got-how" onchange="updateGotFromField()">
+                                    <option value="">&mdash;</option>
+                                    <option value="bought">Bought</option>
+                                    <option value="thrift">Thrifted / used</option>
+                                    <option value="library">Library</option>
+                                    <option value="borrowed">Borrowed</option>
+                                    <option value="gift">Gift</option>
+                                    <option value="free">Free / book swap</option>
+                                </select>
+                            </label>
+                            <label class="field-label" style="flex:1.3;" id="book-got-from-label"><span id="book-got-from-title">Where</span>
+                                <input type="text" id="book-got-from" maxlength="40" autocomplete="off">
+                            </label>
+                        </div>
                         <datalist id="friend-options"></datalist>
                     </div>
 
