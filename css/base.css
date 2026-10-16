@@ -521,6 +521,29 @@ button.danger:hover {
     cursor: pointer;
 }
 
+/* the edit window's "Don't count toward pins": only while there's a
+   pin board to count toward */
+.pins-book-check {
+    justify-content: center;
+}
+
+body:not(.pins-on) .pins-book-check {
+    display: none;
+}
+
+.pins-count-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.pins-count-buttons button {
+    font-size: 13px;
+    padding: 6px 14px;
+}
+
 .delete-confirm button:disabled {
     opacity: 0.45;
     cursor: not-allowed;

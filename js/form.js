@@ -554,6 +554,7 @@ function openModal(bookId = null) {
         document.getElementById('book-pages').value = book.pages || "";
         document.getElementById('book-rec-by').value = book.recommendedBy || "";
         setGotHow(book.gotHow || "", book.gotFrom || "");
+        document.getElementById('book-no-pins').checked = !!book.noPins;
         setLentTo(book.lentTo || "", book.lentAt || null);
         existingImageNote.style.display = book.image ? 'block' : 'none';
         document.getElementById('existing-spine-image-note').style.display = book.spineImage ? 'block' : 'none';
@@ -585,6 +586,7 @@ function openModal(bookId = null) {
         document.getElementById('book-pages').value = "";
         document.getElementById('book-rec-by').value = "";
         setGotHow("", "");
+        document.getElementById('book-no-pins').checked = !appSettings.pinNewBooks;
         setLentTo("", null);
         existingImageNote.style.display = 'none';
         document.getElementById('existing-spine-image-note').style.display = 'none';
@@ -2209,6 +2211,7 @@ async function processBookForm() {
 
     const recommendedBy = document.getElementById('book-rec-by').value.trim();
     const gotHow = document.getElementById('book-got-how').value;
+    const noPins = document.getElementById('book-no-pins').checked;
     const gotFrom = gotHow ? document.getElementById('book-got-from').value.trim() : "";
     const lentTo = owned ? document.getElementById('book-lent-to').value.trim() : "";
     // same person still has it: keep when it went out
@@ -2279,7 +2282,7 @@ async function processBookForm() {
     const book = {
         id: editingId || Date.now().toString(),
         title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, notes2, notes2Font, startedDate, finishedDate,
-        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy, gotHow, gotFrom,
+        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy, gotHow, gotFrom, noPins,
         sortOrder: existing && Number.isFinite(existing.sortOrder)
             ? existing.sortOrder
             : library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,

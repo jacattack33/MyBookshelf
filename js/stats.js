@@ -4,9 +4,9 @@
 // any other reads with a Returned date on the book's library card.
 
 // One { book, date } per time a book was finished.
-function finishedReads() {
+function finishedReads(books = visibleBooks()) {
     const out = [];
-    visibleBooks().forEach(b => {
+    books.forEach(b => {
         if (b.status === 'Read' && /^\d{4}/.test(b.finishedDate || '')) out.push({ book: b, date: b.finishedDate });
         (b.extraReads || []).forEach(r => {
             if (/^\d{4}/.test(r.finished || '')) out.push({ book: b, date: r.finished });

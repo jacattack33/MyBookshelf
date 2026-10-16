@@ -160,6 +160,7 @@ async function addStickyBook(title, authorText, genre, extra = {}) {
         image: "", imageRatio: null, ratioPreset: null,
         spineColor: color, spineImage: "", spineImageRatio: null,
         recommendedBy: "",
+        noPins: !appSettings.pinNewBooks,
         ...extra
     };
     await dbPut(book);

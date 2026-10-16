@@ -95,6 +95,7 @@ const DEFAULT_SETTINGS = {
     critter: true,              // the reading critter in the corner
     pins: true,                 // the pin board (achievements) under the stats ledger; Candy only for now
     pinAlerts: true,            // the pin board wiggles, sparkles and shows a +N badge for new pins
+    pinNewBooks: true,          // new books count toward pins (off while typing in books you already had)
     ownedSeal: 'series',        // gold seal on owned books: 'off', 'series' (Series shelf only) or 'all'
     unreadFade: 'series',       // fade books not marked Read: 'off', 'series' or 'all'
     pagesGoal: 20,              // pages per pagesPeriod; also how fast the critter gets hungry
@@ -445,7 +446,7 @@ function setSetting(key, value) {
     if (SHELF_EXTRA_SETTINGS.includes(key)) awardPin('tinker'); // (even switched back)
     refreshSettingsButtons();
     // the name and goals are typed into, so don't redraw every shelf per keystroke
-    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'pins', 'pinAlerts', 'celebrations', 'goodbyes'].includes(key));
+    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'pins', 'pinAlerts', 'pinNewBooks', 'celebrations', 'goodbyes'].includes(key));
     if (key === 'backupReminders' && !value) hideBackupReminder();
     if (key === 'noteFalls' && !value) stickAllNotesBackUp();
     if (key === 'pinAlerts') renderPinWidget();

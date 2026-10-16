@@ -1218,6 +1218,7 @@ async function saveShelfPhoto() {
                 startedDate: "", finishedDate: "",
                 statusSince: now, dustedAt: null, stickyNote: false,
                 pages: null, extraReads: [], lentTo: "", lentAt: null, recommendedBy: "",
+                noPins: !appSettings.pinNewBooks,
                 sortOrder: nextOrder++,
                 image: "", imageRatio: null, ratioPreset: null,
                 spineColor: color, spineImage: dataUrl, spineImageRatio

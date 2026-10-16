@@ -410,3 +410,75 @@ ok('restart pins: one-off pins are gone', !pinState.earned.cameback);
 ok('restart pins: what the shelf earns comes back', !!pinState.earned.first);
 ok('restart pins: saved', !JSON.parse(localStorage.getItem(PINS_KEY)).earned.cameback);
 ok('delete checkbox says pins go too', q('label.delete-reset-settings').textContent.includes('pins'));
+
+// ---- books you already had can be left out of pins
+{
+    closeSettings();
+    const realConfirm = window.confirm;
+    const realAlert = window.alert;
+    window.alert = () => {};
+    const countable = () => pinStats().readCount;
+    const before = countable();
+    const readBook = library.find(b => hasBeenRead(b));
+    readBook.noPins = true;
+    ok("a ticked book doesn't count toward pins", countable() === before - 1, before + ' -> ' + countable());
+    ok('but still counts in the stats', finishedReads().some(r => r.book === readBook) || !readBook.finishedDate);
+    readBook.noPins = false;
+    ok('unticked, it counts again', countable() === before);
+
+    // the edit window's box
+    openModal(readBook.id);
+    const box = q('#book-no-pins');
+    ok('the box shows while the pin board is on', box.closest('label').offsetParent !== null);
+    box.checked = true;
+    await processBookForm();
+    await wait(300);
+    ok('ticking it saves with the book', library.find(b => b.id === readBook.id).noPins === true);
+    openModal(readBook.id);
+    ok('and it opens ticked', q('#book-no-pins').checked);
+    q('#book-no-pins').checked = false;
+    await processBookForm();
+    await wait(300);
+    ok('unticking saves too', library.find(b => b.id === readBook.id).noPins === false);
+
+    // new books follow the default
+    setSetting('pinNewBooks', false);
+    openModal();
+    ok('with new books not counting, a new book opens ticked', q('#book-no-pins').checked);
+    closeModal();
+    await wait(350);
+    const sticky = await addStickyBook('Old Favourite', 'A. Writer', 'Fantasy');
+    ok('a sticky-pile book follows the default too', library.find(b => b.title === 'Old Favourite').noPins === true);
+    setSetting('pinNewBooks', true);
+    openModal();
+    ok('back on, a new book opens unticked', !q('#book-no-pins').checked);
+    closeModal();
+    await wait(350);
+
+    // hidden while the pin board is off
+    setSetting('pins', false);
+    openModal(readBook.id);
+    ok('no box while the pin board is off', q('#book-no-pins').closest('label').offsetParent === null);
+    closeModal();
+    await wait(350);
+    setSetting('pins', true);
+
+    // the whole shelf at once
+    const earnedBefore = earnedPins().length;
+    let asked = 0;
+    window.confirm = () => (++asked === 1); // yes to leaving them out, no to restarting
+    await excludeShelfFromPins();
+    ok('the whole shelf is left out', visibleBooks().every(b => b.noPins) && asked === 2);
+    ok('pins already earned stay unless you restart', earnedPins().length === earnedBefore);
+    ok('nothing counts now', countable() === 0);
+    window.confirm = () => true;
+    await includeShelfInPins();
+    ok('count every book again', visibleBooks().every(b => !b.noPins) && countable() === before);
+    window.confirm = () => true; // yes, and yes to restarting
+    await excludeShelfFromPins();
+    ok('restarting too takes off what the shelf earned', !pinState.earned.first);
+    await includeShelfInPins();
+    ok('and it comes back once they count', !!pinState.earned.first);
+    window.confirm = realConfirm;
+    window.alert = realAlert;
+}

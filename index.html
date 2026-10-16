@@ -448,6 +448,9 @@
                                 <button type="button" class="date-today-btn" id="lend-back-btn" onclick="markBookReturned()">it's back &#10003;</button>
                             </div>
                         </div>
+                        <label class="settings-check pins-setting pins-book-check" title="For books you already had or read before: it stays on your shelf and in your stats, but doesn't earn pins.">
+                            <input type="checkbox" id="book-no-pins"> Don't count toward pins
+                        </label>
                     </div>
 
                     <div class="field-section">
@@ -855,6 +858,16 @@
                         <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
                         <button type="button" class="toggle-btn pins-setting" data-setting-switch="pins" onclick="toggleSetting('pins')">Pin board</button>
                         <button type="button" class="toggle-btn pins-setting" data-setting-switch="pinAlerts" onclick="toggleSetting('pinAlerts')">New-pin alerts</button>
+                    </div>
+                    <div class="pins-setting pins-count-settings">
+                        <div class="field-hint">Pins: leave out books you already had, so only new reading earns them. Each book has a Don't count toward pins box in its edit window.</div>
+                        <div class="toggle-group settings-choices">
+                            <button type="button" class="toggle-btn" data-setting-switch="pinNewBooks" onclick="toggleSetting('pinNewBooks')">New books count toward pins</button>
+                        </div>
+                        <div class="pins-count-buttons">
+                            <button type="button" class="secondary" onclick="excludeShelfFromPins()">Don't count every book on my shelf now&hellip;</button>
+                            <button type="button" class="secondary" onclick="includeShelfInPins()">Count every book again</button>
+                        </div>
                     </div>
                     <div class="field-hint">Owned seal: a gold seal on the books you own.</div>
                     <div class="toggle-group settings-choices" role="group" aria-label="Owned seal">

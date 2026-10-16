@@ -857,8 +857,15 @@ function pinSvg(pin, earned = true) {
 }
 
 // ----- Working out what's been earned -----
+// The books pins are worked out from: everything on the shelf except
+// the ones ticked "Don't count toward pins" (books you already had
+// before, say). They still count everywhere else.
+function pinBooks() {
+    return visibleBooks().filter(b => !b.noPins);
+}
+
 function pinStats() {
-    const books = visibleBooks();
+    const books = pinBooks();
     const read = books.filter(hasBeenRead);
     const timesRead = b => (b.status === 'Read' ? 1 : 0) + (b.extraReads || []).filter(r => r.finished).length;
     const spans = [];
@@ -915,11 +922,11 @@ function pinStats() {
         speedy: spans.some(d => d !== null && d <= 3),
         oneDay: spans.some(d => d === 1), // (the same day counts as 1)
         goal: appSettings.goal || 0,
-        goalDone: booksReadThisYear(),
+        goalDone: finishedReads(books).filter(r => r.date.startsWith(String(new Date().getFullYear()))).length,
         critterFed: fed,
         genres: new Set(read.map(b => b.genre).filter(Boolean)).size,
         withNotes: books.filter(b => (b.notes || '').trim() || (b.notes2 || '').trim()).length,
-        pages: pagesOf(finishedReads()),
+        pages: pagesOf(finishedReads(books)),
         streak: longestStreak(log),
         nightOwl: log.some(e => new Date(e.at).getHours() < 4),
         dnf: books.some(b => b.status === 'DNF'),
@@ -1012,6 +1019,33 @@ function savePins() {
 function resetPins() {
     pinState = { earned: {}, seen: {}, counts: {}, lentIds: [], lentTo: [] };
     savePins();
+    checkPins();
+    renderPinWidget();
+}
+
+// Settings > Shelf extras: leave every book on the shelf out of pins
+// (an existing library, typed in), then offer to restart the board so
+// the pins those books earned go too
+async function excludeShelfFromPins() {
+    const books = visibleBooks().filter(b => !b.noPins);
+    if (!books.length) { alert('Every book on your shelf is already left out of pins.'); return; }
+    if (!confirm(`Leave all ${books.length} book${books.length === 1 ? '' : 's'} on your shelf out of pins? You can untick any of them later in its edit window.`)) return;
+    books.forEach(b => { b.noPins = true; });
+    await dbBulkPut(books);
+    if (confirm('Also restart your pin board? Pins your counting books still earn come straight back; one-off ones (like a book you lent coming back) don\'t.')) {
+        resetPins();
+    }
+    checkPins();
+    renderPinWidget();
+}
+
+// ...and the way back, for a slip
+async function includeShelfInPins() {
+    const books = visibleBooks().filter(b => b.noPins);
+    if (!books.length) { alert('Every book on your shelf already counts toward pins.'); return; }
+    if (!confirm(`Count all ${books.length} book${books.length === 1 ? '' : 's'} left out of pins again?`)) return;
+    books.forEach(b => { b.noPins = false; });
+    await dbBulkPut(books);
     checkPins();
     renderPinWidget();
 }
