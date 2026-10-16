@@ -2185,6 +2185,14 @@
     border-radius: 999px 0 0 999px;
 }
 
+/* the round corner button (phone): the line curves round its edge */
+:root[data-mode="dark"]:not([data-theme]) .corner-toggle::before {
+    inset: 3px;
+    width: auto;
+    height: auto;
+    border-radius: 50%;
+}
+
 /* the recent colours' hearts: a round gloss on the left lobe instead
    (the heart's clip would leave the line as a square corner) */
 :root[data-mode="dark"]:not([data-theme]) .recent-color-swatch::before {

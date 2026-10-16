@@ -1621,13 +1621,13 @@
     display: flex;
     justify-content: center;
     align-items: baseline;
-    gap: 6px;
+    gap: 3px;
 }
 
 #book-modal .preview-face,
 #book-modal .preview-face:hover,
 #book-modal .preview-face:active {
-    padding: 0 2px;
+    padding: 0 1px;
     border: none;
     border-radius: 0;
     background: none;
@@ -1663,7 +1663,9 @@
 }
 
 .preview-face-dot {
-    opacity: 0.5;
+    opacity: 0.7;
+    font-size: 0.9em;
+    letter-spacing: 0;
 }
 
 /* Opening book for the library card: a copy of the preview book

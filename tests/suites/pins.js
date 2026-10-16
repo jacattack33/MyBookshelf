@@ -146,6 +146,32 @@ ok('fan club leaves out series books', pinStats().authorRun < 5);
 library = library.filter(b => !b.id.startsWith('x'));
 ok('rainbow: greys aren\'t a colour', colourFamily('#808080') === null && colourFamily('#d93030') === 'red' && colourFamily('#e060a0') === 'pink');
 
+// ---- the food pins
+const food = ['sweettooth', 'doublescoop', 'cocoa', 'shortstack', 'toughcookie', 'pie', 'cherry'];
+food.forEach(id => delete pinState.earned[id]); // (some of the books above earned these)
+ok('not yet: the food pins', food.every(id => !pinState.earned[id]));
+const goalWas = appSettings.goal;
+appSettings.goal = 2;
+const thisYear = new Date().getFullYear();
+for (let i = 0; i < 5; i++) extraBook('xm' + i, { finishedDate: `2022-12-0${i + 1}` });
+extraBook('xd1', { finishedDate: '2022-11-20' }); extraBook('xd2', { finishedDate: '2022-11-20' });
+for (let i = 0; i < 3; i++) extraBook('xn' + i, { status: 'Reading' });
+extraBook('xk', { rating: 2 });
+for (let i = 0; i < 3; i++) extraBook('xg' + i, { finishedDate: `${thisYear}-01-0${i + 1}` });
+renderBookshelf();
+food.forEach(id => ok(`earned: ${id}`, !!pinState.earned[id], JSON.stringify(PINS.find(p => p.id === id).progress(pinStats()))));
+library = library.filter(b => !b.id.startsWith('x'));
+appSettings.goal = goalWas;
+renderBookshelf();
+const boughtWas = pinState.counts.bought;
+pinState.counts.bought = 4;
+checkPins();
+ok('not yet: treat yourself (4 bought)', !pinState.earned.treat);
+countForPins('bought');
+ok('earned: treat yourself (5 bought)', !!pinState.earned.treat);
+pinState.counts.bought = boughtWas;
+delete pinState.earned.gotit; delete pinState.earned.treat; // (checked again later)
+
 // streak and night owl, from the pages log
 localStorage.setItem(PAGES_LOG_KEY, JSON.stringify([...Array(7)].map((_, i) => {
     const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i);
@@ -161,6 +187,10 @@ ok('earned: night owl', !!pinState.earned.nightowl);
 const evening = new Date(); evening.setDate(evening.getDate() - 1); evening.setHours(22, 0, 0, 0);
 recordPages(5, evening.getTime());
 ok('2:30am and 10pm the night before are one night', pinStats().nights === 1, pinStats().nights);
+ok('not yet: tea time', !pinState.earned.teatime);
+const tea = new Date(); tea.setHours(15, 30, 0, 0);
+recordPages(5, tea.getTime());
+ok('earned: tea time', !!pinState.earned.teatime);
 localStorage.removeItem(PAGES_LOG_KEY);
 
 // ---- lending: getting it back earns a pin, from the edit window...

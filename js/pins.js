@@ -106,6 +106,21 @@ function pinHeart(cx, cy, r) {
         `C${f(cx + r * 1.05)} ${f(cy - r * 1.05)} ${f(cx + r * 1.35)} ${f(cy + r * 0.05)} ${f(cx)} ${f(cy + r * 0.9)}Z`;
 }
 
+// a lollipop's swirl: a stripe w wide winding out from (cx, cy) to the
+// edge at r, with a gap as wide as itself between the turns
+function pinSpiral(cx, cy, r, w) {
+    const f = n => n.toFixed(2);
+    const pitch = w * 2, end = (r - w) / pitch * Math.PI * 2, steps = 120;
+    const at = (rr, a) => `${f(cx + rr * Math.cos(a))} ${f(cy + rr * Math.sin(a))}`;
+    const out = [], back = [];
+    for (let i = 0; i <= steps; i++) {
+        const a = end * i / steps, rr = pitch * a / (Math.PI * 2);
+        out.push(at(rr + w, a));
+        back.unshift(at(rr, a));
+    }
+    return `M${out.join('L')}L${back.join('L')}Z`;
+}
+
 const PIN_HEART = 'M24 31.5C19 28 16.5 25.5 16.5 22.5C16.5 20 18.3 18.3 20.4 18.3C22 18.3 23.3 19.2 24 20.6C24.7 19.2 26 18.3 27.6 18.3C29.7 18.3 31.5 20 31.5 22.5C31.5 25.5 29 28 24 31.5Z';
 
 // ----- What there is to earn -----
@@ -186,8 +201,11 @@ const PINS = [
         id: 'century', name: 'Century', desc: 'Read 100 books.', metal: 'gold', glint: [16, 25],
         progress: s => [s.readCount, 100],
         art: [
-            ['e', 'M8 31L10 13L17.5 22L24 8L30.5 22L38 13L40 31Z', PIN_E.yellow], ['e', 'M7 31h34v10H7Z', PIN_E.pink],
-            ['e', pinCircle(10, 12.5, 2.6), PIN_E.mint], ['e', pinCircle(24, 7.5, 3), PIN_E.hot], ['e', pinCircle(38, 12.5, 2.6), PIN_E.sky],
+            // a chubby crown with soft dips, pearl tips and a heart gem
+            ['e', 'M8.5 32L7.5 15Q14 23 18 18.5Q21 15 24 10Q27 15 30 18.5Q34 23 40.5 15L39.5 32Z', PIN_E.yellow],
+            ['e', pinCircle(7.5, 13.5, 3), PIN_E.mint], ['e', pinCircle(24, 8.5, 3.4), PIN_E.hot], ['e', pinCircle(40.5, 13.5, 3), PIN_E.sky],
+            ['e', pinHeart(24, 24, 4.6), PIN_E.hot, null, 1.2],
+            ['e', 'M9.5 31H38.5Q41.5 31 41.5 34V38Q41.5 41 38.5 41H9.5Q6.5 41 6.5 38V34Q6.5 31 9.5 31Z', PIN_E.pink],
             ['t', 24, 39.2, 9, '100']
         ]
     },
@@ -595,15 +613,17 @@ const PINS = [
         ]
     },
     {
-        id: 'gotit', name: 'Got It!', desc: 'Buy a book off your To Buy list (tick it in Slips > To Buy, or tick I Own This Book).', metal: 'gold', glint: [13, 23],
+        id: 'gotit', name: 'Got It!', desc: 'Buy a book off your To Buy list (tick it in Slips > To Buy, or tick I Own This Book).', metal: 'gold', glint: [11, 27],
         progress: s => [s.bought ? 1 : 0, 1],
         art: [
-            ['l', 'M12.5 19C12.5 2.5 35.5 2.5 35.5 19'],
-            ['e', 'M16 7h7.5v16H16Z', PIN_E.lav], ['e', 'M25.5 9.8L31.8 8.4L34.6 22H28Z', PIN_E.mint],
-            ['l', 'M16 10.5h7.5'],
-            ['e', 'M9 19H39L36.5 42H11.5Z', PIN_E.pink],
-            ['l', 'M10.5 23.5h27'],
-            ['e', starPath(24, 32, 6.5, 2.9), PIN_E.yellow]
+            // a shopping bag, its side panel showing, a handle front and back
+            ['l', 'M23 15V9A5.5 5.5 0 0 1 34 9V14', 1.4],
+            ['e', 'M32 16L39 13V40L32 43Z', PIN_E.hot],
+            ['e', 'M32 16L39 13V18.5L32 21.5Z', PIN_E.lav],
+            ['e', 'M8 16H32V43H8Z', PIN_E.pink],
+            ['e', 'M8 16H32V21.5H8Z', PIN_E.lav],
+            ['l', 'M14 19V11A6 6 0 0 1 26 11V19', 1.8], ['m', pinCircle(14, 19, 1.4)], ['m', pinCircle(26, 19, 1.4)],
+            ['e', starPath(20, 32, 6.5, 2.9), PIN_E.yellow]
         ]
     },
     {
@@ -658,6 +678,111 @@ const PINS = [
             ...[[15.5, 33], [18.5, 36.5], [29, 31.5], [32.5, 35], [30, 36.5], [21.5, 23], [24.5, 26.5]]
                 .map(([x, y]) => ['d', pinCircle(x, y, 0.9), PIN_E.ink]),
             ['e', 'M10 9.5H38V16H10Z', PIN_E.lav]
+        ]
+    },
+    {
+        id: 'sweettooth', name: 'Sweet Tooth', desc: 'Read 5 books in one month (counts books with a finished date).', metal: 'gold', glint: [16, 11],
+        progress: s => [Math.min(s.monthMost, 5), 5],
+        art: [
+            // a swirl lollipop: a pink stripe winding round a cream one
+            ['m', 'M22.6 28h2.8v16h-2.8Z'],
+            ['e', pinCircle(24, 16, 13), PIN_E.cream],
+            ['d', pinSpiral(24, 16, 13, 2.6), PIN_E.hot],
+            ['l', pinCircle(24, 16, 13), 1.8]
+        ]
+    },
+    {
+        id: 'doublescoop', name: 'Double Scoop', desc: 'Finish two books on the same day (full finished dates).', metal: 'silver', glint: [19, 21],
+        progress: s => [s.sameDay ? 1 : 0, 1],
+        art: [
+            ['e', 'M15 25H33L24 45Z', PIN_E.peach],
+            ['l', 'M21 25L27 38.3', 0.8], ['l', 'M27 25L30 31.7', 0.8], ['l', 'M27 25L21 38.3', 0.8], ['l', 'M21 25L18 31.7', 0.8],
+            ['e', 'M15 26A9 9 0 0 1 33 26Q31 28.5 28.5 27Q26 29.5 24 27.5Q22 29.5 19.5 27Q17 28.5 15 26Z', PIN_E.mint],
+            ['e', 'M16.5 17A7.5 7.5 0 0 1 31.5 17Q30 19.2 28 18Q26 20.2 24 18.6Q22 20.2 20 18Q18 19.2 16.5 17Z', PIN_E.pink],
+            ['l', 'M24 6.5Q24.6 3.5 27.5 2.6'],
+            ['e', pinCircle(24, 8, 2.6), PIN_E.hot], ['d', pinCircle(23.1, 7.1, 0.7), PIN_E.cream]
+        ]
+    },
+    {
+        id: 'cherry', name: 'Cherry on Top', desc: 'Read more books than your yearly goal (set it in Reading Goals).', metal: 'gold', glint: [12, 31],
+        progress: s => s.goal ? [Math.min(s.goalDone, s.goal + 1), s.goal + 1] : [0, 1],
+        art: [
+            // green stems, curving up to meet under the leaf
+            ['e', 'M14.2 27.2Q13 13 26.3 7.6L28 9.2Q15.2 14 17 27.4Z', PIN_E.teal, null, 0.9],
+            ['e', 'M31.6 27.4Q26.5 17.5 26.3 9.2L28.3 8.4Q29 17 34.4 27.2Z', PIN_E.teal, null, 0.9],
+            ['e', 'M27 8.5Q23 2.5 15 4.5Q19 11 27 8.5Z', PIN_E.mint], ['l', 'M25 8Q21 6 17.5 5.2', 0.6],
+            ['e', pinCircle(15, 34, 8.5), PIN_E.hot], ['e', pinCircle(33, 35, 8.5), PIN_E.hot],
+            ['d', pinCircle(11.8, 31, 1.6), PIN_E.cream], ['d', pinCircle(29.8, 32, 1.6), PIN_E.cream]
+        ]
+    },
+    {
+        id: 'cocoa', name: 'Cocoa Season', desc: 'Finish a book in December.', metal: 'silver', glint: [12, 26],
+        progress: s => [s.december ? 1 : 0, 1],
+        art: [
+            ['l', 'M18 9.5Q16 7.5 18 5.5Q20 3.5 18 1.5'], ['l', 'M27 9.5Q25 7.5 27 5.5Q29 3.5 27 1.5'],
+            ['e', pinCircle(36.5, 29.5, 7) + pinCircle(36.5, 29.5, 3.8), PIN_E.lav, 'evenodd'],
+            ['e', 'M7 15H37V38Q37 44 31 44H13Q7 44 7 38Z', PIN_E.lav],
+            ['e', 'M9 15a13 3 0 1 0 26 0a13 3 0 1 0 -26 0Z', PIN_E.peach],
+            ['e', 'M12 11.5h5.5v4.5h-5.5Z', PIN_E.cream, null, 1.2], ['e', 'M19.5 10.5h5.5v4.5h-5.5Z', PIN_E.cream, null, 1.2],
+            ['e', 'M27 12h5v4h-5Z', PIN_E.cream, null, 1.2],
+            ['d', pinHeart(22, 30, 5), PIN_E.pink]
+        ]
+    },
+    {
+        id: 'shortstack', name: 'Short Stack', desc: 'Be reading 3 books at once.', metal: 'gold', glint: [12, 30],
+        progress: s => [Math.min(s.readingNow, 3), 3],
+        art: [
+            // pancakes on a plate, honey dripping down, a pat of butter
+            ['e', 'M4 38a20 3.5 0 1 0 40 0a20 3.5 0 1 0 -40 0Z', PIN_E.sky],
+            ['e', 'M9.25 32.5H38.75A2.25 2.25 0 0 1 38.75 37H9.25A2.25 2.25 0 0 1 9.25 32.5Z', PIN_E.peach, null, 1.2],
+            ['e', 'M10.25 28H37.75A2.25 2.25 0 0 1 37.75 32.5H10.25A2.25 2.25 0 0 1 10.25 28Z', PIN_E.peach, null, 1.2],
+            ['e', 'M11.25 23.5H36.75A2.25 2.25 0 0 1 36.75 28H11.25A2.25 2.25 0 0 1 11.25 23.5Z', PIN_E.peach, null, 1.2],
+            // maple syrup (the same brown in every theme)
+            ['e', 'M10 25.5Q10 22.5 14 22.5H34Q38 22.5 38 25.5V26.5H35V31A1.5 1.5 0 0 1 32 31V26.5H24.5V34A1.5 1.5 0 0 1 21.5 34V26.5H15.5V29.5A1.5 1.5 0 0 1 12.5 29.5V26.5H10Z', '#b86a1c', null, 1.2],
+            ['e', 'M19 20H29L29.6 22.5H18.4Z', PIN_E.yellow, null, 1]
+        ]
+    },
+    {
+        id: 'toughcookie', name: 'Tough Cookie', desc: 'Finish a book you rated 2 stars or less.', metal: 'silver', glint: [12, 15],
+        progress: s => [s.toughCookie ? 1 : 0, 1],
+        art: [
+            // a chocolate chip cookie with a bite out of it
+            ['e', 'M29.01 40.25A17 17 0 1 1 40.88 26.01A6 6 0 0 0 34.84 34A6 6 0 0 0 29.01 40.25Z', PIN_E.peach],
+            ...[[15, 14], [24.5, 11], [33, 15], [19, 22], [29, 22.5], [11.5, 27], [22, 31], [16, 36.5], [36.5, 21.5], [26.5, 38]]
+                .map(([x, y]) => ['d', pinCircle(x, y, 1.7), PIN_E.ink]),
+            ['e', pinCircle(42.5, 38, 1.3), PIN_E.peach, null, 0.8], ['e', pinCircle(39.5, 43, 1), PIN_E.peach, null, 0.8]
+        ]
+    },
+    {
+        id: 'teatime', name: 'Tea Time', desc: 'Log pages in the afternoon, between 3pm and 5pm.', metal: 'gold', glint: [13, 24],
+        progress: s => [s.teaTime ? 1 : 0, 1],
+        art: [
+            ['l', 'M18.5 12Q16 9.5 18.5 7Q21 4.5 18.5 2.5'], ['l', 'M26.5 12Q24 9.5 26.5 7Q29 4.5 26.5 2.5'],
+            ['e', 'M3 38a21 4 0 1 0 42 0a21 4 0 1 0 -42 0Z', PIN_E.lav],
+            ['e', pinCircle(36, 23.5, 5.5) + pinCircle(36, 23.5, 2.8), PIN_E.pink, 'evenodd'],
+            ['e', 'M8 17H37Q37 37 22.5 37Q8 37 8 17Z', PIN_E.pink],
+            ['e', 'M9.5 17a13 2.6 0 1 0 26 0a13 2.6 0 1 0 -26 0Z', PIN_E.peach]
+        ]
+    },
+    {
+        id: 'pie', name: 'Easy as Pie', desc: 'Read 10 books in one genre.', metal: 'gold', glint: [13, 14],
+        progress: s => [Math.min(s.genreMost, 10), 10],
+        art: [
+            // a cherry pie with a lattice top and a crimped crust
+            ['e', pinCircle(24, 24, 14), PIN_E.hot],
+            ...[19, 29].map(x => ['e', `M${x - 2.3} 9H${x + 2.3}V39H${x - 2.3}Z`, PIN_E.peach, null, 0.9]),
+            ...[19, 29].map(y => ['e', `M9 ${y - 2.3}H39V${y + 2.3}H9Z`, PIN_E.peach, null, 0.9]),
+            ['e', pinWavy(24, 24, 18.5, 1.1, 16) + pinCircle(24, 24, 13.5), PIN_E.peach, 'evenodd']
+        ]
+    },
+    {
+        id: 'treat', name: 'Treat Yourself', desc: 'Buy 5 books off your To Buy list (tick them in Slips > To Buy, or tick I Own This Book).', metal: 'gold', glint: [18, 21], rotate: -20,
+        progress: s => [Math.min(s.boughtCount, 5), 5],
+        art: [
+            // a sweet in a wrapper twisted at both ends
+            ['e', 'M15 24L3.5 13Q6.5 18.5 3 24Q6.5 29.5 3.5 35Z', PIN_E.lav],
+            ['e', 'M33 24L44.5 13Q41.5 18.5 45 24Q41.5 29.5 44.5 35Z', PIN_E.lav],
+            ['e', 'M13 24a11 8.5 0 1 0 22 0a11 8.5 0 1 0 -22 0Z', PIN_E.lav],
         ]
     }
 ];
@@ -725,8 +850,13 @@ function pinStats() {
         (b.extraReads || []).forEach(r => finishes.push(r.finished));
     });
     const finished = finishes.filter(d => /^\d{4}-\d{2}/.test(d || '')).map(d => [+d.slice(0, 4), +d.slice(5, 7)]);
-    const perYear = {};
-    finished.forEach(([y]) => { perYear[y] = (perYear[y] || 0) + 1; });
+    const perYear = {}, perMonth = {}, perDay = {}, perGenre = {};
+    finished.forEach(([y, m]) => {
+        perYear[y] = (perYear[y] || 0) + 1;
+        perMonth[`${y}-${m}`] = (perMonth[`${y}-${m}`] || 0) + 1;
+    });
+    finishes.filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d || '')).forEach(d => { perDay[d] = (perDay[d] || 0) + 1; });
+    read.filter(b => b.genre).forEach(b => { perGenre[b.genre] = (perGenre[b.genre] || 0) + 1; });
     // read books by each author, leaving out series books
     const byAuthor = {};
     read.filter(b => !(b.series || '').trim()).forEach(b => {
@@ -786,7 +916,15 @@ function pinStats() {
         lentBooks: new Set([...pinState.lentIds, ...books.filter(isLentOut).map(b => b.id)]).size,
         bought: (pinState.counts.bought || 0) > 0 || books.some(b => b.stickyNote && b.owned),
         lentPeople: new Set([...pinState.lentTo, ...books.filter(isLentOut).map(b => b.lentTo.trim().toLowerCase())]).size,
-        returns: pinState.counts.returns || 0
+        returns: pinState.counts.returns || 0,
+        boughtCount: pinState.counts.bought || 0,
+        monthMost: Math.max(0, ...Object.values(perMonth)),
+        sameDay: Object.values(perDay).some(n => n >= 2),
+        december: finished.some(([, m]) => m === 12),
+        readingNow: books.filter(b => b.status === 'Reading').length,
+        toughCookie: read.some(b => normalizeRating(b.rating) >= 1 && normalizeRating(b.rating) <= 2),
+        teaTime: log.some(e => e.pages > 0 && [15, 16].includes(new Date(e.at).getHours())),
+        genreMost: Math.max(0, ...Object.values(perGenre))
     };
 }
 
