@@ -10,7 +10,8 @@ page after it loads, using these helpers:
     q(selector)                   document.querySelector
 
 A suite's first line can set the screen size, e.g.  // @size 390x844
-(phone suites are emulated at that size).
+(phone suites are emulated at that size), and/or  @dvds  to open the page
+as the DVD shelf (Settings > Shelf of > DVDs).
 
 Pages are served from a little local web server rather than opened as
 files: Chrome treats every file as its own origin, and hides script errors
@@ -43,6 +44,9 @@ window.__pageErrors = [];
 addEventListener('error', e => __pageErrors.push(e.message + (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno : '')));
 addEventListener('unhandledrejection', e => __pageErrors.push('unhandled: ' + (e.reason && e.reason.stack || e.reason)));
 </script>"""
+# (@dvds) before the page's own scripts, so it opens as the DVD shelf
+DVDS_HEAD = r"""
+<script>localStorage.setItem('bookShelfCollection', 'dvds');</script>"""
 HARNESS_START = r"""
 <style>.shelf-cat svg, .cat-z, h1 { animation: none !important; }</style>
 <script>
@@ -80,20 +84,22 @@ def start_server():
     return f'http://127.0.0.1:{server.server_port}'
 
 
-def build_page(suite_js, base):
+def build_page(suite_js, base, dvds=False):
     page = (ROOT / 'index.html').read_text(encoding='utf-8')
     # the test page lives in tests/.out, so resolve css/, js/ and assets/ from the app folder
-    page = page.replace('<head>', f'<head>\n<base href="{base}/">' + HARNESS_HEAD, 1)
+    head = HARNESS_HEAD + (DVDS_HEAD if dvds else '')
+    page = page.replace('<head>', f'<head>\n<base href="{base}/">' + head, 1)
     return page.replace('</body>', HARNESS_START + suite_js + HARNESS_END, 1)
 
 
 def run_suite(path, base):
     js = path.read_text(encoding='utf-8')
-    m = re.search(r'@size\s+(\d+)x(\d+)', js.splitlines()[0] if js else '')
+    first = js.splitlines()[0] if js else ''
+    m = re.search(r'@size\s+(\d+)x(\d+)', first)
     w, h = (m.group(1), m.group(2)) if m else ('1100', '850')
     OUT.mkdir(exist_ok=True)
     page = OUT / f'{path.stem}.html'
-    page.write_text(build_page(js, base), encoding='utf-8')
+    page.write_text(build_page(js, base, '@dvds' in first), encoding='utf-8')
     profile = tempfile.mkdtemp(prefix='bookshelf-test-')
     try:
         res = subprocess.run(

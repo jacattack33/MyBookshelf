@@ -116,12 +116,16 @@ const SETTINGS_BACKUP_KEYS = [
     // still works after the backup's brought back
     'bookShelfStarterIds'
 ];
+// ...of which these are shared by the book and DVD shelves; the rest are
+// the shelf's own (see collKey), saved in the backup under the plain name
+const SHARED_BACKUP_KEYS = ['bookShelfTheme', 'bookShelfTint', 'bookShelfMode', 'bookShelfLastNoteFont', 'bookShelfRecentColors'];
+const backupKeyHere = k => SHARED_BACKUP_KEYS.includes(k) ? k : collKey(k);
 
 function collectSettingsForBackup() {
     const out = {};
     try {
         SETTINGS_BACKUP_KEYS.forEach(k => {
-            const v = localStorage.getItem(k);
+            const v = localStorage.getItem(backupKeyHere(k));
             if (v !== null) out[k] = v;
         });
     } catch (e) {}
@@ -131,6 +135,7 @@ function collectSettingsForBackup() {
 // True when the shelf is nothing but the 3 built-in placeholder books -
 // what a browser with no saved shelf starts with when opened from a file.
 function onlyPlaceholderBooks() {
+    if (isDvds()) return false; // (the DVD shelf starts empty)
     const seedIds = SEED_LIBRARY.map(b => b.id);
     return library.length > 0 && library.every(b => seedIds.includes(b.id));
 }
@@ -152,7 +157,7 @@ function exportLibrary() {
         'Export these 3 anyway?')) {
         return;
     }
-    const payload = { books: library, customGenres: customGenres, settings: collectSettingsForBackup() };
+    const payload = { collection: COLLECTION, books: library, customGenres: customGenres, settings: collectSettingsForBackup() };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -162,7 +167,7 @@ function exportLibrary() {
     const now = new Date();
     const stamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     a.href = url;
-    a.download = `bookshelf-backup-${stamp}.json`;
+    a.download = `${isDvds() ? 'dvdshelf' : 'bookshelf'}-backup-${stamp}.json`;
     a.click();
     URL.revokeObjectURL(url);
     try { localStorage.setItem(LAST_BACKUP_KEY, String(Date.now())); } catch (e) {}
@@ -175,9 +180,9 @@ function exportLibrary() {
 // ---------- Backup reminder ----------
 // Kept per device (not in backups): when you last exported here, and when
 // this copy of the app was first opened (the clock for "never backed up").
-const LAST_BACKUP_KEY = 'bookShelfLastBackup';
-const FIRST_SEEN_KEY = 'bookShelfFirstSeen';
-const BACKUP_SNOOZE_KEY = 'bookShelfBackupSnooze';
+const LAST_BACKUP_KEY = collKey('bookShelfLastBackup');
+const FIRST_SEEN_KEY = collKey('bookShelfFirstSeen');
+const BACKUP_SNOOZE_KEY = collKey('bookShelfBackupSnooze');
 const BACKUP_REMIND_DAYS = 30;       // since the last backup...
 const BACKUP_FIRST_REMIND_DAYS = 7;  // ...or since first opened, if you never have
 const BACKUP_SNOOZE_DAYS = 7;        // "Remind me later"
@@ -215,9 +220,10 @@ function backupReminderDue() {
 function showBackupReminder() {
     const { days, ever } = backupAge();
     const count = library.length;
+    const word = isDvds() ? 'DVD' : 'book';
     document.getElementById('backup-reminder-text').textContent = ever
-        ? `It's been ${days} day${days === 1 ? '' : 's'} since your last backup. Your ${count} book${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`
-        : `You haven't backed up your shelf yet. Your ${count} book${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`;
+        ? `It's been ${days} day${days === 1 ? '' : 's'} since your last backup. Your ${count} ${word}${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`
+        : `You haven't backed up your shelf yet. Your ${count} ${word}${count === 1 ? '' : 's'} only live in this browser, so it's worth saving a copy.`;
     const box = document.getElementById('backup-reminder');
     box.classList.add('visible');
     if (!prefersReducedMotion()) {
@@ -297,9 +303,18 @@ function importLibrary(event) {
             alert('That file is not valid library JSON.');
             return;
         }
+        // the book and DVD shelves keep their backups apart (older
+        // backups, from before the DVD shelf, are all books)
+        const fileCollection = !Array.isArray(parsed) && parsed.collection === 'dvds' ? 'dvds' : 'books';
+        if (fileCollection !== COLLECTION) {
+            alert(fileCollection === 'dvds'
+                ? 'This is a backup of a DVD shelf. To bring it back, switch to DVDs first (Settings > Shelf of), then import it there.'
+                : 'This is a backup of a bookshelf. To bring it back, switch to Books first (Settings > Shelf of), then import it there.');
+            return;
+        }
         const alsoSettings = importedSettings && Object.keys(importedSettings).length
             ? ' and your settings (theme, mode, name, reading goal, fonts...)' : '';
-        if (!confirm(`Replace your current library with the ${importedBooks.length} book(s) in this file${alsoSettings}? This cannot be undone.`)) {
+        if (!confirm(`Replace your current library with the ${importedBooks.length} ${isDvds() ? 'DVD' : 'book'}(s) in this file${alsoSettings}? This cannot be undone.`)) {
             return;
         }
         await dbClear();
@@ -315,7 +330,7 @@ function importLibrary(event) {
             // restore the preferences, then reload so every one applies
             try {
                 Object.entries(importedSettings).forEach(([k, v]) => {
-                    if (SETTINGS_BACKUP_KEYS.includes(k) && typeof v === 'string') localStorage.setItem(k, v);
+                    if (SETTINGS_BACKUP_KEYS.includes(k) && typeof v === 'string') localStorage.setItem(backupKeyHere(k), v);
                 });
             } catch (e) {}
             location.reload();

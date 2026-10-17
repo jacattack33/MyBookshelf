@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=Share+Tech+Mono&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Special+Elite&family=Fredoka:wght@500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
     <script>
         try {
+            // Settings > Shelf of: the DVD shelf (see js/collection.js)
+            if (localStorage.getItem('bookShelfCollection') === 'dvds') document.documentElement.dataset.collection = 'dvds';
             const theme = localStorage.getItem('bookShelfTheme');
             if (['seaglass', 'holo', 'library', 'deco', 'loft', 'blueprint', 'terminal', 'typewriter', 'sunset', 'plain', 'plainbold'].includes(theme)) {
                 document.documentElement.dataset.theme = theme;
@@ -40,6 +42,7 @@
     <link rel="stylesheet" href="css/slips.css">
     <link rel="stylesheet" href="css/shelfphoto.css">
     <link rel="stylesheet" href="css/cat.css">
+    <link rel="stylesheet" href="css/dvds.css">
     <link rel="stylesheet" href="css/phone.css">
 </head>
 <body>
@@ -52,14 +55,14 @@
             <div class="control-group search-row">
                 <label for="search-input">Search: </label>
                 <div class="search-wrap">
-                    <input type="text" id="search-input" placeholder="Title or author..." oninput="handleSearchInput()" autocomplete="off">
+                    <input type="text" id="search-input" placeholder="Title or author..." data-dvd-placeholder="Title or director..." oninput="handleSearchInput()" autocomplete="off">
                     <button type="button" class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Clear search" title="Clear search"><span class="x-face">&times;</span></button>
                 </div>
             </div>
 
             <div class="mobile-controls-bar mobile-only">
                 <button type="button" class="filters-toggle" id="filters-toggle" onclick="toggleFiltersPanel()" aria-expanded="false" aria-controls="filters-panel">&#9776; Filters &amp; sorting <span class="filters-count" id="filters-count"></span> <span class="filters-arrow">&#9662;</span></button>
-                <button type="button" onclick="openModal()" class="add-book-btn">+ Add Book</button>
+                <button type="button" onclick="openModal()" class="add-book-btn" data-dvd-text="+ Add DVD">+ Add Book</button>
             </div>
 
             <!-- on desktop this wrapper is display: contents (no effect); on
@@ -70,16 +73,16 @@
                     <label>Organize by: </label>
                     <div class="toggle-group">
                         <button type="button" class="toggle-btn active" data-organize="genre" onclick="selectOrganizeBy('genre')">Genre</button>
-                        <button type="button" class="toggle-btn" data-organize="status" onclick="selectOrganizeBy('status')">Reading Status</button>
-                        <button type="button" class="toggle-btn" data-organize="author" onclick="selectOrganizeBy('author')">Author</button>
+                        <button type="button" class="toggle-btn" data-organize="status" onclick="selectOrganizeBy('status')" data-dvd-text="Watch Status">Reading Status</button>
+                        <button type="button" class="toggle-btn" data-organize="author" onclick="selectOrganizeBy('author')" data-dvd-text="Director">Author</button>
                         <button type="button" class="toggle-btn" data-organize="series" onclick="selectOrganizeBy('series')">Series</button>
                         <button type="button" class="toggle-btn" data-organize="tag" onclick="selectOrganizeBy('tag')">Tag</button>
                         <button type="button" class="toggle-btn" data-organize="rating" onclick="selectOrganizeBy('rating')">Rating</button>
                     </div>
                     <select id="organize-by" style="display:none;">
                         <option value="genre">Genre</option>
-                        <option value="status">Reading Status</option>
-                        <option value="author">Author</option>
+                        <option value="status" data-dvd-text="Watch Status">Reading Status</option>
+                        <option value="author" data-dvd-text="Director">Author</option>
                         <option value="series">Series</option>
                         <option value="tag">Tag</option>
                         <option value="rating">Rating</option>
@@ -151,7 +154,7 @@
                     <label for="sort-mode">Sort: </label>
                     <select id="sort-mode" onchange="renderBookshelf()">
                         <option value="custom">Custom (Drag & Drop)</option>
-                        <option value="author">Author Last Name (A-Z)</option>
+                        <option value="author" data-dvd-text="Director Last Name (A-Z)">Author Last Name (A-Z)</option>
                         <option value="rating">Rating (High to Low)</option>
                     </select>
                 </div>
@@ -160,7 +163,7 @@
                 <div class="control-group spine-photo-filter">
                     <label for="filter-spine-photo">Spine Photo: </label>
                     <select id="filter-spine-photo" onchange="renderBookshelf()" title="Only books with a photo of their spine, or the ones still waiting for one">
-                        <option value="All">All Books</option>
+                        <option value="All" data-dvd-text="All DVDs">All Books</option>
                         <option value="Has">Has a Photo</option>
                         <option value="None">No Photo Yet</option>
                     </select>
@@ -196,7 +199,7 @@
                     </select>
                 </div>
 
-                <button onclick="openModal()" class="add-book-btn">+ Add New Book</button>
+                <button onclick="openModal()" class="add-book-btn" data-dvd-text="+ Add New DVD">+ Add New Book</button>
             </div>
             </div>
             <!-- Typewriter (Settings > Typewriter machine): the panel comes out of the machine -->
@@ -238,7 +241,7 @@
 
     <div class="secret-heart" id="secret-heart" onclick="handleSecretHeartClick()" aria-hidden="true"></div>
 
-    <button type="button" class="stats-ledger" id="stats-ledger" onclick="openStats()" title="Reading stats" aria-label="Reading stats">
+    <button type="button" class="stats-ledger" id="stats-ledger" onclick="openStats()" title="Reading stats" aria-label="Reading stats" data-dvd-title="Shelf stats" data-dvd-label="Shelf stats">
         <span class="stats-ledger-label"></span>
     </button>
 
@@ -263,14 +266,14 @@
     </div>
 
     <div class="sticky-pile" id="sticky-pile">
-        <div class="sticky-stack" onclick="openStickyNote()" title="Quick-add a book to Want to Read">
+        <div class="sticky-stack" onclick="openStickyNote()" title="Quick-add a book to Want to Read" data-dvd-title="Quick-add a film to Want to Watch">
             <div class="sticky-sheet s3"></div>
             <div class="sticky-sheet s2"></div>
             <div class="sticky-sheet s1"></div>
         </div>
         <form class="sticky-note" id="sticky-note" onsubmit="event.preventDefault(); submitStickyNote();" onkeydown="if (event.key === 'Escape') closeStickyNote();">
             <button type="button" class="sticky-close" onclick="closeStickyNote()" aria-label="Discard note">&times;</button>
-            <div class="sticky-heading">want to read&hellip;</div>
+            <div class="sticky-heading" data-dvd-text="want to watch&hellip;">want to read&hellip;</div>
             <input type="text" id="sticky-title" placeholder="title" autocomplete="off" aria-label="Title">
             <input type="text" id="sticky-author" placeholder="by" autocomplete="off" aria-label="Author">
             <select id="sticky-genre" aria-label="Genre"></select>
@@ -308,7 +311,7 @@
                             <div class="book preview-only" id="preview-book" style="width:120px;" onclick="openLibraryCard()" title="Open the library card">
                                 <div class="spine-top"></div>
                                 <div id="preview-book-title"></div>
-                                <span class="preview-sticker" id="preview-sticker">reading</span>
+                                <span class="preview-sticker" id="preview-sticker" data-dvd-text="watching">reading</span>
                             </div>
                             <!-- the book as it stands on the shelf in Spines view -->
                             <div class="book preview-only spine-mode" id="preview-spine" onclick="setPreviewFace('cover')" title="Show the cover"></div>
@@ -321,7 +324,7 @@
                     </div>
                     <div class="preview-actions">
                         <button type="button" id="modal-notes-btn" class="secondary" onclick="openNotepad(this)">&#9998; Add Notes</button>
-                        <button type="button" id="modal-delete-btn" class="danger" onclick="deleteCurrentBook()" style="display:none;">Delete Book</button>
+                        <button type="button" id="modal-delete-btn" class="danger" onclick="deleteCurrentBook()" style="display:none;" data-dvd-text="Delete DVD">Delete Book</button>
                     </div>
                     <textarea id="book-notes" hidden></textarea>
                     <input type="hidden" id="book-notes-font">
@@ -335,15 +338,15 @@
                         <label class="field-label">Title
                             <input type="text" id="book-title" placeholder="Book Title" required oninput="updatePreview()">
                         </label>
-                        <label class="field-label">Author(s)
-                            <input type="text" id="book-author" placeholder="e.g. Carl Sagan, Ann Druyan" list="author-options" required oninput="if (previewFace === 'spine') renderPreviewSpine()">
+                        <label class="field-label"><span data-dvd-text="Director(s)">Author(s)</span>
+                            <input type="text" id="book-author" placeholder="e.g. Carl Sagan, Ann Druyan" data-dvd-placeholder="e.g. Greta Gerwig" list="author-options" required oninput="if (previewFace === 'spine') renderPreviewSpine()">
                         </label>
                         <datalist id="author-options"></datalist>
                         <div class="field-row">
                             <label class="field-label" style="flex:2;">Series
-                                <input type="text" id="book-series" placeholder="e.g. The Dark Tower" list="series-options">
+                                <input type="text" id="book-series" placeholder="e.g. The Dark Tower" data-dvd-placeholder="e.g. Toy Story, or a TV show" list="series-options">
                             </label>
-                            <label class="field-label" style="flex:1;"># in series
+                            <label class="field-label" style="flex:1;"><span data-dvd-text="# / season"># in series</span>
                                 <input type="number" id="book-series-number" placeholder="#" min="0" step="1">
                             </label>
                             <label class="field-label" style="flex:1;">
@@ -352,8 +355,22 @@
                             </label>
                         </div>
                         <datalist id="series-options"></datalist>
-                        <label class="field-label">Pages
-                            <input type="number" id="book-pages" placeholder="e.g. 320" min="1" max="99999" step="1" inputmode="numeric" oninput="refreshSpineWidthField(); if (previewFace === 'spine') renderPreviewSpine()">
+                        <!-- (DVDs only) -->
+                        <div class="field-row dvd-only">
+                            <label class="field-label" style="flex:1.4;">Format
+                                <select id="book-format" onchange="refreshSpineWidthField(); if (previewFace === 'spine') renderPreviewSpine()">
+                                    <option value="">Choose&hellip;</option>
+                                    <option value="dvd">DVD</option>
+                                    <option value="bluray">Blu-ray</option>
+                                    <option value="uhd">4K UHD</option>
+                                </select>
+                            </label>
+                            <label class="field-label" style="flex:1;">Year
+                                <input type="text" id="book-year" placeholder="e.g. 1999" inputmode="numeric" maxlength="4" autocomplete="off" oninput="this.value = this.value.replace(/\D/g, '')">
+                            </label>
+                        </div>
+                        <label class="field-label"><span data-dvd-text="Runtime (minutes)">Pages</span>
+                            <input type="number" id="book-pages" placeholder="e.g. 320" data-dvd-placeholder="e.g. 110" min="1" max="99999" step="1" inputmode="numeric" oninput="refreshSpineWidthField(); if (previewFace === 'spine') renderPreviewSpine()">
                         </label>
                         <label class="field-label">Recommended by
                             <input type="text" id="book-rec-by" placeholder="A friend's name" maxlength="40" list="friend-options" autocomplete="off">
@@ -367,7 +384,7 @@
                                     <option value="library">Library</option>
                                     <option value="borrowed">Borrowed</option>
                                     <option value="gift">Gift</option>
-                                    <option value="free">Free / book swap</option>
+                                    <option value="free" data-dvd-text="Free / swap">Free / book swap</option>
                                 </select>
                             </label>
                             <label class="field-label" style="flex:1.3;" id="book-got-from-label"><span id="book-got-from-title">Where</span>
@@ -445,7 +462,7 @@
                         <input type="hidden" id="book-rating" value="0">
 
                         <div style="display:flex; justify-content:center;">
-                            <button type="button" class="toggle-btn" id="owned-toggle-btn" onclick="toggleOwned()">I Own This Book</button>
+                            <button type="button" class="toggle-btn" id="owned-toggle-btn" onclick="toggleOwned()" data-dvd-text="I Own This DVD">I Own This Book</button>
                         </div>
                         <input type="checkbox" id="book-owned" style="display:none;">
 
@@ -552,7 +569,7 @@
                                 <button type="button" id="book-spine-width-auto" class="secondary spine-width-auto" onclick="setSpineWidthAuto(true)" title="Based on the total page count">Auto</button>
                             </div>
                             <span id="book-spine-width-hint" class="field-hint"></span>
-                            <div class="field-hint">No photo? It gets a gilt leather spine in the cover's colour.</div>
+                            <div class="field-hint" data-dvd-text="No photo? It gets a plain case spine in the cover's colour.">No photo? It gets a gilt leather spine in the cover's colour.</div>
                         </div>
                     </div>
                 </div>
@@ -579,13 +596,13 @@
     <div class="modal" id="stats-modal" onclick="if (event.target === this) closeStats()">
         <div class="modal-content stats-content">
             <div class="modal-header">
-                <h3>&#9670; Reading Stats</h3>
+                <h3>&#9670; <span data-dvd-text="Shelf Stats">Reading Stats</span></h3>
                 <button type="button" class="modal-close-x" onclick="closeStats()" aria-label="Close"><span class="x-face">&times;</span></button>
             </div>
             <div class="stats-body">
                 <div class="stats-hero">
                     <div class="stats-hero-value" id="stats-total">0</div>
-                    <div class="stats-hero-label">books on your shelf</div>
+                    <div class="stats-hero-label" data-dvd-text="DVDs on your shelf">books on your shelf</div>
                 </div>
                 <div class="reading-goal" id="reading-goal"></div>
                 <div class="stats-tiles" id="stats-tiles"></div>
@@ -593,7 +610,7 @@
                 <div class="field-section stats-chart-card">
                     <div class="stats-chart-head">
                         <div>
-                            <div class="stats-chart-title">Books finished by month</div>
+                            <div class="stats-chart-title" data-dvd-text="Films watched by month">Books finished by month</div>
                             <div class="stats-chart-sub" id="stats-chart-sub"></div>
                         </div>
                         <select id="stats-year" onchange="renderStatsChart()" aria-label="Year"></select>
@@ -617,7 +634,7 @@
                         <div class="stats-rank" id="stats-top-genres"></div>
                     </div>
                     <div class="field-section stats-card">
-                        <div class="stats-chart-title">Top authors</div>
+                        <div class="stats-chart-title" data-dvd-text="Top directors">Top authors</div>
                         <div class="stats-chart-sub">by books on your shelf</div>
                         <div class="stats-rank" id="stats-top-authors"></div>
                     </div>
@@ -868,10 +885,16 @@
 
                 <div class="field-section">
                     <div class="field-section-title">Your shelf</div>
-                    <label class="field-label">Bookshelf name
-                        <input type="text" id="setting-name" maxlength="40" placeholder="My Bookshelf" oninput="setSetting('name', this.value)">
+                    <span class="field-label">Shelf of</span>
+                    <div class="field-hint">Books and DVDs are two separate shelves, each with its own backups. Switching doesn't change or delete anything: the other shelf waits for you.</div>
+                    <div class="toggle-group settings-choices" role="group" aria-label="Shelf of">
+                        <button type="button" class="toggle-btn" data-collection-choice="books" onclick="setCollection('books')">&#128218; Books</button>
+                        <button type="button" class="toggle-btn" data-collection-choice="dvds" onclick="setCollection('dvds')">&#128192; DVDs</button>
+                    </div>
+                    <label class="field-label"><span data-dvd-text="Shelf name">Bookshelf name</span>
+                        <input type="text" id="setting-name" maxlength="40" placeholder="My Bookshelf" data-dvd-placeholder="My DVD Shelf" oninput="setSetting('name', this.value)">
                     </label>
-                    <label class="library-card-check">
+                    <label class="library-card-check books-only">
                         <input type="checkbox" id="setting-library-card" onchange="setSetting('libraryCard', this.checked)">
                         <span class="lcc-card">
                             <span class="lcc-band" aria-hidden="true"><span class="lcc-logo"></span>PUBLIC LIBRARY<small>MEMBER</small></span>
@@ -909,7 +932,7 @@
                             <span class="lcc-stamp" aria-hidden="true">MEMBER</span>
                         </span>
                     </label>
-                    <span class="field-label">Start new books as</span>
+                    <span class="field-label" data-dvd-text="Start new DVDs as">Start new books as</span>
                     <div class="toggle-group settings-choices" role="group" aria-label="Default status">
                         <button type="button" class="toggle-btn" data-default-status="Want to Read" onclick="setSetting('defaultStatus', 'Want to Read')">Want to Read</button>
                         <button type="button" class="toggle-btn" data-default-status="Reading" onclick="setSetting('defaultStatus', 'Reading')">Reading</button>
@@ -923,7 +946,7 @@
                     <div class="genre-move" id="genre-move"></div>
                 </div>
 
-                <div class="field-section pins-setting">
+                <div class="field-section pins-setting books-only">
                     <div class="field-section-title">Pins</div>
                     <div class="toggle-group settings-choices">
                         <button type="button" class="toggle-btn" data-setting-switch="pins" onclick="toggleSetting('pins')">Pin board</button>
@@ -962,7 +985,7 @@
                         <button type="button" class="danger" onclick="removeStarterShelf()">Remove example shelf</button>
                     </div>
                     <div class="field-hint">Every book in one list, to tick and delete just the ones you want gone.</div>
-                    <button type="button" class="secondary" onclick="openAllBooks()">All books&hellip;</button>
+                    <button type="button" class="secondary" onclick="openAllBooks()" data-dvd-text="All DVDs&hellip;">All books&hellip;</button>
                     <div class="field-hint">Delete everything: every book, cover, note and custom genre. This can't be undone, so save a backup first with Export Library at the top of the page.</div>
                     <div class="danger-buttons">
                         <button type="button" class="danger" onclick="showDeleteLibraryConfirm()">Delete Library&hellip;</button>
@@ -1036,10 +1059,10 @@
                     <div class="field-section-title">On the shelf</div>
                     <div class="toggle-group settings-choices">
                         <button type="button" class="toggle-btn" data-setting-switch="cat" onclick="toggleSetting('cat')">Shelf cat</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
+                        <button type="button" class="toggle-btn books-only" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
                         <button type="button" class="toggle-btn" data-setting-switch="dust" onclick="toggleSetting('dust')">Dust on old books</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="shelfCounts" onclick="toggleSetting('shelfCounts')">Book counts</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')" data-dvd-text="Leaning cases">Leaning books</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="shelfCounts" onclick="toggleSetting('shelfCounts')" data-dvd-text="DVD counts">Book counts</button>
                     </div>
                 </div>
                 <div class="field-section">
@@ -1059,8 +1082,8 @@
                     </div>
                 </div>
                 <div class="field-section">
-                    <div class="field-section-title">Fade unread</div>
-                    <div class="field-hint">Dims books you haven't marked Read.</div>
+                    <div class="field-section-title" data-dvd-text="Fade unwatched">Fade unread</div>
+                    <div class="field-hint" data-dvd-text="Dims DVDs you haven't marked Watched.">Dims books you haven't marked Read.</div>
                     <div class="toggle-group settings-choices" role="group" aria-label="Fade unread books">
                         <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="off" onclick="setSetting('unreadFade', 'off')">Off</button>
                         <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="series" onclick="setSetting('unreadFade', 'series')">Series shelf</button>
@@ -1275,6 +1298,7 @@
             </div>
         </div>
     </div>
+<script src="js/collection.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/db.js"></script>
 <script src="js/migrations.js"></script>

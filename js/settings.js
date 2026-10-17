@@ -1,8 +1,8 @@
-const DB_NAME = 'BookShelfDB';
+const DB_NAME = isDvds() ? 'DvdShelfDB' : 'BookShelfDB';
 const STORE_NAME = 'books';
-const CUSTOM_GENRES_KEY = 'bookShelfCustomGenres';
+const CUSTOM_GENRES_KEY = collKey('bookShelfCustomGenres');
 const RECENT_COLORS_KEY = 'bookShelfRecentColors';
-const EXPANDED_SHELVES_KEY = 'bookShelfExpandedShelves';
+const EXPANDED_SHELVES_KEY = collKey('bookShelfExpandedShelves');
 let expandedShelves = new Set();
 let recentColors = [];
 const SPINE_GAMMA_FIX_KEY = 'bookShelfSpineGammaFixApplied';
@@ -11,14 +11,14 @@ const ADD_GENRE_VALUE = '__add_new_genre__';
 // Young Adult) and format (graphic novels, short stories, poetry) are
 // separate things libraries label on top of genre, so here they're
 // suggested tags instead - see SUGGESTED_TAGS.
-const FICTION_GENRES = [
+const BOOK_FICTION_GENRES = [
     "Action", "Adventure", "Classic Literature", "Contemporary Fiction", "Crime",
     "Dystopian", "Fairy Tales & Retellings", "Fantasy", "Gothic",
     "Historical Fiction", "Horror", "Humor", "Literary Fiction", "Magical Realism", "Mystery",
     "Mythology & Folklore", "Paranormal", "Romance", "Satire", "Sci-Fi",
     "Speculative Fiction", "Thriller", "War Fiction", "Western", "Women's Fiction"
 ];
-const NONFICTION_GENRES = [
+const BOOK_NONFICTION_GENRES = [
     "Art", "Biography", "Business", "Cooking", "Crafts & Hobbies",
     "Economics", "Education", "Fashion & Beauty", "Film & TV", "Health & Wellness",
     "History", "Home & Garden", "Humor (Non-Fiction)", "Journalism & Current Affairs",
@@ -28,8 +28,21 @@ const NONFICTION_GENRES = [
     "Sociology", "Sports", "Technology", "Travel", "True Crime"
 ];
 
+// The DVD shelf's genres (Settings > Shelf of > DVDs). The Fiction
+// filter keeps working: documentaries and the like count as Non-Fiction.
+const FILM_FICTION_GENRES = [
+    "Action", "Adventure", "Animation", "Anime", "Comedy", "Crime", "Drama",
+    "Family", "Fantasy", "Historical", "Horror", "Musical", "Mystery", "Romance",
+    "Romantic Comedy", "Sci-Fi", "Superhero", "Thriller", "War", "Western"
+];
+const FILM_NONFICTION_GENRES = [
+    "Biography", "Concert & Music", "Documentary", "Fitness", "Nature", "Stand-Up Comedy", "True Crime"
+];
+const FICTION_GENRES = isDvds() ? FILM_FICTION_GENRES : BOOK_FICTION_GENRES;
+const NONFICTION_GENRES = isDvds() ? FILM_NONFICTION_GENRES : BOOK_NONFICTION_GENRES;
+
 // Old genres that became tags: genre name -> the tag it turns into.
-const GENRES_NOW_TAGS = {
+const GENRES_NOW_TAGS = isDvds() ? {} : {
     "Children's": "Children's",
     "Middle Grade": "Middle Grade",
     "Young Adult": "Young Adult",
@@ -44,7 +57,7 @@ const GENRES_NOW_TAGS = {
 
 // Where a book lands when its old genre goes away. Fiction-ish ones are
 // refiled by author (FICTION_BY_AUTHOR) first, falling back to these.
-const RETIRED_GENRE_HOMES = {
+const RETIRED_GENRE_HOMES = isDvds() ? {} : {
     "Fiction": "Contemporary Fiction",
     "Children's": "Contemporary Fiction",
     "Middle Grade": "Contemporary Fiction",
@@ -65,8 +78,10 @@ const FICTION_BY_AUTHOR = {
 };
 
 // Always offered in the tag dropdown, even before any book uses them.
-const SUGGESTED_TAGS = ["Children's", "Middle Grade", "Young Adult", "New Adult",
-    "Graphic Novel", "Short Stories", "Poetry", "Audiobook", "Series"];
+const SUGGESTED_TAGS = isDvds()
+    ? ["Box Set", "TV Series", "Kids", "Foreign Language", "Criterion", "Steelbook", "Director's Cut"]
+    : ["Children's", "Middle Grade", "Young Adult", "New Adult",
+        "Graphic Novel", "Short Stories", "Poetry", "Audiobook", "Series"];
 const GENRES = [...FICTION_GENRES, ...NONFICTION_GENRES];
 const STATUSES = ["Want to Read", "Reading", "Read", "DNF"];
 const STATUS_TAG_CLASS = {
@@ -83,9 +98,9 @@ let db = null;
 let library = [];
 
 // ---------- App settings (the Settings window) ----------
-const SETTINGS_KEY = 'bookShelfSettings';
+const SETTINGS_KEY = collKey('bookShelfSettings');
 const DEFAULT_SETTINGS = {
-    name: 'My Bookshelf',
+    name: isDvds() ? 'My DVD Shelf' : 'My Bookshelf',
     goal: 0,                    // yearly reading goal; 0 = off
     libraryCard: false,         // you have a local library card (earns Card Carrier)
     defaultStatus: 'Want to Read',
@@ -310,7 +325,7 @@ async function removeCustomGenre(genre, moveTo) {
 }
 
 // ---------- Delete library (Settings > Start over) ----------
-const STARTED_FRESH_KEY = 'bookShelfStartedFresh'; // don't re-add the 3 starter books
+const STARTED_FRESH_KEY = collKey('bookShelfStartedFresh'); // don't re-add the 3 starter books
 
 function showDeleteLibraryConfirm() {
     const box = document.getElementById('delete-confirm');
@@ -344,10 +359,11 @@ async function deleteLibrary() {
 
     if (resetSettings) {
         // everything else this app keeps in localStorage, except the
-        // marker above that stops the starter books coming back
+        // marker above that stops the starter books coming back (on the
+        // DVD shelf, just the DVD shelf's own; the books keep theirs)
         try {
             Object.keys(localStorage)
-                .filter(k => k.startsWith('bookShelf') && k !== STARTED_FRESH_KEY)
+                .filter(k => k.startsWith(isDvds() ? 'dvd:bookShelf' : 'bookShelf') && k !== STARTED_FRESH_KEY)
                 .forEach(k => localStorage.removeItem(k));
         } catch (e) {}
         location.reload();
@@ -367,7 +383,7 @@ async function deleteLibrary() {
 // Someone opening a copy of this app gets its example shelf (somebody else's
 // books) and the pins those books earn. Remember which books came with it,
 // so they can be cleared out later without touching any added since.
-const STARTER_IDS_KEY = 'bookShelfStarterIds';
+const STARTER_IDS_KEY = collKey('bookShelfStarterIds');
 let freshStartPreview = false; // shown from the debug panel: remove nothing
 
 function rememberStarterBooks(books) {
@@ -605,7 +621,15 @@ function openSettings() {
 
 function loadSettings() {
     try {
-        appSettings = { ...DEFAULT_SETTINGS, ...(JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}) };
+        let saved = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        // the first time on the DVD shelf, start from the book shelf's
+        // settings (calm, fonts, celebrations...), but with its own name
+        // and goal
+        if (!saved && isDvds()) {
+            const books = JSON.parse(localStorage.getItem('bookShelfSettings'));
+            if (books) saved = { ...books, name: DEFAULT_SETTINGS.name, goal: 0 };
+        }
+        appSettings = { ...DEFAULT_SETTINGS, ...(saved || {}) };
         // the seal used to be an on/off switch for the Series shelf
         if ('seriesSeal' in appSettings) {
             appSettings.ownedSeal = appSettings.seriesSeal ? 'series' : 'off';
@@ -614,6 +638,9 @@ function loadSettings() {
     } catch (e) {
         appSettings = { ...DEFAULT_SETTINGS };
     }
+    // the critter, goals and pins are about reading: off on the DVD shelf
+    // for now (their Settings are hidden)
+    if (isDvds()) Object.assign(appSettings, { critter: false, pins: false, pinAlerts: false, goal: 0 });
     applySettings(false);
 }
 
@@ -682,6 +709,9 @@ function refreshSettingsButtons() {
     });
     document.querySelectorAll('[data-setting-choice]').forEach(btn => {
         btn.classList.toggle('active', appSettings[btn.dataset.settingChoice] === btn.dataset.choice);
+    });
+    document.querySelectorAll('[data-collection-choice]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.collectionChoice === COLLECTION);
     });
     document.querySelectorAll('[data-pages-period]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.pagesPeriod === appSettings.pagesPeriod);

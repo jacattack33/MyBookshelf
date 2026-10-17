@@ -10,7 +10,7 @@ function isStickyPlaceholder(book) {
 // crooked at the bottom of its shelf. It stays down (even after a
 // reload) until you click it to stick it back up. One at a time; never
 // in Calm mode, with reduced motion, or with Falling sticky notes off.
-const FALLEN_KEY = 'bookShelfFallenNotes';
+const FALLEN_KEY = collKey('bookShelfFallenNotes');
 let fallenNotes = new Set();
 try { fallenNotes = new Set(JSON.parse(localStorage.getItem(FALLEN_KEY)) || []); } catch (e) {}
 
@@ -121,7 +121,7 @@ function buildStickyNoteFace(el, book) {
 }
 
 // ---------- Sticky-note pile (quick add to Want to Read) ----------
-const QUICK_ADD_GENRE_KEY = 'bookShelfQuickAddGenre';
+const QUICK_ADD_GENRE_KEY = collKey('bookShelfQuickAddGenre');
 
 // a quick-add genre list, starting on the genre picked last time
 function fillQuickAddGenres(select) {

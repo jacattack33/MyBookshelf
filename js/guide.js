@@ -203,7 +203,8 @@ const GUIDE = [
             '<b>Shelf extras</b> opens its own window: a napping shelf cat, dust, leaning books, book counts, the sticky-note pile, the critter, gold seals on books you own&hellip; switch any of them off.',
             '<b>Calm mode</b> turns off the bouncing, wiggling and sparkles. Or just turn off the confetti, or the goodbye animations.',
             '<b>Custom genres:</b> add your own, and move books between them.',
-            '<b>Pins:</b> switch the pin board and new-pin alerts on or off, and choose which books count toward pins.'
+            '<b>Pins:</b> switch the pin board and new-pin alerts on or off, and choose which books count toward pins.',
+            '<b>Got DVDs too?</b> Settings &rarr; Your shelf &rarr; <b>Shelf of: DVDs</b> swaps to a separate DVD shelf, with directors, runtimes, Watched, and a DVD, Blu-ray or 4K band on each case. It has its own backups, and switching back finds your books just as you left them. (No critter, goals or pins there yet.)'
         ],
         psst: 'Deleting a book is never boring: it might get shredded, burned like a match, flung off the screen or dropped through a trapdoor. Each theme has its own too.'
     },

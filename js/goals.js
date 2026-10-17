@@ -4,7 +4,7 @@
 // by feeding the critter or by the Log box in the goals window. The
 // critter eats at the pages goal's pace.
 
-const PAGES_LOG_KEY = 'bookShelfPagesLog';
+const PAGES_LOG_KEY = collKey('bookShelfPagesLog');
 const PAGES_LOG_DAYS = 40;   // enough for this month
 const PAGES_PERIODS = {
     day: { days: 1, label: 'today', unit: 'a day', short: 'Today' },

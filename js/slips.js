@@ -115,7 +115,7 @@ async function returnLentBook(id, row) {
 // want, not yet). "on shelf" opens it in the Add Book window, filled in;
 // once it's saved it leaves the list. Books on your shelf with a
 // Recommended by name are listed underneath.
-const RECS_KEY = 'bookShelfRecs';
+const RECS_KEY = collKey('bookShelfRecs');
 let recToShelf = null; // the rec being added in the Add Book window
 
 function loadRecs() {
@@ -185,7 +185,8 @@ function renderRecsSlip() {
         const status = document.createElement('span');
         status.className = 'slip-status';
         const stars = normalizeRating(book.rating);
-        status.textContent = book.status === 'Read' ? (stars ? '\u2605'.repeat(stars) : 'read') : book.status === 'Reading' ? 'reading' : book.status === 'DNF' ? 'DNF' : 'to read';
+        const [done, doing, todo] = isDvds() ? ['watched', 'watching', 'to watch'] : ['read', 'reading', 'to read'];
+        status.textContent = book.status === 'Read' ? (stars ? '\u2605'.repeat(stars) : done) : book.status === 'Reading' ? doing : book.status === 'DNF' ? 'DNF' : todo;
         if (book.status === 'Read') status.classList.add('done');
         li.append(slipBookButton(book), who, status);
         list.appendChild(li);

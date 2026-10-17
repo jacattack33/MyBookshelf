@@ -5,7 +5,7 @@
 // Sunset show the board for now (and Settings can switch it off); pins are still earned in
 // every theme.
 
-const PINS_KEY = 'bookShelfPins';
+const PINS_KEY = collKey('bookShelfPins');
 // id -> when earned; ids already looked at; things counted as they happen
 // (sticky notes stuck up, lent books back); every book ever lent out, and
 // everyone it went to

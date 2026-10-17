@@ -4,7 +4,7 @@
 // starving. Each theme has its own critter and home; underneath it's the
 // same pet with the same name, age and belly.
 
-const CRITTER_KEY = 'bookShelfCritter';
+const CRITTER_KEY = collKey('bookShelfCritter');
 const CRITTER_FOOD_DAYS = 3;      // a full belly holds this many days of pages
 const CRITTER_RUNAWAY_DAYS = 7;   // starving this long and it leaves
 const CRITTER_STAGES = [          // by pages ever eaten

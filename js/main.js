@@ -18,6 +18,7 @@ function countVisit(host = location.hostname) {
 }
 
 async function init() {
+    applyCollectionLabels(); // Books or DVDs
     loadCustomGenres();
     loadRecentColors();
     loadExpandedShelves();
@@ -32,7 +33,8 @@ async function init() {
     library = await dbGetAll();
     let startedFresh = false;
     try { startedFresh = localStorage.getItem(STARTED_FRESH_KEY) === '1'; } catch (e) {}
-    if (library.length === 0 && !startedFresh) {
+    // (the DVD shelf has no example shelf: it starts empty)
+    if (library.length === 0 && !startedFresh && !isDvds()) {
         const starter = await loadStarterBooks();
         await dbBulkPut(starter);
         rememberStarterBooks(starter);

@@ -1,0 +1,77 @@
+/* ---------- The DVD shelf (Settings > Shelf of > DVDs) ----------
+   html[data-collection="dvds"]: see js/collection.js */
+
+/* the bits for one shelf only */
+:root:not([data-collection="dvds"]) .dvd-only,
+:root[data-collection="dvds"] .books-only {
+    display: none !important;
+}
+
+/* the critter, goals card and pin board are about reading: off for now */
+:root[data-collection="dvds"] :is(.critter-home, .goals-card, .pin-home, .pins-book-check) {
+    display: none !important;
+}
+
+/* A generated spine is a plastic case instead of gilt leather: the
+   cover's colour under a glossy sleeve, with a thin clear edge at each
+   side and no gold rules or stars. */
+:root[data-collection="dvds"] .book.spine-mode-generated {
+    background-image:
+        linear-gradient(to right,
+            rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.05) 18%,
+            transparent 45%, rgba(0,0,0,0.18) 100%),
+        linear-gradient(to bottom,
+            var(--spine-top-a, #4a4a4a) 0%,
+            var(--spine-bottom-b, #232323) 100%);
+    border-radius: 3px;
+    box-shadow:
+        5px 5px 10px rgba(0,0,0,0.3),
+        inset 2px 0 0 rgba(255,255,255,0.35),
+        inset -2px 0 0 rgba(0,0,0,0.35);
+}
+
+:root[data-collection="dvds"] .spine-label {
+    color: #fff;
+    font-family: var(--spine-font);
+    max-height: 84%;
+}
+
+:root[data-collection="dvds"] .spine-label::before,
+:root[data-collection="dvds"] .spine-label::after {
+    content: none;
+}
+
+/* the coloured band across the top of the case, like the real ones:
+   blue for Blu-ray, black for 4K, silver for DVD */
+.format-band {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 2px 0;
+    font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.format-dvd { background: #c9cdd2; color: #1d1f22; }
+.format-bluray { background: #1663b5; color: #fff; }
+.format-uhd { background: #111; color: #fff; }
+
+/* on a spine there's only room for a sliver of it */
+.book.spine-mode .format-band {
+    font-size: 7px;
+    letter-spacing: 0;
+    padding: 1px 0;
+}

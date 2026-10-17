@@ -102,16 +102,26 @@ function shelfImageUrl(key, src) {
 // A generated spine's width in px: set by hand (spineWidth), or else
 // from the page count (thicker the longer the book; 300 pages comes out
 // as wide as the old quarter-of-the-cover), or else a quarter of the cover.
+// A DVD's comes from its case (format), not its runtime.
 const SPINE_WIDTH_MIN = 18; // (room for the lettering)
 const SPINE_WIDTH_MAX = 64;
 
-function autoSpineWidth(pages, coverWidth) {
+function autoSpineWidth(pages, coverWidth, format) {
+    if (isDvds()) return DVD_SPINE_WIDTHS[format] || DVD_SPINE_WIDTHS.dvd;
     if (pages > 0) return Math.min(SPINE_WIDTH_MAX, Math.max(SPINE_WIDTH_MIN, Math.round(16 + pages * 0.045)));
     return Math.max(SPINE_WIDTH_MIN, Math.round((Number.isFinite(coverWidth) ? coverWidth : 120) / 4));
 }
 
 function generatedSpineWidth(book) {
-    return Number.isFinite(book.spineWidth) ? book.spineWidth : autoSpineWidth(book.pages, book.width);
+    return Number.isFinite(book.spineWidth) ? book.spineWidth : autoSpineWidth(book.pages, book.width, book.format);
+}
+
+// DVDs: the coloured band across the top of the case (DVD, Blu-ray, 4K)
+function addFormatBand(el, format) {
+    const band = document.createElement('span');
+    band.className = `format-band format-${format}`;
+    band.textContent = format === 'uhd' ? '4K' : DVD_FORMATS[format];
+    el.appendChild(band);
 }
 
 function buildBookElement(book, draggableEnabled, spineMode) {
@@ -185,6 +195,7 @@ function buildBookElement(book, draggableEnabled, spineMode) {
     }
 
     if (isLentOut(book)) addLentTag(bookDiv, book);
+    if (isDvds() && DVD_FORMATS[book.format] && !isStickyPlaceholder(book)) addFormatBand(bookDiv, book.format);
 
     const dustLevel = getDustLevel(book);
     if (dustLevel > 0) {
@@ -460,8 +471,8 @@ function renderShelves() {
 
     if (workingLibrary.length === 0) {
         room.innerHTML = library.length === 0
-            ? `<p class="empty-note">Your shelf is empty - add a book to get started!</p>`
-            : `<p class="empty-note">No books match this view yet.</p>`;
+            ? `<p class="empty-note">Your shelf is empty - add a ${isDvds() ? 'DVD' : 'book'} to get started!</p>`
+            : `<p class="empty-note">No ${isDvds() ? 'DVDs' : 'books'} match this view yet.</p>`;
         placeCat();
         return;
     }
@@ -542,7 +553,7 @@ function renderShelves() {
         if (organizeBy === 'status') {
             title.classList.add(STATUS_TAG_CLASS[key] || 'tag-status-other');
         }
-        title.innerText = organizeBy === 'rating' ? RATING_LABELS[key] : key;
+        title.innerText = organizeBy === 'rating' ? RATING_LABELS[key] : organizeBy === 'status' ? statusLabel(key) : key;
 
         const shelf = document.createElement('div');
         shelf.className = spineMode ? 'shelf spine-shelf' : 'shelf';
@@ -623,8 +634,8 @@ function renderShelves() {
 
     if (!renderedAny) {
         room.innerHTML = library.length === 0
-            ? `<p class="empty-note">Your shelf is empty - add a book to get started!</p>`
-            : `<p class="empty-note">No books match this view yet.</p>`;
+            ? `<p class="empty-note">Your shelf is empty - add a ${isDvds() ? 'DVD' : 'book'} to get started!</p>`
+            : `<p class="empty-note">No ${isDvds() ? 'DVDs' : 'books'} match this view yet.</p>`;
         placeCat();
         restoreShelfScroll = null;
         return;
@@ -1347,7 +1358,7 @@ function selectFilterStatus(value) {
 
 // Sticky-note filter: Show (mixed in), Hide (only real books), or Only
 // (just the to-get notes - a shopping list). Remembered between visits.
-const STICKY_FILTER_KEY = 'bookShelfStickyFilter';
+const STICKY_FILTER_KEY = collKey('bookShelfStickyFilter');
 let stickyFilter = 'Show';
 try {
     const saved = localStorage.getItem(STICKY_FILTER_KEY);

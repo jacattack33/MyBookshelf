@@ -527,7 +527,7 @@ function openModal(bookId = null) {
     if (bookId) {
         const book = library.find(b => b.id === bookId);
         if (!book) return;
-        modalTitle.innerText = "Edit Book";
+        modalTitle.innerText = isDvds() ? "Edit DVD" : "Edit Book";
         saveBtn.innerText = "Save Changes";
         document.getElementById('book-title').value = book.title;
         document.getElementById('book-author').value = (book.authors || []).join(", ");
@@ -552,6 +552,8 @@ function openModal(bookId = null) {
         setDateField('finished', book.finishedDate);
         formExtraReads = (book.extraReads || []).map(r => ({ ...r }));
         document.getElementById('book-pages').value = book.pages || "";
+        document.getElementById('book-format').value = book.format || "";
+        document.getElementById('book-year').value = book.year || "";
         document.getElementById('book-rec-by').value = book.recommendedBy || "";
         setGotHow(book.gotHow || "", book.gotFrom || "");
         document.getElementById('book-no-pins').checked = !!book.noPins;
@@ -560,7 +562,7 @@ function openModal(bookId = null) {
         document.getElementById('existing-spine-image-note').style.display = book.spineImage ? 'block' : 'none';
         document.getElementById('clear-spine-image-btn').style.display = book.spineImage ? 'inline-block' : 'none';
     } else {
-        modalTitle.innerText = "Add a New Book";
+        modalTitle.innerText = isDvds() ? "Add a New DVD" : "Add a New Book";
         saveBtn.innerText = "Put on Shelf";
         document.getElementById('book-title').value = "";
         document.getElementById('book-author').value = "";
@@ -575,7 +577,7 @@ function openModal(bookId = null) {
         document.getElementById('book-color').value = "#1a334d";
         document.getElementById('book-width').value = 120;
         document.getElementById('book-spine-width').dataset.auto = '1';
-        document.getElementById('book-ratio-preset').value = "0.667";
+        document.getElementById('book-ratio-preset').value = isDvds() ? DVD_CASE_RATIO : "0.667";
         setTags([]);
         setOwned(false);
         setNotes("");
@@ -584,6 +586,8 @@ function openModal(bookId = null) {
         setDateField('finished', "");
         formExtraReads = [];
         document.getElementById('book-pages').value = "";
+        document.getElementById('book-format').value = "";
+        document.getElementById('book-year').value = "";
         document.getElementById('book-rec-by').value = "";
         setGotHow("", "");
         document.getElementById('book-no-pins').checked = !appSettings.pinNewBooks;
@@ -615,17 +619,29 @@ const PLACEHOLDER_BOOKS = [
     ["The Night Circus", "Erin Morgenstern"]
 ];
 
+const PLACEHOLDER_FILMS = [
+    ["Spirited Away", "Hayao Miyazaki"],
+    ["Paddington 2", "Paul King"],
+    ["The Princess Bride", "Rob Reiner"],
+    ["Little Women", "Greta Gerwig"],
+    ["Back to the Future", "Robert Zemeckis"],
+    ["Coco", "Lee Unkrich"],
+    ["Amélie", "Jean-Pierre Jeunet"],
+    ["The Grand Budapest Hotel", "Wes Anderson"]
+];
+
 // A new book gets a random cute example in the Title/Author boxes.
 function setTitlePlaceholders(isNew) {
     const titleInput = document.getElementById('book-title');
     const authorInput = document.getElementById('book-author');
     if (isNew) {
-        const [title, author] = PLACEHOLDER_BOOKS[Math.floor(Math.random() * PLACEHOLDER_BOOKS.length)];
+        const examples = isDvds() ? PLACEHOLDER_FILMS : PLACEHOLDER_BOOKS;
+        const [title, author] = examples[Math.floor(Math.random() * examples.length)];
         titleInput.placeholder = `e.g. ${title}`;
         authorInput.placeholder = `e.g. ${author}`;
     } else {
-        titleInput.placeholder = "Book Title";
-        authorInput.placeholder = "e.g. Carl Sagan, Ann Druyan";
+        titleInput.placeholder = isDvds() ? "Film Title" : "Book Title";
+        authorInput.placeholder = isDvds() ? "e.g. Greta Gerwig" : "e.g. Carl Sagan, Ann Druyan";
     }
 }
 
@@ -666,7 +682,7 @@ function openLibraryCard() {
     card.innerHTML = `
         <div class="lc-head">LIBRARY CARD</div>
         <div class="lc-field">Title <span class="lc-hand lc-title" style="${hand}"></span></div>
-        <div class="lc-field">Author <span class="lc-hand lc-grow" style="${hand}"></span>${pages > 0 ? `<span class="lc-pages">Pages <span class="lc-hand" style="${hand}"></span></span>` : ''}</div>
+        <div class="lc-field">${isDvds() ? 'Director' : 'Author'} <span class="lc-hand lc-grow" style="${hand}"></span>${pages > 0 ? `<span class="lc-pages">${isDvds() ? 'Mins' : 'Pages'} <span class="lc-hand" style="${hand}"></span></span>` : ''}</div>
         <div class="lc-rows" id="lc-rows"></div>
         <div class="lc-foot">
             <div class="lc-foot-left">
@@ -1643,7 +1659,7 @@ function refreshSpineWidthField() {
     const slider = document.getElementById('book-spine-width');
     const auto = !!slider.dataset.auto;
     const pages = parseInt(document.getElementById('book-pages').value, 10);
-    if (auto) slider.value = autoSpineWidth(pages, parseInt(document.getElementById('book-width').value, 10));
+    if (auto) slider.value = autoSpineWidth(pages, parseInt(document.getElementById('book-width').value, 10), document.getElementById('book-format').value);
     const existing = editingId ? library.find(b => b.id === editingId) : null;
     const photo = !!(pendingSpineCrop || (!clearSpineImageFlag && existing && existing.spineImage));
     slider.disabled = photo;
@@ -1652,6 +1668,7 @@ function refreshSpineWidthField() {
     document.getElementById('book-spine-width-hint').innerText = photo
         ? 'A spine photo is as wide as the photo.'
         : !auto ? ''
+        : isDvds() ? 'Auto: the width of a standard case for its format.'
         : pages > 0 ? 'Auto: based on the total page count.'
         : 'Auto: based on the total page count, once Pages is filled in.';
     updateWidthSliderFill(slider);
@@ -2286,7 +2303,7 @@ async function processBookForm() {
     const notes2Font = document.getElementById('book-notes-2-font').value;
 
     if (!title) {
-        alert('Please include a book title!');
+        alert(isDvds() ? 'Please include a title!' : 'Please include a book title!');
         return;
     }
 
@@ -2312,6 +2329,9 @@ async function processBookForm() {
 
     const pagesRaw = parseInt(document.getElementById('book-pages').value, 10);
     const pages = pagesRaw > 0 ? Math.min(pagesRaw, 99999) : null;
+    // (DVDs) the case's format and the film's year
+    const format = DVD_FORMATS[document.getElementById('book-format').value] ? document.getElementById('book-format').value : "";
+    const year = parseInt(document.getElementById('book-year').value, 10) || null;
     const extraReads = formExtraReads.filter(r => r.started || r.finished).map(r => ({ started: r.started || "", finished: r.finished || "" }));
 
     const existing = editingId ? library.find(b => b.id === editingId) : null;
@@ -2389,7 +2409,7 @@ async function processBookForm() {
     const book = {
         id: editingId || Date.now().toString(),
         title, authors, series, seriesNumber, seriesTotal, status, rating, genre, color, width, tags, owned, notes, notesFont, notes2, notes2Font, startedDate, finishedDate,
-        statusSince, dustedAt, stickyNote, pages, extraReads, lentTo, lentAt, recommendedBy, gotHow, gotFrom, noPins,
+        statusSince, dustedAt, stickyNote, pages, format, year, extraReads, lentTo, lentAt, recommendedBy, gotHow, gotFrom, noPins,
         sortOrder: existing && Number.isFinite(existing.sortOrder)
             ? existing.sortOrder
             : library.reduce((max, b) => Math.max(max, Number.isFinite(b.sortOrder) ? b.sortOrder : -1), -1) + 1,

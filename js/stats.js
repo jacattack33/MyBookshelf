@@ -163,6 +163,7 @@ function renderHighlights(books) {
     const plural = (n, word) => `${n.toLocaleString()} ${word}${n === 1 ? '' : 's'}`;
 
     const reads = finishedReads();
+    const dvds = isDvds(); // (runtimes instead of pages, and no "fastest read")
     const thisYear = new Date().getFullYear();
     const inYear = y => reads.filter(r => r.date.startsWith(String(y))).length;
     if (reads.length) rows.push(['Finished this year', `${inYear(thisYear)} (last year ${inYear(thisYear - 1)})`]);
@@ -172,10 +173,11 @@ function renderHighlights(books) {
     if (withPages.length) {
         const longest = withPages.reduce((a, b) => b.pages > a.pages ? b : a);
         const shortest = withPages.reduce((a, b) => b.pages < a.pages ? b : a);
-        rows.push(['Longest read', `${longest.title} (${plural(longest.pages, 'page')})`]);
-        if (shortest !== longest) rows.push(['Shortest read', `${shortest.title} (${plural(shortest.pages, 'page')})`]);
+        const unit = dvds ? 'minute' : 'page';
+        rows.push([dvds ? 'Longest film' : 'Longest read', `${longest.title} (${plural(longest.pages, unit)})`]);
+        if (shortest !== longest) rows.push([dvds ? 'Shortest film' : 'Shortest read', `${shortest.title} (${plural(shortest.pages, unit)})`]);
         const avg = Math.round(withPages.reduce((s, b) => s + b.pages, 0) / withPages.length);
-        rows.push(['Average length', plural(avg, 'page')]);
+        rows.push(['Average length', plural(avg, unit)]);
     }
 
     // time to finish, from every read with full start and finish dates
@@ -185,7 +187,7 @@ function renderHighlights(books) {
         (b.extraReads || []).forEach(r => spans.push({ book: b, days: daysBetween(r.started, r.finished) }));
     });
     const timed = spans.filter(s => s.days !== null);
-    if (timed.length) {
+    if (timed.length && !dvds) {
         const avgDays = Math.round(timed.reduce((s, t) => s + t.days, 0) / timed.length);
         rows.push(['Average time to finish', plural(avgDays, 'day')]);
         const fastest = timed.reduce((a, b) => b.days < a.days ? b : a);
@@ -195,17 +197,17 @@ function renderHighlights(books) {
     const reReads = books.map(b => ({ book: b, n: reads.filter(r => r.book === b).length })).filter(x => x.n > 1);
     if (reReads.length) {
         const most = reReads.reduce((a, b) => b.n > a.n ? b : a);
-        rows.push(['Re-read books', reReads.length]);
-        rows.push(['Most re-read', `${most.book.title} (${most.n} times)`]);
+        rows.push([dvds ? 'Rewatched' : 'Re-read books', reReads.length]);
+        rows.push([dvds ? 'Most rewatched' : 'Most re-read', `${most.book.title} (${most.n} times)`]);
     }
 
     const fiveStars = books.filter(b => normalizeRating(b.rating) >= 5).length;
-    if (fiveStars) rows.push(['5-star books', fiveStars]);
+    if (fiveStars) rows.push([dvds ? '5-star films' : '5-star books', fiveStars]);
 
     const authorCount = new Set(readBooks.flatMap(b => (b.authors || []).filter(a => a && a !== 'Unknown'))).size;
-    if (authorCount) rows.push(['Authors read', authorCount]);
+    if (authorCount) rows.push([dvds ? 'Directors seen' : 'Authors read', authorCount]);
     const genreCount = new Set(readBooks.map(b => b.genre).filter(Boolean)).size;
-    if (genreCount) rows.push(['Genres read', genreCount]);
+    if (genreCount) rows.push([dvds ? 'Genres watched' : 'Genres read', genreCount]);
 
     const now = new Date();
     const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -214,11 +216,13 @@ function renderHighlights(books) {
         .filter(x => x.days !== null);
     if (reading.length) {
         const oldest = reading.reduce((a, b) => b.days > a.days ? b : a);
-        rows.push(['Reading the longest', `${oldest.book.title} (${plural(oldest.days, 'day')} so far)`]);
+        rows.push([dvds ? 'Watching the longest' : 'Reading the longest', `${oldest.book.title} (${plural(oldest.days, 'day')} so far)`]);
     }
 
     if (!rows.length) {
-        emptyNote(box, 'Finish a few books (with dates and page counts) and highlights show up here.');
+        emptyNote(box, dvds
+            ? 'Watch a few films (with dates and runtimes) and highlights show up here.'
+            : 'Finish a few books (with dates and page counts) and highlights show up here.');
         return;
     }
     rows.forEach(([label, value]) => {
@@ -232,7 +236,8 @@ function renderHighlights(books) {
 
 function updateStatsLedger() {
     // the ledger's cover is blank; keep the total in its tooltip
-    document.getElementById('stats-ledger').title = `Reading stats (${visibleBooks().length} books)`;
+    const n = visibleBooks().length;
+    document.getElementById('stats-ledger').title = isDvds() ? `Shelf stats (${n} DVD${n === 1 ? '' : 's'})` : `Reading stats (${n} books)`;
 }
 
 function openStats() {
@@ -243,16 +248,17 @@ function openStats() {
     const count = status => books.filter(b => b.status === status).length;
     const rated = books.map(b => normalizeRating(b.rating)).filter(r => r > 0);
     const avg = rated.length ? (rated.reduce((a, b) => a + b, 0) / rated.length).toFixed(1) : '\u2014';
+    const minutes = pagesOf(finishedReads());
     const tiles = [
-        ['Read', count('Read')],
-        ['Reading', count('Reading')],
-        ['Want to Read', count('Want to Read')],
-        ['DNF', count('DNF')],
+        [statusLabel('Read'), count('Read')],
+        [statusLabel('Reading'), count('Reading')],
+        [statusLabel('Want to Read'), count('Want to Read')],
+        [statusLabel('DNF'), count('DNF')],
         ['Owned', books.filter(b => b.owned).length],
         ['Lent out', books.filter(isLentOut).length],
         ['With notes', books.filter(b => (b.notes || '').trim() || (b.notes2 || '').trim()).length],
         ['Average rating', rated.length ? `${avg} \u2605` : avg],
-        ['Pages read', pagesOf(finishedReads()).toLocaleString()]
+        isDvds() ? ['Hours watched', Math.round(minutes / 60).toLocaleString()] : ['Pages read', minutes.toLocaleString()]
     ];
     fillTiles(document.getElementById('stats-tiles'), tiles);
     renderSeriesStats(books);
@@ -302,8 +308,11 @@ function renderStatsChart() {
 
     const yearPages = pagesOf(inYear);
     document.getElementById('stats-chart-sub').textContent =
-        `${inYear.length} book${inYear.length === 1 ? '' : 's'} finished in ${year}` +
-        (yearPages ? ` · ${yearPages.toLocaleString()} pages` : '');
+        (isDvds()
+            ? `${inYear.length} film${inYear.length === 1 ? '' : 's'} watched in ${year}` +
+              (yearPages ? ` · ${Math.round(yearPages / 60).toLocaleString()} hours` : '')
+            : `${inYear.length} book${inYear.length === 1 ? '' : 's'} finished in ${year}` +
+              (yearPages ? ` · ${yearPages.toLocaleString()} pages` : ''));
     document.getElementById('stats-chart-note').textContent = noMonth
         ? `Plus ${noMonth} finished in ${year} with no month set (not shown in the chart).`
         : '';
@@ -447,6 +456,12 @@ function updateReadingGoal() {
     updateGoals();
     const box = document.getElementById('reading-goal');
     const goal = appSettings.goal;
+    if (isDvds()) {
+        // (no goals on the DVD shelf yet)
+        box.innerHTML = '';
+        box.classList.remove('visible');
+        return;
+    }
     if (!goal) {
         // no goal on this copy of the site yet: offer a shortcut to set one
         box.innerHTML = '';
