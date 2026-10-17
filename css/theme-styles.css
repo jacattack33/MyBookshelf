@@ -1738,7 +1738,7 @@
 
 /* corner widgets move in off the bezel */
 :root[data-theme="terminal"] .sticky-pile { left: 28px; bottom: 42px; }
-:root[data-theme="terminal"] .stats-ledger { left: 37px; bottom: 140px; }
+:root[data-theme="terminal"] .stats-ledger { left: 37px; bottom: 134px; }
 :root[data-theme="terminal"] .secret-heart { right: 26px; bottom: 40px; }
 
 @media (max-width: 600px) {
@@ -1751,7 +1751,7 @@
     :root[data-theme="terminal"]::after { bottom: 4px; font-size: 13px; }
     :root[data-theme="terminal"]::before { bottom: 8px; right: 18px; }
     :root[data-theme="terminal"] .sticky-pile { left: 18px; bottom: 34px; }
-    :root[data-theme="terminal"] .stats-ledger { left: 21px; bottom: 100px; }
+    :root[data-theme="terminal"] .stats-ledger { left: 21px; bottom: 94px; }
     :root[data-theme="terminal"] .secret-heart { right: 16px; bottom: 32px; }
 }
 

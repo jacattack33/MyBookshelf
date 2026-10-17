@@ -21,12 +21,12 @@ setTheme('candy');
 const rect = sel => q(sel).getBoundingClientRect();
 const critterBottom = () => rect('#critter-home').bottom;
 const withBoard = critterBottom();
-ok('board hangs under the critter, above the goals card',
-    rect('#pin-home').top >= rect('#critter-home').bottom - 4 && rect('#pin-home').bottom <= rect('#goals-card').top + 4,
-    `${rect('#critter-home').bottom} / ${rect('#pin-home').top}-${rect('#pin-home').bottom} / ${rect('#goals-card').top}`);
+ok('board hangs at the top, above the critter',
+    rect('#pin-home').bottom <= rect('#critter-home').top + 4,
+    `${rect('#pin-home').bottom} / ${rect('#critter-home').top}`);
 setSetting('pins', false);
 ok('Settings can switch it off', getComputedStyle(q('#pin-home')).display === 'none');
-ok('...and the critter moves down into its spot', critterBottom() > withBoard, `${critterBottom()} vs ${withBoard}`);
+ok('...and the critter stays put (the column hangs from the bottom)', critterBottom() === withBoard, `${critterBottom()} vs ${withBoard}`);
 setSetting('pins', true);
 ok('back on', getComputedStyle(q('#pin-home')).display !== 'none' && critterBottom() === withBoard);
 ok('its switch only shows in Candy', getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none');

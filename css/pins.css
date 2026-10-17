@@ -93,7 +93,6 @@
     width: 72px;
     margin-top: 14px; /* room for the nail and string */
     cursor: pointer;
-    transform: rotate(-2deg);
     transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
     -webkit-tap-highlight-color: transparent;
 }
@@ -104,7 +103,7 @@
 }
 
 .pin-home:hover {
-    transform: rotate(2deg) translateY(-4px);
+    transform: rotate(-3deg) translateY(-4px);
 }
 
 .pin-home:focus-visible {

@@ -245,13 +245,13 @@
     <!-- top to bottom: the critter, the pin board (hung under it), and
          the goals card, which sits on the ledger -->
     <div class="corner-stack" id="corner-stack">
-        <div class="critter-home" id="critter-home" role="button" tabindex="0" onclick="openCritter()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openCritter(); }" title="Your reading critter" aria-label="Your reading critter">
-            <div class="critter-art" id="critter-home-art"></div>
-            <span class="critter-alert" id="critter-alert"></span>
-        </div>
         <div class="pin-home" id="pin-home" role="button" tabindex="0" onclick="openPins()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openPins(); }" title="Your pin board" aria-label="Your pin board">
             <div class="pin-home-board corkboard" id="pin-home-board"></div>
             <span class="pin-new" id="pin-new"></span>
+        </div>
+        <div class="critter-home" id="critter-home" role="button" tabindex="0" onclick="openCritter()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openCritter(); }" title="Your reading critter" aria-label="Your reading critter">
+            <div class="critter-art" id="critter-home-art"></div>
+            <span class="critter-alert" id="critter-alert"></span>
         </div>
         <div class="goals-card" id="goals-card" role="button" tabindex="0" onclick="openGoals()" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openGoals(); }" title="Your reading goals" aria-label="Your reading goals"></div>
     </div>
@@ -361,7 +361,7 @@
                         <div class="field-row">
                             <label class="field-label" style="flex:1;">How I got it
                                 <select id="book-got-how" onchange="updateGotFromField()">
-                                    <option value="">&mdash;</option>
+                                    <option value="">Choose&hellip;</option>
                                     <option value="bought">Bought</option>
                                     <option value="thrift">Thrifted / used</option>
                                     <option value="library">Library</option>
@@ -963,9 +963,8 @@
                     </div>
                     <div class="field-hint">Every book in one list, to tick and delete just the ones you want gone.</div>
                     <button type="button" class="secondary" onclick="openAllBooks()">All books&hellip;</button>
-                    <div class="field-hint">Delete everything: every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
+                    <div class="field-hint">Delete everything: every book, cover, note and custom genre. This can't be undone, so save a backup first with Export Library at the top of the page.</div>
                     <div class="danger-buttons">
-                        <button type="button" class="secondary" onclick="exportLibrary()">Export Library (Backup)</button>
                         <button type="button" class="danger" onclick="showDeleteLibraryConfirm()">Delete Library&hellip;</button>
                     </div>
                     <div class="delete-confirm" id="delete-confirm">

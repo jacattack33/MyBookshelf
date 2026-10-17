@@ -4,7 +4,7 @@
 .stats-ledger {
     position: fixed;
     left: 25px;
-    bottom: 114px; /* clear of the pile's crooked sheets */
+    bottom: 108px; /* 14px above the pile, like every gap in the column */
     z-index: 900;
     width: 60px;
     height: 78px;
@@ -21,7 +21,6 @@
     box-shadow: 3px 3px 0 var(--outline);
     color: white;
     cursor: pointer;
-    transform: rotate(4deg);
     transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
 }
 
@@ -33,11 +32,11 @@
     background:
         linear-gradient(90deg, rgba(0,0,0,0.25) 0 6px, rgba(255,255,255,0.18) 6px 8px, transparent 8px),
         var(--y2k-purple);
-    transform: rotate(-3deg) translateY(-6px);
+    transform: rotate(3deg) translateY(-6px);
 }
 
 .stats-ledger:active {
-    transform: rotate(-3deg) translateY(-2px) scale(0.96);
+    transform: rotate(3deg) translateY(-2px) scale(0.96);
     box-shadow: 2px 2px 0 var(--outline);
 }
 
@@ -69,16 +68,18 @@
    show or hide its face parts and grown-up extras. */
 .critter-home {
     position: relative;
-    margin-left: 6px;
-    width: 68px;
-    height: 68px;
+    width: 84px;  /* a bit wider than the column, so it holds its own */
+    height: 84px;
+    /* the art has empty space above and below it; tuck it into the
+       gaps so the jar looks as far from its neighbours as they do */
+    margin: -10px 0 -8px;
     cursor: pointer;
     transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
     -webkit-tap-highlight-color: transparent;
 }
 
 .critter-home:hover {
-    transform: translateY(-5px) rotate(-3deg);
+    transform: translateY(-5px) rotate(3deg);
 }
 
 .critter-home:focus-visible {
@@ -96,10 +97,11 @@
 }
 
 /* a speech bubble over the widget when it needs you */
+/* on the jar's shoulder, clear of the pin board hung above it */
 .critter-alert {
     position: absolute;
-    top: -14px;
-    right: -6px;
+    top: 12px;
+    right: -10px;
     display: none;
     min-width: 18px;
     padding: 0 5px;
@@ -256,28 +258,30 @@
 
 @media (max-width: 600px) {
     .critter-home {
-        width: 56px;
-        height: 56px;
+        width: 62px;
+        height: 62px;
     }
 }
 
 /* ---------- Corner stack (bottom-left, on top of the ledger) ----------
    the critter, the pin board hung under it, and the goals card; one
-   column
+   column, as wide as the sticky pile and centred on the same line as
+   it and the ledger
    so the critter follows the card's height (one row or two), and the
    card moves up into place when the critter is switched off */
 .corner-stack {
     position: fixed;
-    left: 15px;
-    bottom: 206px;  /* on top of the ledger */
+    left: 16px;
+    bottom: 200px;  /* 14px on top of the ledger */
     z-index: 900;
+    width: 78px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    align-items: center;
+    gap: 14px;
 }
 
-:root[data-theme="terminal"] .corner-stack { left: 27px; bottom: 232px; }
+:root[data-theme="terminal"] .corner-stack { left: 28px; bottom: 226px; }
 
 /* ---------- Goals card ----------
    a little pinned card with the yearly books and pages goals */
@@ -294,13 +298,12 @@
     box-shadow: 2px 2px 0 var(--outline);
     color: var(--y2k-dark);
     cursor: pointer;
-    transform: rotate(-2deg);
     transition: transform 0.25s cubic-bezier(.3, 1.6, .5, 1);
     -webkit-tap-highlight-color: transparent;
 }
 
 .goals-card:hover {
-    transform: rotate(2deg) translateY(-4px);
+    transform: rotate(-3deg) translateY(-4px);
 }
 
 .goals-card:focus-visible {
