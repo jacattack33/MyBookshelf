@@ -844,10 +844,23 @@
     max-height: 50vh;
 }
 
+/* the dark around the box: a shadow as big as the screen, clipped to
+   the picture so it can't cover the tools above it */
+.crop-shade-clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#crop-shade {
+    position: absolute;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
 #crop-box {
     position: absolute;
     border: 2px dashed var(--y2k-hot-pink);
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
     cursor: move;
     box-sizing: border-box;
 }

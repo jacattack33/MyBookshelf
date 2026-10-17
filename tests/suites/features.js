@@ -418,6 +418,8 @@ ok('the colour sliders all in the middle change nothing', JSON.stringify(cropAdj
 ok('no saturation turns a colour grey', (() => { const m = cropAdjustMatrix([0, 0, 0, -100]); return Math.abs(m[0][0] - m[1][0]) < 1e-9 && Math.abs(m[0][1] - m[2][1]) < 1e-9; })());
 openCropModal(greyCanvas.toDataURL('image/png'), 'cover');
 await wait(400);
+ok('the dark outside the crop box stays on the picture, off the tools', getComputedStyle(q('#crop-box')).boxShadow === 'none' &&
+    getComputedStyle(q('.crop-shade-clip')).overflow === 'hidden' && q('#crop-shade').style.width === q('#crop-box').style.width);
 ok('the colour sliders start in the middle, no Reset showing', !cropIsAdjusted() && (q('#crop-adjust-reset').style.visibility === 'hidden') && q('#crop-image').style.filter === '');
 const sliderSpots = () => CROP_ADJUST_IDS.map(id => { const r = q('#' + id).getBoundingClientRect(); return Math.round(r.left) + ',' + Math.round(r.top); }).join(' ');
 const spotsBefore = sliderSpots();

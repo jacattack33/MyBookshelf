@@ -1955,11 +1955,13 @@ function applyColourAdjust(canvas, values) {
 }
 
 function renderCropBox() {
-    const box = document.getElementById('crop-box');
-    box.style.left = cropBoxState.x + 'px';
-    box.style.top = cropBoxState.y + 'px';
-    box.style.width = cropBoxState.w + 'px';
-    box.style.height = cropBoxState.h + 'px';
+    ['crop-box', 'crop-shade'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.left = cropBoxState.x + 'px';
+        el.style.top = cropBoxState.y + 'px';
+        el.style.width = cropBoxState.w + 'px';
+        el.style.height = cropBoxState.h + 'px';
+    });
 }
 
 function clampCrop(value, min, max) {

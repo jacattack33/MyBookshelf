@@ -1137,6 +1137,8 @@
                 <div class="field-hint crop-turn-note" id="crop-turn-note" hidden>Turned upright, since a spine stands tall. Use Turn if it's the wrong way round.</div>
                 <div id="crop-stage">
                     <img id="crop-image" alt="" draggable="false">
+                    <!-- the dark outside the box, kept to the picture (the box's handles poke out past it) -->
+                    <div class="crop-shade-clip"><div id="crop-shade"></div></div>
                     <div id="crop-box" onpointerdown="startCropDrag(event, 'move')">
                         <div class="crop-handle" data-handle="nw" style="left:-5px; top:-5px; cursor:nwse-resize;" onpointerdown="startCropDrag(event, 'nw')"></div>
                         <div class="crop-handle" data-handle="ne" style="right:-5px; top:-5px; cursor:nesw-resize;" onpointerdown="startCropDrag(event, 'ne')"></div>
