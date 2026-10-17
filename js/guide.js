@@ -53,7 +53,7 @@ const GUIDE = [
             '<b>No picture?</b> Pick a colour, a shape (paperback, hardcover, square&hellip;) and a width. The preview changes as you go.',
             '<b>The sticky-note pile</b> (bottom left) is for books you want to get: it goes on the shelf as a yellow sticky note in pencil.',
             '<b>Got a whole bookcase?</b> In the Spine card, <b>Whole shelf</b> takes one photo of a row (or a stack) of books and cuts out a spine for each one. Straight on, in good light, works best.',
-            '<b>Settings &rarr; New books</b> picks the status new books start in: Want to Read, Reading or Read.'
+            '<b>Start new books as</b> (Settings &rarr; Your shelf) picks the status new books start in: Want to Read, Reading or Read.'
         ],
         psst: 'Not sure of the genre? Genre is what a book is <i>about</i>. Things like Young Adult, Graphic Novel or Audiobook are tags.'
     },
@@ -175,8 +175,8 @@ const GUIDE = [
             'New pins get pushed into the board one by one the next time you open it. A <b>+2</b> badge says how many are waiting.',
             'The pin board hangs in Candy, Sea Glass, Loft, Blueprint and Sunset. Pins are earned in every theme.',
             '<b>Books you already had:</b> tick <b>Don\'t count toward pins</b> on a book (under Shelf Info) so only new reading earns them. It still counts in your stats and goals.',
-            '<b>Typing in an old library?</b> Switch off <b>New books count toward pins</b> in Settings &rarr; Shelf extras while you do, or use <b>Don\'t count every book on my shelf now</b>.',
-            '<b>Restart pins</b> (Settings &rarr; Start over) clears the board to begin again.'
+            '<b>Typing in an old library?</b> Switch off <b>New books count toward pins</b> in Settings &rarr; Pins while you do, or use <b>Don\'t count every book on my shelf now</b>.',
+            '<b>Restart pins</b> (Settings &rarr; Pins) clears the board to begin again.'
         ],
         psst: 'Some pins are sneaky. Try logging pages on a Friday evening. Or at teatime. Or at 2am.'
     },
@@ -198,11 +198,12 @@ const GUIDE = [
             ['blueprint', 'Blueprint'], ['terminal', 'Terminal'], ['typewriter', 'Typewriter'], ['sunset', 'Sunset'], ['dark', 'Candy, dark']],
         tips: [
             '<b>Theme and Mode</b> are at the top of Settings. Every theme comes in Light and Dark, or can match your device.',
-            'Plain and Plain Bold come in six colours. Typewriter can have its machine on, or not.',
-            '<b>Shelf extras:</b> a napping shelf cat, dust, leaning books, book counts, the sticky-note pile, the critter, the pin board, gold seals on books you own&hellip; switch any of them off.',
-            '<b>Handwriting:</b> pick the font new notes start in, and the one the library card is written in.',
+            'Plain and Plain Bold come in six colours. Typewriter can have its machine on, or not, and Blueprint can letter by hand or like an engineer.',
+            '<b>Notes &amp; library card handwriting:</b> pick the font new notes start in, and the one library cards are written in. It doesn\'t change the theme; the rest of the shelf\'s lettering comes from your theme.',
+            '<b>Shelf extras</b> opens its own window: a napping shelf cat, dust, leaning books, book counts, the sticky-note pile, the critter, gold seals on books you own&hellip; switch any of them off.',
+            '<b>Calm mode</b> turns off the bouncing, wiggling and sparkles. Or just turn off the confetti, or the goodbye animations.',
             '<b>Custom genres:</b> add your own, and move books between them.',
-            '<b>Calm mode</b> turns off the bouncing, wiggling and sparkles. Or just turn off the confetti, or the goodbye animations.'
+            '<b>Pins:</b> switch the pin board and new-pin alerts on or off, and choose which books count toward pins.'
         ],
         psst: 'Deleting a book is never boring: it might get shredded, burned like a match, flung off the screen or dropped through a trapdoor. Each theme has its own too.'
     },
@@ -228,7 +229,7 @@ const GUIDE = [
             '<b>Changed a book by mistake?</b> Press <b>Cancel</b> instead of saving and nothing changes. (Notes on a book you already have save when you close the notepad.)',
             '<b>Deleted a book?</b> There\'s no undo, but importing your latest backup brings it back.',
             '<b>Sticky note fell off?</b> Click it to stick it back up.',
-            '<b>Want to start fresh?</b> Settings &rarr; Start over can remove the example shelf, restart your pins, or delete everything (back up first!). <b>All books</b> there lists every book with a tick box, to delete just the ones you pick; <b>Tick example shelf books</b> picks out the example ones, even from a backup.',
+            '<b>Want to start fresh?</b> Settings &rarr; Start over can remove the example shelf or delete everything (back up first!). <b>All books</b> there lists every book with a tick box, to delete just the ones you pick; <b>Tick example shelf books</b> picks out the example ones, even from a backup.',
             '<b>Something looks out of date?</b> Refresh the page to get the newest version.'
         ],
         psst: 'That\'s everything! You can come back to this guide any time from Settings. Happy reading &#9825;'

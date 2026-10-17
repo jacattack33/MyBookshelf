@@ -697,6 +697,11 @@
     white-space: nowrap;
 }
 
+/* ---------- Shelf extras window (Settings > Shelf extras) ---------- */
+.modal-content.extras-content {
+    max-width: 480px;
+}
+
 /* ---------- All books window (Settings > Start over) ---------- */
 .modal-content.all-books-content {
     max-width: 520px;

@@ -986,7 +986,7 @@ function colourFamily(hex) {
         : hue < 255 ? 'blue' : hue < 290 ? 'purple' : 'pink';
 }
 
-// the Settings > Shelf extras switches (changing any earns Tinkerer)
+// the Settings > Shelf extras and Pins switches (changing any earns Tinkerer)
 const SHELF_EXTRA_SETTINGS = ['cat', 'dust', 'lean', 'sticky', 'noteFalls', 'shelfCounts', 'critter', 'pins', 'pinAlerts', 'ownedSeal', 'unreadFade'];
 
 // the most days in a row with pages logged
@@ -1027,7 +1027,7 @@ function resetPins() {
     renderPinWidget();
 }
 
-// Settings > Shelf extras: leave every book on the shelf out of pins
+// Settings > Pins: leave every book on the shelf out of pins
 // (an existing library, typed in), then offer to restart the board so
 // the pins those books earned go too
 async function excludeShelfFromPins() {
@@ -1054,7 +1054,7 @@ async function includeShelfInPins() {
     renderPinWidget();
 }
 
-// Settings > Start over > Restart pins
+// Settings > Pins > Restart pins
 function restartPins() {
     if (!confirm('Take every pin off the board and start again? Pins your books still earn come straight back. This can\'t be undone.')) return;
     resetPins();

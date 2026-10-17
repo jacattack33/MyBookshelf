@@ -839,6 +839,34 @@
                 </div>
 
                 <div class="field-section">
+                    <div class="field-section-title">Notes &amp; library card handwriting</div>
+                    <div class="field-hint">Only for the writing on your notes and library cards. The rest of the shelf's lettering comes from your Theme.</div>
+                    <span class="field-label">Notes: new ones start in</span>
+                    <div class="toggle-group settings-choices font-choices" id="setting-note-fonts"></div>
+                    <span class="field-label">Library cards: written in</span>
+                    <div class="toggle-group settings-choices font-choices" id="setting-card-fonts"></div>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Shelf extras</div>
+                    <div class="field-hint">The shelf cat, dust, sticky notes, gold seals and other little touches. Switch any of them on or off.</div>
+                    <button type="button" class="secondary" onclick="openExtras()">Shelf extras&hellip;</button>
+                </div>
+
+                <div class="field-section">
+                    <div class="field-section-title">Motion</div>
+                    <div class="field-hint">Calm mode turns off the bouncing, wiggling, sparkles and other animations.</div>
+                    <div class="toggle-group settings-choices">
+                        <button type="button" class="toggle-btn" data-setting-switch="calm" onclick="toggleSetting('calm')">Calm mode</button>
+                    </div>
+                    <div class="field-hint">Or turn off just some of it: the sparkles, confetti and wiggles, or the little scene when a book or note is deleted.</div>
+                    <div class="toggle-group settings-choices">
+                        <button type="button" class="toggle-btn" data-setting-switch="celebrations" onclick="toggleSetting('celebrations')">Sparkles &amp; confetti</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="goodbyes" onclick="toggleSetting('goodbyes')">Goodbye animations</button>
+                    </div>
+                </div>
+
+                <div class="field-section">
                     <div class="field-section-title">Your shelf</div>
                     <label class="field-label">Bookshelf name
                         <input type="text" id="setting-name" maxlength="40" placeholder="My Bookshelf" oninput="setSetting('name', this.value)">
@@ -881,24 +909,6 @@
                             <span class="lcc-stamp" aria-hidden="true">MEMBER</span>
                         </span>
                     </label>
-                </div>
-
-                <div class="field-section">
-                    <div class="field-section-title">Handwriting</div>
-                    <span class="field-label">New notes start in</span>
-                    <div class="toggle-group settings-choices font-choices" id="setting-note-fonts"></div>
-                    <span class="field-label">Library card writing</span>
-                    <div class="toggle-group settings-choices font-choices" id="setting-card-fonts"></div>
-                </div>
-
-                <div class="field-section">
-                    <div class="field-section-title">Custom genres</div>
-                    <div class="custom-genre-list" id="custom-genre-list"></div>
-                    <div class="genre-move" id="genre-move"></div>
-                </div>
-
-                <div class="field-section">
-                    <div class="field-section-title">New books</div>
                     <span class="field-label">Start new books as</span>
                     <div class="toggle-group settings-choices" role="group" aria-label="Default status">
                         <button type="button" class="toggle-btn" data-default-status="Want to Read" onclick="setSetting('defaultStatus', 'Want to Read')">Want to Read</button>
@@ -908,20 +918,20 @@
                 </div>
 
                 <div class="field-section">
-                    <div class="field-section-title">Shelf extras</div>
+                    <div class="field-section-title">Custom genres</div>
+                    <div class="custom-genre-list" id="custom-genre-list"></div>
+                    <div class="genre-move" id="genre-move"></div>
+                </div>
+
+                <div class="field-section pins-setting">
+                    <div class="field-section-title">Pins</div>
                     <div class="toggle-group settings-choices">
-                        <button type="button" class="toggle-btn" data-setting-switch="cat" onclick="toggleSetting('cat')">Shelf cat</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="dust" onclick="toggleSetting('dust')">Dust on old books</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="shelfCounts" onclick="toggleSetting('shelfCounts')">Book counts</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky-note pile</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="noteFalls" onclick="toggleSetting('noteFalls')">Falling sticky notes</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
-                        <button type="button" class="toggle-btn pins-setting" data-setting-switch="pins" onclick="toggleSetting('pins')">Pin board</button>
-                        <button type="button" class="toggle-btn pins-setting" data-setting-switch="pinAlerts" onclick="toggleSetting('pinAlerts')">New-pin alerts</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="pins" onclick="toggleSetting('pins')">Pin board</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="pinAlerts" onclick="toggleSetting('pinAlerts')">New-pin alerts</button>
                     </div>
-                    <div class="pins-setting pins-count-settings">
-                        <div class="field-hint">Pins: leave out books you already had, so only new reading earns them. Each book has a Don't count toward pins box in its edit window.</div>
+                    <div class="pins-count-settings">
+                        <span class="field-label">Which books count</span>
+                        <div class="field-hint">Already had a shelf full of books before? Leave them out, so only new reading earns pins. Each book also has a Don't count toward pins box in its edit window.</div>
                         <div class="toggle-group settings-choices">
                             <button type="button" class="toggle-btn" data-setting-switch="pinNewBooks" onclick="toggleSetting('pinNewBooks')">New books count toward pins</button>
                         </div>
@@ -930,61 +940,30 @@
                             <button type="button" class="secondary" onclick="includeShelfInPins()">Count every book again</button>
                         </div>
                     </div>
-                    <div class="field-hint">Owned seal: a gold seal on the books you own.</div>
-                    <div class="toggle-group settings-choices" role="group" aria-label="Owned seal">
-                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="off" onclick="setSetting('ownedSeal', 'off')">Off</button>
-                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="series" onclick="setSetting('ownedSeal', 'series')">Series shelf</button>
-                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="all" onclick="setSetting('ownedSeal', 'all')">Every shelf</button>
-                    </div>
-                    <div class="field-hint">Fade unread: dims books you haven't marked Read.</div>
-                    <div class="toggle-group settings-choices" role="group" aria-label="Fade unread books">
-                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="off" onclick="setSetting('unreadFade', 'off')">Off</button>
-                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="series" onclick="setSetting('unreadFade', 'series')">Series shelf</button>
-                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="all" onclick="setSetting('unreadFade', 'all')">Every shelf</button>
-                    </div>
-                </div>
-
-                <div class="field-section">
-                    <div class="field-section-title">Motion</div>
-                    <div class="toggle-group settings-choices">
-                        <button type="button" class="toggle-btn" data-setting-switch="calm" onclick="toggleSetting('calm')">Calm mode</button>
-                    </div>
-                    <div class="field-hint">Turns off the bouncing, wiggling, sparkles and other animations.</div>
-                    <div class="toggle-group settings-choices">
-                        <button type="button" class="toggle-btn" data-setting-switch="celebrations" onclick="toggleSetting('celebrations')">Sparkles &amp; confetti</button>
-                        <button type="button" class="toggle-btn" data-setting-switch="goodbyes" onclick="toggleSetting('goodbyes')">Goodbye animations</button>
-                    </div>
-                    <div class="field-hint">Or just some of it: the sparkles, confetti and wiggles, or the little scene when a book or note is deleted.</div>
-                </div>
-
-                <div class="field-section">
-                    <div class="field-section-title">Debug</div>
-                    <div class="toggle-group settings-choices">
-                        <button type="button" class="toggle-btn" data-setting-switch="debug" onclick="toggleSetting('debug')">Debug panel</button>
-                    </div>
+                    <span class="field-label">Restart pins</span>
+                    <div class="field-hint">Takes every pin off the board. Pins your books still earn come straight back; one-offs, like a lent book coming back, don't.</div>
+                    <button type="button" class="secondary" onclick="restartPins()">Restart pins&hellip;</button>
                 </div>
 
                 <div class="field-section">
                     <div class="field-section-title">Backups</div>
+                    <div class="field-hint">Your books only live in this browser, so save a backup now and then. With reminders on, a note pops up when it's been a while, and the Export button glows.</div>
+                    <div class="field-hint" id="setting-last-backup"></div>
                     <div class="toggle-group settings-choices">
                         <button type="button" class="toggle-btn" data-setting-switch="backupReminders" onclick="toggleSetting('backupReminders')">Backup reminders</button>
                     </div>
-                    <div class="field-hint" id="setting-last-backup"></div>
-                    <div class="field-hint">Your books only live in this browser. With reminders on, a note pops up when it's been a while since your last backup, and the Export button glows now and then.</div>
                     <button type="button" class="secondary" onclick="openBackupHelp()">How backups work</button>
                 </div>
 
                 <div class="field-section danger-section">
                     <div class="field-section-title">Start over</div>
                     <div class="starter-remove" id="starter-remove" hidden>
-                        <div class="field-hint">Your shelf still has books from the example shelf it came with. Remove them, and the pins they earned, to make it all yours. Books you've added stay.</div>
+                        <div class="field-hint">Your shelf still has the example shelf's books. Remove them and the pins they earned; books you've added stay.</div>
                         <button type="button" class="danger" onclick="removeStarterShelf()">Remove example shelf</button>
                     </div>
-                    <div class="field-hint">All books: every book in one list, to tick and delete just the ones you want gone (like the example shelf's books, after bringing back a backup).</div>
+                    <div class="field-hint">Every book in one list, to tick and delete just the ones you want gone.</div>
                     <button type="button" class="secondary" onclick="openAllBooks()">All books&hellip;</button>
-                    <div class="field-hint">Restart pins: takes every pin off the board. Any your books still earn come straight back; one-off ones, like getting back a book you lent, don't.</div>
-                    <button type="button" class="secondary" onclick="restartPins()">Restart pins&hellip;</button>
-                    <div class="field-hint">Deletes every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
+                    <div class="field-hint">Delete everything: every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
                     <div class="danger-buttons">
                         <button type="button" class="secondary" onclick="exportLibrary()">Export Library (Backup)</button>
                         <button type="button" class="danger" onclick="showDeleteLibraryConfirm()">Delete Library&hellip;</button>
@@ -998,6 +977,11 @@
                         </label>
                         <button type="button" class="danger" id="delete-confirm-btn" onclick="deleteLibrary()" disabled>Delete everything</button>
                     </div>
+                </div>
+
+                <div class="settings-debug">
+                    <span class="field-hint">For testing:</span>
+                    <button type="button" class="toggle-btn" data-setting-switch="debug" onclick="toggleSetting('debug')">Debug panel</button>
                 </div>
             </div>
         </div>
@@ -1037,6 +1021,53 @@
                 </div>
                 <div class="field-hint">You can still do this later in Settings &rarr; Start over.</div>
                 <button type="button" class="secondary fresh-start-guide" onclick="closeFreshStart(); openGuide(0)"><span class="guide-book-pin" aria-hidden="true"></span> Show me around first</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings > Shelf extras: the little touches on the shelf, switched on and off -->
+    <div class="modal" id="extras-modal" onclick="if (event.target === this) closeExtras()">
+        <div class="modal-content extras-content" role="dialog" aria-labelledby="extras-heading">
+            <div class="modal-header">
+                <h3 id="extras-heading">&#9670; Shelf Extras</h3>
+                <button type="button" class="modal-close-x" onclick="closeExtras()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="settings-body extras-body">
+                <div class="field-section">
+                    <div class="field-section-title">On the shelf</div>
+                    <div class="toggle-group settings-choices">
+                        <button type="button" class="toggle-btn" data-setting-switch="cat" onclick="toggleSetting('cat')">Shelf cat</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="critter" onclick="toggleSetting('critter')">Reading critter</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="dust" onclick="toggleSetting('dust')">Dust on old books</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="lean" onclick="toggleSetting('lean')">Leaning books</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="shelfCounts" onclick="toggleSetting('shelfCounts')">Book counts</button>
+                    </div>
+                </div>
+                <div class="field-section">
+                    <div class="field-section-title">Sticky notes</div>
+                    <div class="toggle-group settings-choices">
+                        <button type="button" class="toggle-btn" data-setting-switch="sticky" onclick="toggleSetting('sticky')">Sticky-note pile</button>
+                        <button type="button" class="toggle-btn" data-setting-switch="noteFalls" onclick="toggleSetting('noteFalls')">Falling sticky notes</button>
+                    </div>
+                </div>
+                <div class="field-section">
+                    <div class="field-section-title">Owned seal</div>
+                    <div class="field-hint">A gold seal on the books you own.</div>
+                    <div class="toggle-group settings-choices" role="group" aria-label="Owned seal">
+                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="off" onclick="setSetting('ownedSeal', 'off')">Off</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="series" onclick="setSetting('ownedSeal', 'series')">Series shelf</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="ownedSeal" data-choice="all" onclick="setSetting('ownedSeal', 'all')">Every shelf</button>
+                    </div>
+                </div>
+                <div class="field-section">
+                    <div class="field-section-title">Fade unread</div>
+                    <div class="field-hint">Dims books you haven't marked Read.</div>
+                    <div class="toggle-group settings-choices" role="group" aria-label="Fade unread books">
+                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="off" onclick="setSetting('unreadFade', 'off')">Off</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="series" onclick="setSetting('unreadFade', 'series')">Series shelf</button>
+                        <button type="button" class="toggle-btn" data-setting-choice="unreadFade" data-choice="all" onclick="setSetting('unreadFade', 'all')">Every shelf</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

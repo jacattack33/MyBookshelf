@@ -828,6 +828,30 @@ body:not(.pins-on) .pins-book-check {
     display: none;
 }
 
+/* Settings > Pins: which books count, only while there's a board */
+.pins-count-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+body:not(.pins-on) .pins-count-settings {
+    display: none;
+}
+
+/* the Debug panel switch: a small line under Start over, not a box */
+.settings-debug {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.settings-debug .toggle-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+}
+
 .pins-count-buttons {
     display: flex;
     flex-wrap: wrap;

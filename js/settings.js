@@ -441,6 +441,20 @@ async function exampleBooksOnShelf() {
     return library.filter(b => ids.has(b.id));
 }
 
+// Settings > Shelf extras: its own window of switches
+function openExtras() {
+    refreshSettingsButtons();
+    document.getElementById('extras-modal').style.display = 'flex';
+}
+
+function closeExtras() {
+    document.getElementById('extras-modal').style.display = 'none';
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('extras-modal').style.display === 'flex') closeExtras();
+});
+
 function openAllBooks() {
     allBooksTicked.clear();
     document.getElementById('all-books-search').value = '';

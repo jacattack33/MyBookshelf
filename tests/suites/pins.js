@@ -16,7 +16,7 @@ ok('...and in Sea Glass, in a frosted sea-glass frame', getComputedStyle(q('#pin
 setTheme('loft');
 ok('...and in Loft, a steel frame with rivets', getComputedStyle(q('#pin-home')).display !== 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display !== 'none' && getComputedStyle(document.documentElement).getPropertyValue('--pin-frame').trim() === '#3a3e44' && getComputedStyle(q('#pins-board'), '::after').backgroundImage.includes('radial-gradient'));
 setTheme('library');
-ok('...and not in other themes', getComputedStyle(q('#pin-home')).display === 'none' && getComputedStyle(q('[data-setting-switch="pins"]')).display === 'none');
+ok('...and not in other themes', getComputedStyle(q('#pin-home')).display === 'none' && getComputedStyle(q('[data-setting-switch="pins"]').closest('.pins-setting')).display === 'none');
 setTheme('candy');
 const rect = sel => q(sel).getBoundingClientRect();
 const critterBottom = () => rect('#critter-home').bottom;
@@ -396,7 +396,7 @@ setSetting('debug', false);
 library = library.filter(b => !['l2'].includes(b.id) && !['Piranesi', 'Dune Messiah'].includes(b.title));
 renderBookshelf();
 
-// ---- Settings > Start over > Restart pins
+// ---- Settings > Pins > Restart pins
 awardPin('cameback');
 const confirmWas = window.confirm;
 window.confirm = () => false;
