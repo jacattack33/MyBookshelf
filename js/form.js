@@ -1793,6 +1793,7 @@ function openCropModal(dataUrl, context) {
     cropTurns = 0;
     cropTilt = 0;
     document.getElementById('crop-tilt').value = 0;
+    resetCropAdjust();
     document.getElementById('crop-turn-note').hidden = true;
     document.getElementById('crop-modal').style.display = 'flex';
     const src = new Image();
@@ -1858,6 +1859,83 @@ function tiltCropImage(deg) {
     document.getElementById('crop-tilt').value = deg;
     cropTilt = Number(deg) || 0;
     showCropImage();
+}
+
+// ---- brightness, contrast, warmth and saturation
+// All four make one colour matrix (3 rows of r, g, b, plus-this, in
+// 0-1 units). The cropper previews it as an SVG filter on the picture
+// and the saved picture gets the same sums pixel by pixel, so what you
+// see is what you keep - and no canvas filter, which older Safari lacks.
+
+const CROP_ADJUST_IDS = ['crop-brightness', 'crop-contrast', 'crop-warmth', 'crop-saturation'];
+const CROP_ADJUST_IDENTITY = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]];
+
+// a then b: the matrix that does a, then does b to the result
+function thenColourMatrix(a, b) {
+    return b.map(row => [0, 1, 2, 3].map(c =>
+        row[0] * a[0][c] + row[1] * a[1][c] + row[2] * a[2][c] + (c === 3 ? row[3] : 0)));
+}
+
+// the sliders (-100 to 100 each, 0 in the middle) as one matrix
+function cropAdjustMatrix(values) {
+    const [bright, contrast, warmth, sat] = values.map(v => (Number(v) || 0) / 100);
+    // saturation 0 to 2 times, mixing toward grey the way CSS saturate() does
+    const s = 1 + sat;
+    const lr = 0.2126, lg = 0.7152, lb = 0.0722;
+    const saturate = [
+        [lr + (1 - lr) * s, lg - lg * s, lb - lb * s, 0],
+        [lr - lr * s, lg + (1 - lg) * s, lb - lb * s, 0],
+        [lr - lr * s, lg - lg * s, lb + (1 - lb) * s, 0]
+    ];
+    // contrast 0.5 to 1.5 times, about the middle grey
+    const c = 1 + contrast / 2;
+    const contrastM = [[c, 0, 0, (1 - c) / 2], [0, c, 0, (1 - c) / 2], [0, 0, c, (1 - c) / 2]];
+    // brightness 0.5 to 1.5 times
+    const b = 1 + bright / 2;
+    const brightM = [[b, 0, 0, 0], [0, b, 0, 0], [0, 0, b, 0]];
+    // warmth: more red and less blue, or the other way to cool it
+    const warmM = [[1 + 0.15 * warmth, 0, 0, 0], [0, 1 + 0.03 * warmth, 0, 0], [0, 0, 1 - 0.15 * warmth, 0]];
+    return [saturate, contrastM, brightM, warmM].reduce(thenColourMatrix, CROP_ADJUST_IDENTITY);
+}
+
+function cropAdjustValues() {
+    return CROP_ADJUST_IDS.map(id => Number(document.getElementById(id).value) || 0);
+}
+
+function cropIsAdjusted() {
+    return cropAdjustValues().some(v => v !== 0);
+}
+
+function adjustCropImage() {
+    const adjusted = cropIsAdjusted();
+    const m = cropAdjustMatrix(cropAdjustValues());
+    document.getElementById('crop-adjust-matrix').setAttribute('values',
+        m.map(row => row.join(' ') + ' 0').join(' ') + ' 0 0 0 1 0');
+    document.getElementById('crop-image').style.filter = adjusted ? 'url(#crop-adjust-filter)' : '';
+    document.getElementById('crop-adjust-reset').hidden = !adjusted;
+}
+
+function resetCropAdjust() {
+    CROP_ADJUST_IDS.forEach(id => { document.getElementById(id).value = 0; });
+    adjustCropImage();
+}
+
+// the sliders' colours, painted into a canvas's pixels
+function applyCropAdjust(canvas) {
+    if (!cropIsAdjusted()) return;
+    const m = cropAdjustMatrix(cropAdjustValues());
+    const ctx = canvas.getContext('2d');
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const px = data.data;
+    const o0 = m[0][3] * 255, o1 = m[1][3] * 255, o2 = m[2][3] * 255;
+    for (let i = 0; i < px.length; i += 4) {
+        const r = px[i], g = px[i + 1], b = px[i + 2];
+        // (the pixel array clamps to 0-255 and rounds by itself)
+        px[i] = m[0][0] * r + m[0][1] * g + m[0][2] * b + o0;
+        px[i + 1] = m[1][0] * r + m[1][1] * g + m[1][2] * b + o1;
+        px[i + 2] = m[2][0] * r + m[2][1] * g + m[2][2] * b + o2;
+    }
+    ctx.putImageData(data, 0, 0);
 }
 
 function renderCropBox() {
@@ -1945,6 +2023,7 @@ function confirmCrop() {
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, sw, sh);
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+    applyCropAdjust(canvas);
     // JPEG, not PNG: a cover photo is about 5x smaller this way and looks
     // the same at shelf size
     applyCropResult(canvas.toDataURL('image/jpeg', COVER_JPEG_QUALITY));
@@ -1980,7 +2059,17 @@ function pngDataUrlToJpeg(dataUrl) {
 }
 
 function useFullImageForCrop() {
-    applyCropResult(document.getElementById('crop-image').src);
+    const img = document.getElementById('crop-image');
+    if (!cropIsAdjusted()) return applyCropResult(img.src);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+    applyCropAdjust(canvas);
+    applyCropResult(canvas.toDataURL('image/jpeg', COVER_JPEG_QUALITY));
 }
 
 function applyCropResult(dataUrl) {

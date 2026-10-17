@@ -398,6 +398,48 @@ openCropModal(WIDE, 'cover');
 await wait(400);
 ok('a wide cover is left as it is', cropImgSize() === '200x40' && q('#crop-turn-note').hidden && q('#crop-tilt').value === '0', cropImgSize());
 cancelCrop();
+
+// ---- brightness, contrast, warmth and saturation in the cropper
+const greyCanvas = document.createElement('canvas');
+greyCanvas.width = 20; greyCanvas.height = 20;
+greyCanvas.getContext('2d').fillStyle = '#808080';
+greyCanvas.getContext('2d').fillRect(0, 0, 20, 20);
+const firstPixel = (url) => new Promise((resolve) => {
+    const im = new Image();
+    im.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = im.naturalWidth; c.height = im.naturalHeight;
+        c.getContext('2d').drawImage(im, 0, 0);
+        resolve([...c.getContext('2d').getImageData(10, 10, 1, 1).data.slice(0, 3)]);
+    };
+    im.src = url;
+});
+ok('the colour sliders all in the middle change nothing', JSON.stringify(cropAdjustMatrix([0, 0, 0, 0])) === JSON.stringify(CROP_ADJUST_IDENTITY));
+ok('no saturation turns a colour grey', (() => { const m = cropAdjustMatrix([0, 0, 0, -100]); return Math.abs(m[0][0] - m[1][0]) < 1e-9 && Math.abs(m[0][1] - m[2][1]) < 1e-9; })());
+openCropModal(greyCanvas.toDataURL('image/png'), 'cover');
+await wait(400);
+ok('the colour sliders start in the middle, no Reset showing', !cropIsAdjusted() && q('#crop-adjust-reset').hidden && q('#crop-image').style.filter === '');
+q('#crop-brightness').value = 60;
+q('#crop-warmth').value = 100;
+adjustCropImage();
+ok('moving a slider previews it on the picture', q('#crop-image').style.filter.includes('crop-adjust-filter') && !q('#crop-adjust-reset').hidden);
+useFullImageForCrop();
+const warmPx = await firstPixel(pendingCoverCrop);
+ok('the saved cover is brighter and warmer', warmPx[0] > 160 && warmPx[0] > warmPx[2] + 30, warmPx.join(','));
+openCropModal(greyCanvas.toDataURL('image/png'), 'cover');
+await wait(400);
+ok('a new picture starts with the sliders back in the middle', q('#crop-brightness').value === '0' && q('#crop-warmth').value === '0');
+q('#crop-contrast').value = -100;
+q('#crop-saturation').value = 50;
+adjustCropImage();
+resetCropAdjust();
+ok('Reset colours puts them all back', !cropIsAdjusted() && q('#crop-adjust-reset').hidden && q('#crop-image').style.filter === '');
+q('#crop-brightness').value = -100;
+adjustCropImage();
+confirmCrop();
+const darkPx = await firstPixel(pendingCoverCrop);
+ok('Crop & Use keeps the colours too', darkPx[0] < 80 && darkPx[0] > 50, darkPx.join(','));
+cancelCrop();
 closeModal();
 
 // ---- our own colour picker, in place of the browser one
