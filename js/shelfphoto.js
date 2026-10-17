@@ -214,7 +214,8 @@ function adjustShelfPhoto() {
     const adjusted = shelfPhotoAdjustValues().some(v => v !== 0);
     showColourAdjust('shelf-photo-adjust-matrix', shelfPhotoAdjustValues());
     document.getElementById('shelf-photo-split').classList.toggle('sp-adjusted', adjusted);
-    document.getElementById('shelf-photo-adjust-reset').hidden = !adjusted;
+    // (its room is kept while it's hidden, so showing it can't move the sliders)
+    document.getElementById('shelf-photo-adjust-reset').style.visibility = adjusted ? '' : 'hidden';
     document.getElementById('shelf-photo-colours-btn').classList.toggle('sp-colours-changed', adjusted);
 }
 

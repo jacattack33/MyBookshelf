@@ -159,11 +159,14 @@ ok('and back to as taken', shelfPhoto.tilt === 0 && q('#shelf-photo-tilt').value
 const hexSum = hex => [1, 3, 5].reduce((s, k) => s + parseInt(hex.slice(k, k + 2), 16), 0);
 const plainCut = cutShelfSlice(0).color;
 const linesBefore = JSON.stringify([shelfPhoto.dividers, shelfPhoto.tops, shelfPhoto.bottom]);
-ok('the colour sliders start in the middle', !q('#shelf-photo-split').classList.contains('sp-adjusted') && q('#shelf-photo-adjust-reset').hidden);
+ok('the colour sliders start in the middle', !q('#shelf-photo-split').classList.contains('sp-adjusted') && (q('#shelf-photo-adjust-reset').style.visibility === 'hidden'));
+const spSpots = () => SHELF_PHOTO_ADJUST_IDS.map(id => { const r = q('#' + id).getBoundingClientRect(); return Math.round(r.left) + ',' + Math.round(r.top); }).join(' ');
+const spSpotsBefore = spSpots();
 q('#shelf-photo-brightness').value = -80;
 adjustShelfPhoto();
+ok('Reset showing up does not move the sliders', spSpots() === spSpotsBefore, spSpotsBefore + ' -> ' + spSpots());
 ok('moving one previews it on the photo and the spines in the list', getComputedStyle(q('#shelf-photo-canvas')).filter.includes('shelf-photo-adjust-filter') &&
-    getComputedStyle(q('#shelf-photo-rows .sp-strip canvas')).filter.includes('shelf-photo-adjust-filter') && !q('#shelf-photo-adjust-reset').hidden);
+    getComputedStyle(q('#shelf-photo-rows .sp-strip canvas')).filter.includes('shelf-photo-adjust-filter') && !(q('#shelf-photo-adjust-reset').style.visibility === 'hidden'));
 ok('the lines stay where they were', JSON.stringify([shelfPhoto.dividers, shelfPhoto.tops, shelfPhoto.bottom]) === linesBefore);
 const darkCut = cutShelfSlice(0).color;
 ok('a saved spine gets the colours', hexSum(darkCut) < hexSum(plainCut) - 150, plainCut + ' -> ' + darkCut);

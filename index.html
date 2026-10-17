@@ -1079,7 +1079,7 @@
                         <label>Contrast <span class="sp-tilt-track"><input type="range" id="shelf-photo-contrast" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
                         <label>Warmth <span class="sp-tilt-track"><input type="range" id="shelf-photo-warmth" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
                         <label>Saturation <span class="sp-tilt-track"><input type="range" id="shelf-photo-saturation" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
-                        <button type="button" class="secondary" id="shelf-photo-adjust-reset" onclick="resetShelfPhotoAdjust()" hidden>Reset colours</button>
+                        <button type="button" class="secondary" id="shelf-photo-adjust-reset" onclick="resetShelfPhotoAdjust()" style="visibility: hidden">Reset colours</button>
                     </div>
                     <svg class="colour-adjust-svg" width="0" height="0" aria-hidden="true" focusable="false">
                         <filter id="shelf-photo-adjust-filter" color-interpolation-filters="sRGB"><feColorMatrix id="shelf-photo-adjust-matrix" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter>
@@ -1128,7 +1128,7 @@
                     <label>Contrast <span class="sp-tilt-track"><input type="range" id="crop-contrast" min="-100" max="100" value="0" oninput="adjustCropImage()" ondblclick="this.value = 0; adjustCropImage()"></span></label>
                     <label>Warmth <span class="sp-tilt-track"><input type="range" id="crop-warmth" min="-100" max="100" value="0" oninput="adjustCropImage()" ondblclick="this.value = 0; adjustCropImage()"></span></label>
                     <label>Saturation <span class="sp-tilt-track"><input type="range" id="crop-saturation" min="-100" max="100" value="0" oninput="adjustCropImage()" ondblclick="this.value = 0; adjustCropImage()"></span></label>
-                    <button type="button" class="secondary" id="crop-adjust-reset" onclick="resetCropAdjust()" hidden>Reset colours</button>
+                    <button type="button" class="secondary" id="crop-adjust-reset" onclick="resetCropAdjust()" style="visibility: hidden">Reset colours</button>
                 </div>
                 <!-- the sliders' preview: the same sums the saved picture gets, as an SVG filter on the picture -->
                 <svg class="colour-adjust-svg" width="0" height="0" aria-hidden="true" focusable="false">

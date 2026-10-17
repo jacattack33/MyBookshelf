@@ -1923,7 +1923,8 @@ function adjustCropImage() {
     const adjusted = cropIsAdjusted();
     showColourAdjust('crop-adjust-matrix', cropAdjustValues());
     document.getElementById('crop-image').style.filter = adjusted ? 'url(#crop-adjust-filter)' : '';
-    document.getElementById('crop-adjust-reset').hidden = !adjusted;
+    // (its room is kept while it's hidden, so showing it can't move the sliders)
+    document.getElementById('crop-adjust-reset').style.visibility = adjusted ? '' : 'hidden';
 }
 
 function resetCropAdjust() {

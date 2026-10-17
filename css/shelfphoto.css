@@ -834,9 +834,15 @@
     }
 }
 
-/* (a colour moved, while they're folded away) */
-.sp-colours-toggle.sp-colours-changed::after {
+/* (a colour moved, while they're folded away; its room is always kept
+   so the dot showing up can't push the toolbar about) */
+.sp-colours-toggle::after {
     content: ' \2022';
+    visibility: hidden;
+}
+
+.sp-colours-toggle.sp-colours-changed::after {
+    visibility: visible;
 }
 
 /* (themes give buttons a display of their own) */
