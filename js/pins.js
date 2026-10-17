@@ -37,7 +37,10 @@ const PIN_METALS = {
 const PIN_ENAMEL = {
     pink: 'var(--pe-pink, #ff8cc3)', hot: 'var(--pe-hot, #ff4fa3)', lav: 'var(--pe-lav, #c9a6ff)',
     mint: 'var(--pe-mint, #7ee8c4)', teal: 'var(--pe-teal, #2fbf8f)', yellow: 'var(--pe-yellow, #ffe066)', sky: 'var(--pe-sky, #8fd3ff)',
-    peach: 'var(--pe-peach, #ffb48c)', cream: 'var(--pe-cream, #fffaf2)', ink: 'var(--pe-ink, #4a2378)'
+    peach: 'var(--pe-peach, #ffb48c)', cream: 'var(--pe-cream, #fffaf2)', ink: 'var(--pe-ink, #4a2378)',
+    // food that has to stay red-ish: the theme's hot colour, unless that's
+    // something no pepperoni should be (Sea Glass's is teal)
+    red: 'var(--pe-red, var(--pe-hot, #ff4fa3))'
 };
 
 const pinCircle = (cx, cy, r) => `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
@@ -806,7 +809,7 @@ const PINS = [
             ['e', 'M8.5 13Q24 7.5 39.5 13L25.5 43Q24 45.5 22.5 43Z', PIN_E.yellow],
             ['e', 'M33.5 26Q35.5 31 34 33Q32 34.5 31.6 30.2Z', PIN_E.yellow, null, 1],
             ['e', 'M5.5 10.5Q24 2 42.5 10.5Q43 14.5 39.5 15Q24 9 8.5 15Q5 14.5 5.5 10.5Z', PIN_E.peach],
-            ['e', pinCircle(18.5, 20.5, 3.4), PIN_E.hot], ['e', pinCircle(29, 21.5, 3.1), PIN_E.hot], ['e', pinCircle(24, 32, 2.8), PIN_E.hot],
+            ['e', pinCircle(18.5, 20.5, 3.4), PIN_E.red], ['e', pinCircle(29, 21.5, 3.1), PIN_E.red], ['e', pinCircle(24, 32, 2.8), PIN_E.red],
             ['d', pinCircle(23.5, 15.5, 0.9), PIN_E.teal], ['d', pinCircle(21, 26.5, 0.8), PIN_E.teal], ['d', pinCircle(28.5, 28, 0.8), PIN_E.teal]
         ]
     }
