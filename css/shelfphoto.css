@@ -159,7 +159,7 @@
 }
 
 /* brightness, contrast, warmth and saturation, two to a row */
-.crop-adjust {
+.colour-adjust {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 4px 14px;
@@ -168,31 +168,31 @@
     font-size: 13px;
 }
 
-.crop-adjust label {
+.colour-adjust label {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 6px;
 }
 
-.crop-adjust .sp-tilt-track {
+.colour-adjust .sp-tilt-track {
     flex: 1;
     max-width: 130px;
 }
 
-.crop-adjust input {
+.colour-adjust input {
     width: 100%;
     margin: 0;
 }
 
-.crop-adjust button {
+.colour-adjust button {
     grid-column: 1 / -1;
     justify-self: center;
     padding: 4px 12px;
     font-size: 12px;
 }
 
-.crop-adjust-svg {
+.colour-adjust-svg {
     position: absolute;
     width: 0;
     height: 0;
@@ -200,9 +200,22 @@
 }
 
 @media (max-width: 420px) {
-    .crop-adjust {
+    .colour-adjust {
         grid-template-columns: minmax(0, 1fr);
     }
+}
+
+/* the Whole shelf window's: all four in a row when there's room */
+.sp-colour-adjust {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    margin-bottom: 12px;
+}
+
+/* their preview, on the photo and on each spine in the list (the
+   pixels underneath stay as taken, so finding the gaps isn't thrown) */
+#shelf-photo-split.sp-adjusted #shelf-photo-canvas,
+#shelf-photo-split.sp-adjusted .sp-strip canvas {
+    filter: url(#shelf-photo-adjust-filter);
 }
 
 .crop-turn-note {

@@ -1072,6 +1072,16 @@
                         <button type="button" class="secondary" onclick="guessShelfDividers()">Guess again</button>
                         <button type="button" class="secondary" onclick="clearShelfDividers()">Clear lines</button>
                     </div>
+                    <div class="colour-adjust sp-colour-adjust" title="Double-click a slider to put it back in the middle. The saved spines get these colours.">
+                        <label>Brightness <span class="sp-tilt-track"><input type="range" id="shelf-photo-brightness" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
+                        <label>Contrast <span class="sp-tilt-track"><input type="range" id="shelf-photo-contrast" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
+                        <label>Warmth <span class="sp-tilt-track"><input type="range" id="shelf-photo-warmth" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
+                        <label>Saturation <span class="sp-tilt-track"><input type="range" id="shelf-photo-saturation" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
+                        <button type="button" class="secondary" id="shelf-photo-adjust-reset" onclick="resetShelfPhotoAdjust()" hidden>Reset colours</button>
+                    </div>
+                    <svg class="colour-adjust-svg" width="0" height="0" aria-hidden="true" focusable="false">
+                        <filter id="shelf-photo-adjust-filter" color-interpolation-filters="sRGB"><feColorMatrix id="shelf-photo-adjust-matrix" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter>
+                    </svg>
                     <div class="sp-stage-wrap">
                         <div id="shelf-photo-stage" onclick="handleShelfPhotoStageClick(event)">
                             <canvas id="shelf-photo-canvas"></canvas>
@@ -1111,7 +1121,7 @@
                         </span>
                     </label>
                 </div>
-                <div class="crop-adjust" title="Double-click a slider to put it back in the middle.">
+                <div class="colour-adjust" title="Double-click a slider to put it back in the middle.">
                     <label>Brightness <span class="sp-tilt-track"><input type="range" id="crop-brightness" min="-100" max="100" value="0" oninput="adjustCropImage()" ondblclick="this.value = 0; adjustCropImage()"></span></label>
                     <label>Contrast <span class="sp-tilt-track"><input type="range" id="crop-contrast" min="-100" max="100" value="0" oninput="adjustCropImage()" ondblclick="this.value = 0; adjustCropImage()"></span></label>
                     <label>Warmth <span class="sp-tilt-track"><input type="range" id="crop-warmth" min="-100" max="100" value="0" oninput="adjustCropImage()" ondblclick="this.value = 0; adjustCropImage()"></span></label>
@@ -1119,7 +1129,7 @@
                     <button type="button" class="secondary" id="crop-adjust-reset" onclick="resetCropAdjust()" hidden>Reset colours</button>
                 </div>
                 <!-- the sliders' preview: the same sums the saved picture gets, as an SVG filter on the picture -->
-                <svg class="crop-adjust-svg" width="0" height="0" aria-hidden="true" focusable="false">
+                <svg class="colour-adjust-svg" width="0" height="0" aria-hidden="true" focusable="false">
                     <filter id="crop-adjust-filter" color-interpolation-filters="sRGB"><feColorMatrix id="crop-adjust-matrix" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/></filter>
                 </svg>
                 <div class="field-hint crop-turn-note" id="crop-turn-note" hidden>Turned upright, since a spine stands tall. Use Turn if it's the wrong way round.</div>

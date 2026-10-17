@@ -1867,6 +1867,7 @@ function tiltCropImage(deg) {
 // and the saved picture gets the same sums pixel by pixel, so what you
 // see is what you keep - and no canvas filter, which older Safari lacks.
 
+// (the Whole shelf window has the same four sliders - see shelfphoto.js)
 const CROP_ADJUST_IDS = ['crop-brightness', 'crop-contrast', 'crop-warmth', 'crop-saturation'];
 const CROP_ADJUST_IDENTITY = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]];
 
@@ -1898,8 +1899,20 @@ function cropAdjustMatrix(values) {
     return [saturate, contrastM, brightM, warmM].reduce(thenColourMatrix, CROP_ADJUST_IDENTITY);
 }
 
+// a set of four sliders' values, by their ids
+function colourAdjustValues(ids) {
+    return ids.map(id => Number(document.getElementById(id).value) || 0);
+}
+
+// puts the values into an SVG feColorMatrix, for the preview
+function showColourAdjust(matrixId, values) {
+    const m = cropAdjustMatrix(values);
+    document.getElementById(matrixId).setAttribute('values',
+        m.map(row => row.join(' ') + ' 0').join(' ') + ' 0 0 0 1 0');
+}
+
 function cropAdjustValues() {
-    return CROP_ADJUST_IDS.map(id => Number(document.getElementById(id).value) || 0);
+    return colourAdjustValues(CROP_ADJUST_IDS);
 }
 
 function cropIsAdjusted() {
@@ -1908,9 +1921,7 @@ function cropIsAdjusted() {
 
 function adjustCropImage() {
     const adjusted = cropIsAdjusted();
-    const m = cropAdjustMatrix(cropAdjustValues());
-    document.getElementById('crop-adjust-matrix').setAttribute('values',
-        m.map(row => row.join(' ') + ' 0').join(' ') + ' 0 0 0 1 0');
+    showColourAdjust('crop-adjust-matrix', cropAdjustValues());
     document.getElementById('crop-image').style.filter = adjusted ? 'url(#crop-adjust-filter)' : '';
     document.getElementById('crop-adjust-reset').hidden = !adjusted;
 }
@@ -1920,10 +1931,14 @@ function resetCropAdjust() {
     adjustCropImage();
 }
 
-// the sliders' colours, painted into a canvas's pixels
 function applyCropAdjust(canvas) {
-    if (!cropIsAdjusted()) return;
-    const m = cropAdjustMatrix(cropAdjustValues());
+    applyColourAdjust(canvas, cropAdjustValues());
+}
+
+// four sliders' colours, painted into a canvas's pixels
+function applyColourAdjust(canvas, values) {
+    if (!values.some(v => v !== 0)) return;
+    const m = cropAdjustMatrix(values);
     const ctx = canvas.getContext('2d');
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const px = data.data;

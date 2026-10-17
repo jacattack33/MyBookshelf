@@ -155,6 +155,21 @@ ok('straighten turns it', shelfPhoto.tilt === 2.5);
 tiltShelfPhoto(0);
 ok('and back to as taken', shelfPhoto.tilt === 0 && q('#shelf-photo-tilt').value === '0');
 
+// ---- brightness, contrast, warmth and saturation
+const hexSum = hex => [1, 3, 5].reduce((s, k) => s + parseInt(hex.slice(k, k + 2), 16), 0);
+const plainCut = cutShelfSlice(0).color;
+const linesBefore = JSON.stringify([shelfPhoto.dividers, shelfPhoto.tops, shelfPhoto.bottom]);
+ok('the colour sliders start in the middle', !q('#shelf-photo-split').classList.contains('sp-adjusted') && q('#shelf-photo-adjust-reset').hidden);
+q('#shelf-photo-brightness').value = -80;
+adjustShelfPhoto();
+ok('moving one previews it on the photo and the spines in the list', getComputedStyle(q('#shelf-photo-canvas')).filter.includes('shelf-photo-adjust-filter') &&
+    getComputedStyle(q('#shelf-photo-rows .sp-strip canvas')).filter.includes('shelf-photo-adjust-filter') && !q('#shelf-photo-adjust-reset').hidden);
+ok('the lines stay where they were', JSON.stringify([shelfPhoto.dividers, shelfPhoto.tops, shelfPhoto.bottom]) === linesBefore);
+const darkCut = cutShelfSlice(0).color;
+ok('a saved spine gets the colours', hexSum(darkCut) < hexSum(plainCut) - 150, plainCut + ' -> ' + darkCut);
+resetShelfPhotoAdjust();
+ok('Reset colours puts them back', !q('#shelf-photo-split').classList.contains('sp-adjusted') && q('#shelf-photo-brightness').value === '0' && cutShelfSlice(0).color === plainCut);
+
 // ---- zooming in
 zoomShelfPhoto(0);
 const fitW = q('#shelf-photo-canvas').getBoundingClientRect().width;
@@ -221,8 +236,11 @@ ok('spine photo on the shelf', !!spineEl && spineEl.style.backgroundImage.includ
 // ---- going back for a different photo
 openShelfPhoto();
 ok('remembers last time', q('[data-sp-kind="shelf"]').classList.contains('picked') && !q('#shelf-photo-choose').disabled);
+q('#shelf-photo-warmth').value = 50;
+adjustShelfPhoto();
 loadShelfPhoto(shelfCanvas.toDataURL('image/png'));
 await wait(300);
+ok('a new photo starts with the colour sliders in the middle', q('#shelf-photo-warmth').value === '0' && !q('#shelf-photo-split').classList.contains('sp-adjusted'));
 [...document.querySelectorAll('#shelf-photo-split .sp-tools button')].find(b => b.textContent.includes('Different photo')).click();
 ok('different photo goes back to the start', !q('#shelf-photo-pick').hidden && q('#shelf-photo-split').hidden && shelfPhoto === null);
 try { localStorage.setItem('shelfPhotoMode', 'shelf'); } catch (e) {}

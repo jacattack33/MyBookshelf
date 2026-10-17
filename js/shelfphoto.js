@@ -112,6 +112,7 @@ function loadShelfPhoto(dataUrl) {
         shelfPhoto = { img, turns: 0, tilt: 0, mode, bottom: 0.97, ownBottom: false, dividers: [],
             tops: [0], ownTop: [false], ends: [1], ownEnd: [false], blank: [false], picks: [null] };
         document.getElementById('shelf-photo-tilt').value = 0;
+        resetShelfPhotoAdjust();
         document.getElementById('shelf-photo-error').innerText = '';
         showShelfPhotoStep('split');
         showShelfPhotoMode();
@@ -191,6 +192,29 @@ function tiltShelfPhoto(deg) {
     shelfPhoto.ownBottom = false;
     drawShelfPhoto();
     guessShelfDividers();
+}
+
+// ---------- Brightness, contrast, warmth and saturation ----------
+// Only previewed while you work (a filter over the photo and the spines
+// in the list), so finding the gaps always looks at the photo as taken;
+// each spine gets the colours painted in when it's saved.
+
+const SHELF_PHOTO_ADJUST_IDS = ['shelf-photo-brightness', 'shelf-photo-contrast', 'shelf-photo-warmth', 'shelf-photo-saturation'];
+
+function shelfPhotoAdjustValues() {
+    return colourAdjustValues(SHELF_PHOTO_ADJUST_IDS);
+}
+
+function adjustShelfPhoto() {
+    const adjusted = shelfPhotoAdjustValues().some(v => v !== 0);
+    showColourAdjust('shelf-photo-adjust-matrix', shelfPhotoAdjustValues());
+    document.getElementById('shelf-photo-split').classList.toggle('sp-adjusted', adjusted);
+    document.getElementById('shelf-photo-adjust-reset').hidden = !adjusted;
+}
+
+function resetShelfPhotoAdjust() {
+    SHELF_PHOTO_ADJUST_IDS.forEach(id => { document.getElementById(id).value = 0; });
+    adjustShelfPhoto();
 }
 
 // ---------- Zooming in ----------
@@ -1171,6 +1195,7 @@ function updateShelfPhotoSave() {
 // slice i cut from the full-size picture, as a JPEG, plus its colour
 function cutShelfSlice(i) {
     const canvas = uprightShelfSlice(i, shelfPhoto.full, { maxH: SHELF_PHOTO_SPINE_MAX_H });
+    applyColourAdjust(canvas, shelfPhotoAdjustValues());
     const tiny = document.createElement('canvas');
     tiny.width = tiny.height = 1;
     const tctx = tiny.getContext('2d');
