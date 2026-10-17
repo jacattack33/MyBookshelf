@@ -375,7 +375,7 @@ button.danger:hover {
 }
 
 .modal-content.settings-content {
-    max-width: 380px;
+    max-width: 480px;
 }
 
 .settings-body {
@@ -515,7 +515,7 @@ button.danger:hover {
     color: var(--y2k-dark);
 }
 
-/* a yes/no about you in Settings (I have a library card) */
+/* a small yes/no tick box */
 .settings-check {
     display: flex;
     align-items: center;
@@ -524,6 +524,298 @@ button.danger:hover {
     font-size: 14px;
     color: var(--y2k-dark);
     cursor: pointer;
+}
+
+/* Settings > Your shelf: "I have a local library card" as a library ID
+   card - blue band with the library's name, a black cat for the
+   photo, a big tick box and a barcode - with a MEMBER stamp thumped
+   on when it's ticked.
+   Keeps its own colours in every theme and mode, like a real card. */
+.library-card-check {
+    position: relative;
+    display: block;
+    max-width: 340px;
+    margin-top: 14px;
+    cursor: pointer;
+}
+
+.library-card-check input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+.lcc-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: linear-gradient(160deg, #ffffff, #eef3f8);
+    border: 1px solid #b3c1d1;
+    padding-bottom: 14px;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.22);
+    transform: rotate(-1deg);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.library-card-check:hover .lcc-card {
+    transform: rotate(0deg) translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 10px 22px rgba(0, 0, 0, 0.26);
+}
+
+.library-card-check input:focus-visible + .lcc-card {
+    outline: 3px solid #4a7fc1;
+    outline-offset: 3px;
+}
+
+/* the band across the top: a little open book and the library's name */
+.lcc-band {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    /* the theme's window title bar colours (themes below) */
+    background: linear-gradient(90deg, var(--y2k-hot-pink), var(--y2k-purple));
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+    line-height: 16px;
+}
+
+.lcc-band small {
+    margin-left: auto;
+    font-size: 9px;
+    letter-spacing: 1px;
+    opacity: 0.85;
+}
+
+.lcc-logo {
+    flex: none;
+    position: relative;
+    width: 18px;
+    height: 13px;
+}
+
+.lcc-logo::before,
+.lcc-logo::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 8px;
+    height: 11px;
+    background: currentColor;
+    border-radius: 1px 1px 2px 2px;
+}
+
+.lcc-logo::before {
+    left: 0;
+    transform: skewY(8deg);
+}
+
+.lcc-logo::after {
+    right: 0;
+    transform: skewY(-8deg);
+}
+
+.lcc-body {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 14px 12px;
+}
+
+/* each theme's band: the same colours as its window title bars */
+:root[data-theme="holo"] .lcc-band {
+    background: var(--holo-loop);
+    color: var(--on-bright);
+}
+
+:root[data-theme="library"] .lcc-band {
+    background: var(--leather);
+    color: #f1e6cc;
+}
+
+:root[data-theme="deco"] .lcc-band {
+    background: var(--deco-navy);
+    color: #e3c77a;
+    box-shadow: inset 0 -2px 0 var(--gold);
+}
+
+:root[data-theme="loft"] .lcc-band {
+    background: var(--steel-bar);
+    color: #1d1f22;
+}
+
+:root[data-mode="dark"][data-theme="loft"] .lcc-band {
+    color: #e6e3dd;
+}
+
+:root[data-theme="blueprint"] .lcc-band {
+    background: #1d3d6e;
+    color: #fff;
+}
+
+:root[data-theme="terminal"] .lcc-band {
+    background: var(--phosphor);
+    color: var(--on-accent);
+}
+
+:root[data-theme="typewriter"] .lcc-band {
+    background: var(--title-bar);
+    color: #f4eedd;
+}
+
+:root[data-theme="sunset"] .lcc-band {
+    background: linear-gradient(90deg, #9c0a55, #d40848 35%, #f0282a 60%, #f7821e 82%, #fcc21b);
+    color: var(--title-ink);
+}
+
+:root:is([data-theme="plain"], [data-theme="plainbold"]) .lcc-band {
+    background: var(--p-frame);
+    color: #f4f4f2;
+}
+
+/* Terminal: lifted above the window's scanlines, like the preview book */
+:root[data-theme="terminal"] .library-card-check {
+    z-index: 31;
+}
+
+/* the photo spot: a black cat looking out of the card */
+.lcc-photo {
+    flex: none;
+    width: 64px;
+    height: 80px;
+    overflow: hidden;
+    background: linear-gradient(#e6edf5, #cfdbe8);
+    border: 2px solid #b8c6d6;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.lcc-photo svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.lcc-info {
+    min-width: 0;
+}
+
+.lcc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* the tick box: blue border, a red tick when ticked */
+.lcc-box {
+    flex: none;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    box-sizing: border-box;
+    border: 2px solid #3d6aa8;
+    border-radius: 5px;
+    background: #fff;
+    transition: background 0.15s ease;
+}
+
+.lcc-box::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 1px;
+    width: 7px;
+    height: 13px;
+    border: solid #c94f4f;
+    border-width: 0 4px 4px 0;
+    border-radius: 1px;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.2s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.library-card-check input:checked + .lcc-card .lcc-box {
+    background: #fde8e8;
+}
+
+.library-card-check input:checked + .lcc-card .lcc-box::after {
+    transform: rotate(45deg) scale(1);
+}
+
+.lcc-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #23354a;
+    line-height: 20px;
+}
+
+.lcc-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #5c6f85;
+    line-height: 16px;
+}
+
+body:not(.pins-on) .lcc-hint {
+    visibility: hidden;
+}
+
+/* barcode along the bottom, with the card number under it */
+.lcc-barcode {
+    display: block;
+    margin: 4px 14px 14px;
+    width: 160px;
+    height: 26px;
+    /* an SVG, not a striped gradient: stays crisp on the tilted card */
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 26'><path fill='%2323354a' d='M0 0h2v26h-2zM4 0h1v26h-1zM7 0h3v26h-3zM11 0h1v26h-1zM15 0h2v26h-2zM18 0h1v26h-1zM22 0h1v26h-1zM24 0h3v26h-3zM29 0h1v26h-1zM32 0h2v26h-2zM37 0h1v26h-1zM39 0h2v26h-2zM43 0h3v26h-3zM47 0h1v26h-1zM50 0h1v26h-1zM54 0h2v26h-2zM57 0h2v26h-2zM61 0h1v26h-1zM64 0h3v26h-3zM68 0h1v26h-1zM72 0h2v26h-2zM75 0h1v26h-1zM79 0h1v26h-1zM81 0h3v26h-3zM86 0h1v26h-1zM89 0h2v26h-2zM94 0h1v26h-1zM96 0h2v26h-2zM100 0h3v26h-3zM104 0h1v26h-1zM107 0h1v26h-1zM111 0h2v26h-2zM114 0h2v26h-2zM118 0h1v26h-1zM121 0h3v26h-3zM125 0h1v26h-1zM129 0h2v26h-2zM132 0h1v26h-1zM136 0h1v26h-1zM138 0h3v26h-3zM143 0h1v26h-1zM146 0h2v26h-2zM151 0h1v26h-1zM153 0h2v26h-2zM157 0h3v26h-3z'/></svg>") 0 0 / 100% 100% no-repeat;
+}
+
+.lcc-barcode::after {
+    content: "2 9087 0451 7731";
+    position: relative;
+    top: 27px;
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #5c6f85;
+    line-height: 10px;
+}
+
+/* the MEMBER stamp: red ink, a little crooked, beside the barcode */
+.lcc-stamp {
+    position: absolute;
+    right: 14px;
+    bottom: 18px;
+    padding: 2px 8px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #c94f4f;
+    border: 2px solid #c94f4f;
+    border-radius: 4px;
+    opacity: 0;
+    transform: rotate(-12deg) scale(1.8);
+    transition: opacity 0.15s ease, transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+    pointer-events: none;
+}
+
+.library-card-check input:checked + .lcc-card .lcc-stamp {
+    opacity: 0.85;
+    transform: rotate(-12deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lcc-card, .lcc-box::after, .lcc-stamp {
+        transition: none;
+    }
 }
 
 /* the edit window's "Don't count toward pins": only while there's a
@@ -636,6 +928,15 @@ body:not(.pins-on) .pins-book-check {
 }
 
 :root[data-theme="typewriter"] .machine-row {
+    display: block;
+}
+
+/* ...and the lettering choice only while Blueprint is on */
+.bp-font-row {
+    display: none;
+}
+
+:root[data-theme="blueprint"] .bp-font-row {
     display: block;
 }
 

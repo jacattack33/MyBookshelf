@@ -1423,6 +1423,22 @@
 :root[data-theme="blueprint"] .series-missing-label,
 :root[data-theme="blueprint"] .shelf-empty-hint { font-weight: 600; }
 :root[data-theme="blueprint"] .cat-z { font-family: 'Press Start 2P', monospace; }
+
+/* Engineering lettering (Settings > Theme > Blueprint lettering): the
+   hand lettering, body text and buttons all go to Share Tech Mono, a
+   technical monospace. It only comes in one weight, so the buttons
+   drop their bold rather than get a smeared fake one. */
+:root[data-theme="blueprint"][data-bp-font="engineering"] {
+    --pixel-font: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+:root[data-theme="blueprint"][data-bp-font="engineering"] :is(body, h1, .shelf-count, .genre-title, .modal-header h3, .pin-detail, .pin-detail-name, .goals-ring-count) {
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+:root[data-theme="blueprint"][data-bp-font="engineering"] body :is(.toggle-btn, .status-btn, .add-book-btn, button.secondary, button.danger, .file-upload-btn, .modal-buttons button, .sticky-submit, .filters-toggle, .critter-feed button, .critter-chips button, .critter-scrap-toggle, .critter-hatch) {
+    font-weight: 400;
+}
 @media (max-width: 600px) {
     :root[data-theme="blueprint"] h1 { font-size: 26px; letter-spacing: 1px; }
     :root[data-theme="blueprint"] .genre-title { font-size: 17px; letter-spacing: 0.5px; left: 0; padding: 7px 14px; }

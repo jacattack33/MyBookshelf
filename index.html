@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Bookshelf</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Special+Elite&family=Fredoka:wght@500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@600;800;900&family=Limelight&family=Barlow+Condensed:wght@500;600;700&family=Architects+Daughter&family=Share+Tech+Mono&family=VT323&family=IBM+Plex+Mono:wght@500;600&family=Barlow:wght@500;600;700&family=Oswald:wght@500;600&family=Lora:wght@500;600;700&family=Josefin+Sans:wght@500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Quicksand:wght@500;600;700&family=Cinzel:wght@500;700&family=Caveat:wght@500&family=Indie+Flower&family=Homemade+Apple&family=Nanum+Pen+Script&family=Shadows+Into+Light&family=Gloria+Hallelujah&family=Special+Elite&family=Fredoka:wght@500;600;700&family=Kaushan+Script&display=swap" rel="stylesheet">
     <script>
         try {
             const theme = localStorage.getItem('bookShelfTheme');
@@ -823,6 +823,13 @@
                             <button type="button" class="toggle-btn" data-setting-choice="typewriterMachine" data-choice="full" onclick="setSetting('typewriterMachine', 'full')">Full front</button>
                         </div>
                     </div>
+                    <div class="bp-font-row">
+                        <span class="field-label">Blueprint lettering</span>
+                        <div class="toggle-group theme-toggle" role="group" aria-label="Blueprint lettering">
+                            <button type="button" class="toggle-btn" data-setting-choice="blueprintFont" data-choice="drafting" onclick="setSetting('blueprintFont', 'drafting')" style="font-family: 'Architects Daughter', cursive;">Drafting</button>
+                            <button type="button" class="toggle-btn" data-setting-choice="blueprintFont" data-choice="engineering" onclick="setSetting('blueprintFont', 'engineering')" style="font-family: 'Share Tech Mono', monospace;">Engineering</button>
+                        </div>
+                    </div>
                     <span class="field-label">Mode</span>
                     <div class="toggle-group theme-toggle" role="group" aria-label="Light or dark mode">
                         <button type="button" class="toggle-btn" data-mode-choice="light" onclick="setMode('light')">Light</button>
@@ -836,8 +843,43 @@
                     <label class="field-label">Bookshelf name
                         <input type="text" id="setting-name" maxlength="40" placeholder="My Bookshelf" oninput="setSetting('name', this.value)">
                     </label>
-                    <label class="settings-check">
-                        <input type="checkbox" id="setting-library-card" onchange="setSetting('libraryCard', this.checked)"> I have a local library card
+                    <label class="library-card-check">
+                        <input type="checkbox" id="setting-library-card" onchange="setSetting('libraryCard', this.checked)">
+                        <span class="lcc-card">
+                            <span class="lcc-band" aria-hidden="true"><span class="lcc-logo"></span>PUBLIC LIBRARY<small>MEMBER</small></span>
+                            <span class="lcc-body">
+                                <span class="lcc-photo" aria-hidden="true">
+                                    <!-- the card's photo: a black cat with big yellow-orange eyes -->
+                                    <svg viewBox="0 0 40 50">
+                                        <g transform="translate(-2 4) scale(1.1)">
+                                            <path d="M10 30 Q7 38 6 46 L34 46 Q33 38 30 30 Z" fill="#161616"/>
+                                            <path d="M7 20 L8 6 Q8.6 3.6 11 4.8 L19 12 Z M33 20 L32 6 Q31.4 3.6 29 4.8 L21 12 Z" fill="#161616" stroke="#161616" stroke-width="1.5" stroke-linejoin="round"/>
+                                            <path d="M10 14 L10.4 8 L15 11.6 Z M30 14 L29.6 8 L25 11.6 Z" fill="#d98b9a"/>
+                                            <ellipse cx="20" cy="24" rx="14.5" ry="12" fill="#161616"/>
+                                            <circle cx="13.5" cy="24" r="4" fill="#f7b538"/>
+                                            <circle cx="26.5" cy="24" r="4" fill="#f7b538"/>
+                                            <circle cx="13.5" cy="24.4" r="3.1" fill="#1e1410"/>
+                                            <circle cx="26.5" cy="24.4" r="3.1" fill="#1e1410"/>
+                                            <circle cx="14.6" cy="22.8" r="1.5" fill="#fff"/>
+                                            <circle cx="27.6" cy="22.8" r="1.5" fill="#fff"/>
+                                            <circle cx="12.5" cy="25.8" r="0.7" fill="#fff"/>
+                                            <circle cx="25.5" cy="25.8" r="0.7" fill="#fff"/>
+                                            <ellipse cx="9.6" cy="29" rx="2.1" ry="1.2" fill="#e88a9a" opacity="0.6"/>
+                                            <ellipse cx="30.4" cy="29" rx="2.1" ry="1.2" fill="#e88a9a" opacity="0.6"/>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="lcc-info">
+                                    <span class="lcc-row">
+                                        <span class="lcc-box" aria-hidden="true"></span>
+                                        <span class="lcc-text">I have a local library card</span>
+                                    </span>
+                                    <span class="lcc-hint">Earns the Card Carrier pin</span>
+                                </span>
+                            </span>
+                            <span class="lcc-barcode" aria-hidden="true"></span>
+                            <span class="lcc-stamp" aria-hidden="true">MEMBER</span>
+                        </span>
                     </label>
                 </div>
 

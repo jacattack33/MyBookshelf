@@ -104,6 +104,7 @@ const DEFAULT_SETTINGS = {
     cardFont: null,             // library card handwriting (null = the book's notes font)
     backupReminders: true,      // nudge to export now and then
     typewriterMachine: 'off',   // Typewriter: the panel comes out of the machine: 'off', 'roller' or 'full' (adds the typing scale)
+    blueprintFont: 'drafting',  // Blueprint: 'drafting' (hand lettering) or 'engineering' (Share Tech Mono everywhere)
     celebrations: true,         // sparkles, confetti and the preview wiggle
     goodbyes: true,             // deleted books and notes leave in a little scene (and a got note poofs into a book)
     calm: false,                // no animations
@@ -610,7 +611,7 @@ function setSetting(key, value) {
     if (SHELF_EXTRA_SETTINGS.includes(key)) awardPin('tinker'); // (even switched back)
     refreshSettingsButtons();
     // the name and goals are typed into, so don't redraw every shelf per keystroke
-    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'pins', 'pinAlerts', 'pinNewBooks', 'celebrations', 'goodbyes'].includes(key));
+    applySettings(!['name', 'goal', 'defaultStatus', 'noteFont', 'cardFont', 'critter', 'pagesGoal', 'pagesPeriod', 'debug', 'backupReminders', 'typewriterMachine', 'blueprintFont', 'pins', 'pinAlerts', 'pinNewBooks', 'celebrations', 'goodbyes'].includes(key));
     if (key === 'backupReminders' && !value) hideBackupReminder();
     if (key === 'noteFalls' && !value) stickAllNotesBackUp();
     if (key === 'pinAlerts') renderPinWidget();
@@ -681,6 +682,7 @@ function applySettings(rerender) {
     document.getElementById('shelf-name').textContent = name;
     document.title = name;
     document.documentElement.dataset.machine = appSettings.typewriterMachine; // (only Typewriter shows it)
+    document.documentElement.dataset.bpFont = appSettings.blueprintFont; // (only Blueprint uses it)
     if (appSettings.calm) {
         document.documentElement.dataset.calm = '';
     } else {
