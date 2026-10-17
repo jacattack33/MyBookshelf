@@ -242,6 +242,16 @@ const GUIDE_PINS = (() => {
     const E = PIN_ENAMEL;
     return {
         // a shelf of books, one leaning
+        // the guidebook itself: an open book with a ribbon (Settings, and
+        // the welcome window's Show me around)
+        book: { metal: 'gold', glint: [10, 14], rotate: -8, art: [
+            ['e', 'M24 13C19 9.5 11.5 9.5 6 11.5V36C11.5 34 19 34 24 37.5Z', E.cream],
+            ['e', 'M24 13C29 9.5 36.5 9.5 42 11.5V36C36.5 34 29 34 24 37.5Z', E.cream],
+            ['e', 'M6 36C11.5 34 19 34 24 37.5C29 34 36.5 34 42 36V39.5C36.5 37.5 29 37.5 24 41C19 37.5 11.5 37.5 6 39.5Z', E.hot, null, 1.4],
+            ['e', 'M30 10.6V25l2.6-2.3L35.2 25V10.3Z', E.lav, null, 1.2],
+            ['l', 'M9.5 17c3.8-1 7.5-1 11 0'], ['l', 'M9.5 22c3.8-1 7.5-1 11 0'], ['l', 'M9.5 27c3.8-1 7.5-1 11 0'],
+            ['e', pinHeart(32, 30.5, 3), E.pink, null, 1]
+        ] },
         welcome: { metal: 'gold', glint: [12, 13], art: [
             ['e', 'M9 13h7v23h-7Z', E.hot],
             ['e', 'M17 10h6.5v26H17Z', E.sky],
@@ -354,6 +364,9 @@ const GUIDE_PINS = (() => {
 })();
 
 const guidePinSvg = id => pinSvg(GUIDE_PINS[id]);
+
+// the guidebook's pin on the ways in
+document.querySelectorAll('.guide-book-pin').forEach(el => { el.innerHTML = guidePinSvg('book'); });
 
 let guidePage = 0;
 

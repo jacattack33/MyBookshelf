@@ -1095,8 +1095,22 @@
 }
 
 .guide-card-art {
-    font-size: 34px;
-    line-height: 1;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+}
+
+.guide-book-pin .pin-art {
+    width: 100%;
+    height: 100%;
+}
+
+.fresh-start-guide .guide-book-pin {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    vertical-align: -6px;
+    margin-right: 2px;
 }
 
 .guide-card-text {
@@ -1116,6 +1130,7 @@
 
 .fresh-start-guide {
     align-self: center;
+    overflow: visible;
     margin-top: 4px;
 }
 

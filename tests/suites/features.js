@@ -566,6 +566,7 @@ selectViewMode('cover');
 // ---- the guidebook: a big window of chapters with screenshots, opened from Settings
 openSettings();
 ok('Settings opens with the guidebook button', q('.settings-body').firstElementChild === q('#settings-guide'));
+ok('...with a book pin on it', !!q('#settings-guide .guide-card-art svg.pin-art') && !!q('.fresh-start-guide svg.pin-art'));
 q('#settings-guide button').click();
 await wait(100);
 const guideModal = q('#guide-modal');
