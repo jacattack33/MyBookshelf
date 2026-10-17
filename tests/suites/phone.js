@@ -64,3 +64,32 @@ openStickyNote();
 toggleCornerDock();
 await wait(400);
 ok('toggle hides them again (and drops an open note)', ['#sticky-pile', '#stats-ledger', '#corner-stack'].every(hidden) && !q('#sticky-pile').classList.contains('open'));
+
+// ---- Whole shelf photo on a phone: a smaller toolbar, the colours
+// folded away, and a wide photo starting big enough to tap
+{
+    const wide = document.createElement('canvas');
+    wide.width = 1200; wide.height = 500;
+    const wx = wide.getContext('2d');
+    wx.fillStyle = '#d8d0c0'; wx.fillRect(0, 0, 1200, 500);
+    ['#7a2b2b', '#2b4a7a', '#3d7a3a', '#c97a2b', '#5b3f94', '#2b6a6a', '#9a3a5a', '#e8d9a8'].forEach((col, i) => { wx.fillStyle = col; wx.fillRect(i * 150, 40, 150, 420); });
+    openShelfPhoto();
+    pickShelfPhotoKind('shelf');
+    loadShelfPhoto(wide.toDataURL('image/png'));
+    await wait(500);
+    const backBtn = [...document.querySelectorAll('#shelf-photo-split .sp-tools button')].find(b => b.textContent.includes('Different photo'));
+    ok('"Different photo" is just "Back"', backBtn.innerText.trim() === '← Back', encodeURIComponent(backBtn.innerText));
+    ok('the colour sliders start folded away', !vis(q('#shelf-photo-colours')) && vis(q('#shelf-photo-colours-btn')));
+    q('#shelf-photo-colours-btn').click();
+    ok('Colours opens them', vis(q('#shelf-photo-colours')) && q('#shelf-photo-colours-btn').getAttribute('aria-expanded') === 'true');
+    q('#shelf-photo-warmth').value = 40;
+    adjustShelfPhoto();
+    q('#shelf-photo-colours-btn').click();
+    ok('folded with a colour moved, the button shows a dot', !vis(q('#shelf-photo-colours')) && q('#shelf-photo-colours-btn').classList.contains('sp-colours-changed'));
+    const photoH = q('#shelf-photo-canvas').getBoundingClientRect().height;
+    ok('a wide photo starts about half the screen tall', shelfPhotoZoom > 1 && photoH > innerHeight * 0.4, `${shelfPhotoZoom} / ${Math.round(photoH)}px`);
+    ok('and scrolls sideways', q('#shelf-photo-split .sp-stage-wrap').scrollWidth > q('#shelf-photo-split .sp-stage-wrap').clientWidth);
+    ok('the hint says tap on a touch screen', !matchMedia('(hover: none)').matches || q('#shelf-photo-hint').innerText.startsWith('Tap'), q('#shelf-photo-hint').innerText.slice(0, 20));
+    ok('no sideways scrolling of the window itself', q('#shelf-photo-modal .modal-content').scrollWidth <= q('#shelf-photo-modal .modal-content').clientWidth + 1);
+    closeShelfPhoto();
+}

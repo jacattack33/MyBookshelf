@@ -113,6 +113,7 @@ function loadShelfPhoto(dataUrl) {
             tops: [0], ownTop: [false], ends: [1], ownEnd: [false], blank: [false], picks: [null] };
         document.getElementById('shelf-photo-tilt').value = 0;
         resetShelfPhotoAdjust();
+        toggleShelfPhotoColours(false);
         document.getElementById('shelf-photo-error').innerText = '';
         showShelfPhotoStep('split');
         showShelfPhotoMode();
@@ -167,9 +168,13 @@ function showShelfPhotoMode() {
         btn.classList.toggle('active', btn.dataset.spMode === shelfPhoto.mode);
     });
     document.getElementById('shelf-photo-overlay').classList.toggle('stack', stack);
+    // (a touch screen has no hovering, and the ⊘ is always showing)
+    const touch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+    const click = touch ? 'Tap' : 'Click';
+    const skip = touch ? 'Tap its ⊘.' : 'Hover it and click ⊘.';
     document.getElementById('shelf-photo-hint').innerText = stack
-        ? "Click between two books to add a line; drag a line to move it, or its × to remove it. Each spine's dashed lines at either end mark where it starts and stops (drag one if it's off). Something that isn't a book? Hover it and click ⊘."
-        : "Click between two books to add a line; drag a line to move it, or its × to remove it. Each spine's dashed top line marks where it starts (drag it if it's off), and the one along the bottom marks the shelf. Something that isn't a book (the wall, a picture frame)? Hover it and click ⊘.";
+        ? `${click} between two books to add a line; drag a line to move it, or its × to remove it. Each spine's dashed lines at either end mark where it starts and stops (drag one if it's off). Something that isn't a book? ${skip}`
+        : `${click} between two books to add a line; drag a line to move it, or its × to remove it. Each spine's dashed top line marks where it starts (drag it if it's off), and the one along the bottom marks the shelf. Something that isn't a book (the wall, a picture frame)? ${skip}`;
 }
 
 // where slice i's spine stops (v)
@@ -210,6 +215,16 @@ function adjustShelfPhoto() {
     showColourAdjust('shelf-photo-adjust-matrix', shelfPhotoAdjustValues());
     document.getElementById('shelf-photo-split').classList.toggle('sp-adjusted', adjusted);
     document.getElementById('shelf-photo-adjust-reset').hidden = !adjusted;
+    document.getElementById('shelf-photo-colours-btn').classList.toggle('sp-colours-changed', adjusted);
+}
+
+// phones: the sliders folded away under a Colours button
+function toggleShelfPhotoColours(open) {
+    const split = document.getElementById('shelf-photo-split');
+    const on = split.classList.toggle('sp-colours-open', open);
+    const btn = document.getElementById('shelf-photo-colours-btn');
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-expanded', on);
 }
 
 function resetShelfPhotoAdjust() {
@@ -233,6 +248,16 @@ function startShelfPhotoZoom() {
     const fit = document.getElementById('shelf-photo-canvas').getBoundingClientRect().width;
     if (fit > 0 && room / fit > 1.15) {
         shelfPhotoZoom = Math.min(2, Math.floor(room / fit * 100) / 100);
+        applyShelfPhotoZoom();
+        return;
+    }
+    // on a phone a wide photo fitted to the screen is a thin strip with
+    // spines too narrow for a finger: start it about half the screen
+    // tall instead, scrolling sideways (Fit shows it all again)
+    const tall = document.getElementById('shelf-photo-canvas').getBoundingClientRect().height;
+    const want = window.innerHeight * 0.5;
+    if (phoneQuery && phoneQuery.matches && tall > 0 && want / tall > 1.15) {
+        shelfPhotoZoom = Math.min(3, Math.floor(want / tall * 100) / 100);
         applyShelfPhotoZoom();
     }
 }

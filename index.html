@@ -1052,7 +1052,7 @@
 
                 <div id="shelf-photo-split" hidden>
                     <div class="sp-tools">
-                        <button type="button" class="secondary" onclick="backToShelfPhotoPick()" title="Go back and choose another photo">&larr; Different photo</button>
+                        <button type="button" class="secondary" onclick="backToShelfPhotoPick()" title="Go back and choose another photo">&larr; <span class="sp-wide-only">Different photo</span><span class="sp-narrow-only">Back</span></button>
                         <div class="toggle-group sp-mode" role="group" aria-label="Books standing or lying down">
                             <button type="button" class="toggle-btn" data-sp-mode="shelf" onclick="setShelfPhotoMode('shelf')" title="Books standing up side by side">Shelf</button>
                             <button type="button" class="toggle-btn" data-sp-mode="stack" onclick="setShelfPhotoMode('stack')" title="Books lying in a pile, one on another">Stack</button>
@@ -1071,8 +1071,10 @@
                         </div>
                         <button type="button" class="secondary" onclick="guessShelfDividers()">Guess again</button>
                         <button type="button" class="secondary" onclick="clearShelfDividers()">Clear lines</button>
+                        <!-- (phones only: the colour sliders folded away under it) -->
+                        <button type="button" class="secondary sp-colours-toggle" id="shelf-photo-colours-btn" onclick="toggleShelfPhotoColours()" aria-expanded="false" aria-controls="shelf-photo-colours">Colours</button>
                     </div>
-                    <div class="colour-adjust sp-colour-adjust" title="Double-click a slider to put it back in the middle. The saved spines get these colours.">
+                    <div class="colour-adjust sp-colour-adjust" id="shelf-photo-colours" title="Double-click a slider to put it back in the middle. The saved spines get these colours.">
                         <label>Brightness <span class="sp-tilt-track"><input type="range" id="shelf-photo-brightness" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
                         <label>Contrast <span class="sp-tilt-track"><input type="range" id="shelf-photo-contrast" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>
                         <label>Warmth <span class="sp-tilt-track"><input type="range" id="shelf-photo-warmth" min="-100" max="100" value="0" oninput="adjustShelfPhoto()" ondblclick="this.value = 0; adjustShelfPhoto()"></span></label>

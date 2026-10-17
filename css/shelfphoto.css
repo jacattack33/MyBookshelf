@@ -792,6 +792,51 @@
     #shelf-photo-overlay .sp-line.h .sp-remove {
         top: 0;
     }
+
+    /* a smaller toolbar, so the photo gets more of the screen */
+    #shelf-photo-split .sp-tools {
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    #shelf-photo-split .sp-tools button {
+        padding: 5px 9px;
+        font-size: 12px;
+    }
+
+    #shelf-photo-split .sp-tilt {
+        font-size: 12px;
+    }
+
+    #shelf-photo-split .sp-tilt input {
+        width: 110px;
+    }
+
+    .sp-wide-only {
+        display: none;
+    }
+
+    /* the colour sliders fold away under the Colours button */
+    #shelf-photo-split:not(.sp-colours-open) .sp-colour-adjust {
+        display: none;
+    }
+
+    #shelf-photo-split .sp-colour-adjust {
+        margin-bottom: 8px;
+    }
+}
+
+/* (an id, so no theme's button styles show it) */
+@media (min-width: 601px) {
+    .sp-narrow-only,
+    #shelf-photo-modal .sp-colours-toggle {
+        display: none;
+    }
+}
+
+/* (a colour moved, while they're folded away) */
+.sp-colours-toggle.sp-colours-changed::after {
+    content: ' \2022';
 }
 
 /* (themes give buttons a display of their own) */
