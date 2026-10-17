@@ -235,6 +235,11 @@ h1 {
     gap: 10px;
 }
 
+/* the Sort line's middle control sits beside Sort, not out in the middle */
+.controls-line .spine-photo-filter {
+    margin-right: auto;
+}
+
 button, select, input {
     padding: 10px 15px;
     font-size: 15px;

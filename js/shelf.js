@@ -65,6 +65,7 @@ function updateFiltersCount() {
         v('organize-by') !== 'genre',
         v('filter-status') !== 'All',
         v('filter-owned') !== 'All',
+        v('filter-spine-photo') !== 'All',
         stickyFilter !== 'Show',
         v('sort-mode') !== 'custom',
         v('filter-tag') !== 'All',
@@ -421,6 +422,7 @@ function renderShelves() {
     const selectedKind = document.getElementById('filter-kind').value;
     const selectedStatus = document.getElementById('filter-status').value;
     const selectedOwned = document.getElementById('filter-owned').value;
+    const selectedSpinePhoto = document.getElementById('filter-spine-photo').value;
     const selectedSticky = stickyFilter; // Show / Hide / Only (the to-get notes)
     const selectedTag = document.getElementById('filter-tag').value;
     const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
@@ -433,6 +435,8 @@ function renderShelves() {
         (selectedStatus === "All" || b.status === selectedStatus) &&
         (selectedGenre === "All" || b.genre === selectedGenre) &&
         (selectedOwned === "All" || (selectedOwned === "Lent" ? isLentOut(b) : selectedOwned === "Owned" ? !!b.owned : !b.owned)) &&
+        // (a sticky note isn't a book waiting for a photo, so No Photo leaves them out)
+        (selectedSpinePhoto === "All" || (selectedSpinePhoto === "Has" ? !!b.spineImage : !b.spineImage && !isStickyPlaceholder(b))) &&
         (selectedSticky === "Show" || (selectedSticky === "Only" ? isStickyPlaceholder(b) : !isStickyPlaceholder(b))) &&
         (selectedTag === "All" || (b.tags && b.tags.includes(selectedTag))) &&
         (searchTerm === "" || b.title.toLowerCase().includes(searchTerm) || (b.authors || []).some(a => a.toLowerCase().includes(searchTerm)))

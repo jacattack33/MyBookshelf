@@ -221,6 +221,18 @@ q('[data-filter-kind="Non-Fiction"]').click();
 ok('filter: non-fiction only', shownIds().includes('fk2') && !shownIds().includes('fk1'));
 q('[data-filter-kind="All"]').click();
 ok('filter: both', shownIds().includes('fk1') && shownIds().includes('fk2'));
+// ---- spine photo: has one, or still waiting for one
+const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 4; return c.toDataURL('image/png'); })();
+library.find(b => b.id === 'fk1').spineImage = dot;
+library.push({ id: 'fk3', title: 'To Get', authors: ['A'], genre: 'Fantasy', status: 'Want to Read', color: '#345', width: 100, sortOrder: 72, stickyNote: true });
+const pickSpinePhoto = v => { q('#filter-spine-photo').value = v; q('#filter-spine-photo').dispatchEvent(new Event('change')); };
+pickSpinePhoto('Has');
+ok('filter: only books with a spine photo', shownIds().join() === 'fk1', shownIds().join());
+ok('spine photo filter counts on the badge', q('#filters-count').textContent.includes('1'));
+pickSpinePhoto('None');
+ok('filter: books still waiting for a spine photo, but not sticky notes', shownIds().includes('fk2') && !shownIds().includes('fk1') && !shownIds().includes('fk3'));
+pickSpinePhoto('All');
+ok('filter: spine photo or not', ['fk1', 'fk2', 'fk3'].every(id => shownIds().includes(id)) && q('#filters-count').textContent === '');
 library = library.filter(b => !b.id.startsWith('fk'));
 renderBookshelf();
 setSetting('debug', false);

@@ -156,6 +156,16 @@
                     </select>
                 </div>
 
+                <!-- (sits right after Sort; Fiction keeps the right end) -->
+                <div class="control-group spine-photo-filter">
+                    <label for="filter-spine-photo">Spine Photo: </label>
+                    <select id="filter-spine-photo" onchange="renderBookshelf()" title="Only books with a photo of their spine, or the ones still waiting for one">
+                        <option value="All">All Books</option>
+                        <option value="Has">Has a Photo</option>
+                        <option value="None">No Photo Yet</option>
+                    </select>
+                </div>
+
                 <div class="control-group">
                     <label>Fiction: </label>
                     <div class="toggle-group toggle-blue">
