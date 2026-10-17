@@ -559,8 +559,10 @@
     --pe-peach: #f3a985;
     --pe-cream: #f6fbfa;
     --pe-ink: #1f3b4d;
-    /* pepperoni: teal would look rotten, so a deep coral */
+    /* pepperoni, cherries and the pencil's eraser: teal and mint would
+       look rotten, so a deep coral and a light one */
     --pe-red: #d9604a;
+    --pe-rose: #ec8a78;
     --pin-frame: #9fd3c7;
     --pin-frame-light: #d2efe8;
     --pin-frame-edge: rgba(31, 59, 77, 0.5);

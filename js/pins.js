@@ -38,9 +38,10 @@ const PIN_ENAMEL = {
     pink: 'var(--pe-pink, #ff8cc3)', hot: 'var(--pe-hot, #ff4fa3)', lav: 'var(--pe-lav, #c9a6ff)',
     mint: 'var(--pe-mint, #7ee8c4)', teal: 'var(--pe-teal, #2fbf8f)', yellow: 'var(--pe-yellow, #ffe066)', sky: 'var(--pe-sky, #8fd3ff)',
     peach: 'var(--pe-peach, #ffb48c)', cream: 'var(--pe-cream, #fffaf2)', ink: 'var(--pe-ink, #4a2378)',
-    // food that has to stay red-ish: the theme's hot colour, unless that's
-    // something no pepperoni should be (Sea Glass's is teal)
-    red: 'var(--pe-red, var(--pe-hot, #ff4fa3))'
+    // things that have to stay red-ish (pepperoni, cherries, an eraser):
+    // the theme's hot or pink colour, unless that's something no cherry
+    // should be (Sea Glass's are teal and mint)
+    red: 'var(--pe-red, var(--pe-hot, #ff4fa3))', rose: 'var(--pe-rose, var(--pe-pink, #ff8cc3))'
 };
 
 const pinCircle = (cx, cy, r) => `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
@@ -227,7 +228,7 @@ const PINS = [
         art: [
             ['l', 'M24 9Q25 5.5 28.5 4.5'],
             ['e', pinCircle(17, 21, 6.5), PIN_E.pink], ['e', pinCircle(31, 21, 6.5), PIN_E.mint], ['e', pinCircle(24, 15.5, 6.5), PIN_E.yellow],
-            ['e', pinCircle(24, 9.5, 3), PIN_E.hot], ['d', pinCircle(23, 8.6, 0.8), PIN_E.cream],
+            ['e', pinCircle(24, 9.5, 3), PIN_E.red], ['d', pinCircle(23, 8.6, 0.8), PIN_E.cream],
             ['e', 'M9 24H39L33 35H15Z', PIN_E.sky],
             ['m', 'M22 35h4v4.5h-4Z'], ['m', 'M15.5 39.5H32.5Q32.5 42.5 29.5 42.5H18.5Q15.5 42.5 15.5 39.5Z']
         ]
@@ -454,7 +455,7 @@ const PINS = [
         id: 'notes', name: 'Margin Notes', desc: 'Write notes on 10 books.', metal: 'silver', glint: [15, 29], rotate: -40,
         progress: s => [Math.min(s.withNotes, 10), 10],
         art: [
-            ['e', 'M5 20h5v8H5Z', PIN_E.pink], ['m', 'M10 19.4h3.6v9.2H10Z'], ['l', 'M11.8 19.6v8.8'],
+            ['e', 'M5 20h5v8H5Z', PIN_E.rose], ['m', 'M10 19.4h3.6v9.2H10Z'], ['l', 'M11.8 19.6v8.8'],
             ['e', 'M13.6 20h19v8h-19Z', PIN_E.yellow], ['l', 'M14.5 24h17'],
             ['e', 'M32.6 20L41 24L32.6 28Z', PIN_E.cream], ['d', 'M38.4 22.9L41 24L38.4 25.1Z', PIN_E.ink]
         ]
@@ -603,7 +604,7 @@ const PINS = [
             ['d', pinCircle(33, 35.4, 1), PIN_E.cream], ['d', pinCircle(32, 30.4, 1), PIN_E.yellow], ['d', pinCircle(17.5, 29.8, 1), PIN_E.sky],
             ['e', 'M8.5 21.5Q24 15.5 39.5 21.5V24H38.3V28A1.8 1.8 0 0 1 34.7 28V24.5H30.8V26A1.8 1.8 0 0 1 27.2 26V24.5H23.3V29A1.8 1.8 0 0 1 19.7 29V24.5H15.8V26.5A1.8 1.8 0 0 1 12.2 26.5V24H8.5Z', PIN_E.cream],
             ['l', 'M24 12Q24.8 8.5 28 7'],
-            ['e', pinCircle(24, 15, 3.6), PIN_E.hot], ['d', pinCircle(22.8, 13.8, 0.9), PIN_E.cream]
+            ['e', pinCircle(24, 15, 3.6), PIN_E.red], ['d', pinCircle(22.8, 13.8, 0.9), PIN_E.cream]
         ]
     },
     {
@@ -714,7 +715,7 @@ const PINS = [
             ['e', 'M14.2 27.2Q13 13 26.3 7.6L28 9.2Q15.2 14 17 27.4Z', PIN_E.teal, null, 0.9],
             ['e', 'M31.6 27.4Q26.5 17.5 26.3 9.2L28.3 8.4Q29 17 34.4 27.2Z', PIN_E.teal, null, 0.9],
             ['e', 'M27 8.5Q23 2.5 15 4.5Q19 11 27 8.5Z', PIN_E.mint], ['l', 'M25 8Q21 6 17.5 5.2', 0.6],
-            ['e', pinCircle(15, 34, 8.5), PIN_E.hot], ['e', pinCircle(33, 35, 8.5), PIN_E.hot],
+            ['e', pinCircle(15, 34, 8.5), PIN_E.red], ['e', pinCircle(33, 35, 8.5), PIN_E.red],
             ['d', pinCircle(11.8, 31, 1.6), PIN_E.cream], ['d', pinCircle(29.8, 32, 1.6), PIN_E.cream]
         ]
     },
@@ -772,7 +773,7 @@ const PINS = [
         progress: s => [Math.min(s.genreMost, 10), 10],
         art: [
             // a cherry pie with a lattice top and a crimped crust
-            ['e', pinCircle(24, 24, 14), PIN_E.hot],
+            ['e', pinCircle(24, 24, 14), PIN_E.red],
             ...[19, 29].map(x => ['e', `M${x - 2.3} 9H${x + 2.3}V39H${x - 2.3}Z`, PIN_E.peach, null, 0.9]),
             ...[19, 29].map(y => ['e', `M9 ${y - 2.3}H39V${y + 2.3}H9Z`, PIN_E.peach, null, 0.9]),
             ['e', pinWavy(24, 24, 18.5, 1.1, 16) + pinCircle(24, 24, 13.5), PIN_E.peach, 'evenodd']
