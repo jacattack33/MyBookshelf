@@ -777,6 +777,25 @@ body:not(.pins-on) .pins-book-check {
     z-index: 5;
 }
 
+/* Clear of the corner things pinned bottom-left (critter, pin board,
+   goals card, ledger, sticky pile - about 95px wide): at medium widths
+   the filters and shelves start after them instead of running under
+   them, and a shelf's sign hangs off its corner less, so it's clear of
+   them too. Wide, it all comes out centred, the same as ever. (Phones
+   fold the corner things away instead - see phone.css.) */
+@media (min-width: 601px) {
+    .controls,
+    .library-room {
+        margin-left: max(100px, (100% - 1000px) / 2);
+        margin-right: auto;
+    }
+
+    /* 1057px: the shelves' 1000, the page's 20 a side, and a scrollbar */
+    .genre-title {
+        left: max(-86px, min(-12px, calc(88px - (100vw - 1057px) / 2)));
+    }
+}
+
 .genre-title.tag-status-want {
     background: var(--y2k-yellow);
     color: var(--on-bright); /* dark text on the bright tag, dark mode too */

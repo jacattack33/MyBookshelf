@@ -2436,6 +2436,18 @@
     max-width: 1100px;
 }
 
+/* (centred on its own wider width, still clear of the corner things) */
+@media (min-width: 601px) {
+    :root[data-theme="typewriter"] .controls {
+        margin-left: max(100px, (100% - 1100px) / 2);
+    }
+
+    /* the machine's return lever sticks out ~95px further left */
+    :root[data-theme="typewriter"]:is([data-machine="roller"], [data-machine="full"]) .controls {
+        margin-left: max(192px, (100% - 1100px) / 2);
+    }
+}
+
 @media (min-width: 601px) {
     :root[data-theme="typewriter"] .controls-row {
         flex-wrap: nowrap;

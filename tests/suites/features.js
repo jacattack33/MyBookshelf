@@ -658,3 +658,20 @@ offerFreshStart && (document.getElementById('fresh-start-modal').style.display =
 q('.fresh-start-guide').click();
 ok('the welcome window can open the guide at the start', guideModal.style.display === 'flex' && guidePage === 0 && q('#fresh-start-modal').style.display === 'none');
 closeGuide();
+
+// ---- at this medium width, nothing runs under the corner things pinned
+// bottom-left (critter, pin board, goals card, ledger, sticky pile)
+{
+    const cornerRight = () => Math.max(...['#corner-stack', '#stats-ledger', '#sticky-pile'].map(s => q(s) && q(s).getBoundingClientRect().right).filter(Boolean));
+    const clashes = [];
+    for (const [theme, machine] of [...THEMES.map(t => [t, null]), ['typewriter', 'full']]) {
+        setTheme(theme);
+        if (machine) document.documentElement.dataset.machine = machine; else delete document.documentElement.dataset.machine;
+        const lefts = [q('.controls'), q('#library-room'), ...document.querySelectorAll('.genre-title'), ...document.querySelectorAll('.tw-machine > *')]
+            .map(el => el.getBoundingClientRect()).filter(r => r.width).map(r => r.left);
+        if (Math.min(...lefts) < cornerRight()) clashes.push(theme + (machine ? '/' + machine : '') + ' ' + Math.round(Math.min(...lefts)) + '<' + Math.round(cornerRight()));
+    }
+    delete document.documentElement.dataset.machine;
+    setTheme('candy');
+    ok('filters, shelves and signs start clear of the corner things', clashes.length === 0, clashes.join(', '));
+}
