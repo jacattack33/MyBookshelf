@@ -111,7 +111,10 @@ async function runMigrations() {
 const SETTINGS_BACKUP_KEYS = [
     'bookShelfSettings', 'bookShelfTheme', 'bookShelfTint', 'bookShelfMode', 'bookShelfStickyFilter',
     'bookShelfQuickAddGenre', 'bookShelfLastNoteFont', 'bookShelfExpandedShelves', 'bookShelfRecentColors',
-    'bookShelfCritter', 'bookShelfPagesLog', 'bookShelfPins', 'bookShelfRecs'
+    'bookShelfCritter', 'bookShelfPagesLog', 'bookShelfPins', 'bookShelfRecs',
+    // which books came with the example shelf, so Remove example shelf
+    // still works after the backup's brought back
+    'bookShelfStarterIds'
 ];
 
 function collectSettingsForBackup() {

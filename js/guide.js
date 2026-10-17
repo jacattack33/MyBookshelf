@@ -101,8 +101,8 @@ const GUIDE = [
             '<b>Organize by</b> makes a shelf for each genre, reading status, author, series, tag or star rating.',
             '<b>Covers / Spines</b> shows the books face out, or spine out like a real bookcase. Books without a spine photo get a gilt leather spine.',
             '<b>Sort: Custom</b> lets you drag books into any order. Drag one onto a different shelf to change its genre, status or rating.',
-            '<b>Stickies</b> mixes your sticky notes in with your books, hides them, or shows only them.',
-            '<b>Filter</b> by status, owned, fiction, tag or genre, or just search by title or author.',
+            '<b>Sticky Notes</b> mixes your sticky notes in with your books, hides them, or shows only them.',
+            '<b>Filter</b> by status, owned, spine photo, fiction, tag or genre, or just search by title or author. <b>Spine Photo: No Photo Yet</b> lists the books still waiting for a spine photo.',
             '<b>Long shelf?</b> The little round arrow under it opens it out into more rows. Each shelf remembers.',
             '<b>Series:</b> fill in <b># in series</b> and <b>Out of</b> and the Series shelf shows grey stand-ins for the books you haven\'t got yet.'
         ],
@@ -228,7 +228,7 @@ const GUIDE = [
             '<b>Changed a book by mistake?</b> Press <b>Cancel</b> instead of saving and nothing changes. (Notes on a book you already have save when you close the notepad.)',
             '<b>Deleted a book?</b> There\'s no undo, but importing your latest backup brings it back.',
             '<b>Sticky note fell off?</b> Click it to stick it back up.',
-            '<b>Want to start fresh?</b> Settings &rarr; Start over can remove the example shelf, restart your pins, or delete everything (back up first!).',
+            '<b>Want to start fresh?</b> Settings &rarr; Start over can remove the example shelf, restart your pins, or delete everything (back up first!). <b>All books</b> there lists every book with a tick box, to delete just the ones you pick; <b>Tick example shelf books</b> picks out the example ones, even from a backup.',
             '<b>Something looks out of date?</b> Refresh the page to get the newest version.'
         ],
         psst: 'That\'s everything! You can come back to this guide any time from Settings. Happy reading &#9825;'

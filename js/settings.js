@@ -413,6 +413,170 @@ async function removeStarterShelf() {
     renderBookshelf();
 }
 
+// ---------- All books (Settings > Start over) ----------
+// Every book in one list, to tick and delete. "Tick example shelf books"
+// finds the example shelf's books by the ids in starter-library.json too,
+// not only the ones this browser remembers - so they can still be picked
+// out after a backup brought them back somewhere else.
+const allBooksTicked = new Set();
+let starterFileIds = null; // a promise of the example shelf's ids (none when it can't be read)
+
+function exampleShelfIds() {
+    if (!starterFileIds) {
+        starterFileIds = fetch('starter-library.json', { cache: 'no-store' })
+            .then(res => res.ok ? res.json() : { books: [] })
+            // (pastIds: books an older example shelf had, should it be swapped for a new one)
+            .then(data => [...(Array.isArray(data.books) ? data.books : []).map(b => b.id),
+                ...(Array.isArray(data.pastIds) ? data.pastIds : [])])
+            .catch(() => []);
+    }
+    let remembered = [];
+    try { remembered = JSON.parse(localStorage.getItem(STARTER_IDS_KEY)) || []; } catch (e) {}
+    return starterFileIds.then(ids => new Set([...ids, ...remembered]));
+}
+
+async function exampleBooksOnShelf() {
+    const ids = await exampleShelfIds();
+    return library.filter(b => ids.has(b.id));
+}
+
+function openAllBooks() {
+    allBooksTicked.clear();
+    document.getElementById('all-books-search').value = '';
+    document.getElementById('all-books-done').textContent = '';
+    document.getElementById('all-books-pins').checked = false;
+    askDeleteTickedBooks(false);
+    renderAllBooks();
+    document.getElementById('all-books-modal').style.display = 'flex';
+    refreshExampleTickButton();
+}
+
+function closeAllBooks() {
+    document.getElementById('all-books-modal').style.display = 'none';
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || document.getElementById('all-books-modal').style.display !== 'flex') return;
+    // (a first Escape just backs out of "are you sure")
+    if (!document.getElementById('all-books-confirm').hidden) askDeleteTickedBooks(false);
+    else closeAllBooks();
+});
+
+async function refreshExampleTickButton() {
+    const n = (await exampleBooksOnShelf()).length;
+    const btn = document.getElementById('all-books-example');
+    btn.hidden = n === 0;
+    btn.textContent = `Tick example shelf books (${n})`;
+}
+
+// the books the search box lets through, A to Z
+function allBooksShown() {
+    const term = document.getElementById('all-books-search').value.trim().toLowerCase();
+    return library
+        .filter(b => !term || b.title.toLowerCase().includes(term) || (b.authors || []).some(a => a.toLowerCase().includes(term)))
+        .sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+}
+
+function renderAllBooks() {
+    const list = document.getElementById('all-books-list');
+    list.innerHTML = '';
+    const shown = allBooksShown();
+    shown.forEach(book => {
+        const row = document.createElement('li');
+        const label = document.createElement('label');
+        label.className = 'all-books-row';
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.checked = allBooksTicked.has(book.id);
+        box.addEventListener('change', () => {
+            box.checked ? allBooksTicked.add(book.id) : allBooksTicked.delete(book.id);
+            updateAllBooksCount();
+        });
+        // its cover (the shelf's own copy of it), or its colour
+        const thumb = document.createElement('span');
+        thumb.className = 'all-books-thumb';
+        thumb.style.background = book.image ? `center / cover url(${shelfImageUrl(book.id, book.image)})` : (book.color || '#999');
+        const text = document.createElement('span');
+        text.className = 'all-books-text';
+        const title = document.createElement('span');
+        title.className = 'all-books-title';
+        title.textContent = book.title;
+        const by = document.createElement('span');
+        by.className = 'all-books-by';
+        by.textContent = [(book.authors || []).join(', '), isStickyPlaceholder(book) ? 'sticky note' : book.status].filter(Boolean).join(' · ');
+        text.append(title, by);
+        label.append(box, thumb, text);
+        row.appendChild(label);
+        list.appendChild(row);
+    });
+    if (!shown.length) {
+        const none = document.createElement('li');
+        none.className = 'all-books-none';
+        none.textContent = library.length ? 'No books match that search.' : 'Your shelf is empty.';
+        list.appendChild(none);
+    }
+    updateAllBooksCount();
+}
+
+function updateAllBooksCount() {
+    // (a book deleted some other way since it was ticked doesn't count)
+    [...allBooksTicked].forEach(id => { if (!library.some(b => b.id === id)) allBooksTicked.delete(id); });
+    const n = allBooksTicked.size;
+    document.getElementById('all-books-count').textContent = `${library.length} book${library.length === 1 ? '' : 's'} · ${n} ticked`;
+    const del = document.getElementById('all-books-delete');
+    del.disabled = n === 0;
+    del.innerHTML = n ? `Delete ${n} book${n === 1 ? '' : 's'}&hellip;` : 'Delete&hellip;';
+    if (n === 0) askDeleteTickedBooks(false);
+}
+
+// ticks (or unticks) every book the search lets through
+function tickAllBooks(on) {
+    allBooksShown().forEach(b => on ? allBooksTicked.add(b.id) : allBooksTicked.delete(b.id));
+    renderAllBooks();
+}
+
+async function tickExampleBooks() {
+    (await exampleBooksOnShelf()).forEach(b => allBooksTicked.add(b.id));
+    document.getElementById('all-books-search').value = '';
+    // clearing out the example shelf: its pins should go with it
+    document.getElementById('all-books-pins').checked = true;
+    renderAllBooks();
+}
+
+function askDeleteTickedBooks(show) {
+    const n = allBooksTicked.size;
+    document.getElementById('all-books-ask').hidden = show;
+    document.getElementById('all-books-confirm').hidden = !show;
+    if (!show) return;
+    document.getElementById('all-books-confirm-text').textContent =
+        `Delete ${n} book${n === 1 ? '' : 's'}, with ${n === 1 ? 'its' : 'their'} covers and notes? This can't be undone, so export a backup first if you're unsure.`;
+    document.getElementById('all-books-confirm-btn').textContent = `Delete ${n} book${n === 1 ? '' : 's'}`;
+}
+
+async function deleteTickedBooks() {
+    const gone = library.filter(b => allBooksTicked.has(b.id));
+    await Promise.all(gone.map(b => dbDelete(b.id)));
+    library = library.filter(b => !allBooksTicked.has(b.id));
+    allBooksTicked.clear();
+    // the example shelf remembers only what's left of it
+    const left = starterBooksLeft().map(b => b.id);
+    try { left.length ? localStorage.setItem(STARTER_IDS_KEY, JSON.stringify(left)) : localStorage.removeItem(STARTER_IDS_KEY); } catch (e) {}
+    const lostPins = document.getElementById('all-books-pins').checked ? takeBackPins(PINS.map(p => p.id)) : [];
+    document.getElementById('all-books-pins').checked = false;
+
+    populateGenreSelects();
+    populateAuthorOptions();
+    populateSeriesOptions();
+    populateFilterTagSelect();
+    renderBookshelf();
+    refreshStarterSetting();
+    askDeleteTickedBooks(false);
+    renderAllBooks();
+    refreshExampleTickButton();
+    document.getElementById('all-books-done').textContent =
+        `Deleted ${gone.length} book${gone.length === 1 ? '' : 's'}.` + (lostPins.length ? ` Pins taken off: ${lostPins.join(', ')}.` : '');
+}
+
 function openSettings() {
     hideDeleteLibraryConfirm();
     refreshStarterSetting();

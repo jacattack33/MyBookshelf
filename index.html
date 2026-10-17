@@ -89,7 +89,7 @@
 
             <div class="controls-line">
                 <div class="control-group">
-                    <label>Filter Status: </label>
+                    <label>Status: </label>
                     <div class="toggle-group toggle-peach">
                         <button type="button" class="toggle-btn active" data-filter-status="All" onclick="selectFilterStatus('All')">All</button>
                         <button type="button" class="toggle-btn" data-filter-status="Want to Read" onclick="selectFilterStatus('Want to Read')">Want to Read</button>
@@ -121,7 +121,7 @@
 
             <div class="controls-line">
                 <div class="control-group">
-                    <label>Filter Owned: </label>
+                    <label>Owned: </label>
                     <div class="toggle-group toggle-lilac">
                         <button type="button" class="toggle-btn active" data-filter-owned="All" onclick="selectFilterOwned('All')">All</button>
                         <button type="button" class="toggle-btn" data-filter-owned="Owned" onclick="selectFilterOwned('Owned')">Owned</button>
@@ -137,7 +137,7 @@
                 </div>
 
                 <div class="control-group">
-                    <label>Stickies: </label>
+                    <label>Sticky Notes: </label>
                     <div class="toggle-group toggle-yellow">
                         <button type="button" class="toggle-btn active" data-filter-sticky="Show" onclick="selectFilterSticky('Show')" title="Show the to-get notes with your books">Show</button>
                         <button type="button" class="toggle-btn" data-filter-sticky="Hide" onclick="selectFilterSticky('Hide')" title="Only real books">Hide</button>
@@ -183,14 +183,14 @@
 
             <div class="controls-row">
                 <div class="control-group">
-                    <label for="filter-tag">Filter Tag: </label>
+                    <label for="filter-tag">Tag: </label>
                     <select id="filter-tag" onchange="renderBookshelf()">
                         <option value="All">All Tags</option>
                     </select>
                 </div>
 
                 <div class="control-group">
-                    <label for="filter-genre">Filter Genre: </label>
+                    <label for="filter-genre">Genre: </label>
                     <select id="filter-genre" onchange="renderBookshelf()">
                         <option value="All">All Genres</option>
                     </select>
@@ -938,6 +938,8 @@
                         <div class="field-hint">Your shelf still has books from the example shelf it came with. Remove them, and the pins they earned, to make it all yours. Books you've added stay.</div>
                         <button type="button" class="danger" onclick="removeStarterShelf()">Remove example shelf</button>
                     </div>
+                    <div class="field-hint">All books: every book in one list, to tick and delete just the ones you want gone (like the example shelf's books, after bringing back a backup).</div>
+                    <button type="button" class="secondary" onclick="openAllBooks()">All books&hellip;</button>
                     <div class="field-hint">Restart pins: takes every pin off the board. Any your books still earn come straight back; one-off ones, like getting back a book you lent, don't.</div>
                     <button type="button" class="secondary" onclick="restartPins()">Restart pins&hellip;</button>
                     <div class="field-hint">Deletes every book, cover, note and custom genre. This can't be undone, so save a backup first.</div>
@@ -993,6 +995,43 @@
                 </div>
                 <div class="field-hint">You can still do this later in Settings &rarr; Start over.</div>
                 <button type="button" class="secondary fresh-start-guide" onclick="closeFreshStart(); openGuide(0)"><span class="guide-book-pin" aria-hidden="true"></span> Show me around first</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings > Start over > All books: every book in one list, to tick and delete -->
+    <div class="modal" id="all-books-modal" onclick="if (event.target === this) closeAllBooks()">
+        <div class="modal-content all-books-content" role="dialog" aria-labelledby="all-books-heading">
+            <div class="modal-header">
+                <h3 id="all-books-heading">&#9670; All Books</h3>
+                <button type="button" class="modal-close-x" onclick="closeAllBooks()" aria-label="Close"><span class="x-face">&times;</span></button>
+            </div>
+            <div class="all-books-body">
+                <div class="field-hint">Every book on your shelf, A to Z. Tick the ones you want gone, then Delete.</div>
+                <input type="search" id="all-books-search" placeholder="Search title or author..." oninput="renderAllBooks()" autocomplete="off">
+                <div class="all-books-tools">
+                    <button type="button" class="secondary" onclick="tickAllBooks(true)">Tick all</button>
+                    <button type="button" class="secondary" onclick="tickAllBooks(false)">Untick all</button>
+                    <button type="button" class="secondary" id="all-books-example" onclick="tickExampleBooks()" hidden title="The books that came with the example shelf, even ones brought back from a backup">Tick example shelf books</button>
+                </div>
+                <div class="field-hint all-books-done" id="all-books-done" role="status"></div>
+                <ul class="all-books-list" id="all-books-list"></ul>
+            </div>
+            <div class="all-books-foot">
+                <div class="all-books-ask" id="all-books-ask">
+                    <span class="all-books-count" id="all-books-count"></span>
+                    <button type="button" class="danger" id="all-books-delete" onclick="askDeleteTickedBooks(true)" disabled>Delete&hellip;</button>
+                </div>
+                <div class="all-books-confirm" id="all-books-confirm" hidden>
+                    <div class="all-books-confirm-text" id="all-books-confirm-text"></div>
+                    <label class="delete-reset-settings">
+                        <input type="checkbox" id="all-books-pins"> Also take off pins only these books earned
+                    </label>
+                    <div class="danger-buttons">
+                        <button type="button" class="secondary" onclick="askDeleteTickedBooks(false)">Keep them</button>
+                        <button type="button" class="danger" id="all-books-confirm-btn" onclick="deleteTickedBooks()">Delete</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
