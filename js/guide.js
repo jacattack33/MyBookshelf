@@ -3,7 +3,7 @@
 // time, with screenshots (assets/guide/, made by dev/guide-shots.py).
 // Opened from Settings, and from the welcome window on a first visit.
 //
-// Each chapter: icon, title, lead (a line or two), shots, tips and an
+// Each chapter: title, lead (a line or two), shots, tips and an
 // optional psst (a sticky-note aside). A shot with stickers on it goes
 // with numbered tips (steps: true), so tip 1 is sticker 1. "{pins}" in
 // any text becomes the number of pins.
@@ -12,7 +12,7 @@ const GUIDE_PAGE_KEY = 'bookShelfGuidePage';
 
 const GUIDE = [
     {
-        id: 'welcome', icon: '\u{1F44B}', title: 'Welcome to your shelf',
+        id: 'welcome', title: 'Welcome to your shelf',
         lead: "Here's the whole place at a glance. Everything is clickable, so poke around: nothing you click here can break it.",
         shots: [{ src: 'shelf', alt: 'The whole bookshelf page, with numbered stickers', caption: 'The whole shelf. The numbers match the list below.' }],
         steps: true,
@@ -27,7 +27,7 @@ const GUIDE = [
         psst: 'The pictures in this guide are in the Candy theme. Yours might be wearing a different outfit, but everything is in the same place.'
     },
     {
-        id: 'saving', icon: '\u{1F4BE}', title: 'Where your books live',
+        id: 'saving', title: 'Where your books live',
         lead: 'No account, no password, nothing online. Your whole shelf is saved right here, in <b>this browser on this device</b>.',
         shots: [{ src: 'backup', alt: 'The How Backups Work window', caption: 'Settings &rarr; Backups &rarr; <b>How backups work</b> has the whole story.' }],
         tips: [
@@ -41,7 +41,7 @@ const GUIDE = [
         warn: 'Back up now and then! If your browser forgets its data, a backup file is the only way to get your shelf back.'
     },
     {
-        id: 'adding', icon: '\u{2795}', title: 'Adding books',
+        id: 'adding', title: 'Adding books',
         lead: 'Three ways in: the full form, a quick sticky note, or a photo of a whole shelf at once.',
         shots: [
             { src: 'add', alt: 'The Add a New Book window', caption: '<b>+ Add New Book</b>: the full form, with a live preview of the book on the left.' },
@@ -58,7 +58,7 @@ const GUIDE = [
         psst: 'Not sure of the genre? Genre is what a book is <i>about</i>. Things like Young Adult, Graphic Novel or Audiobook are tags.'
     },
     {
-        id: 'secrets', icon: '\u{1F50D}', title: 'Secret spots in the edit window',
+        id: 'secrets', title: 'Secret spots in the edit window',
         lead: 'The book in the preview isn\'t just a picture. Click it, poke it, open it.',
         shots: [
             { src: 'card', alt: 'The library card sliding out of the book', caption: 'Click the preview book: the cover swings open and its library card slides out.' },
@@ -76,7 +76,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'dates', icon: '\u{1F4C5}', title: 'Dates, without the fuss',
+        id: 'dates', title: 'Dates, without the fuss',
         lead: 'Don\'t remember exactly when you read something? Neither does anyone. Put in what you know.',
         shots: [{ src: 'dates', alt: 'The Started and Finished dates', caption: 'Just a month and a year is fine.', small: true }],
         steps: true,
@@ -89,7 +89,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'arrange', icon: '\u{1F5C2}\u{FE0F}', title: 'Arranging your shelves',
+        id: 'arrange', title: 'Arranging your shelves',
         lead: 'Sort your books into shelves any way you like, then show only the ones you want.',
         shots: [
             { src: 'organize', alt: 'The control panel with numbered stickers', caption: 'The control panel.' },
@@ -109,7 +109,7 @@ const GUIDE = [
         psst: 'Books that sit in Want to Read for months gather dust. Hover over a dusty book to blow it off.'
     },
     {
-        id: 'stickies', icon: '\u{1F4DD}', title: 'Sticky notes and To Buy',
+        id: 'stickies', title: 'Sticky notes and To Buy',
         lead: 'A sticky note is a book you want but don\'t have yet. Together they make your shopping list.',
         shots: [{ src: 'stickyshelf', alt: 'Sticky notes on a shelf', caption: 'Sticky notes on the shelf, written in pencil.' }],
         tips: [
@@ -120,7 +120,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'lending', icon: '\u{1F91D}', title: 'Lending and recommendations',
+        id: 'lending', title: 'Lending and recommendations',
         lead: 'Keep track of who has your books, and who told you to read what.',
         shots: [
             { src: 'lent', alt: 'A lent book on the shelf, with a tag', caption: 'A lent book leaves an outline and a gift tag in its spot.' },
@@ -136,7 +136,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'goals', icon: '\u{1F3AF}', title: 'Reading goals',
+        id: 'goals', title: 'Reading goals',
         lead: 'A yearly books goal, and a pages goal for each day, week or month. Click the goals card in the corner.',
         shots: [{ src: 'goals', alt: 'The Reading Goals window', caption: 'The Reading Goals window.', small: true }],
         tips: [
@@ -149,7 +149,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'critter', icon: '\u{1F95A}', title: 'Your reading critter',
+        id: 'critter', title: 'Your reading critter',
         lead: 'A little pet you keep alive by reading. Click it to open its care window.',
         shots: [
             { src: 'critter', alt: 'The Reading Critter window', caption: 'Meet Gumdrop, a kid gummy blob.', small: true },
@@ -167,7 +167,7 @@ const GUIDE = [
         psst: 'Feeding works on the honour system. The critter trusts you. Don\'t let it down.'
     },
     {
-        id: 'pins', icon: '\u{1F4CC}', title: 'Pins',
+        id: 'pins', title: 'Pins',
         lead: 'Enamel pins you earn by reading and using your shelf. There are {pins} to collect.',
         shots: [{ src: 'pins', alt: 'The big pin board', caption: 'The big pin board. Pins still to earn are shadows on the cork.' }],
         tips: [
@@ -181,7 +181,7 @@ const GUIDE = [
         psst: 'Some pins are sneaky. Try logging pages on a Friday evening. Or at teatime. Or at 2am.'
     },
     {
-        id: 'stats', icon: '\u{1F4CA}', title: 'Reading stats',
+        id: 'stats', title: 'Reading stats',
         lead: 'Click the little ledger book in the corner for your reading in numbers.',
         shots: [{ src: 'stats', alt: 'The Reading Stats window', caption: 'Reading Stats.', small: true }],
         tips: [
@@ -192,7 +192,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'yours', icon: '\u{1F3A8}', title: 'Make it yours',
+        id: 'yours', title: 'Make it yours',
         lead: 'Twelve themes, each with its own critter, pin colours and way of saying goodbye to a deleted book.',
         themes: [['candy', 'Candy'], ['seaglass', 'Sea Glass'], ['holo', 'Holo'], ['deco', 'Deco'], ['loft', 'Loft'],
             ['blueprint', 'Blueprint'], ['terminal', 'Terminal'], ['typewriter', 'Typewriter'], ['sunset', 'Sunset'], ['dark', 'Candy, dark']],
@@ -207,7 +207,7 @@ const GUIDE = [
         psst: 'Deleting a book is never boring: it might get shredded, burned like a match, flung off the screen or dropped through a trapdoor. Each theme has its own too.'
     },
     {
-        id: 'phone', icon: '\u{1F4F1}', title: 'On your phone',
+        id: 'phone', title: 'On your phone',
         lead: 'It all works on a phone, folded up a little to fit.',
         shots: [
             { src: 'phone', alt: 'The phone layout with filters open', caption: '<b>Filters &amp; sorting</b>, opened.', small: true },
@@ -221,7 +221,7 @@ const GUIDE = [
         ]
     },
     {
-        id: 'oops', icon: '\u{1F6DF}', title: 'Oops! Fixing things',
+        id: 'oops', title: 'Oops! Fixing things',
         lead: 'Don\'t panic. Most things can be put back.',
         tips: [
             '<b>Logged the wrong pages?</b> The &times; next to them under Recent pages (goals) or Recent meals (critter) takes them back.',
@@ -234,6 +234,126 @@ const GUIDE = [
         psst: 'That\'s everything! You can come back to this guide any time from Settings. Happy reading &#9825;'
     }
 ];
+
+// Each chapter's badge in the chapter list and by its title: a little
+// enamel pin drawn like the ones on the pin board (pinSvg in pins.js),
+// in the theme's enamel colours.
+const GUIDE_PINS = (() => {
+    const E = PIN_ENAMEL;
+    return {
+        // a shelf of books, one leaning
+        welcome: { metal: 'gold', glint: [12, 13], art: [
+            ['e', 'M9 13h7v23h-7Z', E.hot],
+            ['e', 'M17 10h6.5v26H17Z', E.sky],
+            ['e', 'M24.5 15h6v21h-6Z', E.yellow],
+            ['e', 'M31.6 16.4l5.4-1.5 5.6 19.6-5.4 1.5Z', E.mint],
+            ['e', 'M6 36h36v4.5H6Z', E.lav],
+            ['l', 'M10.5 18h4'], ['l', 'M10.5 31h4'], ['l', 'M18.5 15h3.5'], ['l', 'M26 20h3']
+        ] },
+        // a floppy disk
+        saving: { metal: 'silver', glint: [12, 12], rotate: -8, art: [
+            ['e', 'M11 8H33L40 15V37Q40 40 37 40H11Q8 40 8 37V11Q8 8 11 8Z', E.lav],
+            ['e', 'M15 8H31V18H15Z', E.cream, null, 1.4],
+            ['d', 'M25.5 10.5h3v5.5h-3Z', E.ink],
+            ['e', 'M13 25H35V40H13Z', E.cream, null, 1.4],
+            ['l', 'M17 30H31'], ['l', 'M17 35H27']
+        ] },
+        // a book with a plus
+        adding: { metal: 'gold', glint: [14, 13], rotate: -6, art: [
+            ['e', 'M13 8H34Q37 8 37 11V36H16Q13 36 13 33Z', E.peach],
+            ['e', 'M16 36H37V40H16Q13 40 13 38Q13 36 16 36Z', E.cream, null, 1.4],
+            ['l', 'M18 14H31'], ['l', 'M18 18.5H27'],
+            ['e', pinCircle(34, 32, 7.5), E.mint],
+            ['l', 'M34 28v8M30 32h8', 1.8]
+        ] },
+        // a magnifying glass
+        secrets: { metal: 'silver', glint: [15, 15], art: [
+            ['e', 'M28.4 31.6l3.2-3.2 8.6 8.6a2.3 2.3 0 0 1-3.2 3.2Z', E.hot],
+            ['e', pinCircle(21, 21, 11), E.sky],
+            ['d', 'M15 19a6.5 6.5 0 0 1 5.5-5.5', E.cream]
+        ] },
+        // a calendar page
+        dates: { metal: 'gold', glint: [12, 18], rotate: 5, art: [
+            ['e', 'M11 12H37Q40 12 40 15V37Q40 40 37 40H11Q8 40 8 37V15Q8 12 11 12Z', E.cream],
+            ['e', 'M11 12H37Q40 12 40 15V20H8V15Q8 12 11 12Z', E.hot, null, 1.4],
+            ['m', 'M15 8h2.6v7H15Z'], ['m', 'M30.4 8h2.6v7h-2.6Z'],
+            ['t', 24, 35.5, 13, '15']
+        ] },
+        // a stack of books
+        arrange: { metal: 'gold', glint: [13, 15], art: [
+            ['e', 'M7 32H39V38H7Z', E.teal],
+            ['e', 'M10 25H37V31H10Z', E.pink],
+            ['e', 'M8 18H34V24H8Z', E.yellow],
+            ['e', 'M12.4 11.8l20-3.2 1 5.9-20 3.2Z', E.lav],
+            ['l', 'M33 32v6'], ['l', 'M14 25v6'], ['l', 'M29 18v6']
+        ] },
+        // a sticky note with its corner curling up
+        stickies: { metal: 'silver', glint: [13, 13], rotate: -7, art: [
+            ['e', 'M10 10H38V30L30 38H10Z', E.yellow],
+            ['e', 'M38 30L30 38Q29 31 38 30Z', E.peach, null, 1.4],
+            ['l', 'M15 17H33'], ['l', 'M15 22.5H33'], ['l', 'M15 28H27']
+        ] },
+        // a gift tag on a string
+        lending: { metal: 'gold', glint: [14, 18], rotate: -12, art: [
+            ['l', 'M33 24C37 19 39 14 43 10', 1.2],
+            ['e', 'M8 17H28L37 24L28 31H8Z' + pinCircle(31, 24, 2), E.cream, 'evenodd'],
+            ['e', pinHeart(18, 24, 4.6), E.hot, null, 1.2]
+        ] },
+        // a target with an arrow in the middle
+        goals: { metal: 'silver', glint: [14, 14], art: [
+            ['e', pinCircle(22, 26, 14), E.hot],
+            ['e', pinCircle(22, 26, 9.5), E.cream, null, 1.4],
+            ['e', pinCircle(22, 26, 4.8), E.hot, null, 1.4],
+            ['l', 'M22 26L38 10', 1.6],
+            ['m', 'M36 7l2 3 3 2-4 1-2-2Z']
+        ] },
+        // a speckled egg, cracking
+        critter: { metal: 'gold', glint: [18, 14], rotate: 8, art: [
+            ['e', 'M24 7C31.5 7 37 18.5 37 26.5A13 13 0 0 1 11 26.5C11 18.5 16.5 7 24 7Z', E.cream],
+            ['d', pinCircle(18, 22, 2), E.pink], ['d', pinCircle(29, 17, 1.6), E.lav],
+            ['d', pinCircle(30, 31, 2.2), E.mint], ['d', pinCircle(20, 33, 1.4), E.sky],
+            ['l', 'M12.5 24L17 21L20 25L24 21L27.5 25L31 21.5L35.5 24', 1.2]
+        ] },
+        // a push pin
+        pins: { metal: 'silver', glint: [18, 12], rotate: 18, art: [
+            ['l', 'M24 28V43', 1.8],
+            ['e', 'M16 8H32L29.5 13V20L35 26H13L18.5 20V13Z', E.hot],
+            ['d', 'M20.5 12h2v7h-2Z', E.pink]
+        ] },
+        // a bar chart
+        stats: { metal: 'gold', glint: [31, 11], art: [
+            ['e', 'M9 27H16V38H9Z', E.mint],
+            ['e', 'M19 19H26V38H19Z', E.sky],
+            ['e', 'M29 12H36V38H29Z', E.hot],
+            ['l', 'M6 39.5H41', 1.6],
+            ['e', starPath(14, 15, 4.5, 2), E.yellow, null, 1.2]
+        ] },
+        // a paint palette
+        yours: { metal: 'gold', glint: [14, 12], rotate: -10, art: [
+            ['e', 'M24 8C14 8 7 15 7 24C7 33 14 40 22 40C25 40 25.5 38 24.5 36C23.5 34 24.5 32 27.5 32H31.5C36.5 32 41 29 41 23.5C41 14.5 34 8 24 8Z' + pinCircle(32.5, 23, 2.8), E.cream, 'evenodd'],
+            ['d', pinCircle(15, 21, 3), E.hot], ['d', pinCircle(22, 14.5, 3), E.yellow],
+            ['d', pinCircle(31, 15, 3), E.sky], ['d', pinCircle(15.5, 30.5, 3), E.mint]
+        ] },
+        // a phone with a little shelf on the screen
+        phone: { metal: 'silver', glint: [16, 11], rotate: 10, art: [
+            ['e', 'M16 6H32Q35 6 35 9V39Q35 42 32 42H16Q13 42 13 39V9Q13 6 16 6Z', E.lav],
+            ['e', 'M16 11H32V35H16Z', E.sky, null, 1.2],
+            ['d', 'M18 22h3v7h-3Z', E.hot], ['d', 'M22 20h3v9h-3Z', E.yellow], ['d', 'M26 23h3v6h-3Z', E.mint],
+            ['d', 'M17.5 29h13v1.4h-13Z', E.cream],
+            ['d', pinCircle(24, 38.5, 1.4), E.cream]
+        ] },
+        // a sticking plaster
+        oops: { metal: 'gold', glint: [14, 20], rotate: -35, art: [
+            ['e', 'M11 19H37A5 5 0 0 1 37 29H11A5 5 0 0 1 11 19Z', E.peach],
+            ['e', 'M18 19H30V29H18Z', E.cream, null, 1.2],
+            ['d', pinCircle(21.5, 22, 0.9), E.peach], ['d', pinCircle(26.5, 22, 0.9), E.peach],
+            ['d', pinCircle(21.5, 26, 0.9), E.peach], ['d', pinCircle(26.5, 26, 0.9), E.peach],
+            ['d', pinCircle(24, 24, 0.9), E.peach]
+        ] }
+    };
+})();
+
+const guidePinSvg = id => pinSvg(GUIDE_PINS[id]);
 
 let guidePage = 0;
 
@@ -265,7 +385,7 @@ function renderGuideToc() {
         btn.type = 'button';
         btn.className = 'guide-toc-btn';
         btn.dataset.guidePage = i;
-        btn.innerHTML = `<span class="guide-toc-icon" aria-hidden="true">${c.icon}</span><span>${c.title}</span>`;
+        btn.innerHTML = `<span class="guide-toc-icon" aria-hidden="true">${guidePinSvg(c.id)}</span><span>${c.title}</span>`;
         btn.addEventListener('click', () => showGuidePage(i));
         toc.appendChild(btn);
     });
@@ -290,7 +410,7 @@ function showGuidePage(i) {
     const head = document.createElement('div');
     head.className = 'guide-head';
     head.innerHTML = `<div class="guide-kicker">Chapter ${i + 1} of ${GUIDE.length}</div>` +
-        `<h2 class="guide-title"><span class="guide-title-icon" aria-hidden="true">${c.icon}</span>${c.title}</h2>` +
+        `<h2 class="guide-title"><span class="guide-title-icon" aria-hidden="true">${guidePinSvg(c.id)}</span>${c.title}</h2>` +
         `<p class="guide-lead">${guideText(c.lead)}</p>`;
     page.appendChild(head);
 

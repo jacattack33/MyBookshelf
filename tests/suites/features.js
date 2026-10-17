@@ -573,6 +573,7 @@ ok('the guidebook pops up over Settings', guideModal.style.display === 'flex' &&
 ok('it is big', q('.guide-content').offsetWidth > 900, q('.guide-content').offsetWidth);
 const tocBtns = [...document.querySelectorAll('.guide-toc-btn')];
 ok('a chapter list down the side', tocBtns.length === GUIDE.length && GUIDE.length >= 12, tocBtns.length);
+ok('each chapter has its own enamel pin', GUIDE.every(c => GUIDE_PINS[c.id]) && tocBtns.every(b => b.querySelector('.guide-toc-icon svg.pin-art')) && !!q('.guide-title-icon svg.pin-art'));
 showGuidePage(0);
 ok('chapter 1 is the welcome tour, with a screenshot', q('.guide-title').textContent.includes('Welcome') && !!q('.guide-shot img'));
 const shotsOk = [];
