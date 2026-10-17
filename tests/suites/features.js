@@ -563,18 +563,49 @@ selectViewMode('cover');
     ok('shape back to natural updates shelf', Math.abs(el().offsetWidth - el().offsetHeight) < 3, el().offsetWidth + 'x' + el().offsetHeight + ' ' + library.find(x => x.id === '1').imageRatio);
 }
 
-// ---- Settings opens with a walkthrough of handy things to know
+// ---- the guidebook: a big window of chapters with screenshots, opened from Settings
 openSettings();
-const walk = q('#settings-walkthrough');
-ok('the walkthrough is the first thing in Settings', q('.settings-body').firstElementChild === walk);
-const topics = [...walk.querySelectorAll('details.walk-topic')];
-ok('its topics start closed', topics.length >= 8 && topics.every(t => !t.open), topics.length);
-topics[0].querySelector('summary').click();
-ok('a topic opens when clicked', topics[0].open && topics[0].querySelector('.walk-body').offsetHeight > 0);
-topics[0].querySelector('summary').click();
-const pinsTopic = topics.find(t => t.querySelector('summary').textContent === 'Pins');
-ok('it explains leaving old books out of pins', pinsTopic.textContent.includes("Don't count toward pins"));
-setTheme('holo');
-ok('no pins topic in a theme without a pin board', pinsTopic.offsetParent === null);
-setTheme('candy');
+ok('Settings opens with the guidebook button', q('.settings-body').firstElementChild === q('#settings-guide'));
+q('#settings-guide button').click();
+await wait(100);
+const guideModal = q('#guide-modal');
+ok('the guidebook pops up over Settings', guideModal.style.display === 'flex' && guideModal.compareDocumentPosition(q('#settings-modal')) & Node.DOCUMENT_POSITION_PRECEDING);
+ok('it is big', q('.guide-content').offsetWidth > 900, q('.guide-content').offsetWidth);
+const tocBtns = [...document.querySelectorAll('.guide-toc-btn')];
+ok('a chapter list down the side', tocBtns.length === GUIDE.length && GUIDE.length >= 12, tocBtns.length);
+showGuidePage(0);
+ok('chapter 1 is the welcome tour, with a screenshot', q('.guide-title').textContent.includes('Welcome') && !!q('.guide-shot img'));
+const shotsOk = [];
+for (const c of GUIDE) for (const s of [...(c.shots || []).map(x => x.src), ...(c.themes || []).map(t => 'theme-' + t[0])]) {
+    const res = await fetch(`assets/guide/${s}.webp`, { method: 'HEAD' });
+    if (!res.ok) shotsOk.push(s);
+}
+ok('every screenshot is there', !shotsOk.length, shotsOk.join(', '));
+ok('numbered tips match the stickers', !!q('.guide-tips.steps li'));
+q('#guide-next').click();
+ok('Next goes to chapter 2', guidePage === 1 && q('.guide-kicker').textContent.startsWith('Chapter 2'));
+document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+ok('the right arrow key turns the page', guidePage === 2);
+document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+ok('...and the left one turns back', guidePage === 1);
+tocBtns.find(b => b.textContent.includes('Pins')).click();
+ok('a chapter opens from the list', q('.guide-title').textContent.includes('Pins') && q('.guide-toc-btn.active').textContent.includes('Pins'));
+ok('the pins chapter explains leaving old books out', q('#guide-page').textContent.includes("Don't count toward pins"));
+ok('it counts the pins', q('.guide-lead').textContent.includes(String(PINS.length)));
+q('.guide-shot-frame').click();
+ok('a screenshot opens big', !q('#guide-zoom').hidden);
+document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+ok('Esc puts the big screenshot away first', q('#guide-zoom').hidden && guideModal.style.display === 'flex');
+document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+ok('...then closes the guide, leaving Settings open', guideModal.style.display === 'none' && q('#settings-modal').style.display === 'flex');
+openGuide();
+ok('it opens where you left off', q('.guide-title').textContent.includes('Pins'));
+showGuidePage(GUIDE.length - 1);
+ok('the last page says done', q('#guide-next').textContent.startsWith('Done'));
+q('#guide-next').click();
+ok('Done closes it', guideModal.style.display === 'none');
 closeSettings();
+offerFreshStart && (document.getElementById('fresh-start-modal').style.display = 'flex');
+q('.fresh-start-guide').click();
+ok('the welcome window can open the guide at the start', guideModal.style.display === 'flex' && guidePage === 0 && q('#fresh-start-modal').style.display === 'none');
+closeGuide();

@@ -153,7 +153,7 @@ What this means in practice:
 
 ### Other
 - **Settings** (button next to Export/Import). Everything here is remembered:
-  - **Walkthrough:** at the top, short tips that open and close: where your books are saved, adding books, arranging shelves, the edit window's hidden spots, dates, sticky notes, lending, goals and the critter, pins (and leaving books you already had out of them), and making it yours.
+  - **Guidebook:** at the top, **Open the guidebook** pops up a big guide to everything, with screenshots: 15 chapters (welcome tour, where your books live, adding books, the edit window's secret spots, dates, arranging shelves, sticky notes and To Buy, lending and recs, goals, the critter, pins, stats, themes, phones, and fixing mistakes). Pick a chapter down the side (along the top on phones), or go through with **Next** / **Back** or the arrow keys; click a screenshot to see it bigger. It opens where you left off. The welcome window on a first visit offers it too (**Show me around first**). The screenshots are in `assets/guide/`; `python dev/guide-shots.py` retakes them from the real page (needs Pillow).
   - **Theme:** twelve to pick from, each with a light and a dark version:
     - **Candy:** pinks and purples.
     - **Sea Glass:** blues and greens.
